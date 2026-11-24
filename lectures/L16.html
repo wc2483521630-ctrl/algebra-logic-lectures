@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L16 代数对应物、代入性质与滤子性质 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第四篇 代数化：把逻辑翻译成代数</span><span class="sep">/</span><span>L16</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 16 · 2 学时 · 代数篇</div>
+  <h1>代数对应物、代入性质与滤子性质</h1>
+  <div class="sub">给逻辑做一台代数影子机：两种取影方式，三把结构钥匙</div>
+  <div class="metarow"><span>来源：UAL §3.3.1–3.3.6（定义 3.3.1/3.3.2/3.3.3/3.3.9/3.3.10/3.3.14/3.3.18/3.3.26/3.3.27/3.3.31/3.3.34、定理 3.3.5/3.3.23/3.3.36、命题 3.3.11/3.3.15/3.3.21/3.3.32/3.3.33）；L05 自由代数与定义关系、L06 滤子与 Stone、L15 四元组</span>
+    <span class="tag log">逻辑</span><span class="tag alg">代数</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：影子里该留下什么</a></li>
+  <li><a href="#formula">连接词、公式代数与组合性（O1）</a></li>
+  <li><a href="#alg">两种代数对应物 Algᵐ 与 Alg⊨（O2）</a></li>
+  <li><a href="#subst">语义代入与句法代入（O3）</a></li>
+  <li><a href="#cond">条件代入：一阶逻辑怎么活下来（O4）</a></li>
+  <li><a href="#filter">滤子性质：两套语言之间的翻译协议（O5）</a></li>
+  <li><a href="#general">一般逻辑：把原子公式集变成参数（O6）</a></li>
+  <li><a href="#fusion">融合接口：结构性质 ↔ 算子封闭性</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">L15 把逻辑削成了四元组，但那只是接口。这一讲要问一个更要命的问题：<strong>一个逻辑的「代数影子」到底是什么？</strong>影子不能随便取——取出来得好用，得让逻辑的性质能在代数这边读到。整讲就是把这个「好用」说清楚。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>它回答的问题</th></tr>
+      <tr><td>公式代数 <span class="math">F(P,Cn)</span></td><td>L05 项代数、自由代数</td><td>公式集凭什么就是一个代数？</td></tr>
+      <tr><td>组合性、<span class="math">∼<sub>L</sub></span>、LT 代数</td><td>上面 + L05 同余</td><td>意义能不能由子公式算出来？</td></tr>
+      <tr><td><span class="math">Algᵐ(L)</span>、<span class="math">Alg<sub>⊨</sub>(L)</span></td><td>组合性</td><td>无数模型的影子怎么拢成一个类？两种拢法差多少？</td></tr>
+      <tr><td>语义 / 句法代入性质</td><td>公式代数是自由的</td><td>把原子公式换成任意公式，模型能不能跟着变？</td></tr>
+      <tr><td>条件语义代入</td><td><span class="math">∼<sub>L</sub></span> 是定义关系</td><td>一阶逻辑的类型冲突怎么绕开？</td></tr>
+      <tr><td>滤子性质</td><td><span class="math">mng</span> 与 <span class="math">⊨</span> 的式 (3.1)</td><td>「意义相等」和「公式有效」怎么互译？</td></tr>
+      <tr><td>一般逻辑</td><td>上面全部 + 参数化</td><td>原子公式集变化时，上面这些还整齐吗？</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>组合性 → <span class="math">mng<sub>M</sub></span> 是同态、<span class="math">ker(mng<sub>M</sub>)</span> 是同余 → 取两种影：<strong>模型的概念代数</strong> <span class="math">Algᵐ(L) = {mng<sub>M</sub>(F)}</span> 与 <strong>理论的同余商</strong> <span class="math">Alg<sub>⊨</sub>(L) = I{F/∼<sub>K</sub>}</span> → 定理 3.3.5：两者只差 <span class="math">SP</span>，等式与准等式理论相同 → 现在问影子「好不好用」：<strong>代入性质</strong>问它对同态复合是否封闭（<span class="math">Mng<sub>L</sub> = Hom(F, Algᵐ(L))</span>），<strong>滤子性质</strong>问两套词汇能否互译（后承 ⟺ 准等式）→ 最后把原子公式集 <span class="math">P</span> 参数化得<strong>一般逻辑</strong>，让「替换性」跨语言成立。</p>
+  </div>
+</section>
+
+<!-- ============ 目标 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>定义公式代数与组合性，解释 ker(mng) 是同余，写出 LT 代数</td><td><a href="#formula">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>定义并比较 Algᵐ(L) 与 Alg⊨(L)，证明定理 3.3.5 的两个包含</td><td><a href="#alg">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>区分句法/语义代入性质，证明命题 3.3.11 的三等价</td><td><a href="#subst">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>写出条件语义代入，说明一阶逻辑为何只满足它，认出带定义关系的自由代数</td><td><a href="#cond">§6</a></td><td><a href="#ex">E7, E8</a></td></tr>
+    <tr><td><b>O5</b></td><td>用滤子性质把后承翻成准等式，走通定理 3.3.23 的两向证明</td><td><a href="#filter">§7</a></td><td><a href="#ex">E9, E10, E11</a></td></tr>
+    <tr><td><b>O6</b></td><td>说出一般逻辑的七个条件，解释替换性刻画与定理 3.3.36</td><td><a href="#general">§8</a></td><td><a href="#ex">E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：影子里该留下什么</h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>上一讲结束时我们有一个四元组 <span class="math">L = ⟨F, M, mng, ⊨⟩</span>。它规整，但还不动。现在要做的事是<strong>把一个逻辑送进泛代数</strong>：给它配一个类 <span class="math">Alg(L)</span>，让逻辑学家问的问题，能翻译成代数家已经在问的问题。</p>
+    <p>难处立刻来了。<strong>一个逻辑有无数个模型，每个模型都吐出一个代数</strong> <span class="math">mng<sub>M</sub>(F)</span>。要谈「这个逻辑的代数」，必须把它们拢成一个类。怎么拢？</p>
+    <p>UAL 给了两条路，而且两条都自然：</p>
+    <ul>
+      <li><strong>从模型拢。</strong>每个模型 <span class="math">M</span> 能表达哪些概念？把 <span class="math">mng<sub>M</sub></span> 的像收下来，得 <span class="math">Algᵐ(L)</span>。这是「一个世界里的概念图」。</li>
+      <li><strong>从理论拢。</strong>一批模型 <span class="math">K</span> 共同承认哪些概念？把公式按在 <span class="math">K</span> 上意义相同归类，取商得 <span class="math">F/∼<sub>K</sub></span>。把所有 <span class="math">K</span> 的商收下来，得 <span class="math">Alg<sub>⊨</sub>(L)</span>。这是「一批世界的共同语言」。</li>
+    </ul>
+    <p>定理 3.3.5 说：<strong>这两条路只差一个 SP（取子代数、取积）</strong>。于是它们在等式和准等式上完全一致。这件事是整讲的合法性来源——「代数对应物」不是一个随便的约定，而是被定理挑出来的。</p>
+    <p>有了影子，下一步是挑毛病。一个影子「好用」是什么意思？UAL 挑出三把钥匙：</p>
+    <ul>
+      <li><strong>代入性质</strong>：原子公式是真正自由的变量吗？把 <span class="math">p</span> 换成任意公式，模型能不能跟着变形？代数这边说：意义同态类对复合封闭。</li>
+      <li><strong>条件代入</strong>：一阶逻辑里 <span class="math">r(x)</span> 换成 <span class="math">s(x,y)</span> 会炸（一元变二元）。但只要替换不撞类型就能活。代数这边说：取带定义关系的自由代数。</li>
+      <li><strong>滤子性质</strong>：「意义相等」和「公式有效」能互译吗？代数这边说：后承 ⟺ 准等式。<strong>这正是 L18–L20 三座桥的词汇准备。</strong></li>
+    </ul>
+    <p>最后，把原子公式集 <span class="math">P</span> 抽成参数，就得到<strong>一般逻辑</strong>。它不是又一个定义，而是让上面三把钥匙能跨语言使用——否则换一套命题字母，前面的结论就得重证一遍。</p>
+  </div>
+
+  <div class="diagram"><pre>
+              逻辑 L = ⟨F, M, mng, ⊨⟩
+                          │
+              组合性：mng_M 是同态
+                          │
+        ┌─────────────────┴─────────────────┐
+        │                                   │
+  从模型取影                            从理论取影
+  Algᵐ(L) = {mng_M(F)}              Alg⊨(L) = I{F/∼K}
+        │                                   │
+        └──────── 定理 3.3.5 ────────────────┘
+           Algᵐ ⊆ Alg⊨ ⊆ SP Algᵐ
+           等式、准等式理论相同
+                          │
+        ┌─────────────────┼─────────────────┐
+        │                 │                 │
+   代入性质           条件代入           滤子性质
+  P 是否自由      带定义关系也自由    意义相等 ⟺ 有效
+  Mng = Hom(F,K)  Fr(K,P,∼L)          后承 ⟺ 准等式
+        │                 │                 │
+        └──────── 一般逻辑（P 作参数） ───────┘
+              Alg⊨(L) = SP Algᵐ(L)   [定理 3.3.36]
+  </pre></div>
+</section>
+
+
+<!-- ============ O1 ============ -->
+<section id="formula">
+  <h2><span class="sn">3</span>连接词、公式代数与组合性 <span class="tag alg">O1</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>上一讲把公式集 <span class="math">F</span> 当成一堆字符串。但代数机器不吃字符串，吃的是<strong>带运算的集合</strong>。要把 <span class="math">F</span> 变成代数，得先指认：哪些符号是运算？哪些是变量？</p>
+    <p>答案很自然：<strong>连接词是运算，原子公式是变量</strong>。于是 <span class="math">F</span> 就是项代数 <span class="math">F(P,Cn)</span>，而且是<strong>绝对自由</strong>的——任意给一个同型代数 <span class="math">A</span> 和一张赋值 <span class="math">P → A</span>，都唯一延成同态。<strong>这个「唯一延成同态」就是后面代入性质的全部本钱。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 3.3.1 <span class="num">L 有逻辑连接词</span></div>
+    <p>说 <span class="math">L</span> 有逻辑连接词 <span class="math">⟨Cn, P⟩</span>，若：</p>
+    <p>(i) 固定一个连接词集 <span class="math">Cn(L)</span>，每个 <span class="math">c</span> 有有限元数 <span class="math">rank(c) ∈ ω</span>；<span class="math">k</span> 元连接词全体记作 <span class="math">Cn<sub>k</sub>(L)</span>。</p>
+    <p>(ii) 有与 <span class="math">Cn</span> 不交的集合 <span class="math">P</span>（原子公式 / 命题字母 / 参数），使 <span class="math">F</span> 是满足 <span class="math">P ⊆ F</span> 且「<span class="math">c ∈ Cn<sub>k</sub>, φ<sub>1</sub>,…,φ<sub>k</sub> ∈ F ⟹ c(φ<sub>1</sub>,…,φ<sub>k</sub>) ∈ F</span>」的最小集合。</p>
+    <p>用泛代数的说法：<span class="math">F</span> 是由 <span class="math">P</span> 生成、以连接词为运算的<strong>项代数</strong>，即<strong>绝对自由代数</strong> <span class="math">F(P,Cn) = ⟨F(P,Cn), c⟩<sub>c∈Cn</sub></span>。</p>
+  </div>
+
+  <div class="warn"><div class="bt">一个不能省掉的记号</div>
+    <p><strong>单写 <span class="math">F</span> 恢复不出 <span class="math">P</span> 与 <span class="math">Cn</span>。</strong>同一堆公式可以拆出不同的「变量 / 运算」。一阶语句逻辑（例 3.2.30）里 <span class="math">¬, ∧, ∃v</span> 都不是连接词；但它仍可把 <span class="math">¬, ∧</span> 当连接词，只要把 <span class="math">P</span> 取成任意一个包含所有以存在量词开头的公式的集合。<strong>所以必须写 <span class="math">F(P,Cn)</span>，不能只写 <span class="math">F</span>。</strong>这不是挑剔：L17 谈「两个逻辑是否等价」时，正是这个歧义制造麻烦。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 3.3.2 <span class="num">组合性（弗雷格原则）</span></div>
+    <p><span class="math">L</span> 组合，若它有逻辑连接词，且对每个 <span class="math">k</span> 元连接词 <span class="math">c</span>、每个 <span class="math">M ∈ M</span>：</p>
+    <div class="formula"><span class="math">⋀<sub>i=1</sub><sup>k</sup> mng(φ<sub>i</sub>, M) = mng(ψ<sub>i</sub>, M) &nbsp;⟹&nbsp; mng(c(φ<sub>1</sub>,…,φ<sub>k</sub>), M) = mng(c(ψ<sub>1</sub>,…,ψ<sub>k</sub>), M)</span></div>
+    <p>把 <span class="math">mng<sub>M</sub>(φ) = mng(φ,M)</span> 记作一个函数 <span class="math">F → </span>某集合，上式说的正是<strong>若分量相等则复合相等</strong>，也就是</p>
+    <div class="formula"><span class="math">ker(mng<sub>M</sub>) 是 F(P,Cn) 上的同余 &nbsp;⟺&nbsp; mng<sub>M</sub> : F(P,Cn) → mng<sub>M</sub>(F) 是同态</span></div>
+    <p><strong>这是本讲第一处关键翻译</strong>：「整体意义由部分意义决定」这句认识论的话，在泛代数里就叫「核是同余」。</p>
+  </div>
+
+  <div class="def"><div class="bt">重言式同余与 Lindenbaum–Tarski 代数</div>
+    <p>定义 <span class="math">φ ∼<sub>L</sub> ψ ⟺ 对所有 M ∈ M 有 mng<sub>M</sub>(φ) = mng<sub>M</sub>(ψ)</span>：<strong>在所有模型里意义相同</strong>。组合性保证 <span class="math">∼<sub>L</sub></span> 是同余，于是可以取商</p>
+    <div class="formula"><span class="math">F(L) = F/∼<sub>L</sub></span></div>
+    <p>称为 <span class="math">L</span> 的<strong>重言式公式代数</strong>，也就是 Lindenbaum–Tarski 代数。<strong>它是「这个逻辑能表达的全部概念」的结构。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型 · 命题逻辑</div>
+    <p>令 <span class="math">P</span> 是命题字母，<span class="math">Cn = {¬, ∧}</span>（<span class="math">∨, →</span> 作缩写）。<span class="math">F(P,Cn)</span> 是绝对自由布尔代数状的项代数；<span class="math">∼<sub>L</sub></span> 是逻辑等价，<span class="math">F/∼<sub>L</sub></span> 是<strong>自由布尔代数</strong>。这是 L06 已经见过的老朋友。</p>
+  </div>
+  <div class="ex"><div class="bt">本质 · 一阶开公式：量词必须成为算子</div>
+    <p>若只取语句，LT 代数是布尔代数，但<strong>未必自由</strong>；Rasiowa–Sikorski 做法是再要求某些特殊上确界存在，用来表示存在量词的意义。<strong>真正的组合性要求把开公式也收进来</strong>：让 <span class="math">∃v</span> 成为运算，<span class="math">mng<sub>M</sub>(∃v φ)</span> 由 <span class="math">mng<sub>M</sub>(φ)</span> 算出。此时 LT 代数是 <strong>BAO</strong>（L06），确切地说是<strong>自由维数限制柱形代数</strong>。<strong>这就是 L06 那句「量词是模态算子」的正式出处。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界 · 概念代体会忘掉「哪些是原始的」</div>
+    <p>① <strong>等式逻辑、准等式逻辑没有这里的连接词</strong>：它们是一阶逻辑的片段，公式由项与等号构成，不是从 <span class="math">P</span> 用连接词生成的。</p>
+    <p>② UAL 脚注 8 给了一个很好的「布尔运算管不着」例子：若 <span class="math">c</span> 是常元、<span class="math">R</span> 是一元关系，则 <span class="math">R(c)/∼<sub>L</sub> ≤ ∃xR(x)/∼<sub>L</sub></span>，<strong>但这个序关系不是任何布尔运算造出来的</strong>——它是量词带来的。只看布尔结构会丢掉它。</p>
+    <p>③ <strong><span class="math">mng<sub>M</sub>(F)</span> 与 <span class="math">F/∼<sub>L</sub></span> 都叫「<span class="math">L</span> 可表达概念的结构」</strong>，但它们都<strong>忘记</strong>了哪些概念是原始给的、哪些是复合出来的。要找回这点信息，得在 <span class="math">mng<sub>M</sub>(F)</span> 上加常元去钉住原子公式的意义。</p>
+  </div></div>
+</section>
+
+<!-- ============ O2 ============ -->
+<section id="alg">
+  <h2><span class="sn">4</span>两种代数对应物 <span class="tag alg">O2</span></h2>
+
+  <div class="def"><div class="bt">定义 3.3.3 <span class="num">从模型取影，从理论取影</span></div>
+    <p>设 <span class="math">L</span> 组合。</p>
+    <p>(i) 对 <span class="math">K ⊆ M</span>，定义 <span class="math">φ ∼<sub>K</sub> ψ ⟺ 对所有 M ∈ K, mng<sub>M</sub>(φ) = mng<sub>M</sub>(ψ)</span>。由组合性这是同余。<span class="math">F/∼<sub>K</sub></span> 叫 <span class="math">K</span> 的 LT 代数。令</p>
+    <div class="formula"><span class="math">Alg<sub>⊨</sub>(L) = I{F/∼<sub>K</sub> : K ⊆ M}</span></div>
+    <p>(ii) 令</p>
+    <div class="formula"><span class="math">Alg<sup>m</sup>(L) = {mng<sub>M</sub>(F) : M ∈ M}</span></div>
+    <p>其中 <span class="math">mng<sub>M</sub>(F)</span> 是<strong>同态像</strong>——含它且使 <span class="math">mng<sub>M</sub></span> 落到其中的最小子代数。</p>
+  </div>
+
+  <div class="intu"><div class="bt">两个影子各是什么意思</div>
+    <p><span class="math">mng<sub>M</sub>(F)</span> 是<strong>一个世界里可表达的概念</strong>：每个公式在这个世界里切成一片东西，这些片组成的代数。</p>
+    <p><span class="math">F/∼<sub>K</sub></span> 是<strong>一批世界的共同语言</strong>：两个公式若在 <span class="math">K</span> 的每个模型里意义都相同，就合并。<span class="math">K</span> 越大，合并越多，商越小。</p>
+    <p><strong>一个从下往上（模型给概念），一个从上往下（理论做识别）。</strong>它们居然只差 <span class="math">SP</span>，这是定理。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 3.3.5 <span class="num">Algᵐ 与 Alg⊨ 的距离</span></div>
+    <p>若 <span class="math">L</span> 组合，则</p>
+    <div class="formula"><span class="math">(i) &nbsp;Alg<sup>m</sup>(L) ⊆ Alg<sub>⊨</sub>(L) ⊆ SP Alg<sup>m</sup>(L)</span></div>
+    <div class="formula"><span class="math">(ii) &nbsp;SP Alg<sub>⊨</sub>(L) = SP Alg<sup>m</sup>(L)</span></div>
+    <div class="proof"><div class="bt">证明</div>
+      <p><strong>第一个包含。</strong>取 <span class="math">A = mng<sub>M</sub>(F) ∈ Alg<sup>m</sup>(L)</span>。令 <span class="math">K = {M}</span>，则 <span class="math">∼<sub>K</sub> = ker(mng<sub>M</sub>)</span>，故 <span class="math">A = F/∼<sub>K</sub> ∈ Alg<sub>⊨</sub>(L)</span>（后者对同构封闭）。</p>
+      <p><strong>第二个包含。</strong>取 <span class="math">A ∈ Alg<sub>⊨</sub>(L)</span>，即 <span class="math">A ≅ F/∼<sub>K</sub></span>。<strong>这里必须先把 <span class="math">K</span> 缩进一个集合 <span class="math">K′ ⊆ K</span></strong>：因为 <span class="math">F</span> 是集合，商 <span class="math">F/∼<sub>K</sub></span> 只用到 <span class="math">F</span> 中有限多对公式的相等关系，取 <span class="math">K′</span> 足够大即可使 <span class="math">∼<sub>K′</sub> = ∼<sub>K</sub></span>（练习 3.3.6 问的正是<strong>为什么不能是真类</strong>——真类上取不了积）。</p>
+      <p>于是设 <span class="math">K</span> 是集合。定义</p>
+      <div class="formula"><span class="math">h : F/∼<sub>K</sub> → ∏<sub>M∈K</sub> mng<sub>M</sub>(F), &nbsp;&nbsp; h(φ/∼<sub>K</sub>) = ⟨mng<sub>M</sub>(φ) : M ∈ K⟩</span></div>
+      <p>良定义（若 <span class="math">φ ∼<sub>K</sub> ψ</span> 则每个分量相等）；按分量逐点运算，<span class="math">h</span> 是同态；若 <span class="math">h(φ/∼<sub>K</sub>) = h(ψ/∼<sub>K</sub>)</span>，则每个 <span class="math">M ∈ K</span> 上相等，即 <span class="math">φ ∼<sub>K</sub> ψ</span>，所以 <span class="math">h</span> 是<strong>单射</strong>。故 <span class="math">F/∼<sub>K</sub> ∈ SP Alg<sup>m</sup>(L)</span>。</p>
+      <p><strong>(ii)。</strong><span class="math">SP</span> 是闭包算子：单调 + 幂等。由 (i) 的包含和单调性得 <span class="math">SP Alg<sup>m</sup> ⊆ SP Alg<sub>⊨</sub></span>；由 (i) 的第二个包含和幂等性得反向。</p>
+    </div>
+  </div>
+
+  <div class="thm"><div class="bt">推论 3.3.7 <span class="num">两个影子说同一套等式语言</span></div>
+    <p><span class="math">Alg<sub>⊨</sub>(L)</span> 与 <span class="math">Alg<sup>m</sup>(L)</span> 有<strong>相同的等式理论与准等式理论</strong>。因为 <span class="math">SP</span> 不改变这两者（定理 2.4.11/2.4.12）。</p>
+    <p><strong>这就是「代数对应物」这个说法的底气</strong>：不管你从哪条路取影，代数家拿等式和准等式能问的问题，答案一模一样。</p>
+  </div>
+
+  <div class="warn"><div class="bt"> Remark 3.3.4：故意不对同构封闭</div>
+    <p><span class="math">Alg<sup>m</sup>(L)</span> <strong>不是抽象类</strong>，不对同构封闭。<strong>这是刻意的</strong>：它的成员是「模型的概念代数」，是具体代数；换成同构副本会丢掉语义-模型论信息，<strong>尤其在可定义性理论里</strong>（L20 的 Beth 性质正需要这一点）。</p>
+    <p>对比：<span class="math">Alg<sub>⊨</sub>(L)</span> 按定义带 <span class="math">I</span>，<strong>对同构封闭</strong>。一个是具体对象，一个是抽象类型，各司其职。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型 · 经典命题逻辑的影子</div>
+    <p><span class="math">Alg<sup>m</sup>(L<sub>S</sub>)</span> 是布尔集合代数的子类；<span class="math">Alg<sub>⊨</sub>(L<sub>S</sub>)</span> 是它的 <span class="math">SP</span> 闭包，即所有布尔代数（练习 3.3.35(4) 要你验证等号成立）。<strong>影子认出了熟悉的代数类。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质 · 定理 3.3.5 的嵌入在做什么</div>
+    <p><span class="math">h(φ/∼<sub>K</sub>) = ⟨mng<sub>M</sub>(φ)⟩</span> 是<strong>把「公式」变成「它在每个世界里的值」的坐标化</strong>。这正是 Stone 表示（L06）和 Jónsson–Tarski 表示（L07）的装置：一个抽象元素被它在一族具体结构上的行为完全确定。<strong>单射性就是「共同语言不丢信息」。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界 · 两个容易踩的坑</div>
+    <p>① <strong><span class="math">Alg<sup>m</sup>(L)</span> 里没有「同构副本」这一说。</strong>若两个不同模型给出同构但不同的概念代数，<span class="math">Alg<sup>m</sup></span> 把它们当作两个成员。<strong>在可定义性里这正是信息。</strong></p>
+    <p>② <strong>影子里「原始 vs 复合」被抹掉了。</strong><span class="math">mng<sub>M</sub>(F)</span> 只知道 <span class="math">p∧q</span> 的像是 <span class="math">p</span> 的像与 <span class="math">q</span> 的像之交，不记得 <span class="math">p</span> 曾是字母。要记得，得给概念代数加常元钉住原子公式。</p>
+  </div></div>
+</section>
+
+
+<!-- ============ O3 ============ -->
+<section id="subst">
+  <h2><span class="sn">5</span>语义代入与句法代入 <span class="tag log">O3</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>在命题逻辑里，<span class="math">p</span> 代表<strong>任意</strong>公式。我们天天用这条：重言式 <span class="math">p ∨ ¬p</span> 里的 <span class="math">p</span> 换成任何公式，结果还是重言式。这件事太自然，自然到没人问它是不是一条<strong>需要单独假设的性质</strong>。</p>
+    <p>一问就出问题。一阶逻辑里 <span class="math">r(x)</span> 是一元关系，换成 <span class="math">s(x,y)</span> 变成二元——<strong>语言的类型被撞坏了</strong>。所以「变元自由」不是天经地义，而是逻辑的一条结构性质。UAL 给出两个版本：</p>
+    <ul>
+      <li><strong>句法版</strong>：有效式在替换后仍有效（只管 <span class="math">⊨</span>）。</li>
+      <li><strong>语义版</strong>：替换公式的同时，模型能跟着变出一个「代入后的模型」（管 <span class="math">mng</span>）。</li>
+    </ul>
+    <p>语义版强得多，而它的代数翻译漂亮得出奇：<strong>意义同态类恰好是全体从公式代数出发的同态</strong>。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 3.3.9 <span class="num">句法代入性质</span></div>
+    <p>若对任意 <span class="math">p<sub>0</sub>,…,p<sub>k</sub> ∈ P</span> 与 <span class="math">ψ, φ<sub>0</sub>,…,φ<sub>k</sub> ∈ F</span>：</p>
+    <div class="formula"><span class="math">⊨<sub>L</sub> ψ(p) &nbsp;⟹&nbsp; ⊨<sub>L</sub> ψ(p/φ)</span></div>
+    <p>其中 <span class="math">ψ(p/φ)</span> 是<strong>同时</strong>把每个 <span class="math">p<sub>i</sub></span> 的所有出现换成 <span class="math">φ<sub>i</sub></span>。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 3.3.10 <span class="num">语义代入性质，式 (3.3)</span></div>
+    <p>若对任意 <span class="math">s : P → F</span>、任意 <span class="math">M ∈ M</span>，存在 <span class="math">N ∈ M</span> 使对任意公式 <span class="math">φ</span>：</p>
+    <div class="formula"><span class="math">mng<sub>N</sub>(φ) = mng<sub>M</sub>(φ(p<sub>0</sub>/s(p<sub>0</sub>), …, p<sub>k</sub>/s(p<sub>k</sub>)))</span></div>
+    <p><span class="math">N</span> 叫 <span class="math">M</span> 沿 <span class="math">s</span> 的<strong>代入版本</strong>。由于 <span class="math">F</span> 是自由的，<span class="math">s</span> 唯一延成 <span class="math">ŝ : F → F</span>，上式就是 <span class="math">mng<sub>N</sub> = mng<sub>M</sub> ∘ ŝ</span>。</p>
+    <p>UAL 还给出两个等价写法，一个比一个干净：</p>
+    <div class="formula"><span class="math">(∀h ∈ Hom(F,F))(∀M ∈ M)(∃N ∈ M)&nbsp; mng<sub>N</sub> = mng<sub>M</sub> ∘ h</span></div>
+    <div class="formula"><span class="math">(∀M ∈ M)(∀h ∈ Hom(F, mng<sub>M</sub>(F)))(∃N ∈ M)&nbsp; mng<sub>N</sub> = h</span></div>
+    <p>记 <span class="math">Mng<sub>L</sub> = {mng<sub>M</sub> : M ∈ M}</span>，即所有<strong>意义同态</strong>组成的类。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 3.3.11 <span class="num">语义代入的代数刻画</span></div>
+    <p>设 <span class="math">L</span> 组合。则以下等价：</p>
+    <div class="formula"><span class="math">(i)&nbsp; L 有语义代入性质</span></div>
+    <div class="formula"><span class="math">(ii)&nbsp; Mng<sub>L</sub> = Hom(F, Alg<sup>m</sup>(L))</span></div>
+    <div class="formula"><span class="math">(iii)&nbsp; Mng<sub>L</sub> = Hom(F, K)，对某个代数类 K</span></div>
+    <div class="proof"><div class="bt">证明要点</div>
+      <p><strong>(i) ⟹ (ii)。</strong><span class="math">⊆</span> 显然：<span class="math">mng<sub>M</sub> : F → mng<sub>M</sub>(F) ∈ Alg<sup>m</sup>(L)</span>。</p>
+      <p><span class="math">⊇</span> 是这证明的心脏。取任意 <span class="math">h : F → mng<sub>M</sub>(F)</span>。对每个 <span class="math">p ∈ P</span>，因 <span class="math">h(p) ∈ mng<sub>M</sub>(F)</span>，可取 <span class="math">φ<sub>p</sub> ∈ F</span> 使 <span class="math">h(p) = mng<sub>M</sub>(φ<sub>p</sub>)</span>（<strong>这里用的是「像中的元素必有原像」</strong>）。令 <span class="math">s(p) = φ<sub>p</sub></span>。语义代入给出 <span class="math">N</span> 使 <span class="math">mng<sub>N</sub> = mng<sub>M</sub> ∘ ŝ</span>。于是对生成元 <span class="math">p</span>：</p>
+      <div class="formula"><span class="math">mng<sub>N</sub>(p) = mng<sub>M</sub>(s(p)) = h(p)</span></div>
+      <p>两同态在 <span class="math">P</span> 上相同，而 <span class="math">F</span> 由 <span class="math">P</span> 生成，故 <span class="math">h = mng<sub>N</sub></span>。</p>
+      <p><strong>(iii) ⟹ (i)。</strong>取 <span class="math">s : P → F</span> 与 <span class="math">M</span>。由 (iii) 得 <span class="math">mng<sub>M</sub> : F → A ∈ K</span>；复合 <span class="math">mng<sub>M</sub> ∘ ŝ : F → A</span> 仍在 <span class="math">K</span>，故由 (iii) 它是某个 <span class="math">mng<sub>N</sub></span>。<strong>「代入后还是意义同态」——这就是代数说法。</strong>(ii) ⟹ (iii) 显然。</p>
+    </div>
+  </div>
+
+  <div class="thm"><div class="bt">推论 3.3.12 <span class="num">自由性的红利</span></div>
+    <p>若 <span class="math">L</span> 有语义代入性质，则</p>
+    <div class="formula"><span class="math">F(L) = F/∼<sub>L</sub> = Fr(Alg<sup>m</sup>(L), P)</span></div>
+    <p>即重言式公式代数是 <span class="math">Alg<sup>m</sup>(L)</span> 上由 <span class="math">P</span> 生成的<strong>自由代数</strong>（定义 2.5.3）。<strong>L05 的自由代数机器在这里领到第一笔工资。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型 · 命题逻辑：换字母天经地义</div>
+    <p>取 <span class="math">s(p) = p ∧ q</span>，<span class="math">M</span> 是一个赋值。想让 <span class="math">N</span> 满足「<span class="math">p</span> 在 <span class="math">N</span> 里的意义 = <span class="math">p∧q</span> 在 <span class="math">M</span> 里的意义」，只需令 <span class="math">N</span> 是把 <span class="math">p</span> 改判成 <span class="math">M ⊨ p∧q</span> 的赋值。<strong>模型总能跟着变。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质 · Mng<sub>L</sub> = Hom(F, Algᵐ(L)) 在说什么</div>
+    <p>它说的是：<strong>「换掉原子公式」这件事，在代数这边就是「把自由代数的生成元送到任意元素」</strong>。生成元的自由性保证有唯一同态；语义代入性质保证这个同态<strong>还能落回本逻辑的模型里</strong>。少了后半句，只有代数同态，没有对应模型。</p>
+  </div>
+  <div class="ex"><div class="bt">边界 · 一阶逻辑两条都不满足</div>
+    <p><strong>句法失败</strong>：取一元 <span class="math">r</span>、二元 <span class="math">s</span>，<span class="math">⊨ ∃y r(x)</span> 成立（只要有个对象满足 <span class="math">r</span>），但把 <span class="math">r(x)</span> 换成 <span class="math">s(x,y)</span> 后 <span class="math">⊨ ∃y s(x,y)</span> 不成立（并非每个对象都关系到一个对象）。</p>
+    <p><strong>语义失败</strong>：取 <span class="math">s(r(x)) = s(x,y)</span>，<span class="math">M</span> 里 <span class="math">s</span> 的解释是真正的二元关系。若 <span class="math">N</span> 存在，<span class="math">r(x)</span> 在 <span class="math">N</span> 里的意义必须等于 <span class="math">s(x,y)</span> 在 <span class="math">M</span> 里的意义——<strong>前者是一元关系的集合，后者是二元关系的集合，根本不是同一类东西。</strong></p>
+    <p>UAL 练习 3.3.22 还问反方向：<strong>找一个有句法代入但没有语义代入的逻辑</strong>。存在，这说明两条确实不等价。</p>
+  </div></div>
+</section>
+
+<!-- ============ O4 ============ -->
+<section id="cond">
+  <h2><span class="sn">6</span>条件代入：一阶逻辑怎么活下来 <span class="tag log">O4</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>一阶逻辑连条件代入都没有？那也太苛刻了——我们明明天天在做替换，只是<strong>不撞类型</strong>的替换。<span class="math">∃y r(x)</span> 与 <span class="math">r(x)</span> 之间有 <span class="math">∼<sub>L</sub></span> 关系，替换必须尊重它。</p>
+    <p>UAL 的办法：把「任意替换」 weakened 成「<strong>尊重逻辑自身恒等关系的替换</strong>」。只加一个前提 <span class="math">∼<sub>L</sub> ⊆ ker(mng<sub>M</sub> ∘ ŝ)</span>，一阶逻辑就进来了。<strong>代数上的回报是：自由代数变成「带定义关系的自由代数」——L05 的第二件工具。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 3.3.14 <span class="num">条件（弱）语义代入，式 (3.4)</span></div>
+    <p>若对任意 <span class="math">s : P → F</span>：</p>
+    <div class="formula"><span class="math">(∀M ∈ M)&nbsp; [&nbsp;∼<sub>L</sub> ⊆ ker(mng<sub>M</sub> ∘ ŝ)&nbsp; ⟹&nbsp; (∃N ∈ M) mng<sub>N</sub> = mng<sub>M</sub> ∘ ŝ&nbsp;]</span></div>
+    <p>读作：<strong>只要这个替换没有把逻辑认为「永远同义」的两条公式拆成不同意义，就存在代入后的模型。</strong><span class="math">∼<sub>L</sub></span> 在这里扮演<strong>约束条件</strong>。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 3.3.15 <span class="num">条件代入的代数刻画</span></div>
+    <p>设 <span class="math">L</span> 组合。则以下等价：</p>
+    <div class="formula"><span class="math">(i)&nbsp; L 有条件语义代入性质</span></div>
+    <div class="formula"><span class="math">(ii)&nbsp; Mng<sub>L</sub> = {h ∈ Hom(F, Alg<sup>m</sup>(L)) : ∼<sub>L</sub> ⊆ ker(h)}</span></div>
+    <div class="formula"><span class="math">(iii)&nbsp; Mng<sub>L</sub> = {h ∈ Hom(F, K) : S ⊆ ker(h)}，对某代数类 K 与某关系 S ⊆ F×F</span></div>
+    <div class="proof"><div class="bt">与命题 3.3.11 的差别</div>
+      <p>证明几乎照抄，只多一件事：要检查 <span class="math">∼<sub>L</sub> ⊆ ker(h)</span> 这个前提能被带上带下。</p>
+      <p><strong>(i) ⟹ (ii) 的 <span class="math">⊇</span>。</strong>取 <span class="math">h : F → mng<sub>M</sub>(F)</span> 且 <span class="math">∼<sub>L</sub> ⊆ ker(h)</span>。照旧逐生成元取 <span class="math">φ<sub>p</sub></span> 使 <span class="math">h(p) = mng<sub>M</sub>(φ<sub>p</sub>)</span>，令 <span class="math">s(p) = φ<sub>p</sub></span>。此时 <span class="math">mng<sub>M</sub> ∘ s = h</span>，所以前提 <span class="math">∼<sub>L</sub> ⊆ ker(mng<sub>M</sub> ∘ ŝ)</span> <strong>自动满足</strong>；条件代入给出 <span class="math">N</span>，再用在 <span class="math">P</span> 上相等推出 <span class="math">h = mng<sub>N</sub></span>。</p>
+      <p><strong>(iii) ⟹ (i)。</strong>设 <span class="math">∼<sub>L</sub> ⊆ ker(mng<sub>M</sub> ∘ ŝ)</span>。<strong>关键一步：由 <span class="math">S ⊆ ⋂{ker(mng<sub>M</sub>) : M ∈ M} = ∼<sub>L</sub></span> 得 <span class="math">S ⊆ ker(mng<sub>M</sub> ∘ ŝ)</span></strong>，于是 <span class="math">h := mng<sub>M</sub> ∘ ŝ</span> 满足 (iii) 的条件，故是某个 <span class="math">mng<sub>N</sub></span>。</p>
+    </div>
+  </div>
+
+  <div class="thm"><div class="bt">推论 3.3.16 <span class="num">带定义关系的自由代数</span></div>
+    <p>若 <span class="math">L</span> 有条件语义代入性质，则</p>
+    <div class="formula"><span class="math">F/∼<sub>L</sub> = Fr(Alg<sup>m</sup>(L), P, ∼<sub>L</sub>)</span></div>
+    <p>即在 <span class="math">Alg<sup>m</sup>(L)</span> 上由 <span class="math">P</span> 生成、<strong>以 <span class="math">∼<sub>L</sub></span> 为定义关系</strong>的自由代数（定义 2.5.10）。<strong>L05 的「自由代数 + 定义关系」在这里领到第二笔工资。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型 · 一阶逻辑的条件代入</div>
+    <p>令 <span class="math">S = {⟨∃y r(x), r(x)⟩ : x ≠ y} ∪ {⟨r(x), ∃y (x=y ∧ r(y))⟩}</span>。这些是逻辑自身承认的恒等关系。只要替换不破坏它们，<span class="math">Mng<sub>L</sub></span> 里就还有对应的同态（UAL 练习 3.3.17）。</p>
+  </div>
+  <div class="ex"><div class="bt">本质 · ∼<sub>L</sub> 从障碍变成数据</div>
+    <p>在完全代入里，<span class="math">∼<sub>L</sub></span> 只是商掉的东西；在条件代入里它<strong>升格为定义关系</strong>，被写进自由代数的构造。<strong>「哪些替换被禁止」这件事本身成了代数结构的一部分。</strong>这也是 L05 为什么提前讲了 Fr(K, P, R)。</p>
+  </div>
+  <div class="ex"><div class="bt">边界 · 等号该放哪儿，决定生死</div>
+    <p>UAL 练习 3.3.17(4) 给了一个极好的反例。设语言只有二元关系 <span class="math">R</span>，令替换 <span class="math">s</span> 送 <span class="math">x=y ↦ R(x,y)</span>、<span class="math">R(x,y) ↦ R(x,y)</span>，取 <span class="math">M</span> 使 <span class="math">R<sup>M</sup></span> 是等价关系。则 <span class="math">∼<sub>L</sub> ⊆ ker(mng<sub>M</sub> ∘ ŝ)</span> 成立，但代入版本不是该逻辑的模型——<strong>于是条件代入失败</strong>。</p>
+    <p>修法很轻：把 <span class="math">x=y</span> 当<strong>零元逻辑连接词</strong>，而不是原子公式。<strong>一个符号放在 P 里还是 Cn 里，会决定一条结构性质成立与否。</strong>这也回扣了定义 3.3.1 那个「必须写 F(P,Cn)」的告诫。</p>
+  </div></div>
+</section>
+
+
+<!-- ============ O5 ============ -->
+<section id="filter">
+  <h2><span class="sn">7</span>滤子性质：两套语言之间的翻译协议 <span class="tag log">O5</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>代数家说「这两个元素相等」，逻辑学家说「这个公式有效」。两句话能不能互译？在经典命题逻辑里能：</p>
+    <div class="formula"><span class="math">(a)&nbsp; mng<sub>M</sub>(φ) = mng<sub>M</sub>(ψ) &nbsp;⟺&nbsp; M ⊨ φ ↔ ψ</span></div>
+    <div class="formula"><span class="math">(b)&nbsp; M ⊨ φ &nbsp;⟺&nbsp; mng<sub>M</sub>(φ) = mng<sub>M</sub>(⊤)</span></div>
+    <p><strong>有了这两条，逻辑的问题就能写成代数的问题。</strong>但有些逻辑没有 <span class="math">↔</span> 或 <span class="math">⊤</span>，怎么办？UAL 问：能不能用<strong>一组</strong>导出连接词代替这一对？答案是滤子性质。</p>
+    <p><strong>注意：这是 UAL 定义的「滤子性质」（filter property），和 L12 辨析过的拓扑滤子不是同一个东西</strong>——它说的是「意义相等」与「公式有效」之间的可翻译性，名字来自「用等式集合定义理论滤子」这个用法。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 3.3.18 <span class="num">滤子性质</span></div>
+    <p>存在一元导出连接词 <span class="math">ε<sub>0</sub>,…,ε<sub>m−1</sub></span>、<span class="math">δ<sub>0</sub>,…,δ<sub>m−1</sub></span> 与二元导出连接词 <span class="math">∆<sub>0</sub>,…,∆<sub>n−1</sub></span>，使：</p>
+    <p>(i) 对任意 <span class="math">M ∈ M</span>、<span class="math">φ, ψ ∈ F</span>：</p>
+    <div class="formula"><span class="math">mng<sub>M</sub>(φ) = mng<sub>M</sub>(ψ) &nbsp;⟺&nbsp; (∀i &lt; n)&nbsp; M ⊨<sub>L</sub> φ ∆<sub>i</sub> ψ</span></div>
+    <p>(ii) 对任意 <span class="math">M ∈ M</span>、<span class="math">φ ∈ F</span>：</p>
+    <div class="formula"><span class="math">M ⊨<sub>L</sub> φ &nbsp;⟺&nbsp; (∀j &lt; m)&nbsp; mng<sub>M</sub>(ε<sub>j</sub>(φ)) = mng<sub>M</sub>(δ<sub>j</sub>(φ))</span></div>
+    <p>取 <span class="math">m = n = 1</span>、<span class="math">∆<sub>0</sub> = ↔</span>、<span class="math">ε<sub>0</sub>(φ) = ⊤</span>、<span class="math">δ<sub>0</sub>(φ) = φ</span>，就得到 (a)(b)。<strong>注意 (a)+(b) 合起来比滤子性质更强</strong>：滤子性质只要求「有效 ⟹ 某组等式」和「相等 ⟹ 某组公式有效」，不要求 <span class="math">⊤</span> 与 <span class="math">↔</span> 真存在。</p>
+  </div>
+
+  <div class="thm"><div class="bt">Fact 3.3.20 <span class="num">滤子性质的两个直接后果</span></div>
+    <p>设 <span class="math">L</span> 组合。</p>
+    <p>(i) 若满足条件 (i)，则</p>
+    <div class="formula"><span class="math">Alg<sub>⊨</sub>(L) = I{F/∼<sub>Mod<sub>L</sub>(Γ)</sub> : Γ ⊆ F}</span></div>
+    <p>即影子只需由<strong>理论</strong>（而非任意模型类）给出。证明要点：对任意 <span class="math">K ⊆ M</span>，由 (i) 得 <span class="math">∼<sub>K</sub> = ∼<sub>Mod(T h(K))</sub></span>。</p>
+    <p>(ii) 若满足条件 (ii)，则对所有 <span class="math">M ∈ M</span>、<span class="math">Σ ⊆ F</span>：</p>
+    <div class="formula"><span class="math">M ⊨<sub>L</sub> Σ &nbsp;⟺&nbsp; ker(mng<sub>M</sub>) ⊇ ∼<sub>Mod(Σ)</sub></span></div>
+    <p>证明：对 <span class="math">φ ∈ Σ</span> 记 <span class="math">S(φ) = {⟨ε<sub>j</sub>(φ), δ<sub>j</sub>(φ)⟩ : j &lt; m}</span>，则 <span class="math">S(φ) ⊆ ∼<sub>Mod(Σ)</sub></span>，而条件 (ii) 把 <span class="math">M ⊨ φ</span> 翻译成 <span class="math">S(φ) ⊆ ker(mng<sub>M</sub>)</span>。</p>
+    <p><strong>(ii) 是本讲最有用的单独一行</strong>：「模型满足理论」被写成「模型的同余比理论的同余更粗」。<strong>这是 L20 可定义性定理的雏形。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 3.3.21 <span class="num">语义代入 + 滤子性质 ⟹ 句法代入</span></div>
+    <p>设 <span class="math">L</span> 组合、有滤子性质、有语义代入性质，则它有句法代入性质。</p>
+    <div class="proof"><div class="bt">证明：一个四行链条</div>
+      <p>取 <span class="math">⊨<sub>L</sub> φ</span> 与替换 <span class="math">s</span>，任取 <span class="math">M ∈ M</span>。语义代入给出 <span class="math">N</span> 使 <span class="math">mng<sub>N</sub> = mng<sub>M</sub> ∘ ŝ</span>。于是</p>
+      <div class="formula"><span class="math">N ⊨ φ &nbsp;⇒&nbsp; (∀j&lt;m) mng<sub>N</sub>(ε<sub>j</sub>(φ)) = mng<sub>N</sub>(δ<sub>j</sub>(φ))</span></div>
+      <div class="formula"><span class="math">&nbsp;⇒&nbsp; (∀j&lt;m) mng<sub>M</sub>(ŝ(ε<sub>j</sub>(φ))) = mng<sub>M</sub>(ŝ(δ<sub>j</sub>(φ)))</span></div>
+      <div class="formula"><span class="math">&nbsp;⇒&nbsp; (∀j&lt;m) mng<sub>M</sub>(ε<sub>j</sub>(ŝ(φ))) = mng<sub>M</sub>(δ<sub>j</sub>(ŝ(φ))) &nbsp;⇒&nbsp; M ⊨ ŝ(φ)</span></div>
+      <p>第三行用 <span class="math">ŝ</span> 是同态（式 (3.2) 的组合性在此出手），首尾两行用滤子性质 (ii)。<strong>三个抽象性质各出一手，拼成一条熟悉结论。</strong></p>
+    </div>
+  </div>
+
+  <div class="thm"><div class="bt">定理 3.3.23 <span class="num">桥：后承 ⟺ 准等式</span></div>
+    <p>设 <span class="math">L</span> 组合、有滤子性质、语义代入。则：</p>
+    <p>(i) 对任意公式 <span class="math">φ<sub>0</sub>,…,φ<sub>k</sub></span>：</p>
+    <div class="formula"><span class="math">{φ<sub>1</sub>,…,φ<sub>k</sub>} ⊨<sub>L</sub> φ<sub>0</sub> &nbsp;⟺&nbsp; 对每个 j&lt;m， Alg<sup>m</sup>(L) ⊨ ⋀<sub>1⩽s⩽k, i&lt;m</sub>(ε<sub>i</sub>(φ<sub>s</sub>)=δ<sub>i</sub>(φ<sub>s</sub>)) → (ε<sub>j</sub>(φ<sub>0</sub>)=δ<sub>j</sub>(φ<sub>0</sub>))</span></div>
+    <p>(ii) 对任意准等式 <span class="math">q = (τ<sub>1</sub>=τ′<sub>1</sub> ∧ … ∧ τ<sub>k</sub>=τ′<sub>k</sub>) → τ<sub>0</sub>=τ′<sub>0</sub></span>，对每个 <span class="math">i &lt; n</span>：</p>
+    <div class="formula"><span class="math">Alg<sup>m</sup>(L) ⊨ q &nbsp;⟺&nbsp; {τ<sub>s</sub> ∆<sub>j</sub> τ′<sub>s</sub> : 1⩽s⩽k, j&lt;n} ⊨<sub>L</sub> τ<sub>0</sub> ∆<sub>i</sub> τ′<sub>0</sub></span></div>
+    <div class="proof"><div class="bt">证明 (i) 的 ⟹ 方向（本讲最长的一条链）</div>
+      <p>设前提成立，取任意 <span class="math">A ∈ Alg<sup>m</sup>(L)</span>，即 <span class="math">A = mng<sub>M</sub>(F)</span>。任取赋值 <span class="math">a : P → A</span>。设 <span class="math">p<sub>0</sub>,…,p<sub>ℓ</sub></span> 是出现的所有原子公式，记 <span class="math">a<sub>i</sub> = a(p<sub>i</sub>) ∈ mng<sub>M</sub>(F)</span>。由于 <span class="math">a<sub>i</sub></span> 是同态像中的元素，可取 <span class="math">γ<sub>i</sub> ∈ F</span> 使 <span class="math">a<sub>i</sub> = mng<sub>M</sub>(γ<sub>i</sub>)</span>。</p>
+      <p><strong>组合性在此把「代数里的计算」还原成「公式里的替换」</strong>：</p>
+      <div class="formula"><span class="math">φ[a<sub>0</sub>,…,a<sub>ℓ</sub>]<sub>A</sub> = mng<sub>M</sub>(φ(γ<sub>0</sub>,…,γ<sub>ℓ</sub>))</span></div>
+      <p>若 <span class="math">A ⊨ ε<sub>j</sub>(φ<sub>s</sub>) = δ<sub>j</sub>(φ<sub>s</sub>)[a]</span> 对所有 <span class="math">s,j</span> 成立，即是说 <span class="math">mng<sub>M</sub>(ε<sub>j</sub>(φ<sub>s</sub>(γ))) = mng<sub>M</sub>(δ<sub>j</sub>(φ<sub>s</sub>(γ)))</span>。<strong>此刻语义代入出手</strong>：对 <span class="math">s</span> 送 <span class="math">p<sub>i</sub> ↦ γ<sub>i</sub></span>，存在 <span class="math">N</span> 使 <span class="math">mng<sub>N</sub>(ψ) = mng<sub>M</sub>(ψ(γ))</span>。于是</p>
+      <div class="formula"><span class="math">N ⊨ φ<sub>s</sub> (All s) &nbsp;⇒&nbsp; N ⊨ φ<sub>0</sub> &nbsp;⇒&nbsp; mng<sub>M</sub>(ε<sub>j</sub>(φ<sub>0</sub>(γ))) = mng<sub>M</sub>(δ<sub>j</sub>(φ<sub>0</sub>(γ)))</span></div>
+      <p>第一步用后承假设，后两步用滤子性质。<span class="math">a</span> 任意，得证。</p>
+      <p><strong>⟸ 方向短得多</strong>：若 <span class="math">M ⊨ φ<sub>s</sub></span> 对所有 <span class="math">s</span>，滤子性质 (ii) 给 <span class="math">mng<sub>M</sub>(ε<sub>i</sub>(φ<sub>s</sub>)) = mng<sub>M</sub>(δ<sub>i</sub>(φ<sub>s</sub>))</span>；把 <span class="math">A = mng<sub>M</sub>(F)</span> 与由 <span class="math">p ↦ mng<sub>M</sub>(p)</span> 给的赋值 <span class="math">a</span> 代进准等式，得 <span class="math">M ⊨ φ<sub>0</sub></span>。<strong>这一段不需要语义代入。</strong></p>
+      <p><strong>(ii) 的证明同构</strong>：⟹ 方向把 <span class="math">M ⊨ τ<sub>s</sub> ∆<sub>j</sub> τ′<sub>s</sub></span> 经滤子性质 (i) 变成等式，再用 <span class="math">A ⊨ q</span>；⟸ 方向反走，中间同样靠语义代入把 <span class="math">A</span> 中的赋值还原成 <span class="math">M</span> 中的公式替换。</p>
+    </div>
+  </div>
+
+  <div class="warn"><div class="bt">Remark 3.3.24：三个方向的前提并不对称</div>
+    <p>别把定理 3.3.23 当铁板一块。UAL 特意指出：</p>
+    <ul>
+      <li>证 (i) 的 <strong>⟸</strong> 只需组合性 + 滤子性质；</li>
+      <li>证 (ii) 的 <strong>⟹</strong> 只需组合性 + 滤子性质的条件 (i)；</li>
+      <li>存在满足条件 (i) 的组合逻辑，使 (ii) 的 <strong>⟸</strong> 失败。<strong>所以条件 (ii) 不是多余的。</strong></li>
+    </ul>
+  </div>
+
+  <div class="thm"><div class="bt">推论 3.3.25 <span class="num">有效式 ⟺ 等式</span></div>
+    <p>若 <span class="math">L</span> 组合、有滤子性质、有<strong>句法</strong>代入性质，则</p>
+    <div class="formula"><span class="math">⊨<sub>L</sub> φ &nbsp;⟺&nbsp; Alg<sup>m</sup>(L) ⊨ ε<sub>j</sub>(φ) = δ<sub>j</sub>(φ) &nbsp;(∀j&lt;m)</span></div>
+    <div class="formula"><span class="math">Alg<sup>m</sup>(L) ⊨ τ = τ′ &nbsp;⟺&nbsp; ⊨<sub>L</sub> τ ∆<sub>i</sub> τ′ &nbsp;(∀i&lt;n)</span></div>
+    <p>证法与定理 3.3.23 对应，只是把语义代入换成句法代入：<span class="math">⊨ φ(p)</span> 经句法代入得 <span class="math">⊨ φ(γ)</span>，再交给滤子性质。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型 · 经典命题逻辑的 (a)(b)</div>
+    <p><span class="math">∆<sub>0</sub> = ↔</span>，<span class="math">ε<sub>0</sub> = ⊤</span>，<span class="math">δ<sub>0</sub> = id</span>。于是「两个公式在所有模型同义」⟺「它们是重言等价的」，「公式有效」⟺「它的意义等于 <span class="math">⊤</span>」。这是 L06 布尔代数的老结论。</p>
+  </div>
+  <div class="ex"><div class="bt">本质 · 定理 3.3.23 是三座桥的词汇表</div>
+    <p>它把 <span class="math">Σ ⊨ φ</span>（逻辑）与 <span class="math">Alg<sup>m</sup>(L) ⊨ q</span>（代数准等式）等同。<strong>L19 的有限公理化、L20 的可定义性、L18 的紧致性，用的都是这本词典。</strong>没有滤子性质，「代数化」就只能停在「取个影子」，做不到「翻译问题」。</p>
+  </div>
+  <div class="ex"><div class="bt">边界 · 两个必须记住的限制</div>
+    <p>① UAL 练习 3.3.19(2) 给的条件 (3.5)：<span class="math">(⊨ φ 且 ⊨ ψ) ⟹ (∀M) mng<sub>M</sub>(φ) = mng<sub>M</sub>(ψ)</span>，<strong>由 (a)+(b) 可得，但一般滤子性质推不出</strong>。<span class="math">⊤</span> 不存在时，「都有效」不意味着「意义相等」。</p>
+    <p>② <strong>此滤子非彼滤子</strong>。L12 辨析过 UAL 定义 3.3.18 的 filter property 与拓扑滤子同名非同物；真正与拓扑滤子对应的是 UAL 的生成滤子（定义 2.2.62）。<strong>本讲的「滤子性质」既不是集合族的上闭交封闭，也不是素滤子。</strong></p>
+  </div></div>
+</section>
+
+<!-- ============ O6 ============ -->
+<section id="general">
+  <h2><span class="sn">8</span>一般逻辑：把原子公式集变成参数 <span class="tag alg">O6</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>§3.2 里每个逻辑都带一个参数 <span class="math">P</span>：换一批命题字母，得到的是一个<strong>新逻辑</strong>。命题逻辑的 <span class="math">L<sub>S</sub></span> 其实是<strong>一族</strong>逻辑。那前面那些性质（代入、滤子、影子）是对某个 <span class="math">P</span> 成立，还是对整族成立？</p>
+    <p><strong>一般逻辑</strong>把这一族打包成一个对象 <span class="math">L = ⟨L<sub>P</sub> : P ∈ Sig⟩</span>，并规定各成员之间必须足够「像」。<strong>目的很实际：让替换性刻画对整族一次成立，而不是每个 <span class="math">P</span> 重证一遍。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 3.3.26 / 3.3.27 <span class="num">子逻辑、同构副本、一般逻辑</span></div>
+    <p><strong>子逻辑</strong>：<span class="math">L<sub>P</sub></span> 是 <span class="math">L<sub>Q</sub></span> 的子逻辑，若 <span class="math">P ⊆ Q</span> 且 <span class="math">{mng<sub>M</sub><sup>P</sup>} = {(mng<sub>M</sub><sup>Q</sup>)↾F<sup>P</sup> : M ∈ M<sup>Q</sup>}</span>。<strong>换更大的字母表，旧的模型在旧公式上的表现必须原样保留。</strong></p>
+    <p><strong>同构副本</strong>：由双射 <span class="math">f : P → Q</span> 诱导出公式与模型两个双射，且 <span class="math">mng</span> 与 <span class="math">⊨</span> 全部保持。</p>
+    <p><strong>一般逻辑</strong>是类 <span class="math">L = ⟨L<sub>P</sub> : P ∈ Sig⟩</span>，每个 <span class="math">L<sub>P</sub></span> 是组合逻辑，并满足七条件：</p>
+    <table>
+      <tr><th>条件</th><th>内容</th><th>直观</th></tr>
+      <tr><td>(1)</td><td><span class="math">P</span> 是 <span class="math">L<sub>P</sub></span> 的原子公式集</td><td>参数名副其实</td></tr>
+      <tr><td>(2)</td><td><span class="math">Cn(L<sub>P</sub>) = Cn(L<sub>Q</sub>) = Cn(L)</span></td><td>连接词跨字母表不变</td></tr>
+      <tr><td>(3)</td><td>能延成重言式代数双射的 <span class="math">f : P → Q</span> 诱导出逻辑同构</td><td>字母表改名不改变逻辑</td></tr>
+      <tr><td>(4)</td><td><span class="math">P ⊆ Q ⟹ L<sub>P</sub></span> 是 <span class="math">L<sub>Q</sub></span> 的子逻辑</td><td>加字母不破坏旧语言</td></tr>
+      <tr><td>(5)</td><td>任意 <span class="math">P</span> 与集合 <span class="math">H</span>，存在与 <span class="math">H</span> 不交的 <span class="math">P′ ∈ Sig</span>，<span class="math">L<sub>P′</sub></span> 是同构副本</td><td>总能找到「全新」的字母表</td></tr>
+      <tr><td>(6)</td><td>两两不交的 <span class="math">P<sub>i</sub></span> 的并仍在 <span class="math">Sig</span>，且在 <span class="math">Fr(Alg<sup>m</sup>(L<sub>P</sub>), P)</span> 中重言同余由各 <span class="math">∼<sub>i</sub></span> 生成</td><td>可拼接、可放大</td></tr>
+      <tr><td>(7)</td><td><span class="math">Sig</span> 含至少一个非空集</td><td>不是空族</td></tr>
+    </table>
+    <p>一般逻辑有滤子性质，指每个 <span class="math">L<sub>P</sub></span> 都有，且<strong>那组特殊连接词 <span class="math">ε<sub>j</sub>, δ<sub>j</sub>, ∆<sub>i</sub></span> 对所有 <span class="math">P</span> 是同一组</strong>。</p>
+  </div>
+
+  <div class="warn"><div class="bt">Remark 3.3.28–3.3.30：三条容易被略过的推论</div>
+    <p><strong>(1) Sig 里有任意大的集合。</strong>由 (5) 递归造出两两不交的 <span class="math">P<sub>i</sub></span>，再由 (6) 取并。<strong>「总能换到足够多新字母」是定理，不是默契。</strong></p>
+    <p><strong>(2) 一般逻辑若有滤子性质，连接词里必须有常值连接词</strong>（Remark 3.3.29）。因为 <span class="math">P</span> 与 <span class="math">P′</span> 不交，而那组 <span class="math">ε, δ, ∆</span> 对所有 <span class="math">P</span> 相同——它们只能是空字母表上的公式，即由常值连接词造成。</p>
+    <p><strong>(3) 有约化函数</strong>（Remark 3.3.30）：对 <span class="math">P ⊆ Q</span>，存在满射 <span class="math">r : M<sup>Q</sup> → M<sup>P</sup></span>，使 <span class="math">N ⊨<sup>Q</sup> φ ⟺ r(N) ⊨<sup>P</sup> φ</span> 且 <span class="math">mng<sub>N</sub><sup>Q</sup>(φ) = mng<sub>r(N)</sub><sup>P</sup>(φ)</span>。<strong>大字母表的模型可以「忘掉」多余字母，回到小字母表。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 3.3.31 / 3.3.34 <span class="num">一般逻辑的影子与具体例子</span></div>
+    <div class="formula"><span class="math">Alg<sub>⊨</sub>(L) = ⋃<sub>P∈Sig</sub> Alg<sub>⊨</sub>(L<sub>P</sub>), &nbsp;&nbsp; Alg<sup>m</sup>(L) = ⋃<sub>P∈Sig</sub> Alg<sup>m</sup>(L<sub>P</sub>)</span></div>
+    <p>具体逻辑的一般逻辑版本（定义 3.3.34）：经典命题逻辑 <span class="math">L<sub>S</sub></span> 取 <span class="math">Sig<sub>S</sub></span> 为所有与 <span class="math">{¬,∧}</span> 不交的集合；一阶逻辑 <span class="math">L<sub>FOL</sub></span> 取 <span class="math">Sig<sub>FOL</sub> = {P<sub>t</sub>(V) : t 是关系型}</span>；再限制 <span class="math">|V| = n</span> 得 <span class="math">L<sub>n</sub></span>，限制为有限型得 <span class="math">L(rFOL)</span>，等等。<strong>L15 的「旋钮二」在这里被正式纳入定义。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 3.3.32 / 3.3.33 / 定理 3.3.36 <span class="num">整族的替换性与等式</span></div>
+    <p><strong>命题 3.3.32</strong>：一般逻辑 <span class="math">L</span> 有语义代入性质 ⟺ 对每个 <span class="math">P ∈ Sig</span>，<span class="math">Mng<sup>P</sup> = Hom(F<sup>P</sup>, Alg<sup>m</sup>(L))</span> ⟺ 存在单一代数类 <span class="math">K</span> 使对每个 <span class="math">P</span> 都有 <span class="math">Mng<sup>P</sup> = Hom(F<sup>P</sup>, K)</span>。<strong>注意：<span class="math">K</span> 对整族是同一个。</strong></p>
+    <p><strong>命题 3.3.33</strong>：条件代入的对应版本——<span class="math">Mng<sup>P</sup> = {h ∈ Hom(F<sup>P</sup>, K) : S<sup>P</sup> ⊆ ker(h)}</span>，其中 <span class="math">S<sup>P</sup></span> 可随 <span class="math">P</span> 变。</p>
+    <p><strong>定理 3.3.36</strong>：对可代入的一般逻辑，</p>
+    <div class="formula"><span class="math">Alg<sub>⊨</sub>(L) = SP Alg<sup>m</sup>(L)</span></div>
+    <p>证明要点（Claim 3.3.37）：取 <span class="math">A ∈ SP Alg<sup>m</sup>(L)</span>，设 <span class="math">A ⊆ ∏<sub>i∈I</sub> A<sub>i</sub></span>，其中每个 <span class="math">A<sub>i</sub> ∈ Alg<sup>m</sup>(L)</span>，故 <span class="math">π<sub>i</sub> ∘ h : F<sup>P</sup> → A<sub>i</sub></span> 是到 <span class="math">Alg<sup>m</sup>(L)</span> 成员的同态。由命题 3.3.32(ii)，每个 <span class="math">π<sub>i</sub> ∘ h = mng<sub>N<sub>i</sub></sub><sup>P</sup></span>。令 <span class="math">K = {N<sub>i</sub> : i ∈ I}</span>，则 <span class="math">ker(h) = ∼<sub>K</sub></span>，即 <span class="math">A ≅ F<sup>P</sup>/∼<sub>K</sub> ∈ Alg<sub>⊨</sub>(L)</span>。<strong>和定理 3.3.5 的嵌入是同一个装置，只是这次靠整族替换性把「投影同态」认成「意义同态」。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型 · L<sub>S</sub> 作为一般逻辑</div>
+    <p>任意两批命题字母之间，只要等势就能改名，公式、模型、意义全跟着搬。<span class="math">Alg<sup>m</sup>(L<sub>S</sub>) = setBA</span>（全布尔集合代数类），这是练习 3.3.35(4) 的结论。</p>
+  </div>
+  <div class="ex"><div class="bt">本质 · 为什么非要参数化</div>
+    <p>命题 3.3.32 里 <span class="math">K</span> <strong>对所有 <span class="math">P</span> 同一个</strong>。这不是顺便写的：它把「换字母表不改变代数行为」变成了一句可验证的等式。<strong>没有一般逻辑这层，你只能对每个 <span class="math">P</span> 说一遍，还得解释为什么它们彼此一致。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界 · 谁有完全代入，谁只有条件代入</div>
+    <p>UAL 练习 3.3.35(3)：<span class="math">L<sub>S</sub>, L<sub>S5</sub>, L(fuFOL), L<sub>n</sub></span> 有语义代入性质；一阶逻辑的其余版本只有条件语义代入。<strong>所以定理 3.3.36 只对前一类直接可用</strong>，后者要用命题 3.3.33 的带关系版本。</p>
+  </div></div>
+</section>
+
+<!-- ============ 融合接口 ============ -->
+<section id="fusion">
+  <h2><span class="sn">9</span>融合接口：结构性质 ↔ 算子封闭性</h2>
+  <p class="lead">这一讲的口号是大纲里那句话：<strong>逻辑的「结构性质」开始对应代数的「算子封闭性」</strong>。下面把已经搭好的桥列清，并把尚未通车的标出来。</p>
+
+  <div class="fusion"><div class="bt">表一 · 逻辑 ↔ 代数 ↔ 拓扑</div>
+    <table>
+      <tr><th>逻辑侧</th><th>代数侧</th><th>拓扑侧</th></tr>
+      <tr><td>组合性（意义由部分决定）</td><td><span class="math">ker(mng<sub>M</sub>)</span> 是同余；<span class="math">mng<sub>M</sub></span> 是同态</td><td>L11 连续映射的核 = 不可区分关系；商映射</td></tr>
+      <tr><td>重言式公式代数 <span class="math">F/∼<sub>L</sub></span></td><td>商代数；自由代数</td><td>L06 Stone 空间 ↔ 布尔代数；L14 Stone 空间</td></tr>
+      <tr><td>语义代入性质</td><td><span class="math">Mng<sub>L</sub> = Hom(F, Alg<sup>m</sup>(L))</span>：每个同态都由某模型实现</td><td>L11 开映射的 forth 条件（结构保持）</td></tr>
+      <tr><td>条件语义代入</td><td><span class="math">Fr(K, P, ∼<sub>L</sub>)</span>：带定义关系的自由代数</td><td>L09 商拓扑：把必须认同的点先商掉</td></tr>
+      <tr><td>滤子性质</td><td>同余格中的理论滤子；<span class="math">M ⊨ Σ ⟺ ker(mng<sub>M</sub>) ⊇ ∼<sub>Mod(Σ)</sub></span></td><td>L12 邻域滤子（<strong>同名非同物</strong>）；L06 布尔滤子才是真正对应</td></tr>
+      <tr><td>后承 <span class="math">Σ ⊨ φ</span></td><td>准等式 <span class="math">Alg<sup>m</sup>(L) ⊨ q</span>（定理 3.3.23）</td><td>L08「可验证」的包含关系；L13 紧致性即将接上</td></tr>
+    </table>
+  </div>
+
+  <div class="fusion"><div class="bt">表二 · 两种影子的拓扑读法</div>
+    <p><span class="math">mng<sub>M</sub>(F)</span> 像「一个世界里的概念图」——对应 L08 的<strong>一个模型上哪些命题可验证</strong>。</p>
+    <p><span class="math">F/∼<sub>K</sub></span> 像「一批世界的共同语言」——对应 L02 的 <span class="math">Th(K)</span>，也对应 L13 中 <span class="math">βX</span> 上由一族函数分离出来的结构。<strong>定理 3.3.5 的嵌入 <span class="math">φ/∼<sub>K</sub> ↦ ⟨mng<sub>M</sub>(φ)⟩</span>，与 L06 Stone 表示、L07 JT 表示是同一类「坐标化」装置。</strong></p>
+  </div>
+
+  <div class="intu"><div class="bt">往前看：本讲是 L18–L20 的 vocabulary</div>
+    <p><strong>L18 紧致性</strong>要用 <span class="math">Csq(Σ) = Th(Mod(Σ))</span> 与超积；本讲的 <span class="math">Alg<sub>⊨</sub>, Alg<sup>m</sup></span> 是它的对象。<strong>L19 完全性</strong>要用定理 3.3.23 把「有 Hilbert 证明」翻成「所有代数满足某准等式」。<strong>L20 可定义性</strong>要用 Fact 3.3.20(ii) 和 Remark 3.3.4——后者为什么坚持 <span class="math">Alg<sup>m</sup></span> 不对同构封闭，到那里才见分晓。</p>
+    <p><strong>本讲没有证一条「大定理」，但它把后面三座桥的地基浇好了。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+
+  <div class="ex"><div class="bt">O1 · 公式代数与组合性</div>
+  <ol start="1">
+    <li><span class="tag alg">O1</span>证明：式 (3.2) 等价于「对每个 <span class="math">M ∈ M</span>，<span class="math">ker(mng<sub>M</sub>)</span> 是 <span class="math">F(P,Cn)</span> 上的同余」。<strong>明确指出哪里用到了 <span class="math">F</span> 是自由代数。</strong></li>
+    <li><span class="tag log">O1</span>举出一个公式集 <span class="math">F</span> 的两种不同拆法 <span class="math">F(P,Cn)</span> 与 <span class="math">F(P′,Cn′)</span>（提示：用一阶语句逻辑），并说明为什么因此不能把 <span class="math">P</span> 与 <span class="math">Cn</span> 省略。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O2 · 两种影子</div>
+  <ol start="3">
+    <li><span class="tag alg">O2</span>完整写出定理 3.3.5 中嵌入 <span class="math">h</span> 的良定义与单射性证明；再回答练习 3.3.6：<strong>若 <span class="math">K</span> 是真类，哪一步先坏掉？</strong></li>
+    <li><span class="tag log">O2</span>给 <span class="math">L<sub>S</sub></span> 取一个模型 <span class="math">M</span>，写出 <span class="math">mng<sub>M</sub>(F)</span>；再取 <span class="math">K = M</span>，比较 <span class="math">F/∼<sub>K</sub></span> 与 <span class="math">mng<sub>M</sub>(F)</span>，用具体集合验证 <span class="math">Alg<sup>m</sup> ⊆ Alg<sub>⊨</sub></span>。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O3 · 代入性质</div>
+  <ol start="5">
+    <li><span class="tag alg">O3</span>证明命题 3.3.11 的 (i)⟹(ii) 时，<strong>「<span class="math">h(p) ∈ mng<sub>M</sub>(F)</span> 所以可取 <span class="math">φ<sub>p</sub></span>」</strong>这一步为什么不能省？若 <span class="math">h : F → A</span> 的像不在任何 <span class="math">mng<sub>M</sub>(F)</span> 里，论证在哪一步断？</li>
+    <li><span class="tag log">O3</span>验证一阶逻辑句法代入失败的 <span class="math">∃y r(x)</span> / <span class="math">∃y s(x,y)</span> 例子：<strong>需要假定 <span class="math">y</span> 与 <span class="math">x</span> 不同吗？若相同会怎样？</strong>再解释语义失败为什么是「类型不匹配」而不是「模型不够多」。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O4 · 条件代入</div>
+  <ol start="7">
+    <li><span class="tag alg">O4</span>证明命题 3.3.15 的 (iii)⟹(i)，写出 <span class="math">S ⊆ ∼<sub>L</sub></span> 那一步的推导。再说明为什么条件代入版本里 <span class="math">S</span> 可以随 <span class="math">P</span> 变，而语义代入版本里的 <span class="math">K</span> 不能。</li>
+    <li><span class="tag log">O4</span>复述练习 3.3.17(4) 的反例：把 <span class="math">x=y</span> 当原子公式时条件代入失败，当零元连接词时成立。<strong>用一两句话解释「符号放在 P 还是 Cn 里」为何有如此后果。</strong></li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O5 · 滤子性质与桥</div>
+  <ol start="9">
+    <li><span class="tag log">O5</span>证明 (a)+(b) 推出式 (3.5)，并说明一般滤子性质为何推不出：<strong>缺的具体是哪一步？</strong></li>
+    <li><span class="tag alg">O5</span>走通定理 3.3.23(i) 的 ⟸ 方向，并指出它<strong>不需要</strong>语义代入。再说明 Remark 3.3.24 里「(ii) 的 ⟸ 不能只靠条件 (i)」这句话为何值得警惕。</li>
+    <li><span class="tag alg">O5</span>取 <span class="math">m=n=1</span>，把推论 3.3.25 的两条具体写成经典命题逻辑里的句子，并用 <span class="math">F/∼<sub>L</sub></span> 是自由布尔代数验证其中一条。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O6 · 一般逻辑</div>
+  <ol start="12">
+    <li><span class="tag log">O6</span>验证定义 3.3.34(1) 的 <span class="math">L<sub>S</sub></span> 满足一般逻辑七条件。<strong>哪一条最费事？为什么？</strong></li>
+    <li><span class="tag alg">O6</span>证明定理 3.3.36 的 Claim 3.3.37：由 <span class="math">π<sub>i</sub>∘h = mng<sub>N<sub>i</sub></sub></span> 推出 <span class="math">ker(h) = ∼<sub>K</sub></span>。<strong>逐步写明两个包含各用哪一边。</strong></li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L15.html">← 上一讲：L15 研究逻辑的统一框架</a>
+  <a href="L17.html">下一讲：L17 与抽象代数逻辑、模型论逻辑、机构论的比较</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L16 · 来源：UAL §3.3.1–3.3.6；L05 自由代数、L06 Stone 与滤子、L15 四元组 · v0.1</footer>
+
+</main></div>
+</body>
+</html>
+
+
+

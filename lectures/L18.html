@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L18 紧致性 ↔ 对超积封闭 ↔ 拓扑紧致 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第五篇 桥定理：全课核心</span><span class="sep">/</span><span>L18</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 18 · 2 学时 · 桥之一 · 全课重头戏</div>
+  <h1>紧致性 ↔ 对超积封闭 ↔ 拓扑紧致</h1>
+  <div class="sub">同一件事的三副面孔：逻辑说「有限都行就整体行」，代数说「超积还留在家里」，拓扑说「每个滤子都有落点」</div>
+  <div class="metarow"><span>来源：UAL §4.1（定义 4.1.1/4.1.4、定理 4.1.5/4.1.6、定理 2.2.74 Łoś）；拓扑讲义 Ch5 §5.2（命题 5.2.9、定理 5.2.13）；Bergman §5.1；回指 L04 超积、L13 紧致性、L14 Stone 空间、L15 四元组、L16 代数对应</span>
+    <span class="tag alg">代数</span><span class="tag top">拓扑</span><span class="tag log">逻辑</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：欠债必还，与讨债的机器</a></li>
+  <li><a href="#compact">两种紧致性（O1）</a></li>
+  <li><a href="#ultra">定理 4.1.5：超积造模型（O2）</a></li>
+  <li><a href="#converse">定理 4.1.6：双向等价（O3）</a></li>
+  <li><a href="#topo">拓扑侧：紧致 ⇔ 超滤子收敛（O4）</a></li>
+  <li><a href="#algproof">用代数方法证逻辑紧致（O5）</a></li>
+  <li><a href="#logproof">用逻辑方法证代数不可有限公理化（O6）</a></li>
+  <li><a href="#fusion">融合接口：三面一体图</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">前面四篇把工具都备齐了：L04 有超积和 Łoś，L13 有「紧致 ⇔ 超滤子收敛」，L14 有 Stone 空间，L16 有代数对应。这一讲不造新工具，只把它们接到同一根电线上。<strong>接通之后，你会第一次看到「逻辑定理」和「代数定理」是同一句。</strong></p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>它回答的问题</th></tr>
+      <tr><td>可满足紧致</td><td>L01 一阶语义、L02 闭包</td><td>「每个有限片段有模型」能不能升级成「整体有模型」？</td></tr>
+      <tr><td>后果紧致</td><td>上面 + 语义后承</td><td>同一个承诺，换成后承语言怎么写？</td></tr>
+      <tr><td>Alg<sub>⊨</sub>(L) 对超积封闭</td><td>L04 超积、L15 四元组、L16 代数对应</td><td>把一堆代数「取极限」，还留在这一类里吗？</td></tr>
+      <tr><td>Łoś 定理</td><td>L04（定理 4.6）</td><td>一阶性质在超积里怎么算真假？</td></tr>
+      <tr><td>紧致 ⇔ 超滤子收敛</td><td>L13（命题 5.2.9）</td><td>滤子「逼到」的东西，空间里到底有没有？</td></tr>
+      <tr><td>Stone 空间</td><td>L14（全不连通紧 Hausdorff）</td><td>公式集上的超滤子，能摆成一个什么形状？</td></tr>
+      <tr><td>有限交性质 f.i.p.</td><td>L13（闭集版紧致）</td><td>三副面孔共用的那块积木是什么？</td></tr>
+      <tr><td>BPI（素滤子定理）</td><td>L13 §3</td><td>这台机器靠什么公理转起来？</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>有限可满足 = f.i.p.（同一块积木）→ 逻辑侧要把它变成「整体可满足」、代数侧要把它变成「超积里有模型」、拓扑侧要把它变成「交非空」→ 三处都靠<strong>超滤子</strong>把有限片段粘成一个极限对象 → 定理 4.1.5/4.1.6 说：<strong>代数侧「超积还留在类里」这一条，恰好就是逻辑侧紧致性的充要条件</strong> → 于是「有限公理化」「可定义性」这些后续问题，全都能翻译到代数侧去算（L19–L22）。</p>
+  </div>
+</section>
+
+<!-- ============ 目标 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>写出可满足紧致与后果紧致的定义，说清它们何时等价、UAL 为何要把两者分开</td><td><a href="#compact">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>完整走一遍定理 4.1.5 的四步证明：有限片段 → f.i.p. → 超滤子 → 超积 + Łoś</td><td><a href="#ultra">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>陈述定理 4.1.6 的双向性，指出每个方向各用哪座翻译桥</td><td><a href="#converse">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>用 Stone 空间把「Γ 有模型」写成「闭集交非空」，重述紧致 ⇔ 超滤子收敛</td><td><a href="#topo">§6</a></td><td><a href="#ex">E7, E8</a></td></tr>
+    <tr><td><b>O5</b></td><td>用「代数类对超积封闭」证明命题逻辑、模态逻辑的紧致性</td><td><a href="#algproof">§7</a></td><td><a href="#ex">E9, E10</a></td></tr>
+    <tr><td><b>O6</b></td><td>用紧致性反证「有限群」「有限维」不可一阶公理化，并说清它与超积封闭失效的关系</td><td><a href="#logproof">§8</a></td><td><a href="#ex">E11, E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：欠债必还，与讨债的机器</h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>L16 结束时，我们手上有一张翻译表：逻辑性质 ↔ 代数性质。L04 造好了一台机器——超积，能把一族代数「取极限」粘成一个。L13 讲了一个承诺——紧致性，说「每一小批都有解，整体就有解」。三条线各走各的，谁也没碰谁。</p>
+    <p>这一讲让它们相撞。<strong>相撞之后你会发现：紧致性是一张欠条，超积是讨债的机器，而定理 4.1.5/4.1.6 说的就是「这张欠条刚好由这台机器兑现」。</strong></p>
+    <p>先把问题摆具体。<span class="math">Γ</span> 是一堆公式，可能有无穷多条。每一小批 <span class="math">Δ ⊆ Γ</span> 都有模型——但模型各不相同，<span class="math">Δ₁</span> 的模型是 <span class="math">A₁</span>，<span class="math">Δ₂</span> 的模型是 <span class="math">A₂</span>，越往后越多。<strong>怎么把这无穷多个各管一段的模型，拼成一个管全程的模型？</strong>这就是本讲要回答的唯一问题。</p>
+    <p>答案你已经见过，只是没认出来：<strong>取极限</strong>。拓扑里，紧致性保证「每个滤子都有极限点」；代数里，超积就是极限点的构造。<strong>把 <span class="math">A₁, A₂, …</span> 的超积造出来，用 Łoś 定理把每段成立的事实传上去——那个管全程的模型，就在超积里。</strong></p>
+  </div>
+
+  <div class="diagram"><pre>
+       有限片段 Δ₁, Δ₂, Δ₃, …        每个 Δ 有自己的模型 A_Δ
+              │                              │
+              │  f.i.p.                      │  取超滤子 U
+              ▼                              ▼
+       「每一小批都相容」           超积 A = ∏ A_Δ / U
+              │                              │
+              │  紧致性（承诺）               │  Łoś（兑现）
+              ▼                              ▼
+       「整体有解」  ◀──── 同一个解 ────▶  A ⊨ Γ 全部公式
+
+       逻辑：Γ 可满足      代数：Alg 对超积封闭      拓扑：滤子收敛
+  </pre></div>
+
+  <div class="warn"><div class="bt">先把话说清楚：三种「紧致」不是三个巧合</div>
+    <p>① <strong>别以为「超积」是逻辑学家发明的。</strong>它是代数里的构造（L04），Łoś 定理是模型论的（L04），紧致 ⇔ 超滤子收敛是拓扑的（L13）。三样东西出自三本教材，<strong>但拼起来只证明一件事</strong>。这一讲的全部工作就是把这个「一件事」说清楚。</p>
+    <p>② <strong>也别把桥想成单向的。</strong>「代数对超积封闭 ⟹ 逻辑紧致」用来<strong>证紧致</strong>；反过来「逻辑紧致 ⟹ 某代数类不对超积封闭」用来<strong>证不可公理化</strong>（§8）。两个方向都有用，这就是桥的价值。</p>
+  </div>
+</section>
+
+<!-- ============ O1 ============ -->
+<section id="compact">
+  <h2><span class="sn">3</span>两种紧致性 <span class="tag log">O1</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.1（可满足紧致；UAL 定义 4.1.1 的语义版）</span></div>
+    <p>逻辑 <span class="math">L = ⟨F, M, mng, ⊨⟩</span> 称为<strong>可满足紧致</strong>，若对任意公式集 <span class="math">Γ ⊆ Fm(L)</span>：</p>
+    <div class="formula">Γ 的每个有限子集都有模型  ⟹  Γ 有模型。</div>
+    <p>换成集合语言更清楚。记 <span class="math">Mod(Γ) = {⟨A, h⟩ : A ∈ M, h 是赋值, ⟨A, h⟩ ⊨ 每个 φ ∈ Γ}</span>，则条件就是：若 <span class="math">{Mod(φ) : φ ∈ Γ}</span> 有有限交性质，则 <span class="math">Mod(Γ) = ⋂<sub>φ∈Γ</sub> Mod(φ) ≠ ∅</span>。<strong>写成这样你就认出来了——这正是 L13 里的闭集 f.i.p. 判据。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.2（后果紧致；UAL 定义 4.1.4）</span></div>
+    <p>称 <span class="math">L</span> <strong>后果紧致</strong>，若语义后承满足：对任意 <span class="math">Γ ⊆ Fm(L)</span> 与 <span class="math">φ ∈ Fm(L)</span>，</p>
+    <div class="formula">Γ ⊨ φ  ⟹  存在有限 Γ<sub>0</sub> ⊆ Γ 使 Γ<sub>0</sub> ⊨ φ。</div>
+    <p>这就是 L02 闭包算子 <span class="math">C(Γ) = {φ : Γ ⊨ φ}</span> 的「有限特征」：<span class="math">C(Γ) = ⋃<sub>Γ₀ ⊆ Γ 有限</sub> C(Γ₀)</span>。<strong>后果紧致说的是：可证的东西总有个有限的理由。</strong></p>
+  </div>
+
+  <div class="intu"><div class="bt">两种紧致什么时候是同一句</div>
+    <p>在经典语义下（语言有常假式 <span class="math">⊥</span> 和否定 <span class="math">¬</span>），两者等价，而且证明只有两行：</p>
+    <ul>
+      <li><strong>后果 ⟹ 可满足：</strong>若 <span class="math">Γ</span> 每个有限子集可满足而 <span class="math">Γ</span> 不可满足，则 <span class="math">Γ ⊨ ⊥</span>，由后果紧致有有限 <span class="math">Γ₀ ⊨ ⊥</span>——可 <span class="math">Γ₀</span> 可满足，矛盾。</li>
+      <li><strong>可满足 ⟹ 后果：</strong>若 <span class="math">Γ ⊨ φ</span> 但每个有限 <span class="math">Γ₀ ⊭ φ</span>，则 <span class="math">Γ ∪ {¬φ}</span> 每个有限子集可满足（有限 <span class="math">Δ ∪ {¬φ}</span> 不可满足会给出 <span class="math">Δ ⊨ φ</span>），由可满足紧致后者整体可满足——与 <span class="math">Γ ⊨ φ</span> 矛盾。</li>
+    </ul>
+    <p><strong>UAL 为什么要把它们分开写？</strong>因为 UAL 面向的是「一般逻辑」——不一定有 <span class="math">¬</span>，不一定有 <span class="math">⊥</span>，甚至公式不一定能取否定（回想 L17 说的多排序缺口）。在这种一般性下，上面两行证明会卡住。<strong>于是紧致性分裂成两个性质</strong>：超积封闭直接对应的是后果紧致（定理 4.1.6），可满足紧致需要在有否定的常见情形里才与它合流（定理 4.1.5）。<strong>记住这个分裂，L25 处理直觉主义逻辑时它还会冒出来。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><strong>命题逻辑。</strong><span class="math">Γ</span> 是一堆命题公式，每个有限子集可满足 ⟹ 整体可满足。这条你大概早就用过（比如「每个有限子集相容的理论相容」），但它现在有了两个靠山：<strong>布尔代数类 BA 对超积封闭</strong>（代数侧，§4），以及 <strong>Stone 空间 <span class="math">2<sup>ω</sup></span> 紧致</strong>（拓扑侧，§6）。同一个事实，三处落地。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>非标准自然数。</strong>取 <span class="math">Γ = Th(ℕ) ∪ {c &gt; n : n ∈ ω}</span>——皮亚尼算术的全部真句子，外加一个常元 <span class="math">c</span> 比每个具体自然数都大。任取有限子集，只用到有限多条 <span class="math">c &gt; n</span>，在 <span class="math">ℕ</span> 里取个足够大的数解释 <span class="math">c</span> 就满足了。<strong>每个有限片段可满足。</strong>但 <span class="math">ℕ</span> 里没有无穷大，整体在标准模型里无解。紧致性说解存在，超积把它造出来：<span class="math">ℕ<sup>ω</sup>/U</span>（<span class="math">U</span> 非主）就是含无穷大 <span class="math">c = [(0,1,2,…)]</span> 的非标准模型。<strong>这就是紧致性的本质：它凭空变出「原本不存在的点」，而超积是造点的模具。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>紧致性说「有模型」，不说「有你想要的那种模型」。</strong>上面 <span class="math">Γ</span> 的模型是非标准的，不是 <span class="math">ℕ</span>。想既要紧致性又要「标准性」（比如只要良序模型），一般做不到——<strong>这正是 §8 不可公理化论证的入口。</strong></p>
+    <p>② <strong>「有限可满足」里的「有限」不能换成「可数」。</strong><span class="math">ω<sub>1</sub></span>-紧致、可数紧致是另一个概念（L13 §7 的 <span class="math">ω<sub>1</sub></span> 反例已经埋了伏笔）。本讲所有「有限」都是货真价实的有限。</p>
+    <p>③ <strong>别把可满足紧致读成「Γ 有个有限子集等价于 Γ」。</strong>那是后果紧致加否定后的推论，不是定义本身。定义只承诺「有模型」，不承诺「找得到有限证据」——虽然在有否定时会蕴涵它。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL 定义 4.1.1、4.1.4；L02 闭包算子的有限特征；L13 §3（f.i.p.）、§4（紧致判据）。</p>
+</section>
+
+<!-- ============ O2 ============ -->
+<section id="ultra">
+  <h2><span class="sn">4</span>定理 4.1.5：超积造模型 <span class="tag alg">O2</span><span class="tag log">逻辑</span></h2>
+
+  <div class="thm"><div class="bt">定理 <span class="num">4.1（UAL 定理 4.1.5，紧致性的代数充分条件）</span></div>
+    <p>设逻辑 <span class="math">L</span> 的代数类 <span class="math">Alg<sub>⊨</sub>(L)</span> 对超积封闭，并且 <span class="math">L</span> 的满足关系由代数约化承载（即「<span class="math">Γ</span> 有模型」等价于「<span class="math">Γ</span> 在 <span class="math">Alg<sub>⊨</sub>(L)</span> 中有代数模型」，这是 L16 建立的翻译）。则 <span class="math">L</span> 可满足紧致。</p>
+    <p>换句话说：<strong>只要「取超积」这个动作不出界，紧致性就是免费的。</strong></p>
+  </div>
+
+  <div class="proof"><span class="pt">证明（四步，全程只用 L04 和 L13 的工具）。</span>
+    <p><strong>第 1 步：备料。</strong>设 <span class="math">Γ</span> 的每个有限子集有模型。令指标集</p>
+    <div class="formula">I = {Δ ⊆ Γ : Δ 有限}。</div>
+    <p>对每个 <span class="math">Δ ∈ I</span>，由假设取一个代数模型 <span class="math">A<sub>Δ</sub> ∈ Alg<sub>⊨</sub>(L)</span> 满足 <span class="math">Δ</span> 中每一句。<span class="math">I</span> 非空（空集是它的元素）。</p>
+    <p><strong>第 2 步：造 f.i.p. 族。</strong>对每句 <span class="math">φ ∈ Γ</span>，令</p>
+    <div class="formula">I<sub>φ</sub> = {Δ ∈ I : φ ∈ Δ} ⊆ I。</div>
+    <p>族 <span class="math">{I<sub>φ</sub> : φ ∈ Γ}</span> 有<strong>有限交性质</strong>：给定有限多句 <span class="math">φ₁, …, φ<sub>n</sub></span>，集合 <span class="math">Δ₀ = {φ₁, …, φ<sub>n</sub>}</span> 本身是 <span class="math">I</span> 的元素，且属于每一个 <span class="math">I<sub>φᵢ</sub></span>，所以 <span class="math">I<sub>φ₁</sub> ∩ ⋯ ∩ I<sub>φ<sub>n</sub></sub> ∋ Δ₀ ≠ ∅</span>。<strong>这一步是整场的核心：Γ 的「有限片段」被编码成了指标集里的一点。</strong></p>
+    <p><strong>第 3 步：上超滤子。</strong>由素滤子定理（L13 §3，等价 BPI），把 <span class="math">{I<sub>φ</sub>}</span> 生成的滤子扩成 <span class="math">I</span> 上的超滤子 <span class="math">U</span>。于是每个 <span class="math">I<sub>φ</sub> ∈ U</span>。这个 <span class="math">U</span> <strong>必须是非主的</strong>：若 <span class="math">U = U<sub>Δ₁</sub></span> 主于某一点，则对 <span class="math">φ ∉ Δ₁</span>（<span class="math">Γ</span> 无限时总找得到）有 <span class="math">Δ₁ ∉ I<sub>φ</sub></span>，即 <span class="math">I<sub>φ</sub> ∉ U</span>，矛盾。</p>
+    <p><strong>第 4 步：取超积，用 Łoś 兑现。</strong>造 <span class="math">A = ∏<sub>Δ∈I</sub> A<sub>Δ</sub> / U</span>。由前提，<span class="math">A ∈ Alg<sub>⊨</sub>(L)</span>。对任意 <span class="math">φ ∈ Γ</span>：</p>
+    <div class="formula">{Δ ∈ I : A<sub>Δ</sub> ⊨ φ} ⊇ I<sub>φ</sub> ∈ U  ⟹  {Δ : A<sub>Δ</sub> ⊨ φ} ∈ U  ⟹  A ⊨ φ,</div>
+    <p>最后一步正是 Łoś 定理（L04 定理 4.6）：一阶/等式性质在超积里「按超滤子的多数票」决定。于是 <span class="math">A ⊨ Γ</span> 全部公式，<span class="math">Γ</span> 可满足。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="intu"><div class="bt">这四步到底在干什么</div>
+    <p>第 1、2 步是<strong>记账</strong>：把「Γ 的有限片段」和「指标集的点」一一对应起来，让「φ 出现在片段里」变成「指标集的一个集合 <span class="math">I<sub>φ</sub></span>」。第 3 步是<strong>选极限</strong>：超滤子 <span class="math">U</span> 替我们决定「哪些片段算数」——它把 f.i.p. 的有限相容性，一次性升级成「整体相容」的表态。第 4 步是<strong>兑现</strong>：超积把选中的片段粘成一个代数，Łoś 定理保证每个片段里成立的事，在粘出来的代数里还成立。</p>
+    <p><strong>一句话：超滤子把「有限相容」变成「一点的表态」，超积把「一点的表态」变成「一个对象」。这就是从有限到整体的全部秘密。</strong></p>
+  </div>
+
+  <div class="fusion"><div class="bt">和 L13 是同一场证明</div>
+    <p>把 <span class="math">I<sub>φ</sub></span> 读成拓扑空间里的开集，把「<span class="math">A<sub>Δ</sub> ⊨ φ</span>」读成「点 <span class="math">Δ</span> 落在集合里」，上面四步一字不改就是 L13 命题 5.2.9「紧致 ⟺ 每个超滤子收敛」的证明。<strong>定理 4.1.5 不是新证明，是同一个证明穿了代数的衣服。</strong>L13 §9 预告的那座桥，在这里正式落地。</p>
+  </div>
+
+  <div class="warn"><div class="bt">两个容易踩的坑</div>
+    <p>① <strong>「对超积封闭」是前提，不是结论。</strong>在等式逻辑（代数簇）里它是免费的——簇对 <span class="math">H, S, P</span> 封闭，超积是 <span class="math">P</span> 的精细化（L04 §8）。但在一般逻辑里，<span class="math">Alg<sub>⊨</sub>(L)</span> 未必是簇，这时必须先验证这一步，紧致性才拿得到。</p>
+    <p>② <strong>超滤子取不出来，整个证明就空转。</strong>第 3 步依赖 BPI。L13 §3 已经说过：紧致性定理、Tychonoff、素理想定理三者与 BPI 等价。<strong>这里又添一个：定理 4.1.5 也站在同一份公理上。</strong></p>
+  </div>
+
+  <p class="src"><b>来源：</b>UAL 定理 4.1.5、定理 2.2.74（Łoś）；L04 定义 4.5/定理 4.6；L13 命题 5.2.9、§3 素滤子定理。</p>
+</section>
+
+<!-- ============ O3 ============ -->
+<section id="converse">
+  <h2><span class="sn">5</span>定理 4.1.6：双向等价 <span class="tag alg">O3</span><span class="tag log">逻辑</span></h2>
+
+  <div class="thm"><div class="bt">定理 <span class="num">4.2（UAL 定理 4.1.6，桥的两端）</span></div>
+    <div class="formula">L 后果紧致  ⟺  Alg<sub>⊨</sub>(L) 对超积封闭。</div>
+    <p><strong>这是全课第一座完整的双向桥</strong>：左边是纯逻辑性质（「可证的总有有限理由」），右边是纯代数性质（「取超积不出界」）。定理 4.1.5 是它半个方向的语义版本，这一条把它钉死成充要条件。</p>
+  </div>
+
+  <div class="intu"><div class="bt">方向一：超积封闭 ⟹ 后果紧致</div>
+    <p>这是 §4 那台机器的另一面。设 <span class="math">Γ ⊨ φ</span>，但要假设<strong>没有</strong>有限 <span class="math">Γ₀ ⊆ Γ</span> 使 <span class="math">Γ₀ ⊨ φ</span>，看会发生什么。</p>
+    <p>把「<span class="math">Γ₀ ⊭ φ</span>」翻译成语义：<span class="math">Γ₀ ∪ {¬φ}</span> 可满足（这里有 <span class="math">¬</span>；一般逻辑里要换成 UAL 的「反例模型」条件，技术细节见下方注解）。于是 <span class="math">Γ ∪ {¬φ}</span> 的每个有限子集可满足。由 §4 的超积构造，它整体可满足，取到一个模型 <span class="math">A ⊨ Γ ∪ {¬φ}</span>。但 <span class="math">A ⊨ Γ</span> 且 <span class="math">Γ ⊨ φ</span> 应给出 <span class="math">A ⊨ φ</span>——与 <span class="math">A ⊨ ¬φ</span> 矛盾。<strong>所以有限理由必然存在。</strong></p>
+    <p><strong>用的桥：</strong>L16 的「后承 ⟺ 代数模型」翻译 + §4 的超积构造。没有新工具。</p>
+  </div>
+
+  <div class="intu"><div class="bt">方向二：后果紧致 ⟹ 超积封闭</div>
+    <p>设 <span class="math">A<sub>i</sub> ∈ Alg<sub>⊨</sub>(L) (i ∈ I)</span>，<span class="math">U</span> 是 <span class="math">I</span> 上超滤子，<span class="math">B = ∏<sub>i∈I</sub> A<sub>i</sub> / U</span>。要证 <span class="math">B ∈ Alg<sub>⊨</sub>(L)</span>，即 <span class="math">B</span> 满足 <span class="math">L</span> 的所有有效公式。取一个有效公式 <span class="math">φ</span>：若 <span class="math">B ⊭ φ</span>，用 Łoś 反向得 <span class="math">{i : A<sub>i</sub> ⊭ φ} ∈ U</span>，该集合非空，某个 <span class="math">A<sub>i</sub> ⊭ φ</span>——与 <span class="math">A<sub>i</sub> ∈ Alg<sub>⊨</sub>(L)</span> 矛盾。</p>
+    <p><strong>等等，这里好像没用到紧致性？</strong>问得好。<strong>如果 <span class="math">Alg<sub>⊨</sub>(L)</span> 是由一阶句子集刻画的</strong>（初等类），Łoś 定理单独就够，紧致性确实是多余的。紧致性真正登场，是在 <span class="math">Alg<sub>⊨</sub>(L)</span> 的刻画条件<strong>不是一阶</strong>的时候——比如它由无穷的公式集定义，或条件本身涉及「所有模型」。这时要把「<span class="math">B</span> 满足所有条件」有限化，就得用后果紧致把无穷的要求压成有限的一条，再交给 Łoś。</p>
+    <p><strong>用的桥：</strong>Łoś 定理（L04）+ 后果紧致把无穷公理集压缩成有限子集。<strong>这一压，就是方向二的全部内容。</strong></p>
+  </div>
+
+  <div class="box def"><div class="bt">技术注解（可跳过，但值得知道）</div>
+    <p>上面两个方向在「有 <span class="math">¬</span>、<span class="math">Alg<sub>⊨</sub>(L)</span> 一阶刻画」的熟悉情形里写得干净。在 UAL 的一般设定下，需要补两处：一是用 <span class="math">mng</span> 把「反例模型」形式化（没有 <span class="math">¬</span> 时靠语义本身给出「某模型使 <span class="math">φ</span> 不成立」）；二是 <span class="math">Alg<sub>⊨</sub>(L)</span> 与 <span class="math">Alg<sup>m</sup>(L)</span> 的差距要靠「逻辑可代数化」来弥合（L16）。UAL 定理 4.1.6 的完整陈述正是把这些条件打包进去的。<strong>本讲义的目标是让你看清桥的形状和两台发动机，纯技术验证留给原书。</strong></p>
+  </div>
+
+  <div class="fusion"><div class="bt">双向桥的意义</div>
+    <p>定理 4.1.5/4.1.6 是 L19–L22 全部桥定理的模板。往后每一座桥都是这个形状：<strong>逻辑这边一个性质 ⟺ 代数这边一个性质，证明靠 L16 的翻译 + L04 的构造。</strong>你把这一座吃透，后面四座只是换词。</p>
+  </div>
+
+  <p class="src"><b>来源：</b>UAL 定理 4.1.6、定义 4.1.1/4.1.4、§4.1 关于 Alg<sup>m</sup> 与 Alg<sub>⊨</sub> 的讨论；L16 代数对应与滤子性质。</p>
+</section>
+
+<!-- ============ O4 ============ -->
+<section id="topo">
+  <h2><span class="sn">6</span>拓扑侧：紧致 ⇔ 超滤子收敛 <span class="tag top">O4</span></h2>
+
+  <div class="thm"><div class="bt">命题 <span class="num">6.1（L13 命题 5.2.9，回顾）</span></div>
+    <p>拓扑空间 <span class="math">X</span> 紧致，当且仅当 <span class="math">X</span> 上每个超滤子（幂集布尔代数上的极大真滤子）都收敛到某点。</p>
+    <p>L13 已经完整证过，这里不重复。<strong>本讲要做的是把这个命题翻译成逻辑语言，让它在桥里占一个位置。</strong></p>
+  </div>
+
+  <div class="intu"><div class="bt">翻译：公式变成开集，模型变成点</div>
+    <p>取公式集 <span class="math">Fm(L)</span>，考虑它的「理论空间」——所有完备一致的（超滤子式）理论 <span class="math">T</span> 组成的集合 <span class="math">Spec(L)</span>。对每句 <span class="math">φ</span>，令</p>
+    <div class="formula">[φ] = {T ∈ Spec(L) : φ ∈ T}。</div>
+    <p>这些 <span class="math">[φ]</span> 既开又闭，做成一组基，得到的正是 L14 讲过的 <strong>Stone 空间</strong>：紧致、全不连通、Hausdorff。现在翻译对照如下：</p>
+    <table>
+      <tr><th>逻辑</th><th>拓扑</th></tr>
+      <tr><td>公式 <span class="math">φ</span></td><td>基本开闭集 <span class="math">[φ]</span></td></tr>
+      <tr><td>理论 <span class="math">Γ</span></td><td>子集 <span class="math">⋂<sub>φ∈Γ</sub> [φ]</span>（闭集）</td></tr>
+      <tr><td><span class="math">Γ</span> 有限可满足</td><td><span class="math">{[φ] : φ ∈ Γ}</span> 有 f.i.p.</td></tr>
+      <tr><td><span class="math">Γ</span> 有模型</td><td><span class="math">⋂<sub>φ∈Γ</sub> [φ] ≠ ∅</span>（有落点）</td></tr>
+      <tr><td>紧致性</td><td>Spec(L) 紧致 ⇔ 每个超滤子收敛</td></tr>
+    </table>
+    <p><strong>整张表只有一句实质：把「公式」读成「开集」，把「满足」读成「属于」，紧致性定理就变成紧致性。</strong>而这个翻译之所以合法，是因为 <span class="math">Mod</span> 把 <span class="math">∧</span> 送到 <span class="math">∩</span>、把 <span class="math">∨</span> 送到 <span class="math">∪</span>、把 <span class="math">¬</span> 送到补——它是布尔代数同态（L06）。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>命题逻辑的理论空间就是 <span class="math">2<sup>ω</sup></span>（Cantor 空间）：变元集可数时，每个指派是一个 <span class="math">0/1</span> 序列，公式 <span class="math">φ</span> 对应「使 <span class="math">φ</span> 为真的指派」这个开闭集。它紧致（L13 例 4.5 的二分树证明），于是命题逻辑紧致。<strong>「每个有限相容的公式集整体相容」在 Cantor 空间里只是「闭集族 f.i.p. 交非空」。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>非标准分析里那个「无穷大 <span class="math">c</span>」的落点，在拓扑侧就是 <span class="math">βℕ</span>（<span class="math">ℕ</span> 的 Stone–Čech 紧致化，L13 §8）里 <span class="math">ℕ</span> 之外的点。有限片段 <span class="math">c &gt; n</span> 把 <span class="math">c</span> 往「越来越远」逼，超滤子收敛到那个「无穷远点」。<strong>代数侧的 <span class="math">ℕ<sup>ω</sup>/U</span> 与拓扑侧的 <span class="math">βℕ − ℕ</span> 是同一个对象的两种说法。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>这个翻译要有布尔结构才顺。</strong>「<span class="math">¬</span> 送补」依赖经典否定。直觉主义逻辑的理论空间不是 Stone 空间而是 Esakia 空间（有偏序的拓扑空间），紧致性还在，但「开闭集」要换成「上集」。这正是 L17 说的「保留 <span class="math">mng</span> 才能在非经典情形里继续做」的回报。</p>
+    <p>② <strong>紧致 ≠ 序列紧致。</strong>又见 L13 §4 的警告：<span class="math">βℕ</span> 里的无穷远点不是任何序列的极限（序列只能逼近可数多个点），只能用滤子/超滤子抓。<strong>这正是为什么桥要用超积而不是「取一列模型的极限」。</strong></p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义命题 5.2.9、定理 5.2.13；L13 §4/§6/§8；L14 Stone 空间；L06 布尔代数同态。</p>
+</section>
+
+<!-- ============ O5 ============ -->
+<section id="algproof">
+  <h2><span class="sn">7</span>用代数方法证逻辑紧致 <span class="tag alg">O5</span></h2>
+
+  <div class="intu"><div class="bt">使用说明书</div>
+    <p>定理 4.1.5 给了一条生产线，往后证任何逻辑紧致，只要走两步：</p>
+    <ol>
+      <li>找出该逻辑的代数类 <span class="math">Alg<sub>⊨</sub>(L)</span>；</li>
+      <li>证明这个代数类对超积封闭。</li>
+    </ol>
+    <p>第 2 步通常最省力——<strong>最常见的情况是它是一个簇，而簇对超积封闭是免费的</strong>（L04 §8）。下面走两个例子，一个命题级、一个模态级。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 7.1：命题逻辑</div>
+    <p>代数类是布尔代数 BA。BA 由等式公理化，是一个簇（等式类），对 <span class="math">H, S, P</span> 封闭；超积是约化积的特例，仍在该簇里。于是对超积封闭成立，定理 4.1.5 给出命题逻辑紧致。<strong>整条证明只有一句「BA 是簇」。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">例 7.2：模态逻辑 S4 与 S5</div>
+    <p>S4 的代数类是内部代数（布尔代数加一个满足 <span class="math">□x ≤ x</span>、<span class="math">□x ≤ □□x</span>、<span class="math">□(x ∧ y) = □x ∧ □y</span>、<span class="math">□1 = 1</span> 的算子）——L06 已经见过。这些公理全是等式，形成一个簇；超积逐点保持等式（Łoś），所以对超积封闭。于是 <strong>S4 紧致</strong>。S5 加上 <span class="math">◇x ≤ □◇x</span> 一类的等式，同样处理。</p>
+    <p><strong>对比拓扑侧：</strong>S4 对应拓扑语义里的内部算子，紧致性的拓扑证明要用 L13 的「开覆盖有限化」。代数侧这里只需「等式簇 ⇒ 超积封闭」——<strong>同一结论，代数证明三行，拓扑证明一页。</strong>这就是桥带来的实际省力。</p>
+  </div>
+
+  <div class="fusion"><div class="bt">这说明了一个更大的道理</div>
+    <p>「对超积封闭」在代数侧往往是个<strong>结构性</strong>的事实（是簇、是拟簇、由一阶句子刻画），一眼就能验；而它对应的逻辑紧致性在语法侧是个<strong>整体性</strong>的事实（对无穷公式集的全称命题），证明起来要绕远路。<strong>桥的价值就是把难证的那侧翻译成好证的这侧。</strong></p>
+  </div>
+
+  <p class="src"><b>来源：</b>UAL 定理 4.1.5、§4.1；Bergman §5.1（簇与超积）；L04 §8 Birkhoff 定理；L06 内部代数。</p>
+</section>
+
+<!-- ============ O6 ============ -->
+<section id="logproof">
+  <h2><span class="sn">8</span>用逻辑方法证代数不可有限公理化 <span class="tag alg">O6</span><span class="tag log">逻辑</span></h2>
+
+  <div class="intu"><div class="bt">反向使用：从「超积封闭失效」读出「不可公理化」</div>
+    <p>把定理 4.1.5 倒过来看。如果一个代数类 <span class="math">C</span> <strong>不对超积封闭</strong>，而它又可以由一阶句子集 <span class="math">T</span> 公理化，那么由 Łoś，<span class="math">C</span> 自动对超积封闭（初等类对超积封闭）——矛盾。<strong>所以：不对超积封闭 ⟹ 不可一阶公理化。</strong>而紧致性是这个论证背后的发动机。</p>
+    <p>更常用的写法直接用紧致性，不经过超积。套路固定，三步：</p>
+    <ol>
+      <li>假设「属于 <span class="math">C</span>」可由一阶句子集 <span class="math">T</span> 刻画；</li>
+      <li>造一个句子集 <span class="math">Γ</span>，每个有限子集都能在 <span class="math">C</span> 里找到模型；</li>
+      <li>由紧致性，<span class="math">Γ</span> 整体有模型 <span class="math">A</span>；但 <span class="math">A ⊨ T</span> 迫使 <span class="math">A ∈ C</span>，而 <span class="math">A</span> 的结构又违背 <span class="math">C</span> 的定义——矛盾。</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">例 8.1：有限群类不可一阶公理化</div>
+    <p>设 <span class="math">C</span> = 所有有限群。假设它由一阶句子集 <span class="math">T</span> 刻画。给语言添一族常元 <span class="math">c<sub>1</sub>, c<sub>2</sub>, …</span>，令</p>
+    <div class="formula">Γ = T ∪ {c<sub>i</sub> ≠ c<sub>j</sub> : i ≠ j}。</div>
+    <p>任取有限 <span class="math">Γ₀ ⊆ Γ</span>，它只用到有限多个常元，取一个足够大的有限群（阶数 ≥ 用到的常元个数）把这些常元解释成不同元素，<span class="math">Γ₀</span> 满足。由紧致性，<span class="math">Γ</span> 整体有模型 <span class="math">A</span>。<span class="math">A ⊨ T</span> 迫使 <span class="math">A</span> 是有限群；但 <span class="math">A</span> 里有无穷多个两两不同的元素 <span class="math">c<sub>i</sub></span>——矛盾。<strong>所以「有限」不可一阶公理化。</strong></p>
+    <p><strong>超积侧的说法：</strong>取 <span class="math">ℤ/2ℤ</span> 的可数份拷贝对非主超滤子做超积，得到的布尔群（每个元素都是自己的逆元）是无限的。<strong>有限群类对超积不封闭，正是「有限」不可一阶定义的代数影子。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">例 8.2：有限维向量空间</div>
+    <p>同理，固定域 <span class="math">F</span>，「有限维 <span class="math">F</span>-向量空间」不可一阶公理化：把「存在 <span class="math">n</span> 个线性无关向量」对无穷多个 <span class="math">n</span> 全部加入，每个有限子集有有限维模型，紧致性给出一个无限维模型。<strong>代数侧：<span class="math">F</span> 上有限维空间的类不对超积封闭</strong>——维数会被超积撑成无限。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 8.3：良序与连通性</div>
+    <p>「良序」不可一阶公理化：加常元要求 <span class="math">c<sub>0</sub> &gt; c<sub>1</sub> &gt; c<sub>2</sub> &gt; ⋯</span>，每个有限片段有良序模型（把常元排成有限下降链后接到更大的序数上），紧致性给出含无穷下降链的模型，不是良序。「连通图」不可一阶公理化：加常元要求每对 <span class="math">c<sub>i</sub>, c<sub>j</sub></span> 之间距离 &gt; <span class="math">n</span>，紧致性给出不连通的「无限远」模型。<strong>这两个例子说明紧致性的反面有多强：它不只管代数，还管任何想用一阶语言圈住「有限/良序/连通」这类全局性质的企图。</strong></p>
+  </div>
+
+  <div class="fusion"><div class="bt">和 L04 拟簇的呼应</div>
+    <p>L04 §8 说过：拟簇 = 对 <span class="math">S, P, U<sub>p</sub></span>（子代数、直积、超积）封闭 = 可由拟等式刻画。现在有了紧致性这座桥，这句话有了新解读：<strong>拟等式是一阶句子，所以拟簇对超积封闭（Łoś）；而「簇」（等式类）还多要 <span class="math">H</span>（同态像）。</strong>「能不能用有限等式公理化」这个代数问题，从此可以翻译成「对应的逻辑性质在超积下保不保」——这是 L19 的直接入口。</p>
+  </div>
+
+  <p class="src"><b>来源：</b>UAL §4.1、定理 2.2.74；Chang–Keisler 模型论紧致性标准例；L04 §8 拟簇 <span class="math">SPU<sub>p</sub></span>。</p>
+</section>
+
+<!-- ============ 融合接口 ============ -->
+<section id="fusion">
+  <h2><span class="sn">9</span>融合接口：三面一体图</h2>
+  <p class="lead">大纲把这张图定为全课的视觉锚点。三本教材讲同一件事，各用各的词；下图把三套词并排放，你会看到它们其实是同一台机器。</p>
+
+  <div class="diagram"><pre>
+                  同一个命题 · 三副面孔
+                          │
+      ┌───────────────────┼───────────────────┐
+      │                   │                   │
+    逻辑 L               代数 Alg⊨(L)         拓扑 Spec(L)
+      │                   │                   │
+   Γ 有限可满足      {A_Δ ⊨ Δ : Δ 有限}   闭集族 {[φ]} f.i.p.
+      │                   │                   │
+      │  f.i.p.           │  f.i.p.           │  f.i.p.
+      ▼                   ▼                   ▼
+  超滤子 U ⊇ {I_φ}   超滤子 U ⊇ {I_φ}     超滤子 U 收敛
+      │                   │                   │
+      │  Łoś              │  Łoś              │  极限点
+      ▼                   ▼                   ▼
+   Γ 整体可满足     A = ∏A_Δ/U ∈ Alg      ⋂[φ] ≠ ∅
+      │                   │                   │
+      └────── 定理 4.1.5/4.1.6 ───────┘
+                 超滤子是同一台发动机
+                  BPI 是同一份燃料
+  </pre></div>
+  <p class="cap">图：三列从上到下逐行对齐；「f.i.p. → 超滤子 → 极限对象」是三列共用的骨架。</p>
+
+  <div class="def"><div class="bt">三本教材对照表</div>
+    <table>
+      <tr><th>教材</th><th>它怎么说这件事</th><th>关键编号</th></tr>
+      <tr><td>UAL</td><td>Alg<sub>⊨</sub>(L) 对超积封闭 ⟺ L 后果紧致</td><td>定义 4.1.1/4.1.4、定理 4.1.5/4.1.6</td></tr>
+      <tr><td>Bergman</td><td>簇对超积封闭（HSP）；拟簇 SPU<sub>p</sub></td><td>§5.1、定理 3.43</td></tr>
+      <tr><td>拓扑讲义</td><td>紧致 ⇔ 每个超滤子收敛；f.i.p. 闭集交非空</td><td>命题 5.2.9、定理 5.2.13</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">把这座桥记成一句话</div>
+    <p><strong>「有限都行就整体行」这句承诺，在代数里叫「对超积封闭」，在拓扑里叫「每个滤子都有落点」，而兑现它的是同一个工具——超滤子。</strong></p>
+    <p>到这里，前四篇的债一次还清：L02 的闭包算子给出有限特征，L04 的超积与 Łoś 给出构造，L13 的超滤子收敛给出拓扑原型，L14 的 Stone 空间给出几何形状，L16 的代数对应给出翻译规则。<strong>五样工具，拧成一座桥。</strong></p>
+    <p>下一讲 L19 走第二座桥：<strong>完全性 ↔ 有限公理化 ↔ Hilbert 系统</strong>。那里会把「可证」换成「有限公理」、把「紧致」换成「完全」，但骨架还是今天这一套——逻辑性质翻译成代数性质，靠 L04 的构造和 L16 的翻译兑现。</p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+
+  <div class="ex"><div class="bt">O1 · 两种紧致性</div>
+  <ol start="1">
+    <li><span class="tag log">O1</span>把「可满足紧致」与「后果紧致」各写一遍，然后逐行验证 §3 的两个等价证明。<strong>指出证明里到底哪一步用了 <span class="math">¬</span> 和 <span class="math">⊥</span>；若语言没有否定，哪一步先坏掉？</strong></li>
+    <li><span class="tag log">O1</span>用 L02 闭包算子的语言重写后果紧致：<span class="math">C(Γ) = ⋃<sub>Γ₀ ⊆ Γ 有限</sub> C(Γ₀)</span>。再举一个满足「有限交性质」但不紧致的空间例子（回看 L13），说明 f.i.p. 本身不保证结论。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O2 · 定理 4.1.5</div>
+  <ol start="3">
+    <li><span class="tag alg">O2</span>逐句复述 §4 四步证明。对每一步回答：「如果去掉这一步，证明卡在哪？」特别是第 2 步的 f.i.p. 与第 3 步的非主超滤子。</li>
+    <li><span class="tag log">O2</span>把定理 4.1.5 的证明改写成命题逻辑情形：令 <span class="math">Γ</span> 是命题公式集，写出 <span class="math">I<sub>φ</sub></span>、超滤子 <span class="math">U</span> 与超积 <span class="math">2<sup>I</sup>/U</span>，并说明为什么这里「对超积封闭」自动成立。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O3 · 定理 4.1.6</div>
+  <ol start="5">
+    <li><span class="tag log">O3</span>写出定理 4.1.6 的两个方向，各标注用到的桥（L16 翻译 / Łoś / 紧致性有限化）。<strong>为什么方向二在「一阶刻画」的情形里看起来不需要紧致性？</strong>（提示：§5 方向二第二段。）</li>
+    <li><span class="tag alg">O3</span>思考题：如果 <span class="math">Alg<sub>⊨</sub>(L)</span> 不是簇而只是拟簇，定理 4.1.5 的哪一步还成立、哪一步要额外验证？用 L04 的 <span class="math">SPU<sub>p</sub></span> 记号回答。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O4 · 拓扑侧</div>
+  <ol start="7">
+    <li><span class="tag top">O4</span>补全 §6 翻译表的每一行：为什么 <span class="math">[φ]</span> 既开又闭？为什么 <span class="math">Mod(Γ)</span> 是闭集？<strong>「<span class="math">Γ</span> 有模型」为什么等价于「交非空」而不是「并非空」？</strong></li>
+    <li><span class="tag top">O4</span>举一个用序列抓不住、只能用超滤子抓的收敛例子（回看 L13 的 <span class="math">βℕ</span>），并解释这为什么说明桥必须用超积而非「取一列模型的极限」。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O5 · 代数证紧致</div>
+  <ol start="9">
+    <li><span class="tag alg">O5</span>模仿例 7.1/7.2，证明模态逻辑 T（代数类：布尔代数加一个满足 <span class="math">□x ≤ x</span>、<span class="math">□(x ∧ y) = □x ∧ □y</span>、<span class="math">□1 = 1</span> 的算子）紧致。<strong>写出你验证「对超积封闭」的那一步。</strong></li>
+    <li><span class="tag alg">O5</span>有人说：「只要代数类是簇，逻辑就紧致。」这句话对吗？把定理 4.1.5 的前提逐条列出来，指出这句口号省略了什么。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O6 · 逻辑证不可公理化</div>
+  <ol start="11">
+    <li><span class="tag log">O6</span>把例 8.1 的三步套路用在「可数域」上：证明「可数域」的类不可一阶公理化。<strong>再写出它对应的超积封闭失效。</strong></li>
+    <li><span class="tag alg">O6</span>为什么「有限群」不对超积封闭，而「群」对超积封闭？用 Łoś 定理一句话解释两者的差别。</li>
+    <li><span class="tag log">O6</span>综合题：L04 说拟簇 = <span class="math">SPU<sub>p</sub></span>，本讲说初等类对超积封闭。<strong>「拟簇」与「初等类」是同一个东西吗？</strong>各举一例支持你的结论，并说明超积封闭在这两个概念里分别扮演什么角色。</li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L17.html">← 上一讲：L17 与抽象代数逻辑、模型论逻辑、机构论的比较</a>
+  <a href="L19.html">下一讲：L19 桥之二：完全性 ↔ 有限公理化 ↔ Hilbert 系统</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L18 · 来源：UAL §4.1（定理 4.1.5/4.1.6）、定理 2.2.74；拓扑讲义 Ch5 §5.2；Bergman §5.1 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L09 基、子基与生成新拓扑 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第三篇 拓扑：用逻辑的眼光看空间</span><span class="sep">/</span><span>L09</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 09 · 2 学时 · 拓扑篇</div>
+  <h1>基、子基与生成新拓扑</h1>
+  <div class="sub">不用列出全部可验证命题——指定几块砖，让封闭条件替你盖整座房子</div>
+  <div class="metarow"><span>来源：拓扑讲义 Ch2 §2.2–2.3（定义 2.2.4、命题 2.2.5、注 2.2.1、定义 3.2.5）</span>
+    <span class="tag top">拓扑</span><span class="tag log">逻辑</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：为什么不想列出全部开集</a></li>
+  <li><a href="#basis">基：基本可验证命题（O1）</a></li>
+  <li><a href="#subbasis">子基与生成唯一拓扑（O2）</a></li>
+  <li><a href="#compare">拓扑比较：细 / 粗与知识多寡（O3）</a></li>
+  <li><a href="#subspace">子空间：限制论域（O4）</a></li>
+  <li><a href="#product">积拓扑：联合观察与有限坐标（O5）</a></li>
+  <li><a href="#sumquot">拓扑和与商拓扑：并置与认同（O6）</a></li>
+  <li><a href="#fusion">融合接口</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单（简） ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">本讲是 L02「闭包系统」在拓扑里的正面登场：指定少量生成元，交给封闭条件造出全部开集。只列主干。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>概念</th><th>依赖</th></tr>
+      <tr><td>基 / 子基</td><td>L08 拓扑三公理</td><td>拓扑比较（细 / 粗）</td><td>基 + L02 序</td></tr>
+      <tr><td>命题 2.2.5（生成唯一拓扑）</td><td>L02 闭包系统</td><td>子空间 / 积 / 拓扑和</td><td>子基生成机</td></tr>
+      <tr><td>商拓扑</td><td>L01 等价关系 + 子基</td><td>认识论：基本可验证命题</td><td>L08 翻译词典</td></tr>
+    </table>
+  </div>
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>基（对并封闭的生成元）→ 子基（对有限交再并的生成元）→ 命题 2.2.5 唯一生成机 → 五种新拓扑构造（子空间 / 积 / 和 / 商）与拓扑比较。<strong>贯穿的认识论：</strong>生成元 = 基本可验证命题；有限交 = 加强知识；任意并 = 弱化知识。这是 L02 Galois 式「少量生成元 → 封闭结构」的又一次现身。</p>
+  </div>
+</section>
+
+<!-- ============ 学习目标对照 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>用基生成拓扑，判定一个族是否为基</td><td><a href="#basis">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>用子基 + 命题 2.2.5 生成唯一拓扑，讲清「有限交再任意并」</td><td><a href="#subbasis">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>用引理 2.2.10 比较两个拓扑的粗细并读出知识多少</td><td><a href="#compare">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>构造子空间拓扑，说明它与基、与积拓扑的可交换性</td><td><a href="#subspace">§6</a></td><td><a href="#ex">E7, E8</a></td></tr>
+    <tr><td><b>O5</b></td><td>构造积拓扑，解释一般积为何只准有限坐标受限制</td><td><a href="#product">§7</a></td><td><a href="#ex">E9, E10, E11</a></td></tr>
+    <tr><td><b>O6</b></td><td>构造拓扑和与商拓扑，用商拓扑读出「认同不可区分世界」</td><td><a href="#sumquot">§8</a></td><td><a href="#ex">E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：为什么不想列出全部开集</h2>
+  <p class="lead">L08 里每个拓扑都是直接列出整个 <span class="math">τ</span>。这在两三个点上是小事，在 <span class="math">ℝ</span> 上就荒唐了——开集的集合族有多少？多到没法写下来。讲义说得很直白：直接指定全部开集「有时这很繁琐，实际工作中通常只指定一个可以生成整个拓扑的子族」。</p>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>它解决的是<strong>「怎么用有限的信息规定无限的结构」</strong>。这不是偷懒，而是 L02 闭包系统的老套路：闭集族由生成元决定，闭包算子由「补到最小封闭」算出。这里同理——指定一族「基本可验证命题」，让 (O2)(O3) 两条封闭条件自动补齐其余。你要做的只是验证生成元够不够、生成的拓扑是不是你要的。</p>
+    <p>认识论上更顺：一个认识主体未必能一口气列出所有可验证命题，但他手里总有若干<strong>基本检查手段</strong>（「测温度」「看颜色」「查这一段序列」）。复杂的可验证命题就是这些基本检查的组合。基和子基就是把「基本检查手段」形式化。</p>
+  </div>
+  <p class="src"><b>来源：</b>拓扑讲义第 249–250 行、§2.2 开头。</p>
+</section>
+
+<!-- ============ O1 基 ============ -->
+<section id="basis">
+  <h2><span class="sn">3</span>基：基本可验证命题 <span class="tag top">O1</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>基回答「哪些可验证命题算基本」。定义只有一句话，但要用它干活得会两件事：一是验证某族确实是基（每个开集都能由它拼出），二是用基去检验两个拓扑是否相等——因为只需检查基本开集，不用遍历全部开集。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.1（拓扑讲义定义 2.2.4）</span></div>
+    <p>设 <span class="math">⟨X, τ⟩</span> 为拓扑空间。若每个 <span class="math">U ∈ τ</span> 都可写成</p>
+    <div class="formula">U = ⋃<sub>i∈I</sub> V<sub>i</sub>，其中 (V<sub>i</sub>)<sub>i∈I</sub> ⊆ 𝓑</div>
+    <p>就称 <span class="math">𝓑 ⊆ τ</span> 为 <span class="math">τ</span> 的一个<strong>基</strong>。元素叫基本开集。约定：<span class="math">ℝ</span> 上以开区间为基；空并 = <span class="math">∅</span>。</p>
+    <p>讲义点明三个关系：<span class="math">τ</span> 是对任意并封闭的基；把子基对有限交封闭就得到基；但<strong>基本身不必对交封闭</strong>（脚注 3）。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>实直线 <span class="math">ℝ</span> 上所有开区间 <span class="math">(x,y)</span> 构成 Euclidean 拓扑的基（例 2.2.7）。<span class="math">U ⊆ ℝ</span> 开当且仅当 <span class="math">∀z ∈ U ∃x,y</span> 使 <span class="math">x &lt; z &lt; y</span> 且 <span class="math">(x,y) ⊆ U</span>——这就是微积分里「开集」的老定义，现在知道它只是「区间的任意并」罢了。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>Cantor 空间 <span class="math">2<sup>ω</sup></span>（例 2.2.8）：对有限二进制序列 <span class="math">s</span>，令柱集 <span class="math">C(s) = {x ∈ 2<sup>ω</sup> : s ⊴ x}</span>（<span class="math">x</span> 以 <span class="math">s</span> 为初段）。柱集构成基，因为两个柱集之交或为空、或仍是柱集（讲义脚注提醒：不相容初段的交为空，严格说要把 <span class="math">∅</span> 加进基，或用脚注 4 的局部条件）。认识论读法极漂亮：<strong>一次只检查有限长前缀，就能验证一个命题</strong>——柱集就是「有限信息可验证」的形式化。L09 后面证明它等于可数个离散二点集的积。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>别把「基」误认成必须对交封闭。开区间对交封闭（交还是开区间），但一般基不保证这点；讲义脚注 3 专门提醒。真正的分界是：基只需能拼出全部开集；若还想从它直接生成拓扑（不事先有 <span class="math">τ</span>），才需要命题 2.2.5 的覆盖 + 二元交封闭条件。这两个角色别混。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 2.2.4、脚注 2/3、例 2.2.7、例 2.2.8。</p>
+</section>
+
+<!-- ============ O2 子基 ============ -->
+<section id="subbasis">
+  <h2><span class="sn">4</span>子基与生成唯一拓扑 <span class="tag log">O2</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>基有时还是太大——开区间已经够多，柱集也一大堆。子基再退一步：只给最原始的检查手段，连交封闭都不要求。然后问一个关键问题：随便给一族子集 <span class="math">𝓒</span>，能不能<strong>唯一地</strong>造出一个拓扑以它为子基？命题 2.2.5 说能，而且给出了配方——这就是本讲的生成机。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.1（拓扑讲义定义 2.2.4 后半）</span></div>
+    <p>若 <span class="math">𝓢 ⊆ τ</span> 中元素的全部有限交所成族构成 <span class="math">τ</span> 的一个基，就称 <span class="math">𝓢</span> 为一个<strong>子基</strong>。约定空交为全集：<span class="math">⋂<sub>V∈∅</sub>V = X</span>，逻辑上空合取为 <span class="math">⊤</span>（脚注 2）。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">4.2（拓扑讲义命题 2.2.5，生成机）</span></div>
+    <ol>
+      <li>设 <span class="math">𝓒 ⊆ 𝓟(X)</span>。存在<strong>唯一</strong>的 <span class="math">X</span> 上拓扑以 <span class="math">𝓒</span> 为子基。配方：先把 <span class="math">𝓒</span> 对有限交封闭，再把所得族对任意并封闭。</li>
+      <li>若进一步 (1) <span class="math">𝓒</span> 覆盖 <span class="math">X</span>（<span class="math">⋃𝓒 = X</span>），且 (2) <span class="math">𝓒</span> 对二元交封闭，则存在唯一的以 <span class="math">𝓒</span> 为<strong>基</strong>的拓扑。配方：直接对 <span class="math">𝓒</span> 取任意并。</li>
+    </ol>
+    <p>讲义脚注 4：条件 (2) 可弱化为局部条件——若 <span class="math">x ∈ U<sub>1</sub> ∩ U<sub>2</sub></span>，<span class="math">U<sub>1</sub>,U<sub>2</sub> ∈ 𝓒</span>，则存在 <span class="math">U<sub>3</sub> ∈ 𝓒</span> 使 <span class="math">x ∈ U<sub>3</sub> ⊆ U<sub>1</sub> ∩ U<sub>2</sub></span>。这是「在每点附近够用即可」的版本，Cantor 柱集用的就是它。</p>
+  </div>
+
+  <div class="intu"><div class="bt">认识论读法（讲义注 2.2.1）</div>
+    <p><span class="math">τ</span> 是全部可验证命题；基 <span class="math">𝓑</span> 是一组<strong>基本可验证命题</strong>，其余命题靠<strong>弱化推理</strong>（对基本命题取析取 = 任意并）得到。子基则是更原始的命题：先<strong>加强知识</strong>（有限合取 = 有限交），再<strong>弱化知识</strong>（析取 = 任意并），两步合起来生成全部可验证命题。一句话：<span class="math">有限交 + 任意并 = 加强 + 弱化 = 子基生成机</span>。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>讲义例 2.2.6 的四世界模型：<span class="math">X = {a,b,c,d}</span>，按「乌鸦黑 / 不黑」「天鹅白 / 不白」分成四格。只指定子基 <span class="math">𝓢 = {{c,d}, {b,d}}</span>（即「有非白天鹅」与「有非黑乌鸦」），先取有限交（得 <span class="math">{d}</span>），再取任意并，生成 <span class="math">τ = {∅, X, {c,d}, {b,d}, {d}, {b,c,d}}</span>——恰好是全部可验证命题。<strong>两条基本检查手段，生成了六个命题。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>一般积拓扑（§7）是子基生成机的真正用武之地：给 <span class="math">∏<sub>i∈I</sub>X<sub>i</sub></span> 的子基取「只在第 <span class="math">i</span> 个坐标受限」的集合 <span class="math">π<sub>i</sub><sup>−1</sup>(U)</span>，有限交后就是「有限多个坐标受限」，任意并补齐全部开集。<strong>没有子基，一般积拓扑的定义会笨重得多。</strong>这正说明命题 2.2.5 不是纸面练习，而是构造工具。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>第一条配方对任意 <span class="math">𝓒</span> 都成立——哪怕 <span class="math">𝓒</span> 不覆盖 <span class="math">X</span>、不交封闭。比如 <span class="math">𝓒 = {{a}}</span> 在 <span class="math">X={a,b}</span> 上生成的拓扑是 <span class="math">{∅,{a},X}</span>（别忘了空交给 <span class="math">X</span>）。别误以为「生成基」必须满足第二条的覆盖条件——那条只对「以 <span class="math">𝓒</span> 为基」成立。两个配方、两套条件，分清哪条配哪个。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 2.2.4、命题 2.2.5 及脚注 2/4、注 2.2.1、例 2.2.6。</p>
+</section>
+
+<!-- ============ O3 拓扑比较 ============ -->
+<section id="compare">
+  <h2><span class="sn">5</span>拓扑比较：细 / 粗与知识多寡 <span class="tag top">O3</span><span class="tag log">O3</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>同一个 <span class="math">X</span> 上可以装不同的拓扑，L08 末尾已经列了五种。现在要给「哪个更大」一个名字和判定法。认识论上这问的是：<strong>哪个框架能验证更多命题</strong>。而直接比较两个拓扑的全部开集太累，得靠基来判。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.1（拓扑讲义定义 2.2.9）</span></div>
+    <p>设 <span class="math">τ, τ′</span> 是 <span class="math">X</span> 上的拓扑。若 <span class="math">τ ⊆ τ′</span>，称 <span class="math">τ</span> 比 <span class="math">τ′</span> <strong>粗</strong>，<span class="math">τ′</span> 比 <span class="math">τ</span> <strong>细</strong>。细 = 开集更多 = 可验证命题更多 = 知识更多。</p>
+  </div>
+
+  <div class="thm"><div class="bt">引理 <span class="num">5.2（拓扑讲义引理 2.2.10）</span></div>
+    <p>设 <span class="math">𝓑<sub>τ</sub>, 𝓑<sub>τ′</sub></span> 分别为 <span class="math">τ, τ′</span> 的基。则 <span class="math">τ ⊆ τ′</span> 当且仅当：对任意 <span class="math">x ∈ X</span> 及含 <span class="math">x</span> 的 <span class="math">τ</span>-基本开集 <span class="math">U</span>，存在 <span class="math">U′ ∈ 𝓑<sub>τ′</sub></span> 使 <span class="math">x ∈ U′ ⊆ U</span>。</p>
+    <p>证明机关：(<span class="math">⇒</span>) <span class="math">U ∈ τ′</span> 故是若干 <span class="math">𝓑<sub>τ′</sub></span> 元素之并，含 <span class="math">x</span> 的那块即所求。(<span class="math">⇐</span>) 对 <span class="math">U ∈ τ</span> 的每个点 <span class="math">x</span> 取 <span class="math">U′<sub>x</sub></span>，则 <span class="math">U = ⋃<sub>x∈U</sub>U′<sub>x</sub> ∈ τ′</span>。<strong>「逐点找小块」是比较拓扑的标准手法，后面连续映射也用它。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>例 2.2.11：形如 <span class="math">(l, ∞)</span> 的集合覆盖 <span class="math">ℝ</span> 且对二元交封闭，故生成拓扑 <span class="math">τ<sub>F</sub></span>。由引理 2.2.10，<span class="math">τ<sub>F</sub> ⊊ τ<sub>E</sub></span>（Euclidean 拓扑）：包含是因为 <span class="math">x ∈ (l,∞)</span> 时 <span class="math">x ∈ (l, x+1) ⊆ (l,∞)</span>；严格是因为 <span class="math">0 ∈ (−1,1)</span> 却找不到 <span class="math">l</span> 使 <span class="math">0 ∈ (l,∞) ⊆ (−1,1)</span>。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>L08 的五种拓扑现在能排成一条知识阶梯：<span class="math">τ<sub>平凡</sub> ⊆ τ<sub>Alexandroff</sub> ⊆ ⋯ ⊆ τ<sub>离散</sub></span>。两端是「什么都验证不了」与「什么都验证得了」。商拓扑（§8）则往粗的方向走——把世界认同后，有些命题不再可分。<strong>比较拓扑就是比较认识框架的分辨力。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>「细」不等于「更好」。太细的拓扑（离散）里每个单点都可验证，但「归纳问题」那种结构性信息也消失了——一切都是并集，没有需要推理的封闭条件。反过来 <span class="math">τ<sub>F</sub> ⊊ τ<sub>E</sub></span> 的严格性证明里，关键词是「每点附近」：引理 5.2 的条件逐点检查，<strong>不能</strong>改成「存在一个 <span class="math">U′</span> 覆盖整个 <span class="math">U</span>」——后者要求太强，会把很多真包含判成假。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 2.2.9、引理 2.2.10 及证明、例 2.2.11。</p>
+</section>
+
+<!-- ============ O4 子空间 ============ -->
+<section id="subspace">
+  <h2><span class="sn">6</span>子空间：限制论域 <span class="tag top">O4</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>认识世界集 <span class="math">X</span> 里我们常常只关心一个子集 <span class="math">S</span>（比如只看有理数、只看 [0,1] 区间）。子空间拓扑回答：<strong>把论域限制到 <span class="math">S</span> 后，哪些命题还算可验证</strong>？最自然的答案是：原来可验证的命题，限制到 <span class="math">S</span> 上仍然可验证。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">6.1（拓扑讲义定义 2.3.1、引理 2.3.2）</span></div>
+    <p>设 <span class="math">⟨X,τ⟩</span> 为拓扑空间，<span class="math">S ⊆ X</span>。<span class="math">S</span> 上的<strong>子空间拓扑</strong>为 <span class="math">τ<sub>S</sub> = {U ∩ S : U ∈ τ}</span>。</p>
+    <p>若 <span class="math">𝓑</span> 是 <span class="math">τ</span> 的基，则 <span class="math">𝓑<sub>S</sub> = {U ∩ S : U ∈ 𝓑}</span> 是 <span class="math">τ<sub>S</sub></span> 的基（引理 2.3.2）。另一个好用的性质（命题 2.3.5）：先取积再取子空间，与先分别取子空间再取积，结果相同——两个构造<strong>可交换</strong>。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">ℤ ⊆ ℝ</span> 取子空间拓扑：对 <span class="math">n ∈ ℤ</span>，开区间 <span class="math">(n−½, n+½)</span> 与 <span class="math">ℤ</span> 相交得 <span class="math">{n}</span>，故每个单点开，<span class="math">ℤ</span> 离散（讲义第 388–391 行）。同一个 <span class="math">ℝ</span>，限制到不同子集会得到完全不同的认识框架。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>讲义在 <span class="math">ℤ</span> 之后立刻问：<span class="math">ℚ ⊆ ℝ</span> 作为子空间也离散吗？答案是不。这个对比是本讲最值得停下来的地方：<span class="math">ℤ</span> 的点彼此隔开（有不相交邻域），<span class="math">ℚ</span> 的点却处处稠密——任何两个有理数之间还有有理数，单个有理数无法用开区间单独圈出。<strong>同一个「取交」定义，在离散子集与稠密子集上给出相反结果</strong>；这正是子空间概念的本质：它继承的是原空间的<strong>分辨结构</strong>，不是人为指定。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>别以为「在 <span class="math">X</span> 中开的集合，限制到 <span class="math">S</span> 后仍开」这句话反过来说也行。<span class="math">S</span> 中开集一定是 <span class="math">U ∩ S</span>，但 <span class="math">S</span> 本身作为 <span class="math">S</span> 的子集总是开（取 <span class="math">U = X</span>），而 <span class="math">S</span> 在 <span class="math">X</span> 中未必开。另外，讲义特别提醒：把 <span class="math">[0,1]</span> 嵌入 <span class="math">ℝ</span> 是拓扑嵌入，但其像在 <span class="math">ℝ</span> 中<strong>并不开</strong>（第 949 行）——嵌入管的是同胚到像，不管像是否开。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 2.3.1、引理 2.3.2、命题 2.3.5、第 388–392 行、第 949 行。</p>
+</section>
+
+<!-- ============ O5 积拓扑 ============ -->
+<section id="product">
+  <h2><span class="sn">7</span>积拓扑：联合观察与有限坐标 <span class="tag top">O5</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>若一个世界由多个坐标描述（多个传感器、多个命题变元、多个坐标 <span class="math">x<sub>1</sub>,…,x<sub>n</sub></span>），把各坐标的拓扑简单相乘会出问题。积拓扑回答：<strong>「联合检查」的合法基本手段是什么</strong>？答案藏在子基里——一次只查一个坐标，有限次联合查有限个坐标。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">7.1（拓扑讲义定义 2.3.4、2.3.8、引理 2.3.6）</span></div>
+    <ol>
+      <li><strong>有限积</strong>：<span class="math">X × Y</span> 上积拓扑以所有 <span class="math">U<sub>0</sub> × U<sub>1</sub></span> 为基本开集，其中 <span class="math">U<sub>0</sub>, U<sub>1</sub></span> 分别开。若 <span class="math">𝓑<sub>X</sub>, 𝓑<sub>Y</sub></span> 是基，则 <span class="math">{U × V : U ∈ 𝓑<sub>X</sub>, V ∈ 𝓑<sub>Y</sub>}</span> 是积拓扑的基（引理 2.3.6）。</li>
+      <li><strong>一般积</strong>：设 <span class="math">(X<sub>i</sub>)<sub>i∈I</sub></span> 为拓扑空间族。在 <span class="math">∏<sub>i∈I</sub>X<sub>i</sub></span> 上，<span class="math">U = ∏<sub>i∈I</sub>U<sub>i</sub></span> 为基本开集，当且仅当 (1) 每个 <span class="math">U<sub>i</sub></span> 在 <span class="math">X<sub>i</sub></span> 中开；(2) <strong>除有限多个坐标外</strong> <span class="math">U<sub>i</sub> = X<sub>i</sub></span>。等价地，以「仅一个坐标受限、其余为 <span class="math">X<sub>i</sub></span>」的集合为子基本开集（命题 2.2.5 生成机）。</li>
+    </ol>
+    <p>讲义特别强调：这不是说任意无穷多个开集的积都开。<strong>有限坐标限制</strong>对许多性质在积下的保持至关重要。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>例 2.3.7：<span class="math">ℝ<sup>n</sup></span> 上以 <span class="math">n</span> 维开球为基得到通常拓扑，它等于 <span class="math">n</span> 个标准实直线的积拓扑。证明用引理 2.2.10 双向包含：球内找开矩形、矩形内找小球（取到各边距离的最小值 <span class="math">ε</span>）。这是多元微积分「开集 = 开矩形并」的严格版本。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>例 2.3.9：Cantor 空间 <span class="math">2<sup>ω</sup></span> 等于可数多个离散二点集 <span class="math">2={0,1}</span> 的积拓扑。柱集 <span class="math">C(s)</span>（有限前缀 <span class="math">s</span>）恰是「只有前 <span class="math">m+1</span> 个坐标受限、其余任意」的积基本开集：<span class="math">C(s) = {x<sub>0</sub>} × ⋯ × {x<sub>m</sub>} × ∏<sub>n&gt;m</sub>{0,1}</span>。<strong>「有限坐标限制」与「有限前缀可验证」是同一件事</strong>——这把 §3 的柱集基和 §7 的积拓扑接上了，也是后面 Cantor 空间紧致性（L18）与 S4 语义（L25）的舞台。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>最大的坑是把一般积误当有限积：若允许无穷多坐标受限，<span class="math">∏<sub>n∈ω</sub>{0}</span> 这样的集合会变成开集，而它在 <span class="math">2<sup>ω</sup></span> 里是单点——于是 Cantor 空间会变离散，紧致性等一堆性质全崩。讲义明确说「这不是说任意无穷多个开集的积都开」。另一个小边界：若 <span class="math">I = ∅</span>，空积是单点集，整套定义仍自洽（留给习题）。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 2.3.4、命题 2.3.5、引理 2.3.6、例 2.3.7、定义 2.3.8、例 2.3.9。</p>
+</section>
+
+<!-- ============ O6 和与商 ============ -->
+<section id="sumquot">
+  <h2><span class="sn">8</span>拓扑和与商拓扑：并置与认同 <span class="tag top">O6</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>最后两种构造走两个相反方向：<strong>拓扑和</strong>把几个认识框架并置（不交流、各自为政）；<strong>商拓扑</strong>把某些世界认同（宣布它们不可区分）。一个做加法，一个做除法，却都用生成机或原像定义规规矩矩地造出拓扑。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">8.1（拓扑讲义定义 2.3.10、3.2.5）</span></div>
+    <ol>
+      <li><strong>拓扑和</strong>：空间族 <span class="math">(X<sub>i</sub>)<sub>i∈I</sub></span> 的拓扑和是不交并 <span class="math">⨆<sub>i∈I</sub>X<sub>i</sub></span>，配备：<span class="math">U</span> 开当且仅当每个切片 <span class="math">U(i) = {a ∈ X<sub>i</sub> : (a,i) ∈ U}</span> 在 <span class="math">X<sub>i</sub></span> 中开。若 <span class="math">𝓑<sub>i</sub></span> 是 <span class="math">X<sub>i</sub></span> 的基，把各分量的基本开集放进不交并即得拓扑和的一个基（引理 2.3.11）。</li>
+      <li><strong>商拓扑</strong>：设 <span class="math">∼</span> 是 <span class="math">X</span> 上的等价关系，<span class="math">q : X → X/∼</span> 为自然投影 <span class="math">q(x) = [x]<sub>∼</sub></span>。<span class="math">X/∼</span> 上定义：<span class="math">U</span> 开当且仅当 <span class="math">q<sup>−1</sup>[U]</span> 在 <span class="math">X</span> 中开。配备此拓扑后 <span class="math">q</span> 是商映射（定义 3.2.1、3.2.5）。</li>
+    </ol>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>商拓扑的经典例子：在 <span class="math">I = [0,1]</span> 上令 <span class="math">x ∼ y ⟺ x=y</span> 或 <span class="math">{x,y}={0,1}</span>。商空间 <span class="math">I/∼</span> 把端点粘合成圆，与 <span class="math">S<sup>1</sup></span> 的子空间拓扑同胚（例 3.2.6）。讲义还给了 Möbius 带（例 3.2.7）：先子空间、再积、再商，三步给出正确的几何结构。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>认识论读法才是重点。<strong>商 = 宣布某些世界不可区分</strong>：若 <span class="math">x ∼ y</span>，则任何在商空间中可验证的命题都无法分开 <span class="math">x</span> 与 <span class="math">y</span>——因为 <span class="math">q<sup>−1</sup>[U]</span> 开意味着若含 <span class="math">[x]</span> 就整块含 <span class="math">[y]</span>。这与 L01 的等价关系、L03 的商代数是同一个动作的三种面貌：<strong>按不可区分性做商</strong>。商拓扑的「<span class="math">U</span> 开 ⟺ 原像开」正是「商上的命题可验证 ⟺ 拉回后可验证」。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>商映射必满射且连续，但<strong>不一定开、也不一定闭</strong>（引理 3.2.3 只给了部分逆：(2.q) 满射连续开 ⟹ 商，(3.q) 满射连续闭 ⟹ 商；注 3.2.1 提醒反向不成立）。构造商拓扑时别偷懒直接说「开集的像开」——那会得到更强的条件，可能造出错误的拓扑。拓扑和这边：不交并的「不交」是字面意思，若两分量有公共点必须先标记成不同副本，否则切片定义会打架。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 2.3.10、引理 2.3.11、定义 3.2.1、引理 3.2.3、注 3.2.1、定义 3.2.5、例 3.2.6、例 3.2.7。</p>
+</section>
+
+<!-- ============ 融合接口 ============ -->
+<section id="fusion">
+  <h2><span class="sn">9</span>融合接口</h2>
+  <div class="fusion"><div class="bt">代数 ↔ 逻辑 ↔ 拓扑</div>
+    <table>
+      <tr><th>代数侧（L02 / L04）</th><th>逻辑侧</th><th>拓扑侧（本讲）</th></tr>
+      <tr><td>闭包系统的生成元</td><td>基本可验证命题</td><td>子基 <span class="math">𝓢</span></td></tr>
+      <tr><td>闭包算子：生成最小闭集</td><td>加强知识（∧）+ 弱化知识（∨）</td><td>命题 2.2.5：有限交再任意并</td></tr>
+      <tr><td>同余 ↔ 商代数 <span class="math">A/θ</span>（L03）</td><td>不可区分世界被认同</td><td>商拓扑 <span class="math">X/∼</span>，<span class="math">U</span> 开 ⟺ <span class="math">q<sup>−1</sup>[U]</span> 开</td></tr>
+      <tr><td>子代数 / 积代数</td><td>限制论域 / 多坐标联合观察</td><td>子空间 / 积拓扑</td></tr>
+    </table>
+    <p><strong>一句话：</strong>L02 学会了「少量生成元决定封闭结构」，本讲把它在拓扑里用了五遍——生成元就是基本可验证命题。商拓扑则与 L03 的商代数共享同一个「按不可区分性认同」的动作。这两条线索在 L23 Stone 对偶与 L25 空间模态逻辑里正式合流。</p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+  <div class="box"><ol>
+    <li><span class="tag top">O1</span> 证明 <span class="math">{(a,b) : a &lt; b} ∪ {∅}</span> 是 <span class="math">ℝ</span> 上某拓扑的基，并写出该拓扑。它和 Euclidean 拓扑相同吗？</li>
+    <li><span class="tag log">O1</span> 举一个基不对交封闭的例子（提示：想想 <span class="math">ℝ<sup>2</sup></span> 上的开矩形与开圆盘的关系），说明为什么这不妨碍它生成拓扑。</li>
+    <li><span class="tag top">O2</span> 对 <span class="math">X = {a,b,c}</span>、<span class="math">𝓒 = {{a,b},{b,c}}</span>，用命题 2.2.5 的配方写出以 <span class="math">𝓒</span> 为子基的唯一拓扑，列出全部开集。</li>
+    <li><span class="tag log">O2</span> 验证讲义例 2.2.6：从 <span class="math">𝓢 = {{c,d},{b,d}}</span> 出发，先取有限交、再取任意并，确认得到的正是 <span class="math">τ = {∅,X,{c,d},{b,d},{d},{b,c,d}}</span>。</li>
+    <li><span class="tag top">O3</span> 用引理 2.2.10 证明 <span class="math">τ<sub>F</sub> ⊊ τ<sub>E</sub></span>（例 2.2.11），并指出严格性证明里「找不到 <span class="math">l</span>」这一步用到了 <span class="math">(−1,1)</span> 的什么性质。</li>
+    <li><span class="tag log">O3</span> 把 <span class="math">ℝ</span> 上「形如 <span class="math">(−∞, l)</span>」生成的拓扑记为 <span class="math">τ<sub>L</sub></span>，比较 <span class="math">τ<sub>L</sub></span> 与 <span class="math">τ<sub>F</sub></span> 的粗细，并从「能验证什么」的角度解释结论。</li>
+    <li><span class="tag top">O4</span> 详细证明 <span class="math">ℚ ⊆ ℝ</span> 的子空间拓扑不离散：对任意 <span class="math">q ∈ ℚ</span> 与含 <span class="math">q</span> 的开区间 <span class="math">U</span>，说明 <span class="math">U ∩ ℚ ≠ {q}</span>。</li>
+    <li><span class="tag log">O4</span> 证明命题 2.3.5 的可交换性：写出两边的基，用集合等式 <span class="math">(U<sub>X</sub> × U<sub>Y</sub>) ∩ (S<sub>X</sub> × S<sub>Y</sub>) = (U<sub>X</sub> ∩ S<sub>X</sub>) × (U<sub>Y</sub> ∩ S<sub>Y</sub>)</span> 完成论证。</li>
+    <li><span class="tag top">O5</span> 证明引理 2.3.6：若 <span class="math">𝓑<sub>X</sub>, 𝓑<sub>Y</sub></span> 是基，则 <span class="math">{U × V : U ∈ 𝓑<sub>X</sub>, V ∈ 𝓑<sub>Y</sub>}</span> 是积拓扑的基。</li>
+    <li><span class="tag top">O5</span> 说明为什么一般积要求「除有限多个坐标外 <span class="math">U<sub>i</sub> = X<sub>i</sub></span>」：若允许无穷多坐标受限，证明 <span class="math">2<sup>ω</sup></span> 会变成离散空间，并指出这会破坏哪个后续性质（提示：L18 紧致）。</li>
+    <li><span class="tag log">O5</span> 证明例 2.3.9 的另一半：每个柱集 <span class="math">C(s)</span> 是积基本开集；并解释空序列 <span class="math">s</span> 对应的柱集是什么。</li>
+    <li><span class="tag top">O6</span> 验证定义 3.2.5 的两件事：(a) <span class="math">U</span> 开当且仅当 <span class="math">q<sup>−1</sup>[U]</span> 开确实给出拓扑；(b) 配备此拓扑后 <span class="math">q</span> 是商映射。</li>
+    <li><span class="tag log">O6</span> 从认识论角度解释商拓扑：若 <span class="math">x ∼ y</span>，证明任何商空间中的开集 <span class="math">U</span> 都不能只含 <span class="math">[x]</span> 而不含 <span class="math">[y]</span>（其实二者是同一个点），并说明这与 L03 商代数的「按不可区分性认同」如何对应。</li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L08.html">← 上一讲：L08 开集 = 可验证命题</a>
+  <a href="L10.html">下一讲：L10 闭集、邻域、闭包与内部算子 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L09 · 来源：拓扑讲义 Ch2 §2.2–2.3、§3.2（定义 2.2.4、命题 2.2.5、注 2.2.1、定义 3.2.5）· v0.1</footer>
+
+</main></div>
+</body>
+</html>

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L30 案例 9：判别式簇的应用 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第七篇 案例工坊</span><span class="sep">/</span><span>L30</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 30 · 2 学时 · 案例工坊收尾 · 十三周课程的最后一讲</div>
+  <h1>案例 9：判别式簇的应用</h1>
+  <div class="sub">一个只会说「相等取 z，否则取 u」的项，把准等式压成等式，把一个代数类证明是簇，把不可判定性从半群搬进关系代数。UAL 把这一讲排在十三周课程的最后，不是它简单，而是它把前面所有工具一次性兑现</div>
+  <div class="metarow"><span>来源：UAL §2.7（定义 2.7.1/2.7.2、定理 2.7.3/2.7.5/2.7.8、命题 2.7.6、练习 2.7.4）、§7.1（引理 7.1.5/7.1.6/7.1.7、定理 7.1.4/7.1.8/7.1.9/7.1.10/7.1.11、问题 7.1.12、图 7.1/7.3/7.4）、Preface「Teaching the book」第 13 讲；Bergman Ch6–Ch7；回指 L06 判别式项、L07 工具箱、L19 桥之二、L22 判定桥、L24 关系代数、L27 四步流程、L29 Table 5.1</span>
+    <span class="tag alg">代数</span><span class="tag log">逻辑</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">O1　为什么拿它收尾；两种「难」</a></li>
+  <li><a href="#compress">O2　核心引擎：准等式压成等式（命题 2.7.6 逐步）</a></li>
+  <li><a href="#structure">O3　结构定理：HSPK = SPUpK 与子直既约</a></li>
+  <li><a href="#bra">O4　主案例：BRA 是簇（定理 7.1.4 全链）</a></li>
+  <li><a href="#cost">O5　代价：不可有限公理化与不可判定（7.1.8/7.1.9）</a></li>
+  <li><a href="#logic">O6　拨回逻辑；案例工坊九例收束</a></li>
+  <li><a href="#examples">三层例：典型 / 本质 / 边界</a></li>
+  <li><a href="#fusion2">融合接口：第十二张图</a></li>
+  <li><a href="#ex">习题</a></li>
+</ol></div>
+
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系 <span class="tag alg">先摆牌</span></h2>
+  <div class="box"><div class="bt">本讲新概念（八个，按依赖排序）</div>
+    <ol>
+      <li><strong>准等式</strong>：等式之间的蕴涵 <span class="math">(σ₁=ρ₁ ∧ ⋯ ∧ σₙ=ρₙ) → σ₀=ρ₀</span>；代数的「推理规则」，也是逻辑可容许规则的原型。</li>
+      <li><strong>开关项 <span class="math">c(x)</span></strong>：有布尔缩并时 <span class="math">c(x)=0</span> 当 <span class="math">x=0</span>、否则 <span class="math">1</span>；它和判别式项互定义。</li>
+      <li><strong>压缩等式 <span class="math">e(q)</span></strong>：对每个准等式造一个等式，使 <span class="math">K ⊨ e(q) ↔ q</span> 而 <span class="math">HSPK ⊨ e(q) → q</span>；命题 2.7.6 的产物。</li>
+      <li><strong>结构等式 <span class="math">HSPK = SPUpK</span></strong>：判别式簇里「同态像」可以被「超积 + 子代数」吸收；定理 2.7.5。</li>
+      <li><strong>子直既约的透明化</strong>：<span class="math">Sir(HSPK) = Sir(SUpK)</span>，且每个成员单；推论 2.7.8 + 练习 2.7.4(1)。</li>
+      <li><strong>伪公理化</strong>：<span class="math">K = Rd<sub>U</sub> Mod(Σ)</span>——在大语言里一阶定义、再缩回并限制到 <span class="math">U</span>；伪公理化类对超积封闭（引理 7.1.7 的关键）。</li>
+      <li><strong>BRA / setBRA / BSR / RRA</strong>：布尔关系代数、集合关系代数、布尔半群关系代数、可表示关系代数；<span class="math">BRA = SP setBRA</span>。</li>
+      <li><strong>开关项 <span class="math">c(x) = 1 ◦ x ◦ 1</span></strong>：关系代数里的判别式载体；<span class="math">x ≠ 0</span> 时为全关系 <span class="math">U×U</span>，<span class="math">x = 0</span> 时为空。</li>
+    </ol>
+  </div>
+  <div class="diagram"><div class="bt">依赖图（箭头 = 「先懂左边才懂右边」）</div>
+<pre>  L06 判别式项 τ / 开关项 c ──┬──► 命题 2.7.6 准等式压等式 e(q)
+  L02 闭包 Mod/Th、Qeq ───────┤            │
+                              │            ▼
+  L04 HSP / 超积 Łoś ─────────┼──► 定理 2.7.5 HSPK = SPUpK
+                              │            │
+  L07 单性 / 子直既约 ─────────┴──► 推论 2.7.8 Sir(HSPK) = Sir(SUpK)
+                                           │
+                      ┌────────────────────┴────────────────────┐
+                      ▼                                         ▼
+        引理 7.1.5/7.1.6  Sir(BRA) 有开关项 1◦x◦1       L24 RRA 的背景
+                      │                                         │
+        引理 7.1.7 伪公理化（三排序 S,P,R）──┐                  │
+                      │                      │                  │
+                      └──────────┬───────────┘                  │
+                                 ▼                              ▼
+                     定理 7.1.4 BRA 是簇      定理 7.1.8/7.1.9/7.1.10
+                                 │            不可有限基、r.e. 不可判定
+                                 │                              │
+                                 └──────────┬───────────────────┘
+                                            ▼
+                     定理 4.2.5/4.2.6 等式公理 ⇄ 推理系统（拨回逻辑）
+                                            ▼
+                     L27 四步流程 + L29 Table 5.1：案例工坊九例收束</pre>
+  </div>
+  <p class="src"><b>与前讲的分工：</b>L06 定义 6.4 已经给出判别式项与判别式簇，定理 6.5 列出了 <span class="math">BA</span> 是判别式簇、<span class="math">HSPK = SPUpK</span>、准等式可压成等式三条结论，但<strong>只列不证、也没有应用</strong>。L07 把它当作工具箱的背景（quasiprimal、子直既约、Jónsson 引理）。本讲补上两样东西：<strong>命题 2.7.6 的完整推导</strong>，以及 <span class="math">§7.1</span> 把机器开到关系代数上的<strong>全链证明</strong>。这是 UAL「十三周泛代数课程」第 13 讲——Selected applications from section 7.1。</p>
+</section>
+
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习</h2>
+  <div class="box"><div class="bt">六个目标，每个都有对应讲解和练习</div>
+    <table>
+      <tr><th>目标</th><th>要拿到什么</th><th>讲解</th><th>练习</th></tr>
+      <tr><td><span class="tag alg">O1</span></td><td>说清「准簇难、簇好」与判别式项为何能收尾</td><td><a href="#motive">§2</a></td><td><a href="#ex">E1, E2</a></td></tr>
+      <tr><td><span class="tag alg">O2</span></td><td>逐步复现 e(q) 的归纳构造与两侧证明</td><td><a href="#compress">§3</a></td><td><a href="#ex">E3, E4, E5</a></td></tr>
+      <tr><td><span class="tag alg">O3</span></td><td>证明 HSPK = SPUpK，读出 Sir(HSPK) 的刻画</td><td><a href="#structure">§4</a></td><td><a href="#ex">E6, E7</a></td></tr>
+      <tr><td><span class="tag alg">O4</span></td><td>走通引理 7.1.5–7.1.7 → 定理 7.1.4 的证明链</td><td><a href="#bra">§5</a></td><td><a href="#ex">E8, E9</a></td></tr>
+      <tr><td><span class="tag log">O5</span></td><td>不可有限公理化；Eq(BRA) r.e. 不可判定的两步解释</td><td><a href="#cost">§6</a></td><td><a href="#ex">E10, E11</a></td></tr>
+      <tr><td><span class="tag log">O6</span></td><td>把判别式簇的结论拨回逻辑；九例收束</td><td><a href="#logic">§7</a></td><td><a href="#ex">E12, E13</a></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============ O1 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>为什么拿它收尾；两种「难」 <span class="tag alg">O1</span></h2>
+  <p class="lead">UAL 前言的「Teaching the book」列了十三周泛代数课程，最后一写的是：<em>Selected applications from section 7.1</em>。前面十二周造了同余、子直积、超积、自由代数、布尔代数、判别式簇、BAO；这一周不造新工具，只把判别式簇开到关系代数上，看它能挣来什么。</p>
+
+  <div class="intu"><div class="bt">直觉 · 「难」有两种，判别式项只治其中一种</div>
+    <p>描述一类代数有两种方式。用<strong>等式</strong>（如 <span class="math">x ∪ y = y ∪ x</span>）得到的是<strong>簇</strong>，算子 <span class="math">HSP</span> 封闭、自由代数存在、Birkhoff 定理可用；用<strong>准等式</strong>（如「若 <span class="math">x·y = 0</span> 则 <span class="math">y·x = 0</span>」）得到的是<strong>准簇</strong>，只有 <span class="math">SPP<sub>U</sub></span> 封闭，工具箱小一圈。</p>
+    <p>关系代数的抽象公理天然带这种「若…则…」：例如 <span class="math">x</span> 是函数当且仅当 <span class="math">x<sup>−1</sup> ◦ x ≤ Id</span> 这类条件。于是问题变成：<strong>能不能把准等式改写成等式，让准簇升格为簇？</strong>判别式项就是干这件事的——它能在代数内部实现「if-then-else」，于是「若前提成立则结论成立」可以被写成一条永远成立的等式。</p>
+  </div>
+
+  <div class="def"><div class="bt">回顾 <span class="num">L06 定义 6.4 = UAL 定义 2.7.1/2.7.2</span></div>
+    <p>集合 <span class="math">A</span> 上的<strong>判别式函数</strong></p>
+    <div class="formula">τ(x, y, z, u) = z　若 x = y；　τ(x, y, z, u) = u　若 x ≠ y.</div>
+    <p>若一族代数 <span class="math">K</span> 有<strong>公共</strong>判别式项 <span class="math">τ</span>，则 <span class="math">HSPK</span> 叫<strong>判别式簇</strong>。有布尔缩并时，判别式项等价于<strong>开关项</strong> <span class="math">c(x)</span>（<span class="math">x=0</span> 取 0、否则取 1），两者互定义：</p>
+    <div class="formula">τ(x, y, z, u) = [−c(x ⊕ y) ∩ z] ∪ [c(x ⊕ y) ∩ u],　　c(x) = τ(x, 0, 0, 1).</div>
+    <p>这里 <span class="math">⊕</span> 是对称差。三元版本 <span class="math">t(x,y,z) = τ(x,y,z,x)</span> 与四元版互定义：<span class="math">τ(x,y,z,u) = t(t(x,y,z), t(x,y,u), z)</span>。</p>
+  </div>
+
+  <div class="ex"><div class="bt">典型 · 判别式项的第一后果：所有成员都单</div>
+    <p>设 <span class="math">R</span> 是 <span class="math">A</span> 上非恒等同余，取 <span class="math">u R v</span> 且 <span class="math">u ≠ v</span>。对任意 <span class="math">a, b</span>：</p>
+    <div class="formula">a = τ(u, u, a, b)　R　τ(u, v, a, b) = b.</div>
+    <p>于是 <span class="math">R = A×A</span>——<strong>有判别式项的代数是单的</strong>（练习 2.7.4(1)）。这一行是本章的发动机：它让子直既约成员和「全关系代数」划上等号（O4 的引理 7.1.6），也让 <span class="math">BA</span> 成为最小例子（定理 2.7.3：<span class="math">2</span> 有判别式项且 <span class="math">BA = HSP{2}</span>）。</p>
+  </div>
+
+  <div class="warn"><div class="bt">别以为判别式簇万能</div>
+    <p>下一讲之前先把边界钉死：<strong>群簇没有判别式项</strong>（判别式项逼出单性，而 <span class="math">ℤ</span> 不单）；<strong><span class="math">RCA<sub>ω</sub></span> 不是判别式簇</strong>；<strong><span class="math">ICrs<sub>n</sub></span>（<span class="math">n ≥ 2</span>）也不是</strong>。判别式簇是一把好用的钥匙，不是万能钥匙——它恰好能开关系代数这一扇门。</p>
+  </div>
+</section>
+
+<!-- ============ O2 准等式压成等式 ============ -->
+<section id="compress">
+  <h2><span class="sn">3</span>核心引擎：准等式压成等式 <span class="tag alg">O2</span></h2>
+  <p class="lead">这是全讲最关键的一节，也是最容易被掠过的一节。教材把命题 2.7.6 的证明写得紧凑，这里按 L22 的规矩逐步拆开，不跳关键细节。读完这一节，后面所有「判别式簇的威力」都只是套用。</p>
+
+  <div class="def"><div class="bt">记号 <span class="num">准等式与长度</span></div>
+    <p>准等式形如</p>
+    <div class="formula">q:　(σ₁ = ρ₁ ∧ ⋯ ∧ σₙ = ρₙ) → σ₀ = ρ₀.</div>
+    <p>左边等式的个数 <span class="math">n</span> 叫 <span class="math">length(q)</span>；<span class="math">n = 0</span> 时它就是普通等式。记 <span class="math">q′: (σ₂=ρ₂ ∧ ⋯ ∧ σₙ=ρₙ) → σ₀=ρ₀</span>，于是 <span class="math">length(q′) = n−1</span>，并且</p>
+    <div class="formula">q　等价于　σ₁ = ρ₁ → q′.</div>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">2.7.6</span></div>
+    <p>设 <span class="math">K</span> 有判别式项 <span class="math">τ</span>。则对任意准等式 <span class="math">q</span>，存在一个等式 <span class="math">e(q)</span>，使得</p>
+    <div class="formula">(i)　K ⊨ e(q) ↔ q　　(ii)　HSPK ⊨ e(q) → q.</div>
+    <p class="pt">注意两侧的分工：(i) 在 <span class="math">K</span> 上双向等价，(ii) 在整个簇里只保「等式推出准等式」这一个方向——这个不对称正是证明的关窍。</p>
+  </div>
+
+  <div class="proof"><span class="pt">证明 · 对 length(q) 归纳。</span>
+    <ol>
+      <li><strong>基步 <span class="math">n = 0</span>。</strong> <span class="math">q</span> 本身就是等式，取 <span class="math">e(q) = q</span>，两条显然。</li>
+      <li><strong>归纳假设。</strong>对所有 <span class="math">q′</span> 且 <span class="math">length(q′) &lt; n</span>，存在等式 <span class="math">σ = ρ</span> 使
+        <div class="formula">K ⊨ (σ = ρ) ↔ q′　且　HSPK ⊨ (σ = ρ) → q′.　　(2.27)</div>
+      </li>
+      <li><strong>关键构造。</strong>令
+        <div class="formula">e(q)　:=　τ(σ₁, ρ₁, σ, ρ) = ρ.</div>
+        先读懂这个项：若 <span class="math">σ₁ = ρ₁</span>，判别式返回第三参 <span class="math">σ</span>，于是 <span class="math">e(q)</span> 说的是 <span class="math">σ = ρ</span>（归纳假设里 <span class="math">q′</span> 的替身）；若 <span class="math">σ₁ ≠ ρ₁</span>，返回第四参 <span class="math">ρ</span>，于是 <span class="math">e(q)</span> 自动成立。<strong>「前提不成立时等式平凡成立」——if-then-else 把蕴涵伪装成了全称等式。</strong></li>
+      <li><strong>证 (2.28)：<span class="math">K ⊨ q → e(q)</span>。</strong>取 <span class="math">A ∈ K</span> 与任意赋值 <span class="math">ā</span>。反证：设 <span class="math">A ⊨ ¬e(q)[ā]</span>，即 <span class="math">τ(σ₁,ρ₁,σ,ρ) ≠ ρ</span>。判别式只在第四种情形给出不同于第三参的值，故必有
+        <div class="formula">A ⊨ σ₁ = ρ₁[ā]　　(2.30)　　且　　A ⊨ σ ≠ ρ[ā].</div>
+        由后一件与 (2.27) 的第一半（<span class="math">K ⊨ (σ=ρ) ↔ q′</span>）得 <span class="math">A ⊭ q′[ā]</span>。再合上 (2.30)，正是 <span class="math">A ⊭ q[ā]</span>。于是 <span class="math">A ⊨ ¬e(q) → ¬q</span>，即 <span class="math">q → e(q)</span> 在 <span class="math">K</span> 成立。</li>
+      <li><strong>证 (2.32)：<span class="math">HSPK ⊨ ¬q → ¬e(q)</span>。</strong>取 <span class="math">A ∈ HSPK</span>、任意 <span class="math">ā</span>，设 <span class="math">A ⊭ q[ā]</span>。因为 <span class="math">q</span> 等价于 <span class="math">σ₁=ρ₁ → q′</span>，所以
+        <div class="formula">A ⊨ σ₁ = ρ₁[ā]　　且　　A ⊭ q′[ā].</div>
+        由 (2.27) 的第二半 <span class="math">HSPK ⊨ (σ=ρ) → q′</span> 逆否，得 <span class="math">A ⊨ σ ≠ ρ[ā]</span>。于是判别式给出 <span class="math">τ(σ₁,ρ₁,σ,ρ) = σ ≠ ρ</span>，即 <span class="math">A ⊭ e(q)[ā]</span>。这就是 <span class="math">¬q → ¬e(q)</span>。</li>
+      <li><strong>合起来。</strong>(2.28) 给出 (i) 的左半 <span class="math">q → e(q)</span>；(2.32) 限制到 <span class="math">K ⊆ HSPK</span> 给出 <span class="math">K ⊨ e(q) → q</span>，与 (2.28) 合成 (i) 的双向；而 (2.32) 本身正是 (ii) 的逆否写法。<span class="qed">□</span></li>
+    </ol>
+  </div>
+
+  <div class="intu"><div class="bt">直觉 · 为什么两侧不对称</div>
+    <p>在 <span class="math">K</span> 里，「<span class="math">σ=ρ</span>」和「<span class="math">q′</span>」完全等价（归纳假设上半），所以 <span class="math">e(q)</span> 和 <span class="math">q</span> 可以互推。出了 <span class="math">K</span> 到了 <span class="math">HSPK</span>，等式被 <span class="math">HSP</span> 保持、<span class="math">q′</span> 未必，我们只剩「<span class="math">σ=ρ → q′</span>」这一个方向（归纳假设下半），恰好够证明「<span class="math">e(q) → q</span>」。<strong>归纳假设两半各管一边的证明——教材的紧凑写法把这件事藏起来了。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">本质 · 开关项版 e(q) 长什么样</div>
+    <p>若 <span class="math">K</span> 有布尔缩并，用 <span class="math">c</span> 写更直观。条件「所有 <span class="math">σᵢ=ρᵢ</span> 且 <span class="math">σ₀≠ρ₀</span>」不可能发生，写成恒等式就是</p>
+    <div class="formula">−c(σ₁ ⊕ ρ₁) ∩ ⋯ ∩ −c(σₙ ⊕ ρₙ)　≤　−c(σ₀ ⊕ ρ₀).</div>
+    <p>左边非空当且仅当每个 <span class="math">σᵢ=ρᵢ</span>；此时右边要求 <span class="math">σ₀=ρ₀</span>。这正是教材脚注 8 给出的显式 <span class="math">e(q)</span>。它也是 O5 里「半群准等式 → 关系代数等式」那一幕的主角。</p>
+  </div>
+</section>
+
+<!-- ============ O3 结构定理 ============ -->
+<section id="structure">
+  <h2><span class="sn">4</span>结构定理：HSPK = SPUpK 与子直既约 <span class="tag alg">O3</span></h2>
+  <p class="lead">命题 2.7.6 的回报立刻兑现。它把「准等式类」变成「等式类」，于是 Birkhoff 机器可以开动。</p>
+
+  <div class="thm"><div class="bt">定理 <span class="num">2.7.5</span></div>
+    <p>设 <span class="math">K</span> 有判别式项，则</p>
+    <div class="formula">HSPK = SPUpK.</div>
+    <p class="src">教材特意注明：此证明走模型论路线、更直观，思路来自 Johan van Benthem；标准泛代数教材多用计算式证明。</p>
+  </div>
+
+  <div class="proof"><span class="pt">证明 · 两步夹击。</span>
+    <ol>
+      <li><strong>先证 <span class="math">HSPK ⊨ Qeq(K)</span>。</strong>取 <span class="math">q ∈ Qeq(K)</span>（在 <span class="math">K</span> 成立的准等式）。由命题 2.7.6(i)，有等式 <span class="math">e(q)</span> 使 <span class="math">K ⊨ e(q) ↔ q</span>，特别地 <span class="math">K ⊨ e(q)</span>。等式被 <span class="math">H、S、P</span> 保持，故 <span class="math">HSPK ⊨ e(q)</span>。再用命题 2.7.6(ii)：<span class="math">HSPK ⊨ e(q) → q</span>，得 <span class="math">HSPK ⊨ q</span>。</li>
+      <li><strong>于是</strong>
+        <div class="formula">HSPK ⊆ Mod Qeq(K) = SPUpK,</div>
+        后一个等号是准簇刻画（定理 2.4.12）。</li>
+      <li><strong>反向 <span class="math">SPUpK ⊆ HSPK</span>。</strong>用练习 2.2.79 的算子包含：<span class="math">Up ⊆ HP</span>、<span class="math">PH ⊆ HP</span>、<span class="math">SH ⊆ HS</span>、<span class="math">PP = P</span>。于是 <span class="math">SPUpK ⊆ SPHPK ⊆ HSPK</span>。<span class="qed">□</span></li>
+    </ol>
+  </div>
+
+  <div class="intu"><div class="bt">直觉 · 这一等式到底省了什么</div>
+    <p>簇的定义要求 <span class="math">HSP</span> 三个算子全封闭，其中 <span class="math">H</span>（同态像）最难对付。判别式簇告诉你：<strong><span class="math">H</span> 是冗余的</strong>——任何同态像都藏在某个超积的子代数里。这一句话有两个后果：一是表示定理变简单（只需造超积），二是<strong>子直既约成员可以精确定位</strong>。</p>
+  </div>
+
+  <div class="thm"><div class="bt">推论 <span class="num">2.7.8</span></div>
+    <p>设 <span class="math">K</span> 有判别式项。则</p>
+    <ol>
+      <li><span class="math">K</span> 含于某个判别式簇；</li>
+      <li><span class="math">Sir(HSPK) = Sir(SUpK)</span>：簇的子直既约成员恰是 <span class="math">K</span> 的超积的子代数里的那些。</li>
+    </ol>
+  </div>
+
+  <div class="proof"><span class="pt">为什么成立。</span>
+    <p>判别式性质可写成全称一阶句子 <span class="math">∀x,y,z,u[(x ≠ y ⇒ τ = u) ∧ (x = y ⇒ τ = z)]</span>，全称句被 <span class="math">S</span> 与 <span class="math">Up</span> 保持（Łoś，L04），所以 <span class="math">SUpK</span> 仍有判别式项。取 <span class="math">A ∈ Sir(HSPK)</span>，由定理 2.7.5 <span class="math">A ∈ SP(UpK)</span>；子直既约迫使它已在 <span class="math">SUpK</span> 里。反向：有判别式项的代数是单的（O1），单的当然子直既约，故 <span class="math">SUpK ⊆ Sir(HSPK)</span>。<span class="qed">□</span></p>
+  </div>
+
+  <div class="warn"><div class="bt">「公共」二字不能丢</div>
+    <p>推论 2.7.8(i) 说的是：只要 <span class="math">K</span> 有<strong>一个共同的</strong>判别式项，它就自动落进判别式簇 <span class="math">HSPK</span>。若每个成员各有各的判别式项、却不是同一个项，整个论证从命题 2.7.6 起就垮了——因为压缩 <span class="math">e(q)</span> 用的必须是同一个 <span class="math">τ</span>。这也是 O4 里「引理 7.1.6 必须证明 <span class="math">Sir(BRA)</span> 有公共开关项 <span class="math">1◦x◦1</span>」的原因。</p>
+  </div>
+</section>
+
+<!-- ============ O4 BRA 是簇 ============ -->
+<section id="bra">
+  <h2><span class="sn">5</span>主案例：BRA 是簇 <span class="tag alg">O4</span></h2>
+  <p class="lead">前面的抽象机器现在落到具体对象上。目标：证明布尔关系代数的抽象公理类其实是等式类，即 <span class="math">BRA</span> 是簇（定理 7.1.4）。教材的证明分三段，恰好对应上一节的三件工具。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">§7.1 · BRA 与 setBRA</span></div>
+    <p>记 <span class="math">R(U × U)</span> 为集合 <span class="math">U</span> 上<strong>全关系代数</strong> <span class="math">⟨P(U×U), ∪, −, 1, ◦, ⁻¹⟩</span>（布尔运算 + 关系复合 + 逆）。则</p>
+    <div class="formula">BRA = SP{ R(U × U) : U 是集合 },　　setBRA = S{ R(U × U) : U 是非空集合 }.</div>
+    <p>于是 <span class="math">BRA = SP setBRA</span>。教材从这一节起确立了一个统一的造类套路：<strong>先定义「最简单」的集合代数（顶元是 <span class="math">U×U×⋯×U</span> 的那一个），再取所有直积的全部子代数</strong>。柱体代数、多代数依样画葫芦。</p>
+  </div>
+
+  <div class="thm"><div class="bt">引理 <span class="num">7.1.5（结构分解）</span></div>
+    <p><span class="math">BRA</span> 对直积、子代数封闭；<span class="math">A ∈ BRA</span> 可分解为若干 <span class="math">R(U<sub>i</sub>×U<sub>i</sub>)</span> 的直积的子代数，且每个 <span class="math">A</span> 的顶元是等价关系，其等价块 <span class="math">U<sub>i</sub></span> 两两不交。</p>
+    <p class="pt">教材 Figure 7.3 给出三层结构：关系层 <span class="math">R</span>（元素是 <span class="math">A ⊆ P(U×U)</span>）→ 对层 <span class="math">P</span>（元素是 <span class="math">⟨u,v⟩</span>）→ 集合层 <span class="math">S</span>（元素是 <span class="math">u</span>），由 <span class="math">ε</span>（属于）与投影 <span class="math">p₀,p₁</span> 连接。同构 <span class="math">Q</span> 逐层保运算：<span class="math">Q(1<sup>M</sup>) = U×U</span>、<span class="math">Q(a ◦<sup>M</sup> b) = Q(a) ◦ Q(b)</span>、<span class="math">Q(a<sup>−1</sup>) = Q(a)<sup>−1</sup></span>。</p>
+  </div>
+
+  <div class="thm"><div class="bt">引理 <span class="num">7.1.6（子直既约 = 全关系代数；有公共判别式项）</span></div>
+    <div class="formula">Sir(BRA) = IS{ R(U × U) : U 非空 },　且 Sir(BRA) 有判别式项.</div>
+    <p class="pt">判别式项从哪来？在全关系代数里取</p>
+    <div class="formula">c(x) = 1 ◦ x ◦ 1.</div>
+    <p>若 <span class="math">x = ∅</span>，则 <span class="math">c(x) = ∅</span>；若 <span class="math">x</span> 非空，取 <span class="math">⟨a,b⟩ ∈ x</span>，对任意 <span class="math">⟨u,v⟩</span> 有 <span class="math">⟨u,a⟩ ◦ ⟨a,b⟩ ◦ ⟨b,v⟩ = ⟨u,v⟩</span>，故 <span class="math">c(x) = U×U = 1</span>。<strong>这就是开关项。</strong>反向包含靠 O1 那一行：<span class="math">x R y, x ≠ y ⇒ a = τ(x,x,a,b) R τ(x,y,a,b) = b</span>，有判别式项者必单，单者必子直既约。</p>
+  </div>
+
+  <div class="thm"><div class="bt">引理 <span class="num">7.1.7（伪公理化 ⇒ 对超积封闭）</span></div>
+    <p><span class="math">Sir(BRA)</span> 是<strong>伪公理化类</strong>。</p>
+    <p class="pt">定义：<span class="math">K = Rd<sub>U</sub> Mod(Σ)</span>——把 <span class="math">K</span> 的语言扩张到 <span class="math">L</span>，在 <span class="math">L</span> 中写一组一阶句子 <span class="math">Σ</span>，再用一元关系符号 <span class="math">U</span> 圈出论域并缩回原语言。这里 <span class="math">L</span> 是三排序语言 <span class="math">S, P, R</span>（集合 / 对 / 关系），带 <span class="math">p₀,p₁ : P → S</span>、<span class="math">ε ⊆ P×R</span>，正好把 Figure 7.3 的三层结构一阶化。<strong>伪公理化类对超积封闭</strong>（Łoś 定理直接给），这正是定理 2.7.5 里 <span class="math">Up</span> 所需的条件。</p>
+  </div>
+
+  <div class="box"><div class="bt">教材脚注 6 的另一条路（值得知道）</div>
+    <p>也可以直接算：若 <span class="math">F</span> 是 <span class="math">I</span> 上超滤子，<span class="math">F(U)</span> 表示 <span class="math">R(U×U)</span>，则</p>
+    <div class="formula">∏<sub>F</sub> F(U<sub>i</sub>)　≅　F(∏ U<sub>i</sub> / F),　　a/F ↦ { ⟨u/F, v/F⟩ : {i : ⟨u<sub>i</sub>, v<sub>i</sub>⟩ ∈ a<sub>i</sub>} ∈ F }.</div>
+    <p>教材选了伪公理化路线，理由是它揭示了「真正的原因」：<strong>「具体的」代数通常就是伪公理化的——具体意味着有未编码进运算的额外结构，而额外结构在同构下会消失。</strong>这句话对理解 L23 Stone 对偶、L24 关系代数同样有用。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">7.1.4</span> · BRA 是等式类（四步收束）</div>
+    <ol>
+      <li>令 <span class="math">K = Sir(BRA)</span>。引理 7.1.6 给 <span class="math">K = SK</span> 且 <span class="math">K</span> 有判别式项；引理 7.1.7 给 <span class="math">K = UpK</span>。于是 <span class="math">K = SUpK</span>。</li>
+      <li>由定理 2.7.5，<span class="math">SPUpK</span> 是等式类；再由定理 2.4.11，等式类就是 <span class="math">HSP</span> 封闭的类。</li>
+      <li>由引理 7.1.5，<span class="math">SPUpK = SPK = SP Sir(BRA) = BRA</span>。</li>
+      <li>故 <span class="math">BRA</span> 是等式类。<span class="qed">□</span></li>
+    </ol>
+    <p class="src">教材结语：<strong>「我们还证明了 BRA 是一个判别式簇。」</strong>并且指出同一套技术对柱体代数、多代数也有效。</p>
+  </div>
+
+  <div class="intu"><div class="bt">直觉 · 为什么说这是「代数的 Birkhoff 时刻」</div>
+    <p>回想 L04 的 Birkhoff 定理 <span class="math">V = HSP</span>：它把「可由等式公理化」与「对 HSP 封闭」等同起来。定理 7.1.4 做的是同一件事的升级版：<strong>先证明一个天然类（关系代数的抽象模型）有判别式项，再用 <span class="math">HSP = SPUp</span> 把「看起来只能用准等式描述」的类洗成簇。</strong>没有判别式项，第一步就无处下手；有了它，Birkhoff 机器立刻启动。</p>
+  </div>
+</section>
+
+<!-- ============ O5 代价 ============ -->
+<section id="cost">
+  <h2><span class="sn">6</span>代价：不可有限公理化与不可判定 <span class="tag log">O5</span></h2>
+  <p class="lead">知道 BRA 是簇之后，立刻问两个更狠的问题：能给它有限多条等式吗？能判定一条等式是否成立吗？两个答案都是否定的——而第二个否定，正是判别式簇的又一次兑现。</p>
+
+  <div class="thm"><div class="bt">定理 <span class="num">7.1.8（Monk）</span></div>
+    <p><span class="math">BRA</span> 不可有限公理化：不存在有限的一阶公式集 <span class="math">Σ</span> 使 <span class="math">BRA = Mod(Σ)</span>。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">7.1.9</span></div>
+    <p><span class="math">Eq(BRA)</span> 递归可枚举但不可判定。</p>
+  </div>
+
+  <div class="proof"><span class="pt">r.e. 的一半（三行）。</span>
+    <p>由引理 7.1.5，一条等式在 <span class="math">BRA</span> 成立当且仅当在 <span class="math">Sir(BRA)</span> 成立；由引理 7.1.7 的证明，<span class="math">Sir(BRA) = Rd<sub>U</sub> Mod(Σ)</span>，其中 <span class="math">Σ</span> 是<strong>有限</strong>一阶句子集。由一阶逻辑完全性定理，有限理论的结论递归可枚举，故 <span class="math">Eq(BRA)</span> r.e.。</p>
+  </div>
+
+  <div class="proof"><span class="pt">不可判定的一半（两步解释 —— 全讲最漂亮的搬运）。</span>
+    <ol>
+      <li><strong>第一步 <span class="math">(∗)</span>：半群的准等式理论可以搬进 <span class="math">BRA</span>。</strong>「关于 <span class="math">◦</span> 的准等式在所有半群成立，当且仅当它在 <span class="math">BRA</span> 成立。」正向：半群都有结合律，而 <span class="math">BRA</span> 的 <span class="math">◦</span> 也结合。反向是关键：若准等式 <span class="math">q</span> 在某个半群 <span class="math">⟨S,·⟩</span> 失败，取该半群的 <strong>Cayley 表示</strong>——把 <span class="math">s</span> 映到左乘变换 <span class="math">x ↦ s·x</span>——得到嵌入 <span class="math">⟨S,·⟩ ↪ ⟨P(S′×S′), ◦⟩</span>，后者是某个 <span class="math">R(S′×S′) ∈ BRA</span> 的缩并。<span class="math">q</span> 在这个关系代数里也失败。<strong>半群的坏例子自动成为 BRA 的坏例子。</strong></li>
+      <li><strong>第二步 <span class="math">(∗∗)</span>：BRA 里准等式等价于等式。</strong>这正是命题 2.7.6 + BRA 是判别式簇：对任意准等式 <span class="math">q</span> 存在等式 <span class="math">e(q)</span>，使 <span class="math">BRA ⊨ q ⇔ Sir(BRA) ⊨ q ⇔ Sir(BRA) ⊨ e(q) ⇔ BRA ⊨ e(q)</span>。显式写法见 O2 的开关项公式。</li>
+      <li><strong>合成。</strong><span class="math">(∗)</span> 把不可判定的半群准等式问题嵌入 BRA 的准等式问题，<span class="math">(∗∗)</span> 再把后者嵌入 BRA 的等式问题。半群准等式理论不可判定，故 <span class="math">Eq(BRA)</span> 不可判定。<span class="qed">□</span></li>
+    </ol>
+  </div>
+
+  <div class="intu"><div class="bt">直觉 · 这是两个方向各走一次的典型</div>
+    <p>第一步是<strong>表示论</strong>干活（Cayley 嵌入把抽象半群变成具体关系）；第二步是<strong>判别式簇</strong>干活（把蕴涵改写成等式）。教材特意点出：这套「不可判定性证明」在代数逻辑里用途极广。对照 L29 的无排序版：那边是<strong>用逻辑反例帮代数</strong>得出 <span class="math">SP Csf<sub>ω</sub> ≠ Up SP Csf<sub>ω</sub></span>；这边是<strong>用代数工具帮逻辑</strong>得出等式理论不可判定。<strong>桥是双向的，两讲各演示了一次。</strong></p>
+  </div>
+
+  <div class="box"><div class="bt">三个近亲：BSR、RBM、RRA（教材 §7.1 后半）</div>
+    <table>
+      <tr><th>类</th><th>定义</th><th>判别式簇？</th><th>有限公理化？</th><th>Eq 可判定？</th></tr>
+      <tr><td><span class="math">BSR</span></td><td><span class="math">SP{R(U×U), ◦}</span>，只留一个复合</td><td>是</td><td>否</td><td>r.e. 不可判定</td></tr>
+      <tr><td><span class="math">BRA</span></td><td><span class="math">SP{R(U×U), ◦, ⁻¹}</span></td><td>是</td><td>否（Monk）</td><td>r.e. 不可判定</td></tr>
+      <tr><td><span class="math">RRA</span></td><td><span class="math">SP{R(U×U), ◦, ⁻¹, Id}</span></td><td>是（定理 7.1.10）</td><td>否</td><td>r.e. 不可判定</td></tr>
+    </table>
+    <p>教材的定理 7.1.10 说：<strong>RRA 是不可有限公理化的判别式簇，等式理论递归可枚举但不可判定</strong>——证明是 7.1.4/7.1.8/7.1.9 的显然修改。三者按操作多少成链：</p>
+    <div class="formula">Eq(BSR)　⊂　Eq(BRA)　⊂　Eq(RRA).</div>
+    <p class="src">注：<span class="math">RBM</span>（可表示布尔幺半群，Pratt 的记号）就是给 BSR 加上常元 <span class="math">Id</span>；所有 BSR 的结论都搬得过去。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">7.1.11（补上有限步就够；Andréka–Németi）</span></div>
+    <p>存在<strong>有限</strong>等式集 <span class="math">E₀</span>（教材列出六条，如 <span class="math">(x ∪ y)<sup>−1</sup> = x<sup>−1</sup> ∪ y<sup>−1</sup></span>、<span class="math">(x ◦ y)<sup>−1</sup> = y<sup>−1</sup> ◦ x<sup>−1</sup></span>、<span class="math">x ◦ −(x<sup>−1</sup> ◦ −y) ≤ y</span> 等），使</p>
+    <div class="formula">Eq(BSR) ∪ E₀　公理化　BRA,　　Eq(BSR) ∪ E₀ ∪ { Id ◦ x = x }　公理化　RRA.</div>
+  </div>
+
+  <div class="intu"><div class="bt">直觉 · 不可有限公理化的「锅」全在 ◦ 上</div>
+    <p>教材的解读很干脆：<strong>正是 <span class="math">◦</span> 太强，才造成不可有限公理化；一旦有了它，<span class="math">⁻¹</span> 与 <span class="math">Id</span> 都能有限步补齐。</strong>这与 n 元柱体代数的情形正相反——那边各操作的强度是「均匀分摊」的。教材 Figure 7.4 把 <span class="math">∪, −, 1, ◦, ⁻¹, Id</span> 六个节点的全部连接画了出来：方框内是准簇而非簇，圆圈内除 <span class="math">BA</span> 外都不可有限公理化。</p>
+  </div>
+
+  <div class="warn"><div class="bt">开放问题与「可判定但难看」的公理集</div>
+    <p>教材脚注 13 给了一个漂亮的 Craig 式技巧：从 r.e. 枚举 <span class="math">E = {e(1), e(2), …}</span> 出发，让 <span class="math">η(n)</span> 是 <span class="math">e(n)</span> 的 <span class="math">n</span> 重合取，用判别式性质把 <span class="math">η(n)</span> 在子直既约上等价的等式 <span class="math">ε(η(n))</span> 算出来，且能反算回去。于是 <span class="math">E′ = {ε(η(1)), ε(η(2)), …}</span> 是<strong>可判定的</strong>公理集。<strong>代价是难看</strong>：Jónsson、Andréka 证明任何公理集都必须用任意多变元，且必须含 <span class="math">∪, −, ◦</span> 全部符号。于是有了问题 7.1.12：</p>
+    <p style="margin-bottom:0"><strong>找出简单、数学上透明、可判定的等式集来公理化 BSR、BRA、RRA。</strong>教材说这是代数逻辑仍最重要的开放问题之一——而等式公理系统正是相应逻辑的推理系统（定理 4.2.5/4.2.6），所以这不只是美学问题。</p>
+  </div>
+</section>
+
+<!-- ============ O6 拨回逻辑 ============ -->
+<section id="logic">
+  <h2><span class="sn">7</span>拨回逻辑；案例工坊九例收束 <span class="tag log">O6</span></h2>
+  <p class="lead">最后一节把代数结论翻译回逻辑，并给第七篇结账。</p>
+
+  <div class="box"><div class="bt">桥：等式公理系统 ⇄ 推理系统（UAL 定理 4.2.5/4.2.6）</div>
+    <ul>
+      <li>一个<strong>准等式</strong> <span class="math">q</span> 对应一条<strong>推理规则</strong>「从前提等式得结论等式」；一个<strong>等式</strong>对应一条<strong>公理图式</strong>。</li>
+      <li><strong>簇有等式基</strong> ⇔ 对应逻辑有<strong>可靠完全的 Hilbert 型系统</strong>；<strong>簇不可有限公理化</strong> ⇔ 对应逻辑<strong>没有有限公理的推理系统</strong>（L19 桥之二）。</li>
+      <li><strong>等式理论可判定</strong> ⇔ 对应逻辑的<strong>有效性可判定</strong>（L22 桥之五）。</li>
+    </ul>
+    <p>于是定理 7.1.8/7.1.9 直接读成逻辑结论：<strong>与关系代数对应的逻辑，既没有有限公理系统，也没有判定算法</strong>——但它有一个 r.e. 的、甚至可判定的（虽然难看的）公理集。</p>
+  </div>
+
+  <div class="intu"><div class="bt">判别式簇送给逻辑的三件礼物</div>
+    <ol>
+      <li><strong>规则可以改写成公理。</strong>命题 2.7.6 保证：只要代数对应物有判别式项，任意准等式规则都能压成一条等式公理。这是「有 Hilbert 系统」的代数根据。</li>
+      <li><strong>模型类可以被精确列出。</strong>推论 2.7.8 把子直既约成员定位成 <span class="math">SUpK</span>，L27 四步流程里「算 Alg<sub>⊨</sub>」这一步因此变得可操作（引理 7.1.5/7.1.7 就是这个套路）。</li>
+      <li><strong>坏消息也能搬运。</strong>不可有限基、r.e. 不可判定这两块硬骨头，通过等式公理系统与推理系统的对应传给逻辑（定理 4.2.5）。判别式簇不只报喜。</li>
+    </ol>
+  </div>
+
+  <div class="fusion"><div class="bt">案例工坊九例总账（L27–L30）</div>
+    <table>
+      <tr><th>讲次</th><th>案例</th><th>代数对应物</th><th>本例教了什么</th></tr>
+      <tr><td>L27</td><td><span class="math">L<sub>C</sub></span> / <span class="math">L<sub>REL</sub></span></td><td><span class="math">BA</span> / <span class="math">RRA</span></td><td>四步流程的样板；两个极端（全有 / 全无）</td></tr>
+      <tr><td>L28</td><td><span class="math">L′<sub>n</sub></span> / <span class="math">L<sub>n</sub></span></td><td>不可代数化 / <span class="math">RCA<sub>n</sub></span></td><td>变量个数是刻度；<span class="math">n=2</span> 是分水岭</td></tr>
+      <tr><td>L29</td><td><span class="math">L<sup>an</sup><sub>n</sub></span> / <span class="math">L<sup>vd</sup><sub>n</sub></span> / <span class="math">L<sup>ranked</sup></span> / <span class="math">L<sup>rf</sup></span></td><td><span class="math">simpleCA<sub>n</sub></span> / <span class="math">Crs<sub>n</sub></span> / <span class="math">Lf<sub>ω</sub></span> / <span class="math">SPLf<sub>ω</sub></span></td><td>换模型类没有免费午餐；紧致 ≠ Hilbert</td></tr>
+      <tr><td><strong>L30</strong></td><td><strong>判别式簇方法</strong></td><td><span class="math">BRA</span> / <span class="math">BSR</span> / <span class="math">RRA</span></td><td><strong>不是新逻辑，是把前八例的机器反过来用：代数侧造工具，逻辑侧收账单</strong></td></tr>
+    </table>
+    <p>UAL 第五章的八个案例逐一覆盖完毕；本讲对应前言十三周课程的第 13 讲，是<strong>方法案例</strong>而非第九个逻辑。至此第七篇收尾。</p>
+  </div>
+</section>
+
+<!-- ============ 三层例 ============ -->
+<section id="examples">
+  <h2><span class="sn">8</span>三层例：典型 / 本质 / 边界 <span class="tag log">理解检验</span></h2>
+  <div class="tri">
+
+    <div class="ex"><div class="bt">典型 <span class="num">BA：最小的判别式簇</span></div>
+      <p><span class="math">2</span> 上的布尔项 <span class="math">τ(x,y,z,u) = (x ∩ z) ∪ (−x ∩ u)</span> 就是判别式（按 L06 的写法；等价地用对称差与开关项），而 <span class="math">BA = HSP{2}</span>（定理 2.7.3）。<strong>整个判别式簇理论的最小实例，正是 L27 里 <span class="math">L<sub>C</sub></span> 的代数对应物。</strong>从它出发看 O2 的归纳：<span class="math">n=1</span> 的准等式 <span class="math">(σ=ρ) → σ₀=ρ₀</span> 被压成 <span class="math">τ(σ,ρ,σ₀,ρ₀)=ρ₀</span>——把「前提相等时结论相等」写成一条永远成立的等式。这是全讲最简单的压缩，也是理解后面所有压缩的模板。</p>
+    </div>
+
+    <div class="ex"><div class="bt">本质 <span class="num">BRA：开关项 1◦x◦1 的几何</span></div>
+      <p>判别式项在关系代数里退化成一个极短的表达式：<span class="math">c(x) = 1 ◦ x ◦ 1</span>。<strong>它的几何意义是「x 非空就吞噬整个宇宙」</strong>：只要 <span class="math">x</span> 里有一对 <span class="math">⟨a,b⟩</span>，任意 <span class="math">⟨u,v⟩</span> 都能经 <span class="math">a,b</span> 中转，于是 <span class="math">c(x)</span> 是全关系；<span class="math">x</span> 空则什么都连不上。这个项同时干了三件事：证明成员单（引理 7.1.6）、把准等式压成等式（命题 2.7.6）、把半群准等式搬进等式理论（定理 7.1.9）。<strong>一个三行项撑起三个定理——这就是本讲想让你看见的「威力」的具体样子。</strong></p>
+    </div>
+
+    <div class="ex"><div class="bt">边界 <span class="num">不是判别式簇的那些类；可判定但难看的公理</span></div>
+      <p>把机器往旁边一试就碰壁：<span class="math">RCA<sub>ω</sub></span>（L28 的有限变元片段极限）不是判别式簇，因为子直既约成员形形色色，找不到公共判别式项；<span class="math">ICrs<sub>n</sub></span>（<span class="math">n ≥ 2</span>，L29 的变量依赖逻辑）也不是；群簇更不是（判别式项逼单，而 <span class="math">ℤ</span> 不单）。所以 L29 里那些逻辑<strong>不能</strong>靠本讲的机器自动获得 Hilbert 系统——它们的问题出在别处，得换模型类来治。另一头是「可判定但难看」：Craig 技巧给出可判定的公理集 <span class="math">E′</span>，但任何公理集都必须用无穷多变元。<strong>可判定与好看，在这里也是鱼与熊掌。</strong></p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 融合 ============ -->
+<section id="fusion2">
+  <h2><span class="sn">9</span>融合接口：第十二张图 <span class="tag alg">全篇总览</span></h2>
+  <p>前五张是翻译图，第六张是恒等图，第七至十一是各自的讲内结构。<strong>这一张是「兑现图」</strong>：左边是前十二周造的工具，右边是第 13 周挣到的结论，中间只有一台机器——判别式项。</p>
+  <div class="diagram"><div class="bt">判别式簇流水线 · 一个项，三次兑现</div>
+<pre>  L06 判别式项 τ / 开关项 c(x)
+          │
+          ├──► 兑现一：准等式压等式（命题 2.7.6）
+          │       (σ₁=ρ₁ ∧ …) → σ₀=ρ₀  ──►  e(q) 一条等式
+          │       q ↔ e(q) 在 K；e(q) → q 在 HSPK
+          │                    │
+          │                    ▼
+          ├──► 兑现二：HSPK = SPUpK（定理 2.7.5）
+          │       H 被超积吸收 ──► Sir(HSPK) = Sir(SUpK)（推论 2.7.8）
+          │                    │
+          │                    ▼
+          └──► 兑现三：关系代数应用（§7.1）
+                 开关项 c(x)=1◦x◦1  ／  Sir(BRA) 伪公理化
+                 引理 7.1.5/6/7 ──► 定理 7.1.4 BRA 是簇
+                                          │
+                     ┌────────────────────┴────────────────────┐
+                     ▼                                         ▼
+          定理 7.1.8 Monk：不可有限公理化         定理 7.1.9 Eq(BRA) r.e. 不可判定
+          （任何 E 都要任意多变元）                (∗) Cayley 表示：半群 ↪ BRA
+                     │                             (∗∗) 判别式簇：准等式 ↪ 等式
+                     ▼                                         │
+          定理 4.2.5/4.2.6 拨回逻辑 ◄─────────────────────────┘
+          有限公理化 ⇄ Hilbert 系统；可判定 ⇄ 有效性算法
+                     │
+                     ▼
+          L27–L29 八案例 + 本讲方法案例 = 案例工坊九例收束
+                     │
+                     ▼
+          L31 推广与新逻辑 → L32 空间的逻辑、统一科学</pre>
+  </div>
+  <div class="fusion"><div class="bt">与全课七篇的接口</div>
+    <p><strong>第一篇（闭包与 Galois）</strong>：<span class="math">Mod Qeq(K) = SPUpK</span> 又是 L02 闭包算子的实例；<strong>第二篇（代数骨架）</strong>：Birkhoff <span class="math">HSP</span> 在定理 2.7.5 里被改写；<strong>第三篇（拓扑）</strong>：超积封闭靠 Łoś，伪公理化的三排序结构与 Stone 空间的三层表示同型；<strong>第四、五篇（桥）</strong>：定理 4.2.5/4.2.6 把一切翻译回逻辑；<strong>第六篇（对偶）</strong>：L24 的 RRA 在这里拿到它的判别式簇身份；<strong>第七篇</strong>：九例至此齐备。<strong>L31 要问的是：当这些工具对多排序逻辑失灵时，怎么办。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+
+  <div class="ex"><div class="bt">O1 · 动机与判别式项</div>
+    <ol>
+      <li>写出准簇 <span class="math">SPP<sub>U</sub>K</span> 与簇 <span class="math">HSPK</span> 的算子差别，并说明「若 <span class="math">x·y = 0</span> 则 <span class="math">y·x = 0</span>」这类公理为什么天然是准等式而不是等式。</li>
+      <li>把 O1 的五行论证 <span class="math">a = τ(u,u,a,b) R τ(u,v,a,b) = b</span> 补全：说明为什么「非恒等同余」保证存在 <span class="math">u ≠ v</span> 且 <span class="math">u R v</span>，并由此推出 <span class="math">R = A×A</span>。</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">O2 · 准等式压缩</div>
+    <ol start="3">
+      <li>取 <span class="math">n = 2</span>，把 <span class="math">q: (σ₁=ρ₁ ∧ σ₂=ρ₂) → σ₀=ρ₀</span> 按教材归纳写出 <span class="math">e(q)</span>：先写出 <span class="math">q′</span> 的等式 <span class="math">σ=ρ</span>，再写 <span class="math">e(q) = τ(σ₁,ρ₁,σ,ρ)=ρ</span>，逐项解释四个参数各管什么。</li>
+      <li>在 <span class="math">K</span> 与 <span class="math">HSPK</span> 两处分别验证 <span class="math">e(q) → q</span>：指出证明里哪一步用了「等式被 <span class="math">HSP</span> 保持」，哪一步只靠判别式项的取值规则。</li>
+      <li>用开关项写出 <span class="math">−c(σ₁⊕ρ₁) ∩ −c(σ₂⊕ρ₂) ≤ −c(σ₀⊕ρ₀)</span> 的满足条件：说明左边非空等价于什么，右边在说什么，并验证它与 <span class="math">q</span> 等价。</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">O3 · 结构定理</div>
+    <ol start="6">
+      <li>补全定理 2.7.5 反向包含的算子计算：<span class="math">SPUpK ⊆ SPHPK ⊆ HSPK</span>，逐项说明用到的练习 2.2.79 等式，并指出哪一步需要 <span class="math">PP = P</span>。</li>
+      <li>解释推论 2.7.8 的两个包含方向为何「不对称」：一个靠判别式性质的一阶全称性 + Łoś，一个靠有判别式项者必单。若 <span class="math">τ</span> 只是 <span class="math">K</span> 的<strong>存在性</strong>项（不是公共项），哪一步先失败？</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">O4 · BRA 是簇</div>
+    <ol start="8">
+      <li>证明 <span class="math">c(x) = 1 ◦ x ◦ 1</span> 是 <span class="math">R(U×U)</span> 上的开关项：分别处理 <span class="math">x = ∅</span> 与 <span class="math">x ≠ ∅</span>，在后者用中转点 <span class="math">⟨a,b⟩</span> 写出合成链。</li>
+      <li>按四步重述定理 7.1.4 的证明，并回答：若把 <span class="math">Sir(BRA)</span> 换成 <span class="math">BRA</span> 本身（它有判别式项吗？），定理 2.7.5 的前提还成立吗？引理 7.1.7 的伪公理化为什么非证不可？</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">O5 · 不可有限公理化与不可判定</div>
+    <ol start="10">
+      <li>把定理 7.1.9 的两步解释写成完整的归约链：半群准等式 → BRA 准等式 → BRA 等式。指出 Cayley 表示在哪一步用、命题 2.7.6 在哪一步用，并说明为什么「半群准等式不可判定」可以传给 BRA。</li>
+      <li>说明定理 7.1.11 的解读「不可有限公理化的锅全在 <span class="math">◦</span> 上」：如果 <span class="math">Eq(BSR)</span> 本身可判定，<span class="math">Eq(BRA)</span> 会可判定吗？结合教材脚注 13 的 Craig 技巧，解释「可判定的公理集」与「可判定的理论」不是一回事。</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">O6 · 拨回逻辑与总账</div>
+    <ol start="12">
+      <li>用定理 4.2.5/4.2.6 把定理 7.1.8、7.1.9 翻译成逻辑语言：写出对应逻辑在「有限 Hilbert 系统」与「有效性判定」上的结论，并说明它和 L19、L22 的哪两座桥对应。</li>
+      <li>（选做）比较 L29 的 <span class="math">L<sup>vd</sup><sub>n</sub></span> 与本讲的 <span class="math">BRA</span>：前者「可判定但无有限 Hilbert 系统」，后者「有 r.e. 公理但不可判定」。请用各自代数对应物的性质解释这一反差，并说明为什么判别式簇机器对前者帮不上忙。</li>
+    </ol>
+  </div>
+</section>
+
+<div class="footnav">
+  <a href="L29.html">← 上一讲：L29 案例 5–8：FOL 的各种变体</a>
+  <a href="L31.html">下一讲：L31 逻辑的推广与新种类 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L30 · 来源：UAL §2.7（定义 2.7.1/2.7.2、定理 2.7.3/2.7.5/2.7.8、命题 2.7.6）、§7.1（引理 7.1.5/7.1.6/7.1.7、定理 7.1.4/7.1.8/7.1.9/7.1.10/7.1.11、问题 7.1.12）、Preface「Teaching the book」第 13 讲；Bergman Ch6–Ch7；回指 L02/L04/L06/L07/L18–L22/L24/L27–L29 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

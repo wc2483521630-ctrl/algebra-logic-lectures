@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L25 空间模态逻辑：S4、S4.2 与信念逻辑 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第六篇 对偶与表示：三条线的汇合点</span><span class="sep">/</span><span>L25</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 25 · 2 学时 · 把前六讲的工具全部用上 · 全课第一次「拓扑直接当语义」</div>
+  <h1>空间模态逻辑：S4、S4.2 与信念逻辑</h1>
+  <div class="sub">「必然」就是「内部」，「可能」就是「闭包」——一句话把拓扑和模态焊在一起，然后再问：这句话到底能走多远</div>
+  <div class="metarow"><span>来源：拓扑讲义 Ch7「空间的模态逻辑」（McKinsey–Tarski、极端不连通、完全信念逻辑、学习理论展望）、Ch6 §6.3（定义 6.3.7、命题 6.3.8/6.3.9、例 6.3.10）；UAL §2.8（定义 2.8.6、定理 2.8.9/2.8.15）、§3.2（例 3.2.5 S5）；回指 L02 闭包算子、L06 BAO/JT、L10 内部算子、L13 紧致化、L14 极端不连通与强信念、L18–L22 五座桥、L23 Stone 对偶</span>
+    <span class="tag top">拓扑</span><span class="tag log">逻辑</span><span class="tag alg">代数</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：可能的世界有没有几何</a></li>
+  <li><a href="#basic">O1　拓扑语义：□ = int，◇ = cl</a></li>
+  <li><a href="#complete">O2　S4 拓扑完备性：McKinsey–Tarski 完整证明</a></li>
+  <li><a href="#s42">O3　S4.2：有向性 ⟺ 极端不连通</a></li>
+  <li><a href="#belief">O4　信念逻辑：B = ◇□ 与 KD45</a></li>
+  <li><a href="#algebra">O5　模态代数 ↔ 拓扑空间；学习理论的方向</a></li>
+  <li><a href="#examples">O6　三层例：典型 / 本质 / 边界</a></li>
+  <li><a href="#fusion2">融合接口：第七张三面一体图</a></li>
+  <li><a href="#ex">习题</a></li>
+</ol></div>
+
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系 <span class="tag top">先摆牌</span></h2>
+  <div class="box"><div class="bt">本讲新概念（六个，按依赖排序）</div>
+    <ol>
+      <li><strong>拓扑语义</strong>：公式在 <span class="math">⟨X, τ, v⟩</span> 上的真假，<span class="math">□</span> 读 <span class="math">int</span>、<span class="math">◇</span> 读 <span class="math">cl</span>。</li>
+      <li><strong>Alexandrov 拓扑</strong>：开集 = 上集；预序与它一一对应（本讲的技术转轴）。</li>
+      <li><strong>有向性</strong>：两条从同一点出发的路最终汇合；Geach 公理 .2 的框架条件。</li>
+      <li><strong>极端不连通</strong>：每个开集的闭包仍开；L14 定义 6.3.7，本讲给完整框架对应。</li>
+      <li><strong>强信念</strong>：<span class="math">B = ◇□ = cl ∘ int</span>；Stalnaker 的「知识的认识可能性」。</li>
+      <li><strong>KD45 与 KB</strong>：信念系统；在极端不连通空间上关于 <span class="math">B</span> 语义完全。</li>
+    </ol>
+  </div>
+  <div class="diagram"><div class="bt">依赖图（箭头 = 「先懂左边才懂右边」）</div>
+<pre>  L10 int/cl 公理 ──┐
+                    ├──□=int 语义 ──可靠性 ──Alexandrov 引理 ──S4 完备性
+  L06 BAO ──────────┘                                      │
+                                                            ▼
+  L14 极端不连通 ────.2 ⟺ 极端不连通 ───有向预序 ───S4.2 完备性
+        │                                                   │
+        └──B=cl∘int（强信念）──KB / KD45 ───────────────────┘
+                              │
+                              └──子空间不保极端不连通 → 遗传极端不连通 → 动态更新</pre>
+  </div>
+  <p class="src"><b>教材边界先说明：</b>拓扑讲义 Ch7 是<strong>综述段</strong>，给方向不给定理号；硬结果在 Ch6 §6.3 与 UAL §2.8。本讲中标「文献」的部分（KD45 关于极端不连通空间的完全性、动态更新的遗传条件）来自 Baltag、Bezhanishvili、Özgün、Smets 的拓扑信念工作，<strong>超出这三本教材</strong>，会明确标注，不混进教材编号里。</p>
+</section>
+
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习</h2>
+  <div class="box"><div class="bt">六个目标，每个都有对应讲解和练习</div>
+    <table>
+      <tr><th>目标</th><th>要拿到什么</th><th>讲解</th><th>练习</th></tr>
+      <tr><td><span class="tag log">O1</span></td><td>把 int/cl 逐条对到 S4 公理，说清 UAL 为何用 ◇ 做原始算子</td><td><a href="#basic">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+      <tr><td><span class="tag log">O2</span></td><td>完整走完 S4 拓扑完备性：可靠性 + Alexandrov 引理 + 典范模型</td><td><a href="#complete">§4</a></td><td><a href="#ex">E3, E4, E5</a></td></tr>
+      <tr><td><span class="tag top">O3</span></td><td>证明 .2 ⟺ 有向性，并有向预序 ⟺ 极端不连通</td><td><a href="#s42">§5</a></td><td><a href="#ex">E6, E7</a></td></tr>
+      <tr><td><span class="tag log">O4</span></td><td>分清知识与信念，讲清 B = ◇□ 为何给 KD45</td><td><a href="#belief">§6</a></td><td><a href="#ex">E8, E9</a></td></tr>
+      <tr><td><span class="tag alg">O5</span></td><td>把 BAO 与拓扑空间对上，说清学习理论联系的分寸</td><td><a href="#algebra">§7</a></td><td><a href="#ex">E10</a></td></tr>
+      <tr><td><span class="tag top">O6</span></td><td>用三层例分清「哪些空间真的给新逻辑、哪些只是退化」</td><td><a href="#examples">§8</a></td><td><a href="#ex">E11, E12</a></td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="motive">
+  <h2><span class="sn">2</span>动机：可能的世界有没有几何 <span class="tag top">为什么先讲这个</span></h2>
+  <p class="lead">Kripke 语义把「可能」画成点之间的箭头。拓扑语义把箭头抹掉，换成「哪些区域算得上是开放信息」。这不是换皮——它决定了你能问什么问题。</p>
+  <p>前面几讲我们一直在过桥：L18 把紧致性从逻辑译成超滤子，L19 把完全性译成代数，L20 把可定义性译成同态满射，L21 把插值译成合并，L22 把判定性译成有限基，L23 把布尔代数译成 Stone 空间，L24 把关系代数译成二元关系族。<strong>这一讲不一样：我们不再过桥，而是让拓扑直接当语义。</strong></p>
+  <p>为什么值得这么做？看一个具体的差别。Kripke 框架里，「必然 <span class="math">p</span>」意思是「<span class="math">p</span> 在所有可及世界里真」——这是一条<strong>逐点</strong>的检查。拓扑里「必然 <span class="math">p</span>」意思是「<span class="math">p</span> 成立的区域包含一个开邻域」——这是一条<strong>整体</strong>的要求。后者多出来的东西叫<strong>稳定性</strong>：一旦你知道 <span class="math">p</span>，你不仅此刻知道，还在一个邻域内都知道。知识要的是这个，不是「在别的可能世界里也真」。</p>
+  <div class="intu"><div class="bt">一个能记住的画面</div>
+    <p>把 <span class="math">p</span> 想成「今天下雨」这类可观察事实。<span class="math">□p</span> 不是说「在所有平行宇宙里今天下雨」，而是说<strong>「有一个可验证的依据，使得在这个依据覆盖的整个区域内都下雨」</strong>。这个「依据」就是开集。<span class="math">◇p</span> 则反过来说「现有信息排除不了 <span class="math">p</span>」——这正是闭包 <span class="math">cl</span> 的意思：把 <span class="math">p</span> 能触及的边界都算进来。</p>
+  </div>
+  <p>这一讲的主线就一句：<strong>选什么空间类，就得到什么逻辑</strong>。所有空间都给 S4；预序（Alexandrov）空间刚好够给 S4 完全性；极端不连通空间给 S4.2，同时给强信念的 KD45。三个层次，三套空间，一条线。</p>
+</section>
+
+<section id="basic">
+  <h2><span class="sn">3</span>O1　拓扑语义：□ = int，◇ = cl <span class="tag log">O1</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">拓扑模型与有效性</span></div>
+    <p>一个<strong>拓扑模型</strong>是三元组 <span class="math">M = ⟨X, τ, v⟩</span>，其中 <span class="math">⟨X, τ⟩</span> 是拓扑空间，<span class="math">v</span> 给每个命题变元指定一个子集 <span class="math">v(p) ⊆ X</span>。递归定义语义值（记 <span class="math">⟦φ⟧</span>）：</p>
+    <div class="formula">
+      ⟦p⟧ = v(p)　　⟦¬φ⟧ = X − ⟦φ⟧　　⟦φ ∧ ψ⟧ = ⟦φ⟧ ∩ ⟦ψ⟧<br>
+      ⟦□φ⟧ = int(⟦φ⟧)　　⟦◇φ⟧ = cl(⟦φ⟧) = X − int(X − ⟦φ⟧)
+    </div>
+    <p>写 <span class="math">M, x ⊨ φ</span> 当且仅当 <span class="math">x ∈ ⟦φ⟧</span>；写 <span class="math">M ⊨ φ</span> 当且仅当 <span class="math">⟦φ⟧ = X</span>；写 <span class="math">⟨X, τ⟩ ⊨ φ</span> 当且仅当对所有 <span class="math">v</span> 都有 <span class="math">⟨X, τ, v⟩ ⊨ φ</span>。</p>
+  </div>
+
+  <div class="box"><div class="bt">注意：◊ 是 int 的对偶，不是独立原始算子</div>
+    <p>最后一行 <span class="math">◇φ = ¬□¬φ</span> 是把 <span class="math">◇</span> 定义为 <span class="math">cl</span> 的等式。在经典语义下 <span class="math">cl(A) = X − int(X − A)</span>，所以两种写法完全重合。<strong>下面验证公理时只验 <span class="math">□</span>，<span class="math">◇</span> 那侧由对偶自动得到。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">S4 的四条在任意拓扑空间成立</span></div>
+    <ol>
+      <li><strong>（K） <span class="math">□(φ → ψ) → (□φ → □ψ)</span></strong>。翻译：<span class="math">int(−A ∪ B) ⊆ −int(A) ∪ int(B)</span>。证明：取 <span class="math">x ∈ int(−A∪B)</span>，若 <span class="math">x ∈ int(A)</span>，则 <span class="math">int(A)</span> 是含 <span class="math">x</span> 的开集且包含于 <span class="math">A</span>，于是它与 <span class="math">int(−A∪B)</span> 的交是含 <span class="math">x</span> 的开集，落在 <span class="math">B</span> 里，故 <span class="math">x ∈ int(B)</span>。</li>
+      <li><strong>（T） <span class="math">□φ → φ</span></strong>。翻译 <span class="math">int(A) ⊆ A</span>——内部算子的定义，L10 第一条。</li>
+      <li><strong>（4） <span class="math">□φ → □□φ</span></strong>。翻译 <span class="math">int(A) ⊆ int(int(A))</span>——幂等性，L10 第四条。</li>
+      <li><strong>（N） <span class="math">□⊤ = ⊤</span></strong>。翻译 <span class="math">int(X) = X</span>。</li>
+    </ol>
+    <p>再由 MP 与代入保持有效性，得 <strong>S4 的拓扑可靠性</strong>：S4 定理在所有拓扑空间有效。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="warn"><div class="bt">口径：为什么 UAL 把 ◇ 当原始算子</div>
+    <p>L06 §7 与 L10 §7 都提醒过这件事，这里给完整理由。UAL 定义 2.8.6 的 BAO 要求算子<strong>对 ∨ 分配</strong>且<strong>把 0 送到 0</strong>（正规性）。拓扑里：</p>
+    <div class="formula">
+      cl(A ∪ B) = cl(A) ∪ cl(B),　cl(∅) = ∅　　✓ 符合 UAL 的 (Dst) + (Nrm)<br>
+      int(A ∩ B) = int(A) ∩ int(B),　int(X) = X　　✓ 但对 ∨ 只有 ⊆，不分配
+    </div>
+    <p>所以<strong>把 <span class="math">◇ = cl</span> 当 UAL 的原始正规 BAO 算子最省事</strong>，<span class="math">□ = int</span> 由补对偶 <span class="math">□A = −◇−A</span> 得到，它满足的是「对 ∧ 分配、保顶」的对偶版公理。两种写法<strong>不矛盾</strong>——只是同一件事从 ∨ 侧还是 ∧ 侧说。若你直接说「BAO 分配 ∨」就忘了补这一句，会和拓扑内部的日常定义打架。</p>
+  </div>
+
+  <div class="intu"><div class="bt">S5 在这里为什么难看</div>
+    <p>UAL 例 3.2.5 把 S5 写成 <span class="math">◇φ</span> 意为「存在某个世界使 <span class="math">φ</span> 真」——这是把等价关系<strong>压平</strong>后的写法。在拓扑这边，要让 <span class="math">□</span> 满足 S5 的 <span class="math">◇□p → □p</span>（即 <span class="math">cl(int A) ⊆ A</span>），对 <span class="math">A</span> 开时就是 <span class="math">cl(A) ⊆ A</span>，即<strong>每个开集都闭</strong>。空间必须<strong>极端不连通且开闭集稠密</strong>——离散空间可以，一般的拓扑空间不行。<strong>所以「模态 = 内部」只对 S4 这一族自然，别当成普遍真理。</strong></p>
+  </div>
+  <p class="src"><b>来源：</b>L02 闭包算子、L10 §6–§7（拓扑语义与口径警告）、L06 §7（BAO 定义 2.8.6）、UAL 例 3.2.5。</p>
+</section>
+
+<section id="complete">
+  <h2><span class="sn">4</span>O2　S4 拓扑完备性：McKinsey–Tarski 完整证明 <span class="tag log">O2</span></h2>
+  <p class="lead">L10 说「McKinsey–Tarski：S4 相对拓扑空间类完备，证明留给 L25」。现在兑现。路线分三段：先把预序框架看成一种拓扑，再搬来 S4 的典范模型，最后证明两种语义在 Alexandrov 空间上重合。</p>
+
+  <h3><span class="sn">4.1</span>Alexandrov 引理：预序就是拓扑</h3>
+  <div class="def"><div class="bt">定义 <span class="num">Alexandrov 拓扑</span></div>
+    <p>给定预序 <span class="math">⟨W, ≤⟩</span>（自反且传递），令</p>
+    <div class="formula">U ⊆ W 是开集　⟺　∀x ∈ U ∀y ∈ W (x ≤ y ⟹ y ∈ U)</div>
+    <p>即开集 = <strong>上集</strong>。易验任意并、有限交仍是上集，<span class="math">∅, W</span> 是上集，所以这是拓扑，记作 <span class="math">τ<sub>≤</sub></span>，称为 <strong>Alexandrov 拓扑</strong>。</p>
+  </div>
+
+  <div class="thm"><div class="bt">引理 <span class="num">4.1（转轴）</span></div>
+    <p>在 <span class="math">⟨W, τ<sub>≤</sub>⟩</span> 中，对任意 <span class="math">A ⊆ W</span>：</p>
+    <div class="formula">int(A) = { x ∈ W : ∀y (x ≤ y ⟹ y ∈ A) } =: □<sub>≤</sub>(A)</div>
+    <p>右边的 <span class="math">□<sub>≤</sub></span> 正是预序框架上的 Kripke 必然算子。<strong>这就把 Kripke 语义装进了拓扑语义。</strong></p>
+    <div class="proof"><span class="pt">证明。</span>
+      <p>（⊆）设 <span class="math">x ∈ int(A)</span>。取任意 <span class="math">y ≥ x</span>。含 <span class="math">x</span> 的最小上集是 <span class="math">↑x = {z : x ≤ z}</span>，它开且含 <span class="math">x</span>，故 <span class="math">↑x ⊆ A</span>（内部是最大开子集），于是 <span class="math">y ∈ A</span>。</p>
+      <p>（⊇）设对所有 <span class="math">y ≥ x</span> 有 <span class="math">y ∈ A</span>，即 <span class="math">↑x ⊆ A</span>。而 <span class="math">↑x</span> 是含 <span class="math">x</span> 的开集，故 <span class="math">x ∈ int(A)</span>。<span class="qed">∎</span></p>
+    </div>
+  </div>
+
+  <div class="warn"><div class="bt">别把引理用到所有拓扑空间上</div>
+    <p>引理 4.1 只对 Alexandrov 拓扑成立。<strong>一般拓扑空间的 <span class="math">int</span> 不等于它在特殊化预序上的 Kripke <span class="math">□</span></strong>——例如 <span class="math">ℝ</span> 的特殊化预序是恒等（T1），Kripke <span class="math">□</span> 会变成恒等算子，而实际的 <span class="math">int</span> 不是。<strong>Alexandrov 恰好是「开集任意并仍开」这一条加强带来的</strong>：一般拓扑只对有限并封闭。</p>
+  </div>
+
+  <h3><span class="sn">4.2</span>S4 典范模型：把「证不出」变成「有一个点反例」</h3>
+  <div class="def"><div class="bt">定义 <span class="num">S4 典范模型</span></div>
+    <p>令 <span class="math">W<sup>c</sup></span> = 全体 <strong>S4-极大一致公式集</strong>（L19 Henkin 构造里已经用过这个概念）。定义</p>
+    <div class="formula">Γ ≤<sub>c</sub> Δ　⟺　{ φ : □φ ∈ Γ } ⊆ Δ</div>
+    <p>赋值 <span class="math">v<sup>c</sup>(p) = {Γ ∈ W<sup>c</sup> : p ∈ Γ}</span>，得模型 <span class="math">M<sup>c</sup> = ⟨W<sup>c</sup>, ≤<sub>c</sub>, v<sup>c</sup>⟩</span>。</p>
+  </div>
+
+  <div class="thm"><div class="bt">引理 <span class="num">4.2</span> <span class="math">≤<sub>c</sub></span> 是预序</div>
+    <div class="proof"><span class="pt">自反。</span><p>若 <span class="math">□φ ∈ Γ</span>，由 T 公理 <span class="math">□φ → φ</span> 与极大一致集对 MP 封闭，得 <span class="math">φ ∈ Γ</span>。故 <span class="math">Γ ≤<sub>c</sub> Γ</span>。</p>
+      <p><span class="pt">传递。</span>设 <span class="math">Γ ≤<sub>c</sub> Δ</span> 且 <span class="math">Δ ≤<sub>c</sub> Θ</span>，要证 <span class="math">Γ ≤<sub>c</sub> Θ</span>。取 <span class="math">□φ ∈ Γ</span>。由 4 公理 <span class="math">□φ → □□φ</span> 得 <span class="math">□□φ ∈ Γ</span>，由 <span class="math">Γ ≤<sub>c</sub> Δ</span> 的定义（把其中的 <span class="math">φ</span> 取为 <span class="math">□φ</span>）得 <span class="math">□φ ∈ Δ</span>，再由 <span class="math">Δ ≤<sub>c</sub> Θ</span> 得 <span class="math">φ ∈ Θ</span>。故 <span class="math">Γ ≤<sub>c</sub> Θ</span>。<span class="qed">∎</span></p>
+    </div>
+  </div>
+
+  <div class="thm"><div class="bt">引理 <span class="num">4.3（真值引理）</span> <span class="math">M<sup>c</sup>, Γ ⊨ φ ⟺ φ ∈ Γ</span></div>
+    <p>对公式结构归纳。命题变元、布尔连接词由 <span class="math">v<sup>c</sup></span> 定义与极大一致集的布尔封闭性直接得到。关键是 <span class="math">□</span> 那一步，分两个方向。</p>
+    <div class="proof"><span class="pt">（⇐）设 <span class="math">□φ ∈ Γ</span>。</span>
+      <p>取任意 <span class="math">Δ</span> 使 <span class="math">Γ ≤<sub>c</sub> Δ</span>。由定义得 <span class="math">φ ∈ Δ</span>，由归纳假设 <span class="math">M<sup>c</sup>, Δ ⊨ φ</span>。故 <span class="math">M<sup>c</sup>, Γ ⊨ □φ</span>。</p>
+      <p><span class="pt">（⇒）设 <span class="math">□φ ∉ Γ</span>。</span>要找一个 <span class="math">Δ ≥<sub>c</sub> Γ</span> 使 <span class="math">φ ∉ Δ</span>。令</p>
+      <div class="formula">Γ<sup>−</sup> = { ψ : □ψ ∈ Γ }</div>
+      <p>则 <span class="math">φ ∉ Γ<sup>−</sup></span>。断言 <span class="math">Γ<sup>−</sup> ∪ {¬φ}</span> 一致：<strong>反证</strong>，若它不一致，由演绎定理有 <span class="math">Γ<sup>−</sup> ⊢ φ</span>，取有限个 <span class="math">ψ₁,…,ψ<sub>n</sub> ∈ Γ<sup>−</sup></span> 使 <span class="math">⊢ (ψ₁ ∧ … ∧ ψ<sub>n</sub>) → φ</span>。由必然化规则与 K 公理得 <span class="math">⊢ □(ψ₁ ∧ … ∧ ψ<sub>n</sub>) → □φ</span>；又每个 <span class="math">□ψᵢ ∈ Γ</span>，而 <span class="math">□</span> 对 ∧ 分配（K 与 4 可导出），故 <span class="math">□(ψ₁ ∧ … ∧ ψ<sub>n</sub>) ∈ Γ</span>，由 MP 得 <span class="math">□φ ∈ Γ</span>，矛盾。</p>
+      <p>由 Lindenbaum 引理把 <span class="math">Γ<sup>−</sup> ∪ {¬φ}</span> 扩成极大一致集 <span class="math">Δ</span>。此时 <span class="math">Γ ≤<sub>c</sub> Δ</span>（定义），且 <span class="math">¬φ ∈ Δ</span> 故 <span class="math">φ ∉ Δ</span>。由归纳假设 <span class="math">M<sup>c</sup>, Δ ⊭ φ</span>，于是 <span class="math">M<sup>c</sup>, Γ ⊭ □φ</span>。<span class="qed">∎</span></p>
+    </div>
+  </div>
+
+  <div class="thm"><div class="bt">推论 <span class="num">S4 Kripke 完全性</span></div>
+    <p>若 <span class="math">⊬<sub>S4</sub> φ</span>，则 <span class="math">{¬φ}</span> 一致，扩成极大一致集 <span class="math">Γ</span>。由真值引理 <span class="math">M<sup>c</sup>, Γ ⊨ ¬φ</span>，故 <span class="math">φ</span> 不是 Kripke 有效的。<span class="qed">∎</span></p>
+  </div>
+
+  <h3><span class="sn">4.3</span>合龙：拓扑完备性</h3>
+  <div class="thm"><div class="bt">定理 <span class="num">4.4（McKinsey–Tarski）</span></div>
+    <p><span class="math">⊢<sub>S4</sub> φ</span> 当且仅当 <span class="math">φ</span> 在<strong>所有拓扑空间</strong>的 <span class="math">int</span> 语义下有效。</p>
+    <div class="proof"><span class="pt">（⇒）</span><p>§3 已证的可靠性。</p>
+      <p><span class="pt">（⇐）</span>设 <span class="math">⊬<sub>S4</sub> φ</span>。取典范模型 <span class="math">M<sup>c</sup> = ⟨W<sup>c</sup>, ≤<sub>c</sub>, v<sup>c</sup>⟩</span> 与 <span class="math">Γ ∈ W<sup>c</sup></span> 使 <span class="math">M<sup>c</sup>, Γ ⊭ φ</span>（推论 4.3）。在 <span class="math">W<sup>c</sup></span> 上赋 Alexandrov 拓扑 <span class="math">τ<sub>≤c</sub></span>。由引理 4.1，对任意公式 <span class="math">ψ</span>：</p>
+      <div class="formula">⟦□ψ⟧<sub>top</sub> = int(⟦ψ⟧<sub>top</sub>) = { Γ : ∀Δ ≥<sub>c</sub> Γ, M<sup>c</sup>, Δ ⊨ ψ } = ⟦□ψ⟧<sub>Kripke</sub></div>
+      <p>布尔情形显然，故对<strong>所有</strong>公式 <span class="math">ψ</span>，拓扑语义值与 Kripke 语义值逐点相同。于是 <span class="math">M<sup>c</sup>, Γ ⊭<sub>top</sub> φ</span>，<span class="math">φ</span> 非拓扑有效。逆否得证。<span class="qed">∎</span></p>
+    </div>
+  </div>
+
+  <div class="intu"><div class="bt">这一步到底用掉了什么</div>
+    <p>注意完全性方向<strong>只用到 Alexandrov 空间</strong>——一类很特殊的拓扑（任意并封闭）。所以 S4 的拓扑完全性其实是「Kripke 完全性 + 预序可以伪装成拓扑」两件事的合体。<strong>拓扑语义并没有比 Kripke 语义多给出 S4 的新定理</strong>，它多给的是<strong>提问的方式</strong>：下面问「哪类空间的逻辑是什么」时，Kripke 那边没有现成对应词。</p>
+  </div>
+  <p class="src"><b>来源：</b>拓扑讲义 Ch7（McKinsey–Tarski 一句话）；UAL 例 3.2.5、引理 2.8.9；L10 §7（预告）、L19 Henkin/Lindenbaum、L06 典范模型与 BAO。</p>
+</section>
+
+<section id="s42">
+  <h2><span class="sn">5</span>O3　S4.2：有向性 ⟺ 极端不连通 <span class="tag top">O3</span></h2>
+  <p class="lead">L14 §8 已经证过「在拓扑语义下 .2 ⟺ 极端不连通」，并把「框架对应与完全性证明」明确推给本讲。现在补上框架侧，并把两边焊起来。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">Geach 公理 .2 与有向性</span></div>
+    <div class="formula">.2：　◇□p → □◇p　　（等价写法：◇□p → □◇□p）</div>
+    <p>框架 <span class="math">⟨W, R⟩</span> <strong>有向</strong>（也叫汇合），若</p>
+    <div class="formula">∀x ∀y ∀z ( xRy ∧ xRz ⟹ ∃w ( yRw ∧ zRw ) )</div>
+    <p>读法：从同一点看出去的两条路，最终能在某个世界汇合。这比「完全」弱——只要求有共同后继，不要求那个后继在所有路上唯一。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">5.1（框架对应，双向）</span></div>
+    <div class="proof"><span class="pt">（有向 ⟹ .2 有效）</span>
+      <p>设 <span class="math">M, x ⊨ ◇□p</span>，取 <span class="math">y</span> 使 <span class="math">xRy</span> 且 <span class="math">M, y ⊨ □p</span>。要证 <span class="math">M, x ⊨ □◇p</span>，即任取 <span class="math">xRz</span> 证 <span class="math">M, z ⊨ ◇p</span>。由有向性取 <span class="math">w</span> 使 <span class="math">yRw</span> 且 <span class="math">zRw</span>；由 <span class="math">y ⊨ □p</span> 得 <span class="math">w ⊨ p</span>；由 <span class="math">zRw</span> 得 <span class="math">z ⊨ ◇p</span>。<span class="qed">∎</span></p>
+      <p><span class="pt">（.2 有效 ⟹ 有向）</span>反证。设 <span class="math">xRy</span>、<span class="math">xRz</span> 但 <span class="math">y, z</span> 无共同后继。造模型：令 <span class="math">V(p) = { w : yRw }</span>。则 <span class="math">y ⊨ □p</span>（定义），所以 <span class="math">x ⊨ ◇□p</span>；而对任意 <span class="math">zRw</span>，<span class="math">w ∉ V(p)</span>（否则 <span class="math">w</span> 是共同后继），所以 <span class="math">z ⊭ ◇p</span>，进而 <span class="math">x ⊭ □◇p</span>。这与 .2 有效矛盾。<span class="qed">∎</span></p>
+    </div>
+  </div>
+
+  <h3><span class="sn">5.1</span>把有向性翻译成空间</h3>
+  <div class="thm"><div class="bt">命题 <span class="num">5.2（有向预序 ⟺ 极端不连通，在 Alexandrov 空间上）</span></div>
+    <p>设 <span class="math">⟨W, ≤⟩</span> 是预序，<span class="math">τ<sub>≤</sub></span> 是开集 = 上集的 Alexandrov 拓扑。则</p>
+    <div class="formula">≤ 有向　⟺　⟨W, τ<sub>≤</sub>⟩ 极端不连通（每个开集的闭包仍开）</div>
+    <div class="proof"><span class="pt">先算闭包。</span><p>在 <span class="math">τ<sub>≤</sub></span> 中，<span class="math">cl(A) = ↓A = { x : ∃a ∈ A, x ≤ a }</span>：因为含 <span class="math">x</span> 的最小开集是 <span class="math">↑x</span>，而 <span class="math">x ∈ cl(A) ⟺ ↑x ∩ A ≠ ∅ ⟺ ∃a ∈ A (x ≤ a)</span>。</p>
+      <p><span class="pt">（有向 ⟹ 极端不连通）</span>取开集 <span class="math">U</span>（上集），要证 <span class="math">↓U</span> 是上集。设 <span class="math">x ∈ ↓U</span>、<span class="math">x ≤ x′</span>，取 <span class="math">u ∈ U</span> 使 <span class="math">x ≤ u</span>。对 <span class="math">x</span> 的两个上界 <span class="math">u</span> 与 <span class="math">x′</span> 用有向性，得 <span class="math">w ≥ u</span> 且 <span class="math">w ≥ x′</span>。因 <span class="math">U</span> 是上集且 <span class="math">u ∈ U</span>，有 <span class="math">w ∈ U</span>，于是 <span class="math">x′ ∈ ↓U</span>。<span class="qed">∎</span></p>
+      <p><span class="pt">（极端不连通 ⟹ 有向）</span>设 <span class="math">x ≤ y</span>、<span class="math">x ≤ z</span>。取开集 <span class="math">U = ↑y</span>。因 <span class="math">y ∈ ↑x ∩ ↑y</span>，得 <span class="math">x ∈ cl(↑y)</span>。由极端不连通，<span class="math">cl(↑y)</span> 是开集（上集），又 <span class="math">x ≤ z</span>，故 <span class="math">z ∈ cl(↑y)</span>。按上面闭包公式，存在 <span class="math">w ∈ ↑y</span> 使 <span class="math">z ≤ w</span>，即 <span class="math">y ≤ w</span> 且 <span class="math">z ≤ w</span>——共同上界。<span class="qed">∎</span></p>
+    </div>
+  </div>
+
+  <div class="box"><div class="bt">三条线在这里并成一条</div>
+    <table>
+      <tr><th>逻辑侧</th><th>框架侧</th><th>空间侧（Alexandrov）</th></tr>
+      <tr><td>.2：◇□p → □◇p</td><td>有向性：两条路能汇合</td><td>开集的闭包仍开（极端不连通）</td></tr>
+      <tr><td>在 S4 上加一条</td><td>在预序上加一条</td><td>在任意并封闭上加一条</td></tr>
+      <tr><td>推 S4.2 的定理</td><td>命题 5.1 双向</td><td>命题 5.2 双向 + L14 §8 的拓扑证明</td></tr>
+    </table>
+    <p><strong>推论：S4.2 对极端不连通空间类完备。</strong>方向一：每个极端不连通 Alexandrov 空间的有向预序验证 .2，故 S4.2 可靠。方向二：若 <span class="math">⊬<sub>S4.2</sub> φ</span>，取 S4.2 典范模型，其预序自反、传递、且由 .2 有效得有向（命题 5.1），赋 Alexandrov 拓扑后极端不连通（命题 5.2），由定理 4.4 的同型论证得拓扑反例。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="warn"><div class="bt">一个必须钉死的边界</div>
+    <p><strong>「极端不连通」在一般拓扑空间里不等于有向</strong>——因为一般空间的 <span class="math">int</span> 不是任何预序上的 Kripke <span class="math">□</span>（§4.1 的警告）。L14 §8 证明的是「.2 在拓扑语义下 ⟺ 极端不连通」，那是<strong>算子等式层面</strong>的对应，不需要 Alexandrov。本讲命题 5.2 是<strong>框架与空间之间</strong>的对应，只在 Alexandrov 里成立。两个结论都真，但说的不是同一件事，别混用。</p>
+  </div>
+  <p class="src"><b>来源：</b>L14 §8（.2 ⟺ 极端不连通的拓扑证明、明确留给 L25 的框架对应）、UAL §2.8、拓扑讲义定义 6.3.7、例 6.3.10。</p>
+</section>
+
+<section id="belief">
+  <h2><span class="sn">6</span>O4　信念逻辑：B = ◇□ 与 KD45 <span class="tag log">O4</span></h2>
+  <p class="lead">讲义 Ch7 只说了一句「极端不连通空间曾被用于完全信念逻辑」。这一句背后是 Stalnaker 的想法：<strong>信念就是「知识的认识可能性」</strong>——我相信 <span class="math">p</span>，当且仅当 <span class="math">p</span> 与我所知道的一切相容。把它写成算子，就是 <span class="math">B = ◇K</span>。</p>
+
+  <h3><span class="sn">6.1</span>知识与信念：差一条 T，多两条自反思</h3>
+  <div class="box"><div class="bt">S4（知识）与 KD45（信念）逐条对照</div>
+    <table>
+      <tr><th>公理</th><th>公式</th><th>知识（S4）</th><th>信念（KD45）</th></tr>
+      <tr><td>K</td><td><span class="math">□(p→q) → (□p → □q)</span></td><td>✓</td><td>✓（对 B 同样成立）</td></tr>
+      <tr><td>T / D</td><td><span class="math">□p → p</span>　/　<span class="math">¬B⊥</span></td><td>T：知道的一定真</td><td>D：相信的不必真，但要一致</td></tr>
+      <tr><td>4</td><td><span class="math">□p → □□p</span></td><td>✓ 正内省</td><td>✓ <span class="math">Bp → BBp</span></td></tr>
+      <tr><td>5</td><td><span class="math">◇p → □◇p</span></td><td>✗（S4 里不成立）</td><td>✓ <span class="math">¬Bp → B¬Bp</span> 负内省</td></tr>
+    </table>
+    <p><strong>直觉差别：</strong>知识有 T（真理性），信念没有——我相信的事可以是假的；但信念比知识多一条 5（负内省）——我知道我不知道什么，我不知道我不相信什么。信念逻辑里，<strong>「一致」取代了「真」的位置</strong>。</p>
+  </div>
+
+  <h3><span class="sn">6.2</span>强信念的拓扑定义</h3>
+  <div class="def"><div class="bt">定义 <span class="num">强信念（Stalnaker；文献）</span></div>
+    <p>在拓扑模型 <span class="math">M = ⟨X, τ, v⟩</span> 上，同时解释知识 <span class="math">K = int</span> 与信念 <span class="math">B</span>：</p>
+    <div class="formula">⟦Kφ⟧ = int(⟦φ⟧)　　⟦Bφ⟧ = cl(int(⟦φ⟧)) = ◇Kφ</div>
+    <p>第二个等式就是「信念 = 知识的认识可能性」：某件事与我的知识相容，当且仅当它触及了我已知区域的边界。<strong>这正是 L14 §8 翻译词典最后一行 <span class="math">cl(int(U))</span> 的严格化。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">6.1（在极端不连通空间上，B 满足 KD45）</span></div>
+    <p>先记一个由极端不连通性立刻得到的事实：对任意 <span class="math">A</span>，<span class="math">C = cl(int A)</span> <strong>既开又闭</strong>——闭是闭包的定义，开是定义 6.3.7 用于开集 <span class="math">int A</span>。因此 <span class="math">B</span> 把任意集合送到开闭集。下面四条逐步验。</p>
+    <div class="proof"><span class="pt">（D） <span class="math">B⊥ = ∅</span>。</span><p><span class="math">B(∅) = cl(int ∅) = cl(∅) = ∅</span>。这条在任意空间成立。</p>
+      <p><span class="pt">（4） <span class="math">Bp → BBp</span>。</span>令 <span class="math">C = cl(int A)</span>，已知 <span class="math">C</span> 开闭。于是 <span class="math">int(C) = C</span> 且 <span class="math">cl(C) = C</span>，故 <span class="math">B(C) = cl(int C) = cl(C) = C</span>。即 <span class="math">B</span> 在极端不连通空间上<strong>幂等</strong>，<span class="math">B(B(A)) = B(A)</span>，比 4 要求的还强。</p>
+      <p><span class="pt">（5） <span class="math">¬Bp → B¬Bp</span>。</span>仍令 <span class="math">C = B(A)</span> 开闭，则 <span class="math">−C</span> 也开闭，故 <span class="math">B(−C) = cl(int(−C)) = cl(−C) = −C</span>。即 <span class="math">B(¬B(A)) = ¬B(A)</span>，负内省等式成立。</p>
+      <p><span class="pt">（K） <span class="math">B(A→B) ∩ B(A) ⊆ B(B)</span>。</span>记 <span class="math">D = cl(int(−A ∪ B))</span>，由极端不连通 <span class="math">D</span> 开。用一个拓扑小事实：<strong>若 <span class="math">O</span> 开，则 <span class="math">O ∩ cl(X) ⊆ cl(O ∩ X)</span></strong>（取 <span class="math">y ∈ O ∩ cl(X)</span>，<span class="math">O</span> 是 <span class="math">y</span> 的开邻域，故 <span class="math">O ∩ X ≠ ∅</span>，即 <span class="math">y ∈ cl(O ∩ X)</span>）。于是</p>
+      <div class="formula">D ∩ cl(int A) ⊆ cl( D ∩ int A )　（取 O = D, X = int A）<br>
+        D ∩ int A ⊆ cl( int(−A∪B) ∩ int A ) = cl( int(A∩B) ) ⊆ cl(int B)</div>
+      <p>第二行用了「开集 <span class="math">D ⊇ int(−A∪B)</span>」与 <span class="math">int(−A∪B) ∩ int A = int(A∩B)</span>。两行串起来得 <span class="math">D ∩ B(A) ⊆ B(B)</span>，即 K。</p>
+      <p>MP 与代入保持有效，故 KD45 在极端不连通空间上可靠。<span class="qed">∎</span></p>
+    </div>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">6.2（文献，非本教材）</span></div>
+    <p>KD45 关于<strong>极端不连通空间类</strong>在上述 <span class="math">B = cl ∘ int</span> 语义下<strong>可靠且完全</strong>；更强地，把知识 <span class="math">K = int</span> 与信念 <span class="math">B = cl ∘ int</span> 放在一起，Stalnaker 的 <strong>KB 系统</strong>刻画极端不连通空间上的知识与信念，其<strong>知识片段恰是 S4.2</strong>、<strong>信念片段恰是 KD45</strong>。</p>
+    <p class="src"><b>出处：</b>A. Baltag, N. Bezhanishvili, A. Özgün, S. Smets, <i>The Topological Theory of Belief</i>（ILLC 预印本 PP-2015-18，2015；正式版 J. Philosophical Logic 48(2), 2019）。<strong>这三本教材只给了「极端不连通 ↔ 完全信念逻辑」这一句方向性提示</strong>，定理号与完全性证明请查该文。</p>
+  </div>
+
+  <div class="intu"><div class="bt">为什么 S4.2 与 KD45 会在同一类空间里碰头</div>
+    <p>因为它们<strong>用的是同一个空间条件，但检查的是不同的算子</strong>。S4.2 检查 <span class="math">K = int</span>：它要 <span class="math">cl(int A) ⊆ int(cl A)</span>，即 <span class="math">cl(int A)</span> 开。KD45 检查 <span class="math">B = cl ∘ int</span>：它同样要 <span class="math">cl(int A)</span> 开闭（命题 6.1 全靠这一条）。<strong>「开集的闭包仍开」这一个空间性质，在知识这边读成 .2，在信念那边读成 4+5+一致性。</strong>这就是讲义 Ch7 那句话的全部内容。</p>
+  </div>
+
+  <h3><span class="sn">6.3</span>另一条路：导集语义及其麻烦</h3>
+  <div class="box def"><div class="bt">L14 表的另一行：τ = X − d(X − A)</div>
+    <p>L14 §8 还列了用导集 <span class="math">d</span> 定义信念候补 <span class="math">τ(A) = X − d(X−A)</span> 的读法，并指出在 T1 空间里有 <span class="math">τ(X−{x}) = X</span>——<strong>每个主体都相信「实际世界并非如此」</strong>。这与 <span class="math">B = cl ∘ int</span> 不同：后者在离散空间给 <span class="math">B(A) = A</span>（信念退化为知识），前者却逼出反常识的结论。</p>
+    <p>Baltag 等人的工作比较了两条路，结论是 <strong><span class="math">cl ∘ int</span> 给出了 Stalnaker 强信念最一般的外延语义</strong>，导集语义在分离性较强时会退化。<strong>这也印证了 L14 那条译注：「修条件不等于修结论」。</strong></p>
+  </div>
+
+  <h3><span class="sn">6.4</span>再往前一步：动态更新为什么要「遗传」</h3>
+  <div class="box warn"><div class="bt">动态信念会破坏极端不连通（文献）</div>
+    <p>把「学到 <span class="math">φ</span>」读成<strong>限制到子空间</strong> <span class="math">[[φ]]</span>（L13 的 Stone/紧致化视角下这是自然的），问题来了：<strong>极端不连通空间的子空间未必极端不连通</strong>。于是更新后的模型可能掉出语义类。</p>
+    <p>补救办法是改用<strong>遗传极端不连通</strong>空间：所有子空间都极端不连通。文献中证明：在此语义下 KD45 仍完全，而知识侧要升到 <span class="math">S4.3</span>（线性预序），条件信念与更新算子也有完整公理化。</p>
+    <p class="src"><b>出处：</b>同定理 6.2 的文献；<strong>超出本教材范围</strong>，这里只作为 L26 与动态逻辑的接口提示。</p>
+  </div>
+  <p class="src"><b>本讲来源：</b>拓扑讲义 Ch7（「完全信念逻辑」方向）、Ch6 §6.3（定义 6.3.7、命题 6.3.8/6.3.9）；L14 §8。KD45/KB 的完全性为文献结果，已单独标注。</p>
+</section>
+
+<section id="algebra">
+  <h2><span class="sn">7</span>O5　模态代数 ↔ 拓扑空间；学习理论的方向 <span class="tag alg">O5</span></h2>
+
+  <h3><span class="sn">7.1</span>代数侧：BAO 与 Jónsson–Tarski</h3>
+  <div class="box"><div class="bt">三行对应（UAL §2.8）</div>
+    <table>
+      <tr><th>逻辑</th><th>代数</th><th>拓扑</th></tr>
+      <tr><td>S4 的定理集</td><td>S4-代数 = 满足 <span class="math">□x ≤ x</span>、<span class="math">□x ≤ □□x</span> 的正规 BAO</td><td>任意空间的 <span class="math">⟨𝓟(X), cl⟩</span></td></tr>
+      <tr><td>S4.2 的定理集</td><td>再加 <span class="math">◇□x ≤ □◇x</span></td><td>极端不连通空间的 <span class="math">⟨𝓟(X), cl⟩</span></td></tr>
+      <tr><td>KD45 的信念片段</td><td>满足 D/4/5 等式的 BAO</td><td>极端不连通空间上的 <span class="math">B = cl ∘ int</span></td></tr>
+    </table>
+  </div>
+  <div class="thm"><div class="bt">回指 L06：JT 定理 2.8.9 / 2.8.15</div>
+    <p>L06 §8 讲过：<strong>任何 BAO 都能嵌入一个完全原子的 BAO <span class="math">A<sup>+</sup></span></strong>。本讲的拓扑完备性（定理 4.4）就是它的拓扑版本：</p>
+    <div class="formula">抽象 S4-代数 <span class="math">A</span>　──JT──▶　完全原子 BAO <span class="math">A<sup>+</sup></span>　──原子当点──▶　Kripke 框架　──Alexandrov──▶　拓扑空间</div>
+    <p><strong>「非定理必有反模型」= 「代数里不等于顶元的元素，在某个空间的开闭/幂集代数里能被区分开」。</strong>L06 说这是「把完备性问题变成嵌入问题」，本讲补上了最后一步：嵌入的目标可以取成拓扑空间。</p>
+  </div>
+
+  <div class="box def"><div class="bt">与 L23 Stone 对偶的接口（预告 L26）</div>
+    <p>L23 把<strong>布尔代数</strong>对偶到 <strong>Stone 空间</strong>。BAO 多了一个算子，对偶空间就要多带一点结构：模态算子的关系对应、内部算子的特殊化序。<strong>Priestley 对偶给有序空间，Esakia 对偶给 Heyting 代数</strong>——L23 已标为预告，L26 会把这条对偶谱系补完。</p>
+  </div>
+
+  <h3><span class="sn">7.2</span>学习理论：教材给的是方向，不是定理</h3>
+  <div class="box warn"><div class="bt">先把话说清楚</div>
+    <p>讲义 Ch7 关于学习理论只有一句展望：「拓扑语义与学习理论的许多联系，也不断为机器学习时代人工智能中的逻辑作用提供启发。」<strong>它没有给出任何定理或定义</strong>。下面给的是<strong>解释性联系</strong>，帮助你把本课程的工具用过去，<strong>不是教材结论</strong>。</p>
+  </div>
+  <p>能接得上的地方有两个。第一，<strong><span class="math">□A = int(A)</span> 就是「稳定可验证」</strong>：一个性质算得上被知道，要求它在某个开区域内一直成立——这正是学习理论里「猜想稳定下来」的形状。第二，<strong><span class="math">◇A = cl(A)</span> 就是「与全部已见数据相容」</strong>：闭包把极限点收进来，而极限点恰是数据序列可能收敛到的地方。</p>
+  <p>把 L13 的紧致化也请进来：<span class="math">βX</span> 的额外点是「理想极限」。学习一个概念，往往就是在<span class="math">X</span> 上给不出有限依据、只在 <span class="math">βX</span> 里才收敛的情形。<strong>本讲能提供的只是这本词典；具体学习模型的形式化，不在这三本教材里。</strong></p>
+  <p class="src"><b>来源：</b>UAL 定义 2.8.6、定理 2.8.9/2.8.15；L06 §8；拓扑讲义 Ch7 末段（学习理论展望）。</p>
+</section>
+
+<section id="examples">
+  <h2><span class="sn">8</span>O6　三层例：典型 / 本质 / 边界 <span class="tag top">O6</span></h2>
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子 <span class="num">ℝ 与离散空间：S4 成立，.2 失败</span></div>
+    <p>取 <span class="math">A = (0,1) ⊆ ℝ</span>：<span class="math">int(A) = A</span>，<span class="math">cl(A) = [0,1]</span>，于是</p>
+    <div class="formula">◇□A = cl(int A) = [0,1]　⊄　(0,1) = int(cl A) = □◇A</div>
+    <p>.2 失败，所以 <span class="math">ℝ</span> 是 S4 模型而非 S4.2 模型。这也说明 <span class="math">ℝ</span> 不极端不连通——<span class="math">cl((0,1)) = [0,1]</span> 不开。<strong>离散空间是另一极端</strong>：<span class="math">int = cl =</span> 恒等，S4/S4.2/S5 全部退化成立，<span class="math">B(A) = A</span>——信念与知识合一，什么新信息都没有。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子 <span class="num">βℕ：同时是 S4.2 与 KD45 的空间</span></div>
+    <p>L14 命题 6.3.9 证过 <span class="math">βX</span>（<span class="math">X</span> 离散）极端不连通，L14 例 6.2.9 证过它是 Stone 空间。两条叠起来：</p>
+    <div class="formula">βℕ = Ult(𝓟(ℕ))　　cl(int A) 开闭　　K = int 给 S4.2，B = cl∘int 给 KD45</div>
+    <p><strong>这是本讲最重要的具体对象</strong>：它把 L06 的超滤子、L13 的紧致化、L14 的极端不连通、L23 的 Stone 对偶、本讲的信念语义全接在同一批点上。<span class="math">βℕ − ℕ</span> 里的非主超滤子，正是「与所有有限信息相容、却不由任何自然数给出」的理想信念状态。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解 <span class="num">分离性一松，词就失去直觉</span></div>
+    <p><strong>① 余有限拓扑</strong>（无限集 <span class="math">X</span>）：每个非空开集闭包是 <span class="math">X</span>，所以它<strong>极端不连通且连通</strong>（L14 例 6.3.10）——两个听上去相反的性质同时成立。原因是它非 Hausdorff。<strong>任何「极端 ⟹ 全不连通」的推论都要检查分离性。</strong></p>
+    <p><strong>② 有限空间：</strong>有限 Hausdorff 且极端不连通 ⟹ 离散。所以想看真正的 S4.2/KD45 语义，<strong>必须去无限空间</strong>；有限模型里 .2 与 S5 常常重合，会把差别抹平。</p>
+    <p><strong>③ <span class="math">□</span> 作用在 <span class="math">𝓟(X)</span> 上，不是只作用在 <span class="math">τ</span> 上。</strong>若把公式只解释成开集，<span class="math">int</span> 就是恒等，S4 结构整个消失。这是 L10 §7 已记过的坑。</p>
+  </div></div>
+  <p class="src"><b>来源：</b>L14 例 6.2.9、命题 6.3.8/6.3.9、例 6.3.10；拓扑讲义定义 6.3.7；文献定理 6.2。</p>
+</section>
+
+<section id="fusion2">
+  <h2><span class="sn">9</span>融合接口：第七张三面一体图 <span class="tag top">全课收束</span></h2>
+  <p class="lead">前六张图都是翻译图——把一侧的问题搬到另一侧解。这一张不一样：<strong>三列讲的是同一个对象</strong>，逻辑的公理、代数的等式、空间的性质逐行对齐，不经过翻译。</p>
+  <div class="diagram"><div class="bt">第七图：空间模态逻辑的三面一体</div>
+<pre>   逻辑侧                    代数侧                     空间侧
+  ─────────                ──────────                ──────────────
+  K + T + 4  (S4)          □x≤x, □x≤□□x            任意拓扑空间
+                            int 对 ∧ 分配           开集的稳定性
+       ↓ 加 .2                  ↓ 加 ◇□x≤□◇x              ↓ 开集闭包仍开
+  S4 + .2  (S4.2)          同一 BAO + 一条等式       极端不连通空间
+       ↕ 同条件               ↕ 同一算子 cl∘int           ↕ 同一形状
+  KD45  (信念片段)          D/4/5 等式               B = cl∘int 给开闭集
+                                                        βℕ 是样板
+  ─────────────────────────────────────────────────────────────────
+  共用骨架：  □=int（稳定可验证）　◇=cl（与信息相容）　B=◇□（知识的可能性）
+  共用机器：  Alexandrov 预序 ⟷ 上集拓扑；有向 ⟷ 极端不连通</pre>
+  </div>
+
+  <div class="box"><div class="bt">与前六讲的关系：这次不是桥，是汇合</div>
+    <table>
+      <tr><th>讲次</th><th>那讲给的东西</th><th>本讲怎么用</th></tr>
+      <tr><td>L02 / L10</td><td>闭包算子、内部算子四条公理</td><td>直接当 S4 公理验证（§3）</td></tr>
+      <tr><td>L06</td><td>BAO、Jónsson–Tarski 表示</td><td>完备性的代数版本（§7）</td></tr>
+      <tr><td>L13 / L14</td><td>紧致化、βℕ、极端不连通、强信念</td><td>本质例子 + .2 框架对应（§5/§8）</td></tr>
+      <tr><td>L18–L22</td><td>五座桥：紧致/完全/可定义/插值/判定</td><td>L24 已做总验收，本讲把「空间」加进同一张网</td></tr>
+      <tr><td>L23</td><td>Stone 对偶 BAᵒᵖ ≃ Stone</td><td>预告 BAO 对偶：Priestley / Esakia（L26）</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">一句话带走</div>
+    <p><strong>选空间 = 选逻辑。</strong>所有空间给 S4；Alexandrov 空间把 Kripke 语义装进来；极端不连通空间同时给 S4.2（知识）和 KD45（信念）；再要动态更新，就升到遗传极端不连通。<strong>一堂课下来，「拓扑问题」和「模态逻辑问题」变成同一道题的两种写法。</strong></p>
+  </div>
+</section>
+
+<section id="ex">
+  <h2><span class="sn">10</span>习题</h2>
+  <ol>
+    <li><span class="tag log">O1</span> 在 <span class="math">X = {1,2,3}</span> 上取拓扑 <span class="math">τ = {∅, {1}, {1,2}, X}</span>。对 <span class="math">A = {2}</span> 逐条算出 <span class="math">int(A), cl(A), □◇A, ◇□A</span>，并指出哪条 S4 等式在这个空间退化成平凡。</li>
+    <li><span class="tag log">O1</span> 从 <span class="math">cl(A∪B) = cl A ∪ cl B</span> 与 <span class="math">cl ∅ = ∅</span> 出发，用补运算推出 <span class="math">int(A∩B) = int A ∩ int B</span> 与 <span class="math">int X = X</span>。<strong>这一步解释「UAL 用 ◇ 做原始算子为何不吃亏」。</strong></li>
+    <li><span class="tag log">O2</span> 补全引理 4.2 传递证明里省略的一步：由 <span class="math">□ψᵢ ∈ Γ</span>（<span class="math">i = 1,…,n</span>）推出 <span class="math">□(ψ₁ ∧ … ∧ ψ<sub>n</sub>) ∈ Γ</span>。提示：先用 K 公理得 <span class="math">□ψ₁ ∧ □ψ₂ ≤ □(ψ₁∧ψ₂)</span>，再归纳。</li>
+    <li><span class="tag log">O2</span> 写出真值引理中「（⇒）」方向的反证全过程，特别说明<strong>为什么必须假设 <span class="math">Γ<sup>−</sup> ∪ {¬φ}</span> 一致才能用 Lindenbaum 引理</strong>，以及若 <span class="math">□φ ∉ Γ</span> 但 <span class="math">φ ∈ Γ</span> 会不会出问题。</li>
+    <li><span class="tag log">O2</span> 对 <span class="math">φ = □p → p</span>，在 <span class="math">W = {0,1}</span>、<span class="math">0 ≤ 1</span> 的 Alexandrov 空间上，取 <span class="math">v(p) = {1}</span>，验证 <span class="math">⟦□p⟧ = int({1})</span> 与 Kripke 值一致，并说明为什么这条公式在所有 Alexandrov 空间有效。</li>
+    <li><span class="tag top">O3</span> 在命题 5.1 的反例构造中，把 <span class="math">V(p) = {w : yRw}</span> 改成 <span class="math">V(p) = {y}</span>，检查证明还成不成立；若不成，指出卡在哪一步。<strong>这题练「框架对应反例的赋值为什么那样选」。</strong></li>
+    <li><span class="tag top">O3</span> 设预序 <span class="math">≤</span> 有<strong>最大元</strong> <span class="math">m</span>（所有 <span class="math">x ≤ m</span>）。证明它一定有向；再问：反过来有向不一定有最大元，举一个 <span class="math">ℕ</span> 上的例子。</li>
+    <li><span class="tag log">O4</span> 在极端不连通空间中，证明 <span class="math">B(¬B(A)) = ¬B(A)</span> 的每一步都用到哪条性质；若把空间换成 <span class="math">ℝ</span>，取 <span class="math">A = (0,1)</span> 算出 <span class="math">B(A)</span> 与 <span class="math">B(¬B(A))</span>，指出 5 公理在哪一步失败。</li>
+    <li><span class="tag log">O4</span> 用命题 6.1 证明中「开集 <span class="math">O</span> 满足 <span class="math">O ∩ cl(X) ⊆ cl(O ∩ X)</span>」这条小事实，并说明若 <span class="math">O</span> 不开，反例怎么造。</li>
+    <li><span class="tag alg">O5</span> 用 L23 的 Stone 对偶语言重述「<span class="math">cl(int A)</span> 开闭」：它在 <span class="math">Ult(𝓟(X))</span> 里对应什么样的点集？再解释为什么 <span class="math">βℕ</span> 上这个点集不是任意子集。</li>
+    <li><span class="tag top">O6</span> 验证余有限拓扑的 <span class="math">□p → p</span> 与 <span class="math">.2</span> 都成立，但 <span class="math">□p → □□p</span> 是否成立取决于 <span class="math">□A</span> 的取值。<strong>用这个例子写一句话：为什么「分离性不够时，模态公式会退化」。</strong></li>
+    <li><span class="tag log">O6</span> 综合题：用 §9 的图说明「同一个空间条件（开集闭包仍开）为什么在知识侧叫 .2、在信念侧叫 KD45」。最后写一句你自己的话：这一讲和 L23 的 Stone 对偶，哪一个更接近「拓扑就是逻辑」？</li>
+  </ol>
+</section>
+
+<div class="footnav">
+  <a href="L24.html">← 上一讲：L24 关系代数与 RRA</a>
+  <a href="L26.html" style="font-size:13.5px">下一讲：L26 无点拓扑、locale 与 Heyting 代数 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L25 · 来源：拓扑讲义 Ch7/Ch6 §6.3、UAL §2.8/§3.2；KD45 完全性引自 Baltag–Bezhanishvili–Özgün–Smets · v0.1</footer>
+
+</main></div>
+</body>
+</html>

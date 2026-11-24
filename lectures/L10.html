@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L10 闭集、邻域、闭包与内部算子 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第三篇 拓扑：用逻辑的眼光看空间</span><span class="sep">/</span><span>L10</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 10 · 2 学时 · 拓扑篇重头</div>
+  <h1>闭集、邻域、闭包与内部算子</h1>
+  <div class="sub">L02 的闭包算子在这里第一次以「拓扑」的身份露面——而它的对偶正是 S4 的「必然」</div>
+  <div class="metarow"><span>来源：拓扑讲义 Ch2 §2.4（定义 2.4.1–2.4.5、命题 2.4.6）；UAL 定义 1.7.1/1.7.3</span>
+    <span class="tag top">拓扑</span><span class="tag alg">代数</span><span class="tag log">逻辑</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：从「可验证」到「可证伪」再到「补到封闭」</a></li>
+  <li><a href="#closed">闭集与可证伪命题（O1）</a></li>
+  <li><a href="#clint">闭包 cl 与内部 int（O2）</a></li>
+  <li><a href="#neighborhood">邻域与邻域滤子（O3）</a></li>
+  <li><a href="#char">闭包 ↔ 邻域相交：稠密的语言（O4）</a></li>
+  <li><a href="#kuratowski">Kuratowski 公理与有限/无穷之别（O5）</a></li>
+  <li><a href="#modal">int = □：S4 的拓扑语义（O6）</a></li>
+  <li><a href="#fusion">融合接口</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单（简） ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">本讲是 L02 闭包算子的拓扑化身，也是 L06 BAO 的拓扑语义。三条线在此各认出自己的老朋友。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>概念</th><th>依赖</th></tr>
+      <tr><td>闭集 (C1)–(C3)</td><td>L08 开集（取补）</td><td>邻域滤子 <span class="math">𝒩(x)</span></td><td>L08 + L02 滤子</td></tr>
+      <tr><td>闭包 <span class="math">cl</span> / 内部 <span class="math">int</span></td><td>L02 闭包算子</td><td>Kuratowski 公理</td><td>L02 + 有限可加</td></tr>
+      <tr><td><span class="math">x ∈ cl(S) ⟺</span> 邻域相交</td><td><span class="math">cl</span> + 邻域</td><td><span class="math">int = □</span> 的 S4 语义</td><td>L06 BAO</td></tr>
+    </table>
+  </div>
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>开集取补 → 闭集 (C1)–(C3) → 「包含于 <span class="math">S</span> 的最大开集 / 包含 <span class="math">S</span> 的最小闭集」→ <span class="math">int</span> 与 <span class="math">cl</span> → 四条 Kuratowski 公理 → <strong>拓扑可由闭包算子完全等价地描述</strong>。另一支：邻域 → 邻域滤子 → 闭包邻域刻画 → L12 收敛 / L18 紧致。两支在 <span class="math">int = □</span> 处与 L06 的 BAO 合流。</p>
+  </div>
+</section>
+
+<!-- ============ 学习目标对照 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>用 (C1)–(C3) 判定闭集，讲清闭集 = 可证伪命题与 clopen</td><td><a href="#closed">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>用「最大开集 / 最小闭集」定义并计算 <span class="math">int</span> 与 <span class="math">cl</span></td><td><a href="#clint">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>构造邻域滤子，说出它与开邻域集的区别</td><td><a href="#neighborhood">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>用邻域相交刻画闭包与稠密，读懂命题 2.4.6 的两向证明</td><td><a href="#char">§6</a></td><td><a href="#ex">E7, E8</a></td></tr>
+    <tr><td><b>O5</b></td><td>陈述 Kuratowski 公理，说明闭包算子如何等价描述拓扑，分清有限/无穷可加</td><td><a href="#kuratowski">§7</a></td><td><a href="#ex">E9, E10, E11</a></td></tr>
+    <tr><td><b>O6</b></td><td>解释 <span class="math">int=□</span>、<span class="math">cl=◇</span> 的 S4 语义与对偶口径</td><td><a href="#modal">§8</a></td><td><a href="#ex">E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：从「可验证」到「可证伪」再到「补到封闭」</h2>
+  <p class="lead">L08 只讲了开集（可验证命题）。但一个命题的否定呢？「有非白天鹅」可验证，它的否定「所有天鹅都白」不可验证——可后者并非无从判断，找到一只黑天鹅就能把它证伪。于是自然要问：可证伪命题构成什么结构？再问：给定一个任意集合 <span class="math">S</span>，离它最近的「可证伪命题」和「可验证命题」分别是什么？</p>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>这一讲解决两件事。第一件是<strong>给否定找拓扑位置</strong>：开集的补是闭集，闭集就是可证伪命题；开与闭既不互斥也不穷尽，这正好对应「既可验证又可证伪」与「两者都不能」的真实命题。第二件是<strong>把「补到封闭」变成算子</strong>：<span class="math">cl(S)</span> 是含 <span class="math">S</span> 的最小闭集，<span class="math">int(S)</span> 是含于 <span class="math">S</span> 的最大开集——这正是 L02 闭包算子在幂集上的实例，而且它对偶着 <span class="math">int</span>。</p>
+    <p>回报很大：一旦闭包算子能等价描述拓扑，L02 全套工具（闭集格、代数性、有限 witness）就能搬进拓扑；而 <span class="math">int</span> 满足的公理恰是 S4 的 □，把 L06 的模态代数接上地。</p>
+  </div>
+  <p class="src"><b>来源：</b>拓扑讲义 §2.4 开头、注 2.4.1/2.4.2；UAL §1.7。</p>
+</section>
+
+<!-- ============ O1 闭集 ============ -->
+<section id="closed">
+  <h2><span class="sn">3</span>闭集与可证伪命题 <span class="tag top">O1</span><span class="tag log">O1</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>给「可证伪命题」一个精确的数学身份。办法最简单不过：取补。开集的补叫闭集，于是可验证命题的否定就是可证伪命题。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.1（拓扑讲义定义 2.4.1、命题 2.4.2）</span></div>
+    <p><span class="math">U ⊆ X</span> 称为<strong>闭集</strong>，当且仅当 <span class="math">X − U ∈ τ</span>（补集开）。闭集族满足：</p>
+    <div class="formula left">
+      (C1)&nbsp; <span class="math">X, ∅</span> 闭<br>
+      (C2)&nbsp; 任意闭集族的交闭<br>
+      (C3)&nbsp; 有限多个闭集的并闭
+    </div>
+    <p>讲义点明：(C1)–(C3) 给出拓扑空间的<strong>等价定义</strong>——指定满足这三条的闭集族，其补集自动满足 (O1)–(O3)。开与闭对偶：任意并 ↔ 任意交、有限交 ↔ 有限并。</p>
+  </div>
+
+  <div class="intu"><div class="bt">认识论读法（注 2.4.1、2.4.2）</div>
+    <p>开集 = 可验证命题，其补 = 该命题的否定。否定不一定可验证（<span class="math">∀WS</span> 不可验证），但总可证伪（找到黑天鹅即可）。所以<strong>闭集 = 可证伪命题</strong>。讲义还给了一张绝妙的表：</p>
+    <table>
+      <tr><th>命题</th><th>可验证（开）</th><th>可证伪（闭）</th></tr>
+      <tr><td>所有天鹅都是白色的</td><td>—</td><td>×</td></tr>
+      <tr><td>有天鹅不是白色的</td><td>×</td><td>—</td></tr>
+      <tr><td>外面正在下雨</td><td>×</td><td>×</td></tr>
+      <tr><td>JFK 最后的念头是「唯一真正的逻辑是什么？」</td><td>—</td><td>—</td></tr>
+    </table>
+    <p>第三行是 <strong>clopen</strong>（既开又闭）——出去看看就能验证也能证伪；第四行既不可验证也不可证伪，既不开也不闭。讲义还开了个冷玩笑：服务行业的 clopen（关店后又接早班）在拓扑里指开闭集。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">ℝ</span> 中单点 <span class="math">{a}</span> 闭（补 <span class="math">(−∞,a)∪(a,∞)</span> 开），闭区间 <span class="math">[a,b]</span> 闭，开区间 <span class="math">(a,b)</span> 不闭。<span class="math">∅</span> 与 <span class="math">X</span> 永远既开又闭——对应「逻辑假/真既可验证（空泛地）又可证伪（空泛地）」。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>JFK 最后念头的例子揭示：<strong>开与闭既不互斥、也不穷尽</strong>。它不是修辞——在 Sierpiński 空间 <span class="math">{∅,X,{b}}</span> 里，<span class="math">{b}</span> 开不闭、<span class="math">{a}</span> 闭不开，四种状态里缺了 clopen 那一格；在离散空间里每个集合都 clopen，又缺了「既不开也不闭」那一格。<strong>一个空间里 clopen 的多少，度量的是「有多少命题能正反两边都判定」</strong>——这正是 L14 连通性的种子。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>别把「闭」理解成「不开」。开与闭不是互补概念，而是两个独立属性：集合可以既开又闭、既不开也不闭、只开、只闭，四种都可能。另一个常见错：子空间里闭 ≠ 在原空间里闭。正确说法是引理 2.4.3：<span class="math">U ⊆ S</span> 在 <span class="math">S</span> 中闭当且仅当 <span class="math">U = V ∩ S</span>，<span class="math">V</span> 是 <span class="math">X</span> 中闭集——与 L09 子空间开集的定义完全对偶。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 2.4.1、命题 2.4.2、注 2.4.1/2.4.2 及命题表、引理 2.4.3。</p>
+</section>
+
+<!-- ============ O2 cl / int ============ -->
+<section id="clint">
+  <h2><span class="sn">4</span>闭包 cl 与内部 int <span class="tag top">O2</span><span class="tag alg">O2</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>给定任意 <span class="math">S ⊆ X</span>（一个未必可验证、未必可证伪的命题），离它最近的闭集和开集是什么？这个问题有两个答案，而且一凸一凹互为对偶。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.1（拓扑讲义定义 2.4.4、注 2.4.3）</span></div>
+    <ol>
+      <li><span class="math">S</span> 的<strong>闭包</strong> <span class="math">cl(S)</span> 是包含 <span class="math">S</span> 的<strong>最小闭集</strong>，即所有含 <span class="math">S</span> 的闭集之交。</li>
+      <li><span class="math">S</span> 的<strong>内部</strong> <span class="math">int(S)</span> 是包含于 <span class="math">S</span> 的<strong>最大开集</strong>，即所有含于 <span class="math">S</span> 的开集之并。</li>
+    </ol>
+    <p>于是 <span class="math">S</span> 闭当且仅当 <span class="math">S = cl(S)</span>；<span class="math">S</span> 开当且仅当 <span class="math">S = int(S)</span>。两个算子 <span class="math">cl, int : 𝓟(X) → 𝓟(X)</span> 互为对偶：</p>
+    <div class="formula">cl(S) = X − int(X − S),&nbsp;&nbsp;&nbsp; int(S) = X − cl(X − S)</div>
+    <p>这正是 L08 习题里那道「<span class="math">S ↦ X − int(X − S)</span> 是闭包算子」的来源。</p>
+  </div>
+
+  <div class="intu"><div class="bt">与 L02 的对照：认出老朋友</div>
+    <p><span class="math">cl</span> 满足 L02 闭包算子的三条：扩张（<span class="math">S ⊆ cl(S)</span>）、单调（<span class="math">S ⊆ T ⇒ cl(S) ⊆ cl(T)</span>）、幂等（<span class="math">cl(cl(S)) = cl(S)</span>）。闭集格 <span class="math">{S : cl(S) = S}</span> 就是 L02 的闭包系统。<strong>代数里的 <span class="math">Sg</span>、逻辑里的 <span class="math">Cn</span>、这里的 <span class="math">cl</span>，是同一个抽象的三种实例。</strong>而 <span class="math">int</span> 是它的对偶——「内部算子」是「在包含序的逆序上的闭包算子」。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">ℝ</span> 中 <span class="math">cl((0,1)) = [0,1]</span>，<span class="math">int([0,1]) = (0,1)</span>。闭包把「缺口」补上，内部把「边界」削掉。离散空间里 <span class="math">cl = int =</span> 恒等（每个集合既开又闭）；平凡空间里 <span class="math">cl(非空) = X</span>、<span class="math">int(真子集) = ∅</span>。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><span class="math">ℚ ⊆ ℝ</span>：<span class="math">int(ℚ) = ∅</span>（有理数里塞不进任何开区间），<span class="math">cl(ℚ) = ℝ</span>（任何开区间都含有理数）。一个集合的内部空空如也、闭包却撑满全空间——这叫<strong>稠密</strong>。它说明 <span class="math">int</span> 与 <span class="math">cl</span> 不是简单的「一个给多一个给少」，而是从两侧逼近同一集合。L09 说 <span class="math">ℚ</span> 不离散，这里给出了等价说法。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>最大的坑是把闭包误当「加边界点」的机械操作：在 Sierpiński 空间里 <span class="math">cl({b}) = {b}</span>（已闭），<span class="math">cl({a}) = X</span>（因为含 <span class="math">{a}</span> 的闭集只有 <span class="math">X</span>）——闭包的行为完全由闭集族决定，没有统一公式。另一个坑：别以为 <span class="math">int(S ∪ T) = int(S) ∪ int(T)</span>，只有 <span class="math">⊇</span> 成立（如 <span class="math">S=ℚ, T=ℝ−ℚ</span>：两边内部皆空，并集内部却是 <span class="math">ℝ</span>）。对偶地 <span class="math">cl(S ∩ T) ⊆ cl(S) ∩ cl(T)</span> 一般严格。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 2.4.4、注 2.4.3；UAL 定义 1.7.1；L02 §2。</p>
+</section>
+
+<!-- ============ O3 邻域 ============ -->
+<section id="neighborhood">
+  <h2><span class="sn">5</span>邻域与邻域滤子 <span class="tag top">O3</span><span class="tag log">O3</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>L08 末尾埋了伏笔：「在 <span class="math">x</span> 处成立的事实构成理论，理论就是滤子」。现在把这句话做实。邻域概念要解决的是：<strong>如何说「<span class="math">S</span> 在 <span class="math">x</span> 附近」</strong>——这比「<span class="math">x ∈ S</span>」更适合描述逼近、收敛与连续性。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.1（拓扑讲义定义 2.4.5、注 2.4.4）</span></div>
+    <p><span class="math">V ⊆ X</span> 是 <span class="math">x</span> 的<strong>邻域</strong>，当且仅当存在开集 <span class="math">U</span> 使 <span class="math">x ∈ U ⊆ V</span>。若 <span class="math">V</span> 自身开，称<strong>开邻域</strong>。</p>
+    <p>认识论：点 <span class="math">x</span> 的开邻域恰好对应在世界 <span class="math">x</span> 为真的可验证命题。讲义诚实补了一句：一般邻域的认识论解释比较牵强，任何直观都有局限。</p>
+    <p>全部邻域组成的 <span class="math">𝒩(x)</span> 是 L02 意义下的<strong>滤子</strong>：含 <span class="math">X</span>；对交封闭（<span class="math">U,V ∈ 𝒩(x)</span> 取各自内含的开邻域再取交）；向上封闭（邻域的上集还是邻域）。注意区分：<span class="math">𝒩<sub>open</sub>(x)={U∈τ:x∈U}</span> 只对交封闭、<strong>不对上闭</strong>，还不是滤子；<span class="math">𝒩(x)</span> 是它上闭化后的产物。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">ℝ</span> 中 <span class="math">[−1,1]</span> 是 <span class="math">0</span> 的邻域（含开区间 <span class="math">(−½,½)</span>），但不是开邻域。<span class="math">(−1,1)</span> 二者皆是。<span class="math">{0}</span> 不是邻域——塞不进任何含 <span class="math">0</span> 的开区间。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>邻域滤子把「点」变成代数对象：不必真有点，一个滤子就能充当「一个可能世界」。这是 L12「滤子收敛到 <span class="math">x</span>」（<span class="math">𝓕 → x ⟺ 𝓕 ⊇ 𝒩(x)</span>）与 L18「紧致 ⟺ 每个超滤子收敛」的起点。代数侧 L21 Stone 对偶里「点 = 超滤子」，正是这条线索的终点。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>讲义脚注 9 特别声明：有些文献把「邻域」本身定义为开集，本书不采用此约定。<strong>读任何拓扑文本都要先确认它的约定</strong>，否则「邻域」一词在不同书里指两个不同的集合族。另一个细节：空集不是任何点的邻域，否则滤子会退化；这也与 (ver) 一致——<span class="math">⊥</span> 从不为真，谈不上「在 <span class="math">x</span> 处可验证」。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 2.4.5、注 2.4.4 及脚注 9、习题 4.2（定义 4.2.3 附近的邻域滤子 <span class="math">N(x)</span>）。</p>
+</section>
+
+<!-- ============ O4 闭包邻域刻画 ============ -->
+<section id="char">
+  <h2><span class="sn">6</span>闭包 ↔ 邻域相交：稠密的语言 <span class="tag top">O4</span><span class="tag log">O4</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p><span class="math">cl(S)</span> 的定义是「所有含 <span class="math">S</span> 的闭集之交」——要验证 <span class="math">x ∈ cl(S)</span>，得检查一大堆闭集。命题 2.4.6 给出一个只看 <span class="math">x</span> 附近的等价条件：局部判断代替全局扫描。这是拓扑里最常用的重写之一。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">6.1（拓扑讲义命题 2.4.6）</span></div>
+    <p>对 <span class="math">S ⊆ X</span>，<span class="math">x ∈ X</span>，以下等价：</p>
+    <ul>
+      <li><span class="math">x ∈ cl(S)</span>；</li>
+      <li><span class="math">x</span> 的每个开邻域 <span class="math">U</span> 都与 <span class="math">S</span> 相交（<span class="math">U ∩ S ≠ ∅</span>）。</li>
+    </ul>
+    <p><strong>证明（讲义原式）：</strong>(<span class="math">⇒</span>) 取逆否：若有开邻域 <span class="math">U</span> 与 <span class="math">S</span> 不交，则 <span class="math">X − U</span> 是含 <span class="math">S</span> 而不含 <span class="math">x</span> 的闭集；闭包是所有这类闭集之交，故 <span class="math">x ∉ cl(S)</span>。(<span class="math">⇐</span>) 若 <span class="math">x ∉ cl(S)</span>，则 <span class="math">X − cl(S)</span> 是含 <span class="math">x</span> 的开集且与 <span class="math">S</span> 不交，取其本身为开邻域即得。</p>
+  </div>
+
+  <div class="intu"><div class="bt">稠密：这个刻画的第一份红利</div>
+    <p>若 <span class="math">cl(S) = X</span>，称 <span class="math">S</span> <strong>稠密</strong>。由命题 6.1，这等价于 <span class="math">S</span> 与每个非空开集都相交。认识论读法：<strong>稠密 = 无论把知识精细化到哪个开邻域，总能遇到 <span class="math">S</span> 中的世界</strong>——<span class="math">S</span> 在任意精度下都不可排除。<span class="math">ℚ</span> 在 <span class="math">ℝ</span> 中稠密，说的正是「任何开区间里都有有理数」。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">0 ∈ cl((0,1))</span>：含 <span class="math">0</span> 的每个开区间 <span class="math">(−ε,ε)</span> 都与 <span class="math">(0,1)</span> 相交（取 <span class="math">min(ε,½)</span> 附近点即可）。而 <span class="math">2 ∉ cl((0,1))</span>：开邻域 <span class="math">(1,3)</span> 与 <span class="math">(0,1)</span> 不交。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><span class="math">ℚ</span> 稠密于 <span class="math">ℝ</span>，<span class="math">ℤ</span> 不稠密。命题 6.1 把「稠密」从闭包的语言翻译成开集的语言，于是能用基来检查：只需验证 <span class="math">S</span> 与每个<strong>基本</strong>开集相交（L09 的「逐点找小块」手法）。Cantor 空间上，[T] 是闭集、映射 <span class="math">A ↦ [T(A)]</span> 正是 Baire 空间的闭包算子（讲义习题 2.5）——稠密与闭包的语言统一处理了描述集合论的对象。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>刻画里必须是<strong>开邻域</strong>，不能换成「<span class="math">x</span> 的任意邻域」吗？其实可以（因为邻域含开邻域），但不能换成「<span class="math">x</span> 的闭邻域」——在一般空间里闭邻域太粗糙。另一个坑：条件 <span class="math">U ∩ S ≠ ∅</span> 只说「相交」，没说 <span class="math">x ∈ S</span>。<span class="math">0 ∈ cl((0,1))</span> 但 <span class="math">0 ∉ (0,1)</span>——闭包点未必是集合的点，这正是「逼近」与「属于」的差别。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义命题 2.4.6 及证明、习题 4.2（稠密定义）、习题 2.5（Baire 闭包算子）。</p>
+</section>
+
+<!-- ============ O5 Kuratowski ============ -->
+<section id="kuratowski">
+  <h2><span class="sn">7</span>Kuratowski 公理与有限/无穷之别 <span class="tag top">O5</span><span class="tag alg">O5</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>讲义说「习题会表明 <span class="math">cl</span> 与 <span class="math">int</span> 也能等价地描述拓扑」。这句话的分量值得展开：你可以不指定开集，而是直接指定一个满足四条规则的闭包算子，拓扑就被唯一确定了。这把 L02「闭包算子 ↔ 闭包系统 ↔ 完全格」的整套理论搬进了拓扑。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">7.1（Kuratowski 闭包公理）</span></div>
+    <p>映射 <span class="math">cl : 𝓟(X) → 𝓟(X)</span> 是拓扑闭包算子，若对任意 <span class="math">A, B ⊆ X</span>：</p>
+    <div class="formula left">
+      (K1)&nbsp; cl(∅) = ∅<br>
+      (K2)&nbsp; A ⊆ cl(A)&nbsp;&nbsp;&nbsp;（扩张）<br>
+      (K3)&nbsp; cl(A ∪ B) = cl(A) ∪ cl(B)&nbsp;&nbsp;&nbsp;（<strong>有限</strong>可加）<br>
+      (K4)&nbsp; cl(cl(A)) = cl(A)&nbsp;&nbsp;&nbsp;（幂等）
+    </div>
+    <p>给定这样的 <span class="math">cl</span>，定义闭集为 <span class="math">{A : cl(A) = A}</span>，其补集族即为一个拓扑；反之每个拓扑的闭包算子满足 (K1)–(K4)。<strong>两种描述完全等价。</strong>（对偶地，内部算子满足 <span class="math">int(X)=X</span>、<span class="math">int(A)⊆A</span>、<span class="math">int(A∩B)=int(A)∩int(B)</span>、<span class="math">int(int(A))=int(A)</span>。）</p>
+  </div>
+
+  <div class="warn"><div class="bt">关键修正：有限可加，无穷不可加</div>
+    <p><strong>拓扑闭包满足有限可加性</strong>（K3），这正是 UAL 定义 1.7.3 把这类算子命名为「拓扑闭包算子」的由来——不是与拓扑闭包对立，而是以它为原型。但它<strong>不对无穷并可加</strong>：只有 <span class="math">cl(⋃<sub>i</sub>A<sub>i</sub>) ⊇ ⋃<sub>i</sub>cl(A<sub>i</sub>)</span>。反例：取 <span class="math">A<sub>n</sub> = {1/n} ⊆ ℝ</span>，则 <span class="math">cl(⋃<sub>n</sub>A<sub>n</sub>) = {0} ∪ {1/n : n∈ℕ}</span> 含 <span class="math">0</span>，而 <span class="math">⋃<sub>n</sub>cl(A<sub>n</sub>) = {1/n : n∈ℕ}</span> 不含 <span class="math">0</span>。这个「有限 / 无穷」的裂缝，正是 L18 紧致性要填的洞：紧致大致就是说闭包算子在某种意义下「表现得有限」。</p>
+  </div>
+
+  <div class="intu"><div class="bt">与 L02 对照：抽象与实例</div>
+    <p>L02 的闭包算子只有三条（扩张、单调、幂等），不要求可加；这里多了 (K1)(K3)。关系是这样：L02 的 <span class="math">Sg, Cn</span> 一般不可加（两个子群的并非子群）；拓扑 <span class="math">cl</span> 恰好可加，是特例。而 <span class="math">cl</span> 的单调性其实可由 (K2)(K3) 推出：<span class="math">A ⊆ B ⇒ cl(B) = cl(A∪B) = cl(A)∪cl(B) ⊇ cl(A)</span>。所以 (K1)–(K4) 与 L02 三条完全兼容，只是更强。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>离散空间：<span class="math">cl(A)=A</span>，四条显然成立，且对任意并可加。平凡空间：<span class="math">cl(∅)=∅</span>，<span class="math">cl(非空)=X</span>，逐条检查 (K1)–(K4) 也都成立——两个极端都符合 Kuratowski 公理。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>从 <span class="math">cl</span> 反解拓扑：给 <span class="math">X={a,b}</span> 定义 <span class="math">cl(∅)=∅, cl({a})={a}, cl({b})=X, cl(X)=X</span>。验证 (K1)–(K4) 后，闭集为 <span class="math">∅,{a},X</span>，故开集 <span class="math">τ={∅,{b},X}</span>——正是天鹅空间的 Sierpiński 拓扑。<strong>换一个闭包算子就换一个拓扑</strong>：Kuratowski 公理是拓扑的另一种完整基因。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>别把 (K3) 写成「对任意并可加」，那是错的（见 warn 块）。也别把 (K1) 当成多余：它对应 <span class="math">∅</span> 闭，即 <span class="math">X</span> 开；若漏掉它，会造出「空集非闭」的伪拓扑。最后，UAL 里的「代数闭包算子」（finitary，L02 定义 2.4）与这里的 Kuratowski 闭包是<strong>两个不同维度的特殊化</strong>：前者管「有限见证」（紧致性的种子），后者管「有限可加」。拓扑闭包一般既非 finitary（除非空间是 Alexandroff 的），又满足有限可加——两套条件别混为一谈。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义注 2.4.3（「习题会表明它们也能等价描述拓扑」）；UAL 定义 1.7.1/1.7.3；L02 §2、§4。</p>
+</section>
+
+<!-- ============ O6 模态 ============ -->
+<section id="modal">
+  <h2><span class="sn">8</span>int = □：S4 的拓扑语义 <span class="tag top">O6</span><span class="tag log">O6</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>L06 讲了带算子的布尔代数 BAO 与 S4 模态逻辑，但「□ 在具体的空间里到底是什么」一直抽象。这里给出答案：<span class="math">□ = int</span>（内部），<span class="math">◇ = cl</span>（闭包）。拓扑空间于是成为 S4 的一个标准语义。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">8.1（S4 的拓扑语义）</span></div>
+    <p>取拓扑空间 <span class="math">X</span> 的开集代数 <span class="math">𝓟(X)</span>（一个布尔代数），定义 <span class="math">□A = int(A)</span>、<span class="math">◇A = cl(A) = −int(−A)</span>。逐条核对 S4 公理：</p>
+    <ul>
+      <li><span class="math">□A ⊆ A</span>（公理 T）：内部含于原集合，成立；</li>
+      <li><span class="math">□A ⊆ □□A</span>（公理 4）：<span class="math">int(A) ⊆ int(int(A))</span>，而 <span class="math">int(int(A))=int(A)</span>，成立；</li>
+      <li><span class="math">□(A ∩ B) = □A ∩ □B</span>（□ 对合取分配）：内部保持有限交，成立；</li>
+      <li><span class="math">□X = X</span>（保持顶元）：成立。</li>
+    </ul>
+    <p>对偶地 <span class="math">◇ = cl</span> 满足 <span class="math">A ⊆ ◇A</span>、<span class="math">◇◇A ⊆ ◇A</span>、<span class="math">◇(A∪B)=◇A∪◇B</span>、<span class="math">◇∅=∅</span>——这恰是 UAL 定义 2.8.6 正规 BAO 的形态（对 <span class="math">∨</span> 分配、保持 <span class="math">0</span>）。<strong>两者由补运算互相翻译，是同一个结构的两面。</strong></p>
+  </div>
+
+  <div class="warn"><div class="bt">口径一致：别把 ∧ 与 ∨ 搞混</div>
+    <p>务必与 L06 §7 的口径保持一致：<span class="math">int</span> 对 <span class="math">∩</span>（合取）分配，<span class="math">cl</span> 对 <span class="math">∪</span>（析取）分配。UAL 的 BAO 定义用 <span class="math">∨, −, 0</span> 作基本运算，所以它的分配公理对应 <span class="math">◇ = cl</span> 那一侧；<span class="math">□ = int</span> 由补对偶给出。若直接说「BAO 分配 ∨」而不补一句「对偶地也能写 ∧」，会以为和拓扑的内部定义打架——其实不矛盾。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>取平凡拓扑：<span class="math">□</span>（真子集）<span class="math">= ∅</span>，<span class="math">□X = X</span>。取离散拓扑：<span class="math">□ =</span> 恒等，于是 <span class="math">□A = A</span>，T 与 4 都平凡成立——对应「所有命题都必然当且仅当真」的退化语义。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>McKinsey–Tarski 的经典结论：S4 相对于拓扑空间类完备——一个 S4 公式可证当且仅当它在所有拓扑空间的 <span class="math">int</span> 语义下有效。这正是 L06 Jónsson–Tarski 表示定理的拓扑版本：把抽象的 S4-代数嵌入某个空间的开集代数。讲义 Ch7 进一步说：极端不连通空间对应更强的信念逻辑、与 S4.2 相连（L25 展开）。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>不是每个模态逻辑都有这么干净的拓扑语义：S5 需要等价关系（每个世界都能看到所有世界，对应「离散划分」拓扑），而 S4 只要求预序（对应 Alexandroff 拓扑的 specialization 序）。别把「模态算子 = 内部」当成普遍真理——它只对 S4 这一族成立。另一个坑：<span class="math">int</span> 作用在<strong>开集代数</strong> <span class="math">𝓟(X)</span> 上，而不是只在开集上；若限定在 <span class="math">τ</span> 上则 <span class="math">int=</span> 恒等，S4 结构消失。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 Ch7「空间的模态逻辑」（McKinsey–Tarski、S4.2）；L06 §7/§8；UAL 定义 2.8.6。</p>
+</section>
+
+<!-- ============ 融合接口 ============ -->
+<section id="fusion">
+  <h2><span class="sn">9</span>融合接口</h2>
+  <div class="fusion"><div class="bt">代数 ↔ 逻辑 ↔ 拓扑</div>
+    <table>
+      <tr><th>代数侧</th><th>逻辑侧</th><th>拓扑侧（本讲）</th></tr>
+      <tr><td>闭包系统的闭元（L02）</td><td>可证伪命题 / 理论的否定</td><td>闭集 <span class="math">cl(S)=S</span></td></tr>
+      <tr><td><span class="math">Sg, Cn</span>（L02 闭包算子）</td><td>「补到封闭」</td><td><span class="math">cl</span>（Kuratowski 公理）</td></tr>
+      <tr><td>理想 / 滤子（L02、L06）</td><td>在 <span class="math">x</span> 处成立的理论</td><td>邻域滤子 <span class="math">𝒩(x)</span></td></tr>
+      <tr><td>S4-代数 / BAO（L06）</td><td><span class="math">□</span>（必然）、<span class="math">◇</span>（可能）</td><td><span class="math">int</span> / <span class="math">cl</span></td></tr>
+      <tr><td>有限 witness / finitary（L02）</td><td>紧致性（有限可满足）</td><td>有限可加 vs 无穷不可加（L18）</td></tr>
+    </table>
+    <p><strong>一句话：</strong>本讲把 L02 的抽象闭包算子认成拓扑的 <span class="math">cl</span>，把 L06 的模态算子认成 <span class="math">int</span>。「补到封闭」与「必然」在同一个算子里相遇——这是三线融合最紧的一次握手，也是 L18 紧致桥的直接前置。</p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+  <div class="box"><ol>
+    <li><span class="tag top">O1</span> 验证 (C1)–(C3) 与 (O1)–(O3) 等价：设闭集族满足 (C1)–(C3)，证明其补集族满足开集三公理。</li>
+    <li><span class="tag log">O1</span> 对讲义命题表里的四个命题，各举一个拓扑空间/世界集，使其对应的子集分别为「开不闭」「闭不开」「clopen」「既不开也不闭」。</li>
+    <li><span class="tag top">O2</span> 在 Sierpiński 空间 <span class="math">{∅,X,{b}}</span> 中计算 <span class="math">cl({a}), cl({b}), int({a}), int({b})</span>，并用对偶公式 <span class="math">cl(S)=X−int(X−S)</span> 复核。</li>
+    <li><span class="tag alg">O2</span> 证明 <span class="math">cl(S)=⋂{V : V 闭且 S⊆V}</span> 满足扩张、单调、幂等三条，并说明闭集格就是对应的闭包系统（L02）。</li>
+    <li><span class="tag top">O3</span> 证明 <span class="math">𝒩(x)</span> 是滤子而 <span class="math">𝒩<sub>open</sub>(x)</span> 一般不是，各写出三条性质的验证。</li>
+    <li><span class="tag log">O3</span> 用邻域滤子的语言重述「<span class="math">𝓕</span> 收敛到 <span class="math">x</span>」，并解释为什么 L12 的 Hausdorff 分离等价于「每个滤子至多收敛到一点」。</li>
+    <li><span class="tag top">O4</span> 完整写出命题 2.4.6 的两向证明，并指出逆否命题那一步用了「闭包是所有含 <span class="math">S</span> 闭集之交」的哪一条性质。</li>
+    <li><span class="tag log">O4</span> 证明 <span class="math">S</span> 稠密当且仅当 <span class="math">S</span> 与每个基本开集相交，并用此结论证明 <span class="math">ℚ</span> 在 <span class="math">ℝ</span> 中稠密。</li>
+    <li><span class="tag alg">O5</span> 证明 (K2)(K3) 蕴含单调性，再证明 (K1)–(K4) 定义的闭集族满足 (C1)–(C3)。</li>
+    <li><span class="tag top">O5</span> 给出 Kuratowski 公理的反例族：定义一个满足 (K2)(K4) 但不满足 (K1) 或 (K3) 的映射，说明它为何不能是拓扑闭包。</li>
+    <li><span class="tag alg">O5</span> 用 <span class="math">A<sub>n</sub>={1/n}</span> 详细验证 <span class="math">cl(⋃<sub>n</sub>A<sub>n</sub>) ⊋ ⋃<sub>n</sub>cl(A<sub>n</sub>)</span>，并解释这个裂缝与紧致性的关系（可只写直觉）。</li>
+    <li><span class="tag log">O6</span> 逐条核对 <span class="math">□=int</span> 满足 S4 的 T、4、对 ∧ 分配、保持顶元四条，并写出对偶的 <span class="math">◇=cl</span> 四条。</li>
+    <li><span class="tag log">O6</span> 说明为什么 S5 对应等价关系而非一般预序，以及「模态算子 = 内部」为何只对 S4 族成立；举一个 S4 成立但 S5 失效的拓扑情境。</li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L09.html">← 上一讲：L09 基、子基与生成新拓扑</a>
+  <a href="L11.html">下一讲：L11 连续映射、同胚、嵌入与商映射 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L10 · 来源：拓扑讲义 Ch2 §2.4、UAL 定义 1.7.1/1.7.3 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

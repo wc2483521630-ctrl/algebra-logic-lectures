@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L15 研究逻辑的统一框架 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第四篇 代数化：把逻辑翻译成代数</span><span class="sep">/</span><span>L15</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 15 · 2 学时 · 代数篇开篇</div>
+  <h1>研究逻辑的统一框架</h1>
+  <div class="sub">把千差万别的逻辑塞进同一个四元组，然后一台代数机器就能处理它们全部</div>
+  <div class="metarow"><span>来源：UAL §3.1（定义 3.1.1/3.1.3/3.1.5/3.1.6、式 (3.1)、Remark 3.1.2、图 3.1）、§3.2（例 3.2.1/3.2.2/3.2.3/3.2.5/3.2.7/3.2.8/3.2.10/3.2.12/3.2.14/3.2.15/3.2.17/3.2.19/3.2.27/3.2.28/3.2.34）、§3.3 预告（定义 3.3.1/3.3.2/3.3.3）；L02 Galois 连接、L06 Stone 表示、L08–L14 拓扑语义</span>
+    <span class="tag log">逻辑</span><span class="tag alg">代数</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：先做接口，再谈代数</a></li>
+  <li><a href="#frame">逻辑的四元组（O1）</a></li>
+  <li><a href="#conseq">后承、Mod、Csq 与 Th（O2）</a></li>
+  <li><a href="#prop">经典命题逻辑的两副样子（O3）</a></li>
+  <li><a href="#knob1">旋钮一：固定模型，换连接词（O4）</a></li>
+  <li><a href="#knob2">旋钮二：固定公式，换模型（O5）</a></li>
+  <li><a href="#alg">为什么要规范化：通向 Alg(L)（O6）</a></li>
+  <li><a href="#fusion">融合接口：前十四讲的回收</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">前十四讲我们一直在用各种逻辑：命题逻辑、模态逻辑、一阶逻辑、S4。它们看起来毫无关系。本讲做一件很机械的事：<strong>给「逻辑」规定一个统一接口</strong>。接口定好，后面的代数机器才有东西可接。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>它回答的问题</th></tr>
+      <tr><td>逻辑 <span class="math">L = ⟨F, M, mng, ⊨⟩</span></td><td>L01 集合与关系</td><td>一个逻辑至少要交代哪几件事？</td></tr>
+      <tr><td>意义函数 mng</td><td>同上</td><td>公式在一个模型里「指什么」，而不只是「真不真」</td></tr>
+      <tr><td><span class="math">Mod</span>、<span class="math">Csq</span>、<span class="math">Th</span></td><td>mng、⊨</td><td>「模型」「后承」「理论」怎么统一写出来</td></tr>
+      <tr><td>旋钮一：换连接词</td><td>公式的递归生成</td><td>模型不动，怎样造出更强的逻辑？</td></tr>
+      <tr><td>旋钮二：换模型类</td><td>模型的定义</td><td>公式不动，怎样造出不同的逻辑？</td></tr>
+      <tr><td>组合性与公式代数</td><td>L04 代数、L05 自由代数</td><td>意义能不能由子公式的意义算出来？</td></tr>
+      <tr><td><span class="math">Alg(L)</span></td><td>上面全部</td><td>规范化到底是为了什么？</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>四元组 <span class="math">⟨F, M, mng, ⊨⟩</span> → 由 <span class="math">⊨</span> 读出 <strong>Mod / Csq / Th</strong>（L02 的 Galois 连接在这里第二次出现）→ 用两个旋钮生成一整片逻辑图谱：<strong>固定 M 换连接词</strong>（S5、difference、κ-times、more-often）、<strong>固定 F 换模型类</strong>（pair、square、arrow）→ 加入「意义由部分决定」的<strong>组合性</strong>，公式集就变成代数 → 取同余商得 <strong>Lindenbaum–Tarski 代数</strong> → 这才轮到 <strong>Alg(L)</strong> 登场。<strong>本讲只做前半段：把料备齐，L16 才开机器。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 目标 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>写出逻辑的四元组定义，说清意义函数为什么是核心部件</td><td><a href="#frame">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>定义并计算 Mod、Csq、Th，重认 Th–Mod 的 Galois 连接</td><td><a href="#conseq">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>把经典命题逻辑写成四元组，解释集合语义与真值语义为何等价</td><td><a href="#prop">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>验证 S5、difference、κ-times、二元模态的连接词语义，比较表达力</td><td><a href="#knob1">§6</a></td><td><a href="#ex">E7, E8</a></td></tr>
+    <tr><td><b>O5</b></td><td>说出 arrow 逻辑四个版本的区别，写下一阶逻辑及其变体的规范表示</td><td><a href="#knob2">§7</a></td><td><a href="#ex">E9, E10, E11</a></td></tr>
+    <tr><td><b>O6</b></td><td>解释组合性、公式代数与 Lindenbaum–Tarski 代数，说明规范化服务于 Alg(L)</td><td><a href="#alg">§8</a></td><td><a href="#ex">E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：先做接口，再谈代数</h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>UAL 一开始就拿 C++ 打比方。定义一门语言分两步：先说哪些字符串是合法程序，再说这些程序跑起来会干什么。第二步又拆成两小步——先说清楚有哪些可能的机器，再说每个程序在每台机器上跑出什么。</p>
+    <p>逻辑也一样。<strong>但我们要的不是「讲清楚某一个逻辑」，而是「讲清楚逻辑这类东西长什么样」。</strong>因为后面要给逻辑做代数化，而一台机器不可能对着无数种各自为政的定义工作。<strong>得先把它们削成同一个形状。</strong></p>
+    <p>UAL 给出的形状是四元组 <span class="math">L = ⟨F, M, mng, ⊨⟩</span>。它有两个旋钮可以单独拧：<strong>换公式那一份</strong>，或者<strong>换模型那一份</strong>。拧一拧，命题逻辑、S5、difference logic、arrow logic、一阶逻辑、带「不可数多」量词的逻辑，全从同一个模子里出来。</p>
+  </div>
+
+  <div class="diagram"><pre>
+        公式 F                     模型类 M
+        （语法）                    （语义环境）
+           │                          │
+           │   mng(φ, M)              │
+           └──────────┬───────────────┘
+                      │
+                 意义（集合）
+                      │
+                  ⊨ 挑选「真」
+                      │
+               语义后承 ⊨ ⊆ P(F) × F
+
+       UAL 图 3.1 的「扇形结构」：
+       一个公式对着许多模型，每个交点给出一个意义。
+  </pre></div>
+
+  <div class="warn"><div class="bt">先说清楚一件事：这个框架不是「逻辑哲学」</div>
+    <p>它不回答「逻辑究竟是什么」这种问题。它只规定：<strong>如果你想要本书后面的定理用在你身上，你至少得交出这四样东西。</strong>交不出来也没关系——UAL 专门说明了怎么把纯语法的证明系统改造成这个形状（下面 §8 的伪模型构造）。</p>
+    <p>所以别把它当成本体论声明。<strong>它是一个接口规范。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O1 四元组 ============ -->
+<section id="frame">
+  <h2><span class="sn">3</span>逻辑的四元组 <span class="tag log">O1</span></h2>
+
+  <div class="def"><div class="bt">定义 3.1.3（逻辑）<span class="num">本讲的核心</span></div>
+    <p>一个<strong>逻辑</strong> <span class="math">L</span> 是有序四元组</p>
+    <div class="formula"><span class="math">L = ⟨F<sub>L</sub>, M<sub>L</sub>, mng<sub>L</sub>, ⊨<sub>L</sub>⟩</span></div>
+    <p>其中：</p>
+    <p><strong>(i)</strong> <span class="math">F<sub>L</sub></span> 是公式集，要求是某个字母表 <span class="math">X</span> 上的有限字序列之集，即 <span class="math">F<sub>L</sub> ⊆ X<sup>*</sup></span>。</p>
+    <p><strong>(ii)</strong> <span class="math">M<sub>L</sub></span> 是（可以是真类的）模型类。</p>
+    <p><strong>(iii)</strong> <span class="math">mng<sub>L</sub> : F<sub>L</sub> × M<sub>L</sub> → Sets</span> 是意义函数。</p>
+    <p><strong>(iv)</strong> <span class="math">⊨<sub>L</sub> ⊆ M<sub>L</sub> × F<sub>L</sub></span> 是有效性关系，写作 <span class="math">M ⊨<sub>L</sub> φ</span>。</p>
+    <p><strong>(v)</strong> 对一切 <span class="math">φ, ψ ∈ F<sub>L</sub></span> 与 <span class="math">M ∈ M<sub>L</sub></span>：</p>
+    <div class="formula"><span class="math">mng(φ, M) = mng(ψ, M) &nbsp;且&nbsp; M ⊨ φ &nbsp;⟹&nbsp; M ⊨ ψ</span></div>
+    <p>这条叫式 (3.1)。<strong>它是整个框架唯一的技术性约束，看起来平淡，实际上把「真」拴在了「意义」上。</strong></p>
+  </div>
+
+  <div class="intu"><div class="bt">每个部件在干什么</div>
+    <p><span class="math">F</span> 是「能说什么」；<span class="math">M</span> 是「可能在什么场合说」；<span class="math">mng</span> 是「这句话在这个场合指什么」；<span class="math">⊨</span> 是「这句话在这个场合算不算真」。</p>
+    <p><strong>为什么 mng 是核心。</strong>UAL 特意拿它跟 Tarski–Givant 的 formalism 比较：那边只有 <span class="math">⟨F, M, ⊨⟩</span>，可以把 <span class="math">mng(φ,M)</span> 草草设成 TRUE/FALSE。<strong>但那会把量词逻辑挡在门外。</strong>一阶逻辑里 <span class="math">φ(x)</span> 在一个模型中的意义不是一个真值，而是<strong>满足它的赋值之集</strong>。没有 mng，你连「一个开出公式指什么」都说不出来，更别说把它代数化。</p>
+    <p><strong>为什么有式 (3.1)。</strong>如果两个公式在同一个模型里意义相同，那么它们在该模型的真假必须一致。没有这条，「真」就可以任意指派，跟意义脱钩，后面的代数化就无从谈起。<strong>注意它只要求一个方向：意义相同 ⟹ 真假相同；不要求反方向。</strong>两个意义不同的公式完全可能同真。这一点在边界例里会用到。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 3.1.1：一阶逻辑的规范表示</div>
+    <p>相似类型 <span class="math">t</span>、变量集 <span class="math">V</span> 的一阶逻辑写成</p>
+    <div class="formula"><span class="math">L<sub>FOL</sub> = ⟨Fml<sub>t</sub>(V), ⊢, Mod<sub>t</sub>, mng<sub>FOL</sub>, ⊨⟩</span></div>
+    <p>其中意义函数是</p>
+    <div class="formula"><span class="math">mng<sub>FOL</sub>(φ, M) = { k : M ⊨ φ[k] }</span></div>
+    <p>即<strong>所有使 <span class="math">φ</span> 在 <span class="math">M</span> 中成立的赋值 <span class="math">k</span> 的集合</strong>。</p>
+    <p><strong>这就是 UAL 跟别家最大的不同。</strong>把 <span class="math">k</span> 收进 mng，量词就变成了「对赋值集合做的操作」，于是整个一阶逻辑也能进代数机器。<strong>L06 讲 BAO、后面 L23 讲关系代数时，靠的都是这一步。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>命题逻辑：字母表是命题字母 <span class="math">P</span>，公式是 <span class="math">P ∪ {⊥}</span> 经 <span class="math">∧, ¬</span> 生成的字；模型是赋值；意义是真值。<strong>这是最贴合直觉的情形，先拿它校准定义。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>一阶逻辑：<span class="math">mng<sub>FOL</sub>(φ, M)</span> 是<strong>赋值集合</strong>而不是真值。对开公式 <span class="math">R(x,y)</span>，同一个模型里有些赋值满足、有些不满足——只有把它收成集合，意义函数才装得下这个差异。<strong>这才是 mng 存在的理由。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>定义要求 <span class="math">F ⊆ X<sup>*</sup></span>，所以无穷语言被挡在外面。</strong>UAL 明说这是技术上的方便，不是原则限制：<span class="math">L<sub>κ,λ</sub></span> 那类无穷语言稍作修改也能处理。</p>
+    <p>② <strong><span class="math">M</span> 可以是真类。</strong>一阶逻辑的所有模型就不是集合。<strong>后面在模型类上做超积时，这是在类上取积</strong>，不能照搬集合上的构造。L18 把 L13 的紧致性搬到逻辑侧时，这一层必须重新交代。</p>
+    <p>③ <strong>式 (3.1) 不是「⊨ 由 mng 定义」。</strong>UAL 明说不要求 <span class="math">⊨</span> 可从 <span class="math">mng</span> 定义出来；只要求这条单向的相容性。把两者搞混，就会误以为真值语义是唯一选择。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL 定义 3.1.3、式 (3.1)、定义 3.1.1 前的讨论、例 3.1.1、注释 2–4；Tarski–Givant 的 formalism 比较段（§3.1 第 104–105 页）。</p>
+</section>
+
+<!-- ============ O2 后承 ============ -->
+<section id="conseq">
+  <h2><span class="sn">4</span>后承、Mod、Csq 与 Th <span class="tag log">O2</span></h2>
+
+  <div class="def"><div class="bt">定义 3.1.5 / 3.1.6 <span class="num">四个标准记号</span></div>
+    <p>设 <span class="math">L = ⟨F, M, mng, ⊨⟩</span>，<span class="math">Σ ⊆ F</span>，<span class="math">K ⊆ M</span>。</p>
+    <div class="formula"><span class="math">M ⊨ Σ &nbsp;⟺&nbsp; 对每个 <span class="math">φ ∈ Σ</span> 有 <span class="math">M ⊨ φ</span></span></div>
+    <div class="formula"><span class="math">Mod(Σ) = { M ∈ M : M ⊨ Σ }</span></div>
+    <div class="formula"><span class="math">Σ ⊨ φ &nbsp;⟺&nbsp; Mod(Σ) ⊆ Mod({φ})</span></div>
+    <div class="formula"><span class="math">Csq(Σ) = { φ ∈ F : Σ ⊨ φ }</span></div>
+    <div class="formula"><span class="math">Th(K) = { φ ∈ F : 对所有 <span class="math">M ∈ K</span>，<span class="math">M ⊨ φ</span> }</span></div>
+    <p><span class="math">Th(M)</span> 叫 <span class="math">L</span> 的<strong>有效式集</strong>（重言式集）；<span class="math">Th({M})</span> 简写为 <span class="math">Th(M)</span>。</p>
+    <p><strong>注意 <span class="math">⊨</span> 被用了两次</strong>：一次是 <span class="math">M ⊨ φ</span>（模型与公式之间），一次是 <span class="math">Σ ⊨ φ</span>（公式集与公式之间）。UAL 说希望这不会造成歧义——看左边是模型还是公式集就知道。</p>
+  </div>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>这四个记号把 L02 那套 Galois 连接整个搬了过来。<strong>Mod 从公式集到模型类，Th 从模型类到公式集，两者构成一对反变 Galois 连接</strong>：</p>
+    <div class="formula"><span class="math">Σ ⊆ Th(K) &nbsp;⟺&nbsp; K ⊆ Mod(Σ)</span></div>
+    <p>而且 <span class="math">Th ∘ Mod</span> 与 <span class="math">Mod ∘ Th</span> 都是闭包算子。<strong>L02 讲的所有性质这里原封不动成立</strong>——那一次的「闭集」是代数子集，这一次的「闭集」是理论。<strong>本讲不做重复证明，但你要能自己认出来。</strong></p>
+    <p>把 <span class="math">K = Mod(Σ)</span> 代进去，得到</p>
+    <div class="formula"><span class="math">Csq(Σ) = Th(Mod(Σ))</span></div>
+    <p><strong>这一行是本讲最有用的等式</strong>：语义后承 = 「先取 Σ 的所有模型，再取这些模型共同满足的东西」。<strong>它把「推出」变成了「取公共部分」。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">例：在命题逻辑里算一次</div>
+    <p>令 <span class="math">Σ = {p, p → q}</span>。则 <span class="math">Mod(Σ)</span> 是所有让 <span class="math">p</span> 真且 <span class="math">q</span> 真的赋值。<span class="math">Th(Mod(Σ))</span> 包含 <span class="math">q</span>、包含 <span class="math">p ∧ q</span>、也包含 <span class="math">p ∨ r</span>——凡是所有这类赋值都满足的都在里面。</p>
+    <p><strong>注意 <span class="math">r</span> 不在里面</strong>：有赋值让 <span class="math">p,q</span> 真而 <span class="math">r</span> 假。<strong>「共同满足」这四个字在干活。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">Th(∅) = Th(M)</span> 是所有重言式；<span class="math">Mod(∅) = M</span>。<strong>空假设给出最大的模型类、最小的理论</strong>，和 L02 的 Galois 连接完全同向。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><span class="math">Csq(Σ) = Th(Mod(Σ))</span>。在可满足性问题里，<span class="math">Σ ⊨ φ</span> 等价于 <span class="math">Σ ∪ {¬φ}</span> 不可满足，即 <span class="math">Mod(Σ ∪ {¬φ}) = ∅</span>。<strong>「推出」被翻译成「模型类空」——这正是 L13 紧致性定理能兑现为「有限可满足 ⟹ 整体可满足」的入口。</strong>L18 会把它讲透。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong><span class="math">Th(K)</span> 和 <span class="math">Csq(Σ)</span> 的键不同</strong>：前者键是模型类，后者键是公式集。<span class="math">Th(M) = Csq(∅)</span> 只在 <span class="math">K = M</span> 时重合。<strong>别混用。</strong></p>
+    <p>② <strong>Galois 连接给出的是闭包，不是内部。</strong><span class="math">Th(Mod(Σ)) ⊇ Σ</span>，永远只会变大。想变小要靠假设，不是靠闭包。</p>
+    <p>③ <strong>UAL 练习 3.2.4 问过一个尖锐的问题</strong>：当命题字母集 <span class="math">P = ∅</span> 时，|<span class="math">F</span>| 与可公理化模型类 <span class="math">|{Mod(Σ) : Σ ⊆ F}|</span> 各是多少？<strong>答案是有限个小数字</strong>；<span class="math">P</span> 无限时后者也只有连续统那么多。<strong>这说明「模型类的丰富度」是被语言卡住的。</strong></p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL 定义 3.1.5（Mod、有效式、⊨、Csq）、定义 3.1.6（Th）、例 3.2.4；L02 Galois 连接与闭包算子。</p>
+</section>
+
+<!-- ============ O3 命题逻辑两副样子 ============ -->
+<section id="prop">
+  <h2><span class="sn">5</span>经典命题逻辑的两副样子 <span class="tag log">O3</span></h2>
+
+  <div class="def"><div class="bt">例 3.2.1 <span class="num">集合语义版 L<sub>S</sub><sup>0</sup></span></div>
+    <p>取命题字母集 <span class="math">P</span>，连接词 <span class="math">{∧, ¬, ⊥}</span>。公式集 <span class="math">F<sub>S</sub></span> 是满足下列条件的最小集：</p>
+    <div class="formula"><span class="math">P ∪ {⊥} ⊆ H &nbsp;且&nbsp; φ, ψ ∈ H ⟹ (φ ∧ ψ), ¬φ ∈ H</span></div>
+    <p>模型类：</p>
+    <div class="formula"><span class="math">M<sub>S</sub> = { ⟨W, v⟩ : W 是非空集，v : P → 𝓟(W) }</span></div>
+    <p>意义函数按结构递归，每一步都是集合运算：</p>
+    <div class="formula"><span class="math">mng(p, M) = v(p), &nbsp; mng(φ ∧ ψ, M) = mng(φ, M) ∩ mng(ψ, M)</span></div>
+    <div class="formula"><span class="math">mng(¬φ, M) = W − mng(φ, M), &nbsp; mng(⊥, M) = ∅</span></div>
+    <p>有效性：<span class="math">M ⊨<sub>0S</sub> φ ⟺ mng(φ, M) = W</span>。</p>
+    <p>证明系统 <span class="math">⊢<sub>0S</sub></span> 可以给一组公理加分离规则 <span class="math">{φ, φ → ψ} ⊢ ψ</span>，其中 <span class="math">φ → ψ</span> 是 <span class="math">¬(φ ∧ ¬ψ)</span> 的缩写。<strong>UAL 紧接着就说了：这部分可以先不管，后面不依赖它。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">例 3.2.3 <span class="num">模态式写法 L<sub>S</sub></span></div>
+    <p>同样的 <span class="math">F<sub>S</sub></span> 和 <span class="math">M<sub>S</sub></span>，但改用强制关系 <span class="math">w &#8611;<sub>v</sub> φ</span>：</p>
+    <div class="formula"><span class="math">w &#8611;<sub>v</sub> p ⟺ w ∈ v(p); &nbsp; w &#8611;<sub>v</sub> ¬ψ ⟺ 非 w &#8611;<sub>v</sub> ψ</span></div>
+    <div class="formula"><span class="math">w &#8611;<sub>v</sub> (ψ<sub>1</sub> ∧ ψ<sub>2</sub>) ⟺ 两者都成立</span></div>
+    <p>然后 <span class="math">mng<sub>S</sub>(φ, ⟨W,v⟩) = { w ∈ W : w &#8611;<sub>v</sub> φ }</span>，<span class="math">⟨W,v⟩ ⊨<sub>S</sub> φ ⟺ 对所有 w ∈ W 有 w &#8611;<sub>v</sub> φ</span>。</p>
+    <p><strong>两种写法给出同一个逻辑。</strong>集合版把 <span class="math">W</span> 当成一个整体来算；模态版把 <span class="math">W</span> 拆成点，逐点判定再收成集合。<strong>后者是前者的「展开」，展开之后才好挂模态连接词</strong>——下一节全是这个套路。</p>
+  </div>
+
+  <div class="ex"><div class="bt">练习 3.2.2 <span class="num">真值函数版 L<sub>S</sub><sup>1</sup></span></div>
+    <p>再换一副样子：模型直接是函数 <span class="math">M : P → {0,1}</span>，意义函数取值在 <span class="math">{0,1}</span> 里，<span class="math">mng(¬φ) = 1 − mng(φ)</span>。</p>
+    <p>UAL 让你验证：<span class="math">L<sub>S</sub><sup>0</sup></span> 与 <span class="math">L<sub>S</sub><sup>1</sup></span> 有<strong>相同的语义后承关系</strong>，也有<strong>相同的有效式集</strong>。</p>
+    <p class="src"><b>这说明了什么：</b>mng 的<strong>值域可以变</strong>（集合 vs 真值），⊨ 的<strong>内部机制可以变</strong>（等于 W vs 等于 1），只要最后诱导出的 <span class="math">⊨ ⊆ 𝓟(F) × F</span> 一样，两个逻辑在「后承」这个层面上就是等价的。<strong>别把「看起来不同」当成「逻辑不同」。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">p ∧ ¬p</span> 在任一模型里意义为 <span class="math">v(p) ∩ (W − v(p)) = ∅</span>，不等于 <span class="math">W</span>，所以无效。<strong>集合运算自己就把矛盾律算出来了</strong>，不用查真值表。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><span class="math">mng(φ ∧ ψ, M) = mng(φ, M) ∩ mng(ψ, M)</span> 这一行是<strong>整个代数化的第一块砖</strong>：连接词变成了集合代数上的运算，意义函数变成了从公式代数到集合代数的同态。<strong>L16 的组合性定义就是把这条规律一般化。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>为什么要求 <span class="math">W</span> 非空？</strong>若允许 <span class="math">W = ∅</span>，则 <span class="math">mng(φ, M) = ∅ = W</span> 对一切公式成立，所有公式在这个模型里都有效。<strong>一个空模型把逻辑炸成了平凡逻辑。</strong></p>
+    <p>② <strong>「等价」不等于「相同」。</strong><span class="math">L<sub>S</sub><sup>0</sup></span> 与 <span class="math">L<sub>S</sub><sup>1</sup></span> 的模型类根本不是同一个东西，只是后承关系与有效式集相同。<strong>UAL 后面到处用这种「在某方面等价」的说法，每次都要问是哪方面。</strong></p>
+    <p>③ <strong>别小看 <span class="math">P</span> 这个参数。</strong>UAL 说 <span class="math">L<sub>S</sub></span> 严格讲是 <span class="math">L<sub>S</sub>(P)</span>；<span class="math">P</span> 空、单点、无限时公式集的基数不同，可公理化模型类个数也不同。<strong>大部分时候这个参数不重要，但做题时它会突然重要。</strong></p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL 例 3.2.1（L<sub>S</sub><sup>0</sup> 全部定义）、例 3.2.3（L<sub>S</sub> 模态式）、练习 3.2.2（L<sub>S</sub><sup>1</sup> 与等价性）、例 3.1.1。</p>
+</section>
+
+<!-- ============ O4 旋钮一 ============ -->
+<section id="knob1">
+  <h2><span class="sn">6</span>旋钮一：固定模型，换连接词 <span class="tag log">O4</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>命题逻辑很弱。一阶逻辑很强，但要从 <span class="math">L<sub>S</sub></span> 走到一阶逻辑，得连模型类、原子公式、变量一起大改——<strong>那是大手术</strong>。有没有办法<strong>只加连接词</strong>就把表达力提上去？</p>
+    <p>有。而且 UAL 一口气给了六七个。它们的模型类<strong>全都是 <span class="math">M<sub>S</sub></span></strong>，原子部分也全一样，差别只在一条新连接词的语义子句。<strong>这是本讲最值得你看的一组例子</strong>：它把「逻辑的表达力」变成一个可以直接拧的旋钮。</p>
+  </div>
+
+  <div class="box def"><div class="bt">固定不动的部分</div>
+    <p>所有下列逻辑都取 <span class="math">M = M<sub>S</sub></span>，即模型仍是 <span class="math">⟨W, v⟩</span>，<span class="math">W</span> 非空、<span class="math">v : P → 𝓟(W)</span>；布尔连接词 <span class="math">∧, ¬, ⊥</span> 的含义不变。有效性的定义也不变：<span class="math">⟨W,v⟩ ⊨ φ ⟺ 对所有 <span class="math">w ∈ W</span>，<span class="math">w &#8611; φ</span></span>。</p>
+    <p><strong>变的只有：公式里多出什么符号，以及 <span class="math">w &#8611;</span> 多出哪一条。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">一张旋钮图谱 <span class="num">UAL §3.2 的示例序列</span></div>
+    <table>
+      <tr><th>逻辑</th><th>新连接词</th><th>新增语义子句</th><th>直觉</th></tr>
+      <tr><td><span class="math">L<sub>S</sub></span>（例 3.2.3）</td><td>无</td><td>—</td><td>此处此刻</td></tr>
+      <tr><td>S5（例 3.2.5）</td><td><span class="math">♦</span></td><td><span class="math">w &#8611; ♦φ ⟺ ∃w'∈W : w' &#8611; φ</span></td><td>某处</td></tr>
+      <tr><td>Difference <span class="math">L<sub>D</sub></span>（例 3.2.7）</td><td><span class="math">D</span></td><td><span class="math">w &#8611; Dφ ⟺ ∃w'∈W−{w} : w' &#8611; φ</span></td><td>别处（some-other-time）</td></tr>
+      <tr><td>κ-times（例 3.2.8）</td><td><span class="math">♦<sub>κ</sub></span></td><td><span class="math">∃H⊆W, |H|=κ, ∀w'∈H : w' &#8611; φ</span></td><td>有 κ 个地方</td></tr>
+      <tr><td>At-two-other-places（例 3.2.10）</td><td><span class="math">♪</span>（二元）</td><td><span class="math">∃u,z∉{w}, u≠z : u &#8611; φ 且 z &#8611; ψ</span></td><td>两个别处各占一处</td></tr>
+      <tr><td>More-often（例 3.2.12）</td><td><span class="math">≻</span>（二元）</td><td><span class="math">|{u:u&#8611;φ}| ≥ |{u:u&#8611;ψ}|</span></td><td>φ 比 ψ 更常成立</td></tr>
+    </table>
+  </div>
+
+  <div class="ex"><div class="bt">三个要算的细节</div>
+    <p><strong>① κ-times 的两端。</strong><span class="math">κ = 0</span> 时 <span class="math">♦<sub>0</sub>φ</span> 永真（取空集），这个逻辑等价于 <span class="math">L<sub>S</sub></span>；<span class="math">κ = 1</span> 时等价于 S5；<span class="math">κ = 2</span> 有个名字叫 <strong>Twice logic</strong>，记作 <span class="math">Tw</span>。</p>
+    <p><strong>② 可表达性。</strong><span class="math">♦<sub>2</sub></span> 可以在 <span class="math">L<sub>D</sub></span> 里表达。UAL 反过来问「<span class="math">D</span> 能不能在某个 <span class="math">L<sub>n-times</sub></span> 里表达」，把答案留作思考。<strong>这个不对称本身很有意思</strong>：能表达对方的逻辑，表达力不一定互相对等。</p>
+    <p><strong>③ More-often 是个怪东西。</strong><span class="math">w &#8611; φ ≻ ψ</span> 的真假<strong>完全不依赖 <span class="math">w</span></strong>，只比较两个集合的基数。它不像通常的模态算子那样只看 <span class="math">w</span> 的可达点。<strong>但 UAL 照样把它放进四元组——这说明框架对「什么样的连接词」几乎不挑食。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>S5 的 <span class="math">♦φ</span>：只要 <span class="math">W</span> 里有一个点满足 <span class="math">φ</span> 就算。<strong>这就是模态逻辑最熟悉的「可能」，先拿它理解「换连接词」这一步。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>Difference logic：它和 S5 的唯一区别是 <span class="math">w'</span> 不能等于 <span class="math">w</span>。<strong>一个「≠」就造出一个不同的逻辑</strong>，而且这个逻辑在时序推理里有专门名字（some-other-time）。这说明<strong>表达力的差别可以小到一个符号，但后果是实质性的</strong>。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>把 <span class="math">♦<sub>2</sub></span> 和 <span class="math">♦<sub>3</sub></span> 都加进去，不等于 <span class="math">L<sub>3-times</sub></span>。</strong>UAL 练习 3.2.9(3) 特意提示「No」。 <strong>多个连接词的合力不一定等于单个更一般的连接词</strong>——因为可表达性是「语义力量」，不是「符号清单」。</p>
+    <p>② <strong>模型不变，不代表逻辑不变。</strong>所有这些例子的 <span class="math">M</span> 一模一样，但 <span class="math">Csq</span> 不同。<strong>是连接词决定了你能对同一批世界问什么问题。</strong></p>
+    <p>③ <strong>UAL 练习 3.2.20 的三个结论值得记</strong>：<span class="math">L<sub>1</sub></span> 在某种意义下等价于 S5；<span class="math">L<sub>D</sub></span> 和 <span class="math">L<sub>2-times</sub></span> 都能跟 <span class="math">L<sub>2</sub></span> 比较；且两者严格弱于 <span class="math">L<sub>2</sub></span>。<strong>注意「在什么意义下」这五个字——UAL 让学生自己定义。</strong></p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL 例 3.2.5、3.2.7、3.2.8、3.2.10、3.2.12 及练习 3.2.9、3.2.11、3.2.13、3.2.20。</p>
+</section>
+
+<!-- ============ O5 旋钮二 ============ -->
+<section id="knob2">
+  <h2><span class="sn">7</span>旋钮二：固定公式，换模型 <span class="tag log">O5</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>第一个旋钮动了公式，模型没动。第二个旋钮反过来：<strong>公式一样，把模型类改一改，逻辑就变了。</strong>UAL 用 arrow logic 做了整组对照，然后把它接到一阶逻辑的各种变体上。</p>
+    <p>这件事在逻辑史上很重要：很多看起来是「逻辑系统不同」的争论，其实只是<strong>背后允许的模型类不同</strong>。把它写清楚，争论就能定位。</p>
+  </div>
+
+  <div class="def"><div class="bt">Arrow 逻辑家族（例 3.2.14 / 3.2.15 / 3.2.17）<span class="num">公式不变，模型收紧</span></div>
+    <p>连接词统一是 <span class="math">{∧, ¬, ⊥, ◦}</span>，后来再加 <span class="math">{⁻¹, Id}</span>。<span class="math">◦</span> 读作复合，语义是「中间能找到一个转接点」：</p>
+    <div class="formula"><span class="math">⟨a,b⟩ &#8611; φ ◦ ψ &nbsp;⟺&nbsp; ∃c : ⟨a,c⟩, ⟨c,b⟩ ∈ W 且 ⟨a,c⟩ &#8611; φ, ⟨c,b⟩ &#8611; ψ</span></div>
+    <table>
+      <tr><th>逻辑</th><th>模型类</th><th>差别</th></tr>
+      <tr><td><span class="math">L<sub>PAIR</sub></span></td><td><span class="math">W ⊆ U × U</span></td><td>世界是有序对，但不必填满</td></tr>
+      <tr><td><span class="math">L<sub>SQR</sub></span></td><td><span class="math">W = U × U</span></td><td><strong>唯一区别：要求「方形」</strong></td></tr>
+      <tr><td><span class="math">L<sub>ARW<sub>0</sub></sub></span></td><td><span class="math">⟨⟨W,v⟩, C<sub>1</sub>, C<sub>2</sub>, C<sub>3</sub>⟩</span></td><td>三个任意可达关系，<span class="math">C<sub>1</sub>⊆W³, C<sub>2</sub>⊆W², C<sub>3</sub>⊆W</span></td></tr>
+      <tr><td><span class="math">L<sub>ARROW</sub></span></td><td><span class="math">M<sub>PAIR</sub></span></td><td>加 <span class="math">φ⁻¹</span>（反转对）与 <span class="math">Id</span>（<span class="math">a=b</span>）</td></tr>
+      <tr><td><span class="math">L<sub>REL</sub></span></td><td><span class="math">M<sub>SQR</sub></span></td><td>同上，但模型是方形</td></tr>
+    </table>
+    <p>练习 3.2.18 给了一个很干净的对照：把 <span class="math">L<sub>ARW<sub>0</sub></sub></span> 的 <span class="math">⁻¹</span> 和 <span class="math">Id</span> 去掉后，它与 <span class="math">L<sub>PAIR</sub></span> 有相同的后承关系；<strong>但它与 <span class="math">L<sub>ARROW</sub></span> 不等价</strong>。<strong>多加两个连接词，后承就变了。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">一阶逻辑及其变体（例 3.1.1、3.2.19、3.2.27、3.2.28、3.2.34）</div>
+    <p><strong><span class="math">L<sub>n</sub></span>（n 个变量的一阶逻辑）：</strong>变量只有 <span class="math">v<sub>0</sub>,…,v<sub>n−1</sub></span>，原子公式固定写成 <span class="math">r<sub>i</sub>(v<sub>0</sub>…v<sub>n−1</sub>)</span>。模型是 <span class="math">⟨M, R<sub>i</sub>⟩</span>，<span class="math">R<sub>i</sub> ⊆ <sup>n</sup>M</span>。意义函数依然是赋值集：</p>
+    <div class="formula"><span class="math">mng<sub>n</sub>(φ, M) = { q ∈ <sup>n</sup>M : M ⊨ φ[q] }</span></div>
+    <p><strong><span class="math">L<sub>vd</sub></span>（变量依赖）：</strong>公式集与普通一阶逻辑相同，模型多带一个<strong>容许赋值集 <span class="math">W ⊆ <sup>ω</sup>M</span></strong>，量词只能在 <span class="math">W</span> 里找见证。<strong>同一套公式，改变「哪些赋值算数」，逻辑就变了。</strong></p>
+    <p><strong><span class="math">L<sub>Q</sub></span>（不可数多量词）：</strong>公式里加 <span class="math">Qxφ</span>，读作「有不可数多个 <span class="math">x</span> 使 <span class="math">φ</span>」。模型类与普通一阶逻辑<strong>完全相同</strong>——只加了一个量词。</p>
+    <p><strong>动态 arrow logic（例 3.2.34）：</strong>加 <span class="math">φ*</span>，意义是「关系 <span class="math">φ</span> 的自反传递闭包」。<strong>这是程序语义的标准做法，被塞进了同一个四元组。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">L<sub>PAIR</sub></span> 与 <span class="math">L<sub>SQR</sub></span>：公式集一模一样，唯一区别是模型要求 <span class="math">W ⊆ U×U</span> 还是 <span class="math">W = U×U</span>。<strong>就这一个「等号」，两个逻辑的后承不同。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><span class="math">L<sub>ARW<sub>0</sub></sub></span>：把「复合」抽象成任意三元关系 <span class="math">C<sub>1</sub>(w,w<sub>1</sub>,w<sub>2</sub>)</span>，把「反转」抽象成 <span class="math">C<sub>2</sub></span>，把「恒等」抽象成 <span class="math">C<sub>3</sub></span>。<strong>它把具体的「有序对 + 关系复合」升格成抽象的可达关系</strong>——这一步和 L05 从具体代数升到抽象簇是同一种动作。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>「<span class="math">L<sub>1</sub></span> 等价于 S5」要说清是什么等价。</strong>UAL 练习 3.2.20(2) 特意加括号问「在什么意义上？」。<strong>是后承相同、可互相翻译，还是模型类之间有对应？三种说法强度不同。</strong></p>
+    <p>② <strong>换模型不等于换语义。</strong><span class="math">L<sub>vd</sub></span> 的模型类变了，但 <span class="math">∧, ¬</span> 的含义没变。<strong>把旋钮分开拧，才看得清是哪一处造成了差别。</strong></p>
+    <p>③ <strong>别以为「公式相同」就没换语法。</strong><span class="math">L<sub>n</sub></span> 的原子公式固定为 <span class="math">r(v<sub>0</sub>…v<sub>n−1</sub>)</span>，不允许写 <span class="math">r(v<sub>1</sub>…)</span>。<strong>这不是限制，UAL 说可以用量词和等号表达出替换效果。</strong></p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL 例 3.2.14/3.2.15/3.2.17 及练习 3.2.18、例 3.2.19 及练习 3.2.20、例 3.2.27、例 3.2.28、例 3.2.34。</p>
+</section>
+
+<!-- ============ O6 规范化 ============ -->
+<section id="alg">
+  <h2><span class="sn">8</span>为什么要规范化：通向 <span class="math">Alg(L)</span> <span class="tag alg">O6</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>到目前为止，四元组还只是个「登记格式」。真正的问题是：<strong>凭什么从一个逻辑能造出一个代数？</strong>UAL 的回答分三步，每一步都只用到已经登记好的那四样东西。</p>
+  </div>
+
+  <div class="def"><div class="bt">第一步：公式集本来就是代数（定义 3.3.1）</div>
+    <p>给出原子公式集 <span class="math">P</span> 和连接词集 <span class="math">Cn</span>，公式集 <span class="math">F</span> 是最小满足 <span class="math">P ⊆ F</span> 且对 <span class="math">Cn</span> 封闭的集合。<strong>用 L05 的话说，<span class="math">F</span> 就是 <span class="math">P</span> 生成的绝对自由代数</strong>：</p>
+    <div class="formula"><span class="math">F(P, Cn) = ⟨F(P,Cn), c<sup>𝔉</sup><sub>c∈Cn</sub>⟩</span></div>
+    <p>连接词是运算符号，原子公式是生成元。<strong>公式代数不需要额外构造，它已经在那里了。</strong></p>
+    <p class="src"><b>一个陷阱：</b>UAL 明说，从集合 <span class="math">F</span> 本身<strong>不能唯一恢复</strong> <span class="math">P</span> 和 <span class="math">Cn</span>。同一个公式集可以配不同的原子集与连接词集。<strong>所以要写 <span class="math">F(P,Cn)</span>，不能只写 <span class="math">F</span>。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">第二步：组合性（定义 3.3.2，式 (3.2)）<span class="num">Frege 原则的精确版</span></div>
+    <p><span class="math">L</span> 是<strong>组合的</strong>，若对每个 <span class="math">k</span> 元连接词 <span class="math">c</span>、所有 <span class="math">φ<sub>i</sub>, ψ<sub>i</sub> ∈ F</span> 与 <span class="math">M ∈ M</span>：</p>
+    <div class="formula"><span class="math">⋀<sub>i=1</sub><sup>k</sup> mng(φ<sub>i</sub>, M) = mng(ψ<sub>i</sub>, M) &nbsp;⟹&nbsp; mng(c(φ⃗), M) = mng(c(ψ⃗), M)</span></div>
+    <p><strong>说人话：子公式意义相同，复合公式意义就得相同。</strong>不许偷偷看子公式的「长相」。</p>
+    <div class="intu"><div class="bt">翻译成代数是什么</div>
+      <p>固定 <span class="math">M</span>，记 <span class="math">mng<sub>M</sub> = ⟨mng(φ,M) : φ ∈ F⟩</span>。式 (3.2) 说的是：<strong><span class="math">mng<sub>M</sub></span> 的核是公式代数 <span class="math">F</span> 上的一个同余关系</strong>；等价地，<span class="math">mng<sub>M</sub></span> 是从 <span class="math">F</span> 到某个集合代数的同态。</p>
+      <p><strong>这一步是整本书的枢纽。</strong>「语义由部分决定」这句哲学口号，一旦写严，就变成了「语义映射是同态」。<strong>后面所有代数化，都是这句话的展开。</strong></p>
+    </div>
+  </div>
+
+  <div class="def"><div class="bt">第三步：取商，得到 Lindenbaum–Tarski 代数</div>
+    <p>定义 <span class="math">F</span> 上的关系：</p>
+    <div class="formula"><span class="math">φ ∼<sub>L</sub> ψ &nbsp;⟺&nbsp; 对所有 <span class="math">M ∈ M</span>，mng<sub>M</sub>(φ) = mng<sub>M</sub>(ψ)</span></div>
+    <p>在组合逻辑里 <span class="math">∼<sub>L</sub></span> 是同余，于是有商代数</p>
+    <div class="formula"><span class="math">F(L) = F / ∼<sub>L</sub></span></div>
+    <p>叫<strong>重言式公式代数</strong>或 <strong>Lindenbaum–Tarski 代数</strong>（L06 已经用过这个构造）。</p>
+    <p><strong>注意商掉的是什么：</strong>在所有模型里意义都一样的公式，被认成同一个元素。<strong>这是「逻辑等价」的代数版本。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">一个必须交代的绕路：⊢ 去哪了</div>
+    <p>定义 3.1.3 是四元组，没有 <span class="math">⊢</span>。但逻辑当然有证明系统。UAL 的态度很干脆：</p>
+    <p><strong>凡是关于 <span class="math">⊨</span> 证明的定理，只要不涉及 <span class="math">⊨</span> 与 <span class="math">⊢</span> 的关系，都能原样搬到 <span class="math">⊢</span> 上。</strong>所以先不带 <span class="math">⊢</span> 走，到完全性定理那种必须谈两者关系的地方，再把它请回来。<strong>这不是遗失，是刻意减负。</strong></p>
+    <p>纯语法逻辑 <span class="math">L<sub>syn</sub> = ⟨F, ⊢⟩</span> 也能装进四元组。若能表达 <span class="math">↔</span>，取</p>
+    <div class="formula"><span class="math">M<sub>⊢</sub> = { T ⊆ F : T 对 ⊢ 封闭 }</span></div>
+    <div class="formula"><span class="math">mng<sub>⊢</sub>(φ, T) = { ψ ∈ F : T ⊢ (φ ↔ ψ) }, &nbsp; T ⊨<sub>⊢</sub> φ ⟺ φ ∈ T</span></div>
+    <p>这样造出的 <span class="math">L<sub>⊢</sub></span> 满足式 (3.1)，且它诱导的后承恰好是原来的 <span class="math">⊢</span>。<strong>若连 <span class="math">↔</span> 都表达不了，UAL 的 Remark 3.1.2 给了一个带同态 <span class="math">h : F → F</span> 的备用构造</strong>：把模型改成 <span class="math">⟨T,h⟩</span>，<span class="math">mng(φ,⟨T,h⟩) = h(φ)</span>，<span class="math">⟨T,h⟩ ⊨ φ ⟺ h(φ) ∈ T</span>。</p>
+    <p class="src"><b>结论：</b>四元组不是只对「已经语义化」的逻辑管用。<strong>纯证明系统也能塞进去，塞法就在上面两行里。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>经典命题逻辑的 <span class="math">F(L)</span> 是<strong>自由布尔代数</strong>。<span class="math">φ ∼ ψ ⟺ φ ↔ ψ</span> 是重言式；商掉之后剩下的就是布尔代数。<strong>L06 的 Stone 表示从此有了来源。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>一阶逻辑<strong>开公式</strong>的 <span class="math">F(L)</span> 不是纯布尔代数，而是带量词算子的 <strong>BAO</strong>（L06）；更精确地说，是自由维数限制柱形代数。<strong>为什么必须是开公式？</strong>因为只有把赋值收进 mng，<span class="math">∃v</span> 才表现为作用在集合上的一个运算。<strong>语句代数做不到这一点</strong>——它会丢掉量词的结构。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>从 <span class="math">F</span> 读不出 <span class="math">P</span> 与 <span class="math">Cn</span>。</strong>前面说过。同一个公式集可以有多种原子/连接词分解，<strong>组合性是对某个分解而言的</strong>。</p>
+    <p>② <strong>一阶语句的 LT 代数是布尔代数，但未必自由。</strong>UAL 特意区分了「开公式的 LT 代数」与「语句的 LT 代数」。 <strong>别把它们当成一个。</strong></p>
+    <p>③ <strong>这里还没有 <span class="math">Alg(L)</span>。</strong>本讲只造出 <span class="math">F(L)</span>；「一个逻辑对应哪个代数类」是 L16 的定义 3.3.3。<strong>先把料备齐，别抢跑。</strong></p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL §3.3.1（定义 3.3.1）、§3.3.2（定义 3.3.2、式 (3.2)、∼<sub>L</sub>、F(L)）、§3.1 Remark 3.1.2（伪模型构造）；L05 自由代数、L06 Lindenbaum–Tarski 代数与 BAO。</p>
+</section>
+
+<!-- ============ 融合接口 ============ -->
+<section id="fusion">
+  <h2><span class="sn">9</span>融合接口：前十四讲的回收</h2>
+
+  <div class="fusion"><div class="bt">表一：逻辑侧 ⟷ 代数侧——本讲埋下的全部接缝</div>
+    <table>
+      <tr><th>逻辑侧</th><th>代数侧（L16 展开）</th><th>接缝在哪一步</th></tr>
+      <tr><td>公式集 <span class="math">F</span> 由 <span class="math">P, Cn</span> 递归生成</td><td>项代数 <span class="math">F(P,Cn)</span>，绝对自由</td><td>定义 3.3.1</td></tr>
+      <tr><td>组合性（式 3.2）</td><td><span class="math">mng<sub>M</sub></span> 的核是同余；<span class="math">mng<sub>M</sub></span> 是同态</td><td>定义 3.3.2</td></tr>
+      <tr><td><span class="math">φ ∼<sub>L</sub> ψ</span>（处处意义相同）</td><td>同余关系</td><td>上式推论</td></tr>
+      <tr><td><span class="math">F(L) = F/∼<sub>L</sub></span></td><td>Lindenbaum–Tarski 代数</td><td>本讲末</td></tr>
+      <tr><td>理论 <span class="math">Th(K)</span></td><td>滤子（L06）</td><td>定义 3.1.6</td></tr>
+      <tr><td>语义后承 <span class="math">Csq(Σ)</span></td><td>闭包 <span class="math">Th(Mod(Σ))</span></td><td>L02 的 Galois 连接</td></tr>
+    </table>
+  </div>
+
+  <div class="fusion"><div class="bt">表二：前十四讲在这里被重新认出</div>
+    <table>
+      <tr><th>前面讲过的</th><th>本讲的名字</th><th>认出它的关键</th></tr>
+      <tr><td>L02 闭包算子 <span class="math">Cn</span></td><td><span class="math">Csq(Σ) = Th(Mod(Σ))</span></td><td>都是「取公共部分」的闭包</td></tr>
+      <tr><td>L02 Galois 连接 <span class="math">Th ⊣ Mod</span></td><td>同一对连接，换了解释</td><td><span class="math">Σ ⊆ Th(K) ⟺ K ⊆ Mod(Σ)</span></td></tr>
+      <tr><td>L06 滤子、超滤子、Stone 空间</td><td><span class="math">Th(K)</span> 是滤子；<span class="math">Ult(B)</span> 是模型</td><td>理论即滤子，模型即点</td></tr>
+      <tr><td>L08–L14「意义是集合」</td><td><span class="math">mng : F × M → Sets</span></td><td>开集、赋值集都是 mng 的特例</td></tr>
+      <tr><td>L13 紧致性</td><td><span class="math">Σ ⊨ φ ⟺ Mod(Σ∪{¬φ}) = ∅</span></td><td>「模型类空」可由有限子理论见证</td></tr>
+    </table>
+    <p><strong>这张表是全课前一半的索引。</strong>如果你觉得前面某些构造「看不出为什么」，现在应该能看出一半：<strong>它们都是四元组里某一格长出来的。</strong></p>
+  </div>
+
+  <div class="fusion"><div class="bt">表三：两个旋钮的总览</div>
+    <table>
+      <tr><th>拧哪个</th><th>不动什么</th><th>变什么</th><th>得到的例子</th></tr>
+      <tr><td>旋钮一</td><td>模型类 <span class="math">M<sub>S</sub></span></td><td>连接词及其语义子句</td><td>S5、<span class="math">L<sub>D</sub></span>、<span class="math">L<sub>κ-times</sub></span>、<span class="math">L<sub>bin</sub></span>、<span class="math">L<sub>more</sub></span></td></tr>
+      <tr><td>旋钮二</td><td>公式集 <span class="math">F</span></td><td>允许哪些模型</td><td><span class="math">L<sub>PAIR</sub></span> → <span class="math">L<sub>SQR</sub></span> → <span class="math">L<sub>ARROW</sub></span> → <span class="math">L<sub>REL</sub></span></td></tr>
+      <tr><td>两个一起拧</td><td>四元组这个形状</td><td>其余全部</td><td><span class="math">L<sub>n</sub></span>、<span class="math">L<sub>vd</sub></span>、<span class="math">L<sub>Q</sub></span>、动态 arrow logic</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">下一讲做什么</div>
+    <p>四元组备好了，公式代数认出来了，组合性也写严了。<strong>L16 就正式定义 <span class="math">Alg<sub>⊨</sub>(L)</span> 与 <span class="math">Alg<sup>m</sup>(L)</span></strong>，然后问：逻辑的「代入性质」「滤子性质」翻译成代数是什么？<strong>那是第一批桥。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+
+  <div class="ex"><div class="bt">O1 · 四元组</div>
+  <ol start="1">
+    <li><span class="tag log">O1</span>把经典命题逻辑写成定义 3.1.3 的四元组，逐条验证式 (3.1)。再回答：为什么不能用 <span class="math">mng(φ,M) ∈ {TRUE, FALSE}</span> 打发一阶逻辑？<br><span style="color:#8a93a5">提示：取开公式 <span class="math">R(x,y)</span>，看它在同一模型中对不同赋值的差别。</span></li>
+    <li><span class="tag log">O1</span>比较 UAL 的逻辑与 Tarski–Givant 的 formalism <span class="math">⟨F, M, ⊨⟩</span>：多出的 <span class="math">mng</span> 到底做了什么？如果硬把 formalism 扩充成 UAL 的逻辑，<span class="math">mng</span> 该怎么定义？</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O2 · Mod / Csq / Th</div>
+  <ol start="3">
+    <li><span class="tag alg">O2</span>证明 Galois 连接 <span class="math">Σ ⊆ Th(K) ⟺ K ⊆ Mod(Σ)</span>，并推出 <span class="math">Th ∘ Mod</span> 与 <span class="math">Mod ∘ Th</span> 都是闭包算子。<strong>指出这跟 L02 哪一处是一回事。</strong></li>
+    <li><span class="tag log">O2</span>证明 <span class="math">Csq(Σ) = Th(Mod(Σ))</span>，并在有经典否定的逻辑里验证 <span class="math">Σ ⊨ φ ⟺ Mod(Σ ∪ {¬φ}) = ∅</span>。<strong>再用这条解释 L13 的紧致性定理为什么能写成「有限可满足 ⟹ 整体可满足」。</strong></li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O3 · 命题逻辑两副样子</div>
+  <ol start="5">
+    <li><span class="tag log">O3</span>完整写出 <span class="math">L<sub>S</sub><sup>0</sup></span> 的四元组，并计算 <span class="math">mng(p ∧ ¬p, ⟨W,v⟩)</span> 与 <span class="math">mng(p ∨ ¬p, ⟨W,v⟩)</span>（<span class="math">∨</span> 是缩写）；说明为什么后者有效。</li>
+    <li><span class="tag log">O3</span>证明 <span class="math">L<sub>S</sub><sup>0</sup></span> 与 <span class="math">L<sub>S</sub><sup>1</sup></span> 有相同的语义后承关系。<br><span style="color:#8a93a5">提示：把真值函数 <span class="math">M : P → {0,1}</span> 对应到 <span class="math">⟨W,v⟩</span>，取 <span class="math">W = {∗}</span>；再反向从任意 <span class="math">⟨W,v⟩</span> 取出某个点的限制。</span></li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O4 · 旋钮一</div>
+  <ol start="7">
+    <li><span class="tag log">O4</span>取单点模型 <span class="math">W = {w}</span> 且 <span class="math">v(p) = {w}</span>，计算 <span class="math">w &#8611; ♦p</span>、<span class="math">w &#8611; Dp</span>、<span class="math">w &#8611; ♦<sub>2</sub>p</span>、<span class="math">w &#8611; ♪(p,p)</span> 的真假。<strong>说明哪两个连接词在这里分开，并解释为什么这说明 S5 与 <span class="math">L<sub>D</sub></span> 不是同一个逻辑。</strong></li>
+    <li><span class="tag log">O4</span>证明 more-often 逻辑里的 <span class="math">φ ≻ ψ</span> 真假不依赖 <span class="math">w</span>，并推出：对任意模型和任意 <span class="math">φ, ψ</span>，要么所有点都强制 <span class="math">φ ≻ ψ</span>，要么没有点强制。<strong>再说明为什么这仍符合定义 3.1.3。</strong></li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O5 · 旋钮二</div>
+  <ol start="9">
+    <li><span class="tag log">O5</span>取 <span class="math">U = {0,1}</span> 与 <span class="math">W = {(0,1)} ⊆ U×U</span>（是 pair 但不是方形），再取 <span class="math">W′ = U×U</span>。分别计算 <span class="math">⟨0,1⟩</span> 处 <span class="math">Id</span> 与 <span class="math">φ ◦ ψ</span> 的可满足情况，说明两个模型类为什么给出不同后承。</li>
+    <li><span class="tag alg">O5</span>把 <span class="math">L<sub>n</sub></span> 写成四元组，并解释 <span class="math">mng<sub>n</sub>(φ,M) ⊆ <sup>n</sup>M</span> 为什么必须是赋值<strong>集合</strong>而不是真值。</li>
+    <li><span class="tag log">O5</span>比较 <span class="math">L<sub>FOL</sub></span> 与 <span class="math">L<sub>vd</sub></span>：若容许赋值集 <span class="math">W</span> 是空集，会发生什么？再用 <span class="math">L<sub>Q</sub></span> 说明「模型类不变、只加量词」如何改变表达力。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O6 · 通向 Alg(L)</div>
+  <ol start="12">
+    <li><span class="tag alg">O6</span>证明：式 (3.2) 等价于「对每个 <span class="math">M</span>，<span class="math">ker(mng<sub>M</sub>)</span> 是公式代数 <span class="math">F(P,Cn)</span> 的同余」。<strong>写清哪一步用了 <span class="math">F</span> 是自由代数。</strong></li>
+    <li><span class="tag log">O6</span>用 Remark 3.1.2 的伪模型构造，把纯语法逻辑 <span class="math">⟨F, ⊢⟩</span> 装成 <span class="math">L<sub>⊢</sub></span>，并验证它诱导的后承与 <span class="math">⊢</span> 一致。<strong>再回答：为什么需要先假设 <span class="math">↔</span> 可表达？备用构造怎么绕开？</strong></li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L14.html">← 上一讲：L14 连通性、全不连通与 Stone 空间</a>
+  <a href="L16.html">下一讲：L16 代数对应物、代入性质与滤子性质</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L15 · 来源：UAL §3.1–3.2、§3.3 预告；L02 Galois 连接、L06 Stone 表示 · v0.1</footer>
+
+</main></div>
+</body>
+</html>
+
+

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L11 连续映射、同胚、嵌入与商映射（备选版）· 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第三篇 拓扑：用逻辑的眼光看空间</span><span class="sep">/</span><span>L11 · 备选版</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 11 · 2 学时 · 备选版</div>
+  <h1>连续映射、同胚、嵌入与商映射</h1>
+  <div class="sub">一个映射，四个身份：从 <span style="font-family:var(--serif)">ℝ</span> 到圆周的覆盖映射，把整讲的概念全串起来</div>
+  <div class="metarow"><span>来源：拓扑讲义 Ch3 §3.0–3.2；定义 3.0.1、命题 3.1.1/3.1.2/3.1.7、定义 3.1.4/3.2.1/3.2.2/3.2.5、引理 3.2.3、例 3.1.5/3.2.4/3.2.6</span>
+    <span class="tag top">拓扑</span><span class="tag alg">代数</span><span class="tag log">逻辑</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#run">先看一个映射，它对不对？</a></li>
+  <li><a href="#continuous">连续：只查原像（O1）</a></li>
+  <li><a href="#epistemic">不增、不丢、不变（O2）</a></li>
+  <li><a href="#pointwise">点连续与 ε–δ（O3）</a></li>
+  <li><a href="#grid">四格表：连续 × 开（O4）</a></li>
+  <li><a href="#homeo">同胚与嵌入（O5）</a></li>
+  <li><a href="#quotient">商映射与泛性质（O6）</a></li>
+  <li><a href="#fusion">融合接口</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">本讲只有两类概念：一类问「翻译可靠吗」（连续），一类问「翻译丢东西吗」（开）。同胚是两句都答是。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">六个概念，三对</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>它回答的问题</th></tr>
+      <tr><td>连续映射</td><td>L08 开集</td><td>会不会凭空造出知识？</td></tr>
+      <tr><td>点连续</td><td>L10 邻域</td><td>它在这一点可靠吗？</td></tr>
+      <tr><td>开映射</td><td>连续（对偶方向）</td><td>会不会丢掉知识？</td></tr>
+      <tr><td>闭映射</td><td>开映射（补集版）</td><td>可证伪命题保不保？</td></tr>
+      <tr><td>同胚</td><td>连续 + 开 + 双射</td><td>两个空间是不是同一个？</td></tr>
+      <tr><td>商映射</td><td>L03 商代数 / L09 商拓扑</td><td>能不能用它造新空间？</td></tr>
+    </table>
+  </div>
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>开集 → 原像开 = 连续 → 逐点化 = 点连续 → 反向加「像开」= 开映射 → 与连续并列成四格 → 双射时取交集 = 同胚 → 去掉双射保留「相对」= 嵌入 → 把「原像开 ⟺ 开」当定义 = 商映射。整条链只在一个方向上流动，没有回路。</p>
+  </div>
+</section>
+
+<!-- ============ 目标对照 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>用原像条件验连续，并在四种等价刻画里挑省事的一条</td><td><a href="#continuous">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>把连续 / 开 / 同胚读成「知识不增 / 不丢 / 不变」，说清为什么连续反向不成立</td><td><a href="#epistemic">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>用邻域验点连续，把 ε–δ 与拓扑定义对上号</td><td><a href="#pointwise">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>把任意映射放进「连续 × 开」四格表，并各给理由</td><td><a href="#grid">§6</a></td><td><a href="#ex">E7, E8, E9</a></td></tr>
+    <tr><td><b>O5</b></td><td>判定同胚是否成立，识别「连续双射不必同胚」，构造嵌入</td><td><a href="#homeo">§7</a></td><td><a href="#ex">E10, E11</a></td></tr>
+    <tr><td><b>O6</b></td><td>用商拓扑造空间，验商映射，用泛性质构造连续映射</td><td><a href="#quotient">§8</a></td><td><a href="#ex">E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 贯穿例子 ============ -->
+<section id="run">
+  <h2><span class="sn">2</span>先看一个映射，它对不对？</h2>
+
+  <div class="intu"><div class="bt">本讲的主线</div>
+    <p>把实直线卷成圆：</p>
+    <div class="formula">π : ℝ → S¹,&nbsp;&nbsp;&nbsp; π(t) = (cos 2πt, sin 2πt)</div>
+    <p>这一个映射，本讲要问的每个问题都能拿它来问一遍。先把它摊开看清楚：</p>
+    <ul>
+      <li>它是<strong>满射</strong>——圆上每一点都有原像。</li>
+      <li>它<strong>不是单射</strong>——<span class="math">π(t) = π(t+n)</span>，对每个整数 <span class="math">n</span>。纤维恰好是 <span class="math">t + ℤ</span>。</li>
+      <li>它<strong>连续</strong>——坐标函数 <span class="math">cos, sin</span> 都连续。</li>
+      <li>它是<strong>开映射</strong>——这一点不那么显然，§6 再验。</li>
+      <li>它<strong>不是同胚</strong>——因为它不是单射。</li>
+      <li>它<strong>是商映射</strong>——§8 会把这条和「粘合」联系起来。</li>
+    </ul>
+    <p><strong>一个映射，六个身份，其中五个是「是」，两个是「不是」。</strong>本讲剩下的全部内容，就是把这几行判断逐个讲清楚，并回答一个更要紧的问题：<strong>这些性质里，哪些是 <span class="math">π</span> 的，哪些是「ℝ 卷成圆」这件事本身的？</strong></p>
+  </div>
+
+  <div class="intu"><div class="bt">为什么从这里开始</div>
+    <p>教材的顺序是「定义 → 命题 → 例」。这个顺序对写书合适，对学不合适——<strong>先看定义再看例子，你永远不知道定义为什么长这样</strong>。反过来，先盯住一个具体的、够丰富、又够简单的映射，然后一路问「它凭什么算连续」「它有没有丢东西」，定义就会自己浮出来。</p>
+    <p>后面每一节，我都会回到 <span class="math">π</span>。你只要盯住它，概念就不会散。</p>
+  </div>
+</section>
+
+<!-- ============ O1 连续 ============ -->
+<section id="continuous">
+  <h2><span class="sn">3</span>连续：只查原像 <span class="tag top">O1</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>「连续」这个词被定义过三回：铅笔说（不断）、接近说（近的映到近的）、ε–δ 说。这三种都有个共同的毛病——<strong>它们都要用距离</strong>。一旦空间上没有距离（Kripke 框架、代数簇上的 Zariski 拓扑、抽象的逻辑论域），三种说法全部失声。</p>
+    <p>开集定义是把距离这个脚手架拆掉之后剩下的东西。它只说一句：<strong>可验证的东西，拉回去还可验证。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.1（拓扑讲义定义 3.0.1）</span></div>
+    <p><span class="math">f : X → Y</span> <strong>连续</strong>，当且仅当 <span class="math">Y</span> 中每个开集的原像在 <span class="math">X</span> 中开：</p>
+    <div class="formula">∀U ⊆ Y&nbsp;&nbsp;( U ∈ τ<sub>Y</sub> ⟹ f<sup>−1</sup>[U] ∈ τ<sub>X</sub> )</div>
+    <p>拿 <span class="math">π</span> 验一遍：<span class="math">S¹</span> 的开集是开弧之并，而开弧的原像是若干开区间之并（<span class="math">π<sup>−1</sup>[</span>弧<span class="math">] = ⋃<sub>n∈ℤ</sub>(a+n, b+n)</span>），确实开。<strong>所以 <span class="math">π</span> 连续。</strong></p>
+    <p>注意分子里的方向：<strong>从 <span class="math">Y</span> 拉回 <span class="math">X</span></strong>。原像这个运算天生是「逆向」的——它把一个关于值域的问题翻译成关于定义域的问题。</p>
+  </div>
+
+  <div class="warn"><div class="bt">先拆掉一个错直觉</div>
+    <p>多数人第一次看到定义会想：「连续不是应该把开集映成开集吗？」</p>
+    <p>不是。看常值映射 <span class="math">c : ℝ → ℝ</span>、<span class="math">c(x) ≡ 0</span>。它是连续的——图像就是一条水平线，比什么都连续。但 <span class="math">c[(0,1)] = {0}</span>，单点集在 <span class="math">ℝ</span> 里不 open。<strong>把整条直线压成一个点，信息全没了，它依然叫连续。</strong></p>
+    <p>这条裂缝是本讲的骨架：<strong>连续只管「不许凭空多出」，完全不管「丢了多少」。</strong>管丢不丢的是另一个概念，§6 见。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">3.2（命题 3.1.1）</span></div>
+    <p><span class="math">f : X → Y</span> 连续 ⟺ 对每个 <span class="math">S ⊆ X</span>：</p>
+    <div class="formula">f[cl<sub>X</sub>(S)] ⊆ cl<sub>Y</sub>(f[S])</div>
+  </div>
+
+  <div class="proof"><div class="bt">证明</div>
+    <p><strong>(⟹)</strong> 设 <span class="math">f</span> 连续，<span class="math">x ∈ cl<sub>X</sub>(S)</span>。由 L10 命题 2.4.6，只需证 <span class="math">f(x)</span> 的每个开邻域 <span class="math">V</span> 都与 <span class="math">f[S]</span> 相交。<span class="math">f<sup>−1</sup>[V]</span> 是 <span class="math">x</span> 的开邻域，故与 <span class="math">S</span> 有交点 <span class="math">y</span>；于是 <span class="math">f(y) ∈ V ∩ f[S]</span>。</p>
+    <p><strong>(⟸)</strong> 设 <span class="math">V ⊆ Y</span> 开，令 <span class="math">S = f<sup>−1</sup>[Y − V]</span>。用条件得 <span class="math">f[cl(S)] ⊆ cl(f[S]) ⊆ cl(Y−V) = Y−V</span>，故 <span class="math">cl(S) ⊆ f<sup>−1</sup>[Y−V] = S</span>，即 <span class="math">S</span> 闭。取补得 <span class="math">f<sup>−1</sup>[V]</span> 开。∎</p>
+  </div>
+
+  <div class="intu"><div class="bt">这条定理其实在说人话</div>
+    <p>L10 把「<span class="math">x</span> 接近 <span class="math">S</span>」定义成 <span class="math">x ∈ cl(S)</span>。定理说的是：<strong><span class="math">x</span> 接近 <span class="math">S</span>，则 <span class="math">f(x)</span> 接近 <span class="math">f[S]</span></strong>。这就是「接近说」的严格版本，而且只用 <span class="math">cl</span>，不碰距离。</p>
+    <p>方向仍然是单向的：<strong>只有 <span class="math">⊆</span>，没有 <span class="math">⊇</span>。</strong>写成包含式，单向这件事就一目了然了——而它正是「允许坍缩」的精确表述。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">3.3（命题 3.1.2，四种等价）</span></div>
+    <p>设 <span class="math">ℬ<sub>Y</sub></span> 是 <span class="math">Y</span> 的基或子基。连续 ⟺ 下列任一：</p>
+    <ol>
+      <li>每个（子）基本开集的原像开；</li>
+      <li>每个闭集的原像闭；</li>
+      <li>对每个 <span class="math">x</span>、每个 <span class="math">f(x)</span> 的（基本）开邻域 <span class="math">V</span>，存在 <span class="math">x</span> 的开邻域 <span class="math">U</span> 使 <span class="math">f[U] ⊆ V</span>。</li>
+    </ol>
+    <p><strong>证第 1 条的基情形</strong>：任一开集 <span class="math">V = ⋃<sub>i</sub>V<sub>i</sub></span>，原像与并交换，<span class="math">f<sup>−1</sup>[V] = ⋃<sub>i</sub>f<sup>−1</sup>[V<sub>i</sub>]</span>，仍是开集之并。<strong>子基情形</strong>：先取有限交成基（用 <span class="math">f<sup>−1</sup></span> 与交交换），再回到基情形。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">f(x) = x²</span>。查基：开区间 <span class="math">(a,b)</span> 的原像，解 <span class="math">a &lt; x² &lt; b</span>——当 <span class="math">0 ≤ a &lt; b</span> 时是 <span class="math">(√a,√b) ∪ (−√b,−√a)</span>，当 <span class="math">a &lt; 0 &lt; b</span> 时是 <span class="math">(−√b,√b)</span>，其余为空。全是开区间之并。<strong>注意这题的工作量：只解一个不等式，完全没碰「任意开集」。</strong>这就是查基的意义。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>连续性不是函数的性质，是三元组 <span class="math">(f, τ<sub>X</sub>, τ<sub>Y</sub>)</span> 的性质。</strong>取恒等映射 <span class="math">id : ℝ → ℝ</span>。两边都用欧氏拓扑，连续。定义域离散、值域欧氏，仍连续（每个集合都开，原像自动开）。反过来定义域欧氏、值域离散，则 <span class="math">id<sup>−1</sup>[{0}] = {0}</span> 不开，<strong>立刻不连续</strong>。同一个函数，同一个公式 <span class="math">f(x)=x</span>，换个拓扑结论翻转。<strong>这是 L08「拓扑＝知识标准」最直接的一次兑现。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① 别记成「连续保开集」——常值映射是反例，见上面那个框。② 别以为「序列连续 ⟹ 连续」。连续确实保证 <span class="math">x<sub>n</sub> → x</span> 时 <span class="math">f(x<sub>n</sub>) → f(x)</span>（度量空间里），但反向需要第一可数性，一般拓扑空间里会失效。这类「反向不成立」的坑，本讲至少有四个，§6 的注会集中列。③ 等价说法里第 2 条是「<strong>闭集的原像闭</strong>」，不是「闭集的像闭」——后者叫闭映射，是另一个概念。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 3.0.1、命题 3.1.1 及证明、注 3.1.1、命题 3.1.2、例 3.1.3。</p>
+</section>
+
+<!-- ============ O2 认识论 ============ -->
+<section id="epistemic">
+  <h2><span class="sn">4</span>不增、不丢、不变 <span class="tag log">O2</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>L08 把拓扑空间读成「论域 + 认识论框架 + 命题」，开集 = 可验证命题。那么两个论域之间的映射，读成什么？答案是<strong>翻译</strong>。于是「好翻译的标准是什么」这个问题，变成了「哪些映射连续」。</p>
+    <p>这个转换不是修辞。它让你能<strong>反过来用</strong>：如果某条翻译在现实中显然应当被允许，那它必须满足连续性条件，于是定义就不是人为规定了。</p>
+  </div>
+
+  <div class="def"><div class="bt">读法 <span class="num">4.1（注 3.1.2 / 3.1.4）</span></div>
+    <p>设 <span class="math">f : X → Y</span> 是论域间的命题翻译。</p>
+    <table>
+      <tr><th>映射</th><th>开集条件</th><th>读法</th><th>允许发生什么</th></tr>
+      <tr><td><strong>连续</strong></td><td><span class="math">U</span> 开 ⟹ <span class="math">f<sup>−1</sup>[U]</span> 开</td><td><strong>不增加知识</strong></td><td>可以丢，不可以造</td></tr>
+      <tr><td><strong>开映射</strong></td><td><span class="math">U</span> 开 ⟹ <span class="math">f[U]</span> 开</td><td><strong>不丢失知识</strong></td><td>可以造，不可以丢</td></tr>
+      <tr><td><strong>同胚</strong></td><td>双射 + 连续 + 开</td><td><strong>知识不增不减</strong></td><td>什么都不许</td></tr>
+    </table>
+    <p>讲义还替「允许丢」说了句公道话：<strong>翻译可能丢失某些内容，是很合理的，因此允许信息损失的翻译本身仍然值得研究。</strong>要求每个翻译都保真（同胚）太苛刻——现实中绝大多数有用的映射都在丢东西。</p>
+  </div>
+
+  <div class="intu"><div class="bt">用 <span class="math">π</span> 验这三种读法</div>
+    <p>回到主线那个映射 <span class="math">π : ℝ → S¹</span>。</p>
+    <ul>
+      <li><strong>它不增知识吗？</strong>是。圆上一段弧若可验证，拉回成实直线上每隔 <span class="math">1</span> 就出现一段的开集，仍可验证。</li>
+      <li><strong>它不丢知识吗？</strong>是。实直线上任一段开区间，卷上去是圆上的一段弧，仍可验证。这一点 <span class="math">π</span> 和常值映射的关键区别——<strong><span class="math">π</span> 本地不坍缩，只是把同一条信息重复了无穷多次。</strong></li>
+      <li><strong>它就是同胚吗？</strong>不是。它不增不丢，但<strong>不单射</strong>——它把 <span class="math">t</span> 和 <span class="math">t+1</span> 认同了。这不是「丢知识」，是「重复知识」。</li>
+    </ul>
+    <p><strong>「不增 + 不丢」仍不足以保证同胚，还差一个单射。</strong>这个区分很重要，多数讲义一笔带过。几何上：<span class="math">π</span> 是<strong>覆叠</strong>，局部看是同胚，全局看是 <span class="math">ℤ</span> 重的。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>常值映射 <span class="math">c(x) ≡ 0</span>。连续（不增：没什么可造），不开（丢光：<span class="math">c[(0,1)] = {0}</span> 不开）。<strong>读法：一种语言把所有事情说成同一句话——可靠，但零分辨率。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>例 3.1.5 的折线：</p>
+    <div class="formula">f(x) = x (x ≤ 0)，&nbsp;&nbsp; f(x) = 0 (x &gt; 0)</div>
+    <p>连续但不开：<span class="math">f[(−1,1)] = (−1,0]</span>，半开区间不开。<strong>读法：正半轴那一整段分辨率被压进了单点 <span class="math">0</span>。</strong>注意 <span class="math">0</span> 这个端点的角色——它是压扁的痕迹，把右侧全部信息收进了自己。这个例子比常值映射更本质，因为它<strong>只在一个方向上坍缩</strong>，其余地方完好：翻译在某些话题上精确，在另一些话题上只能说「不是负的」。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① 「不增加」不等于「一定减少」——恒等映射一点不丢，它的开性也成立。连续与开是<strong>两个独立条件</strong>，四种组合都存在（§6 摆全）。② 别把 <span class="math">f<sup>−1</sup>[U]</span> 当逆映射。这里 <span class="math">f</span> 不必可逆，<span class="math">f<sup>−1</sup></span> 只是「取原像」这个集合运算，<span class="math">f<sup>−1</sup>[U]</span> 读作「<span class="math">U</span> 在 <span class="math">f</span> 下的原像」。③ 「不丢」不能理解成「<span class="math">f</span> 是满射」。满射是集合层面的事；开映射是拓扑层面的事，两者互不推出——<span class="math">π</span> 两者都有，常值映射两者都无，但也有很多映射只有其中一个。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义注 3.1.2、注 3.1.4、例 3.1.5。</p>
+</section>
+
+<!-- ============ O3 点连续 ============ -->
+<section id="pointwise">
+  <h2><span class="sn">5</span>点连续与 ε–δ <span class="tag top">O3</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>整体连续是个全局断言。但动手验的时候，你总是一点一点验的。<strong>能不能把全局条件拆成「每点各管一段」？</strong>能，这就是点连续。而它的邻域形式，正是 ε–δ 定义剥掉度量外套之后的样子。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.1（命题 3.1.2 第 3 条、注 3.1.3）</span></div>
+    <p><span class="math">f</span> 在 <span class="math">x</span> 连续，若对 <span class="math">f(x)</span> 的每个（基本）开邻域 <span class="math">V</span>，存在 <span class="math">x</span> 的开邻域 <span class="math">U</span> 使 <span class="math">f[U] ⊆ V</span>。等价地：</p>
+    <div class="formula">∀S ⊆ X,&nbsp;&nbsp; x ∈ cl(S) ⟹ f(x) ∈ cl(f[S])</div>
+    <p>整体连续 ⟺ 处处点连续。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">5.2（习题 3.8）</span></div>
+    <p>在 <span class="math">ℝ</span> 上，<span class="math">f</span> 在 <span class="math">a</span> 连续 ⟺</p>
+    <div class="formula">∀ε &gt; 0 ∃δ &gt; 0 ∀x&nbsp;&nbsp;( |x−a| &lt; δ ⟹ |f(x)−f(a)| &lt; ε )</div>
+  </div>
+
+  <div class="intu"><div class="bt">两套语言逐词对照</div>
+    <table>
+      <tr><th>ε–δ</th><th>拓扑</th></tr>
+      <tr><td><span class="math">|x−a| &lt; δ</span></td><td><span class="math">x ∈ U</span>，<span class="math">U</span> 是 <span class="math">a</span> 的开邻域</td></tr>
+      <tr><td><span class="math">|f(x)−f(a)| &lt; ε</span></td><td><span class="math">f(x) ∈ V</span>，<span class="math">V</span> 是 <span class="math">f(a)</span> 的开邻域</td></tr>
+      <tr><td>开区间 <span class="math">(a−δ,a+δ)</span> 够小</td><td>开邻域可以是任意形状，不必是区间</td></tr>
+      <tr><td>「对每个 <span class="math">ε</span> 找 <span class="math">δ</span>」</td><td>「对每个 <span class="math">V</span> 找 <span class="math">U</span>」</td></tr>
+    </table>
+    <p><strong>ε–δ 里每一个「小」都被换成「开邻域」。</strong>换掉之后，第三行那个差别就露出来了：拓扑版本允许邻域奇形怪状，不必是区间。这不是放宽，是<strong>去掉了一个不该有的假设</strong>——距离结构本来就只是拓扑结构的一个特例。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">f(x) = x²</span> 在 <span class="math">a = 3</span>：取 <span class="math">δ = min(1, ε/7)</span>。当 <span class="math">|x−3| &lt; 1</span> 时 <span class="math">|x+3| &lt; 7</span>，于是 <span class="math">|x²−9| &lt; 7δ ≤ ε</span>。套路是<strong>先把变量框进一个有界范围，把因子估成常数</strong>。拓扑语言里这一步对应「先用一个基本开邻域把点圈住」——同一件事的两种说法。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><span class="math">f(x) = 0</span>（<span class="math">x ≠ 0</span>）、<span class="math">f(0) = 1</span>。处处连续，恰在 <span class="math">0</span> 处断。<span class="math">0</span> 处为什么断？取 <span class="math">V = (1/2, 3/2)</span>，原像是 <span class="math">{0}</span>，而 <span class="math">{0}</span> 不是 <span class="math">0</span> 的邻域。<strong>你找不到 0 附近的一小块，保证它整个映进 <span class="math">V</span>。</strong>这个例子证明点连续是真正局部的：可以只在一点崩坏，其余全好。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① 「处处点连续」确实等价于整体连续，这是定理不是反例——但注意每个点的邻域 <span class="math">U</span> 可以随点剧烈变化，不能以为同一个 <span class="math">U</span> 管所有点。② 方向别搞反：定义里从「<span class="math">f(x)</span> 的邻域」出发，回头找「<span class="math">x</span> 的邻域」。这与 L10 闭包刻画的顺序一致，也和 ε–δ（先给 <span class="math">ε</span>，再找 <span class="math">δ</span>）一致。③ 连续点集未必开——它只是 <span class="math">G<sub>δ</sub></span> 集，可以相当怪。上面那个例子恰好是开集，属于运气好，别当定理用。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义命题 3.1.2 第 4 条、注 3.1.3、习题 3.8。</p>
+</section>
+
+<!-- ============ O4 四格表 ============ -->
+<section id="grid">
+  <h2><span class="sn">6</span>四格表：连续 × 开 <span class="tag top">O4</span><span class="tag log">O4</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>「连续」和「开」是两个独立条件。既然是独立的，就该有四种组合，而且四种都该存在。这一节就是把这四格填满——<strong>填满之后，你就再也不会把两者混为一谈</strong>。</p>
+    <p>先把定义摆出来，然后一次性填表，最后用模态逻辑解释其中一格为什么在逻辑里也有名字。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">6.1（定义 3.1.4、3.2.2）</span></div>
+    <p><span class="math">f</span> <strong>开</strong>，若每个开集的像开；<span class="math">f</span> <strong>闭</strong>，若每个闭集的像闭。</p>
+    <div class="formula">开：U ∈ τ<sub>X</sub> ⟹ f[U] ∈ τ<sub>Y</sub>&nbsp;&nbsp;&nbsp;&nbsp; 闭：F 闭 ⟹ f[F] 闭</div>
+    <p>开与闭也是两回事，互不推出——和 L10 里「开集与闭集」的四分完全同构。原因也相同：<strong>开只对开集说话，闭只对闭集说话，而集合可以只开、只闭、两者皆是、两者皆非。</strong></p>
+  </div>
+
+  <h3>填满这张表</h3>
+  <table>
+    <tr><th></th><th>开映射</th><th>不开</th></tr>
+    <tr><td><strong>连续</strong></td><td><span class="math">π : ℝ → S¹</span>（§2 列的五条性质，开性 §6 末补证）</td><td>常值映射 <span class="math">c(x) ≡ 0</span>；折线 <span class="math">f(x)=x (x≤0), 0 (x&gt;0)</span></td></tr>
+    <tr><td><strong>不连续</strong></td><td><span class="math">id : (ℝ, 平凡) → (ℝ, 离散)</span></td><td><span class="math">1<sub>ℚ</sub> : ℝ → ℝ</span>（有理点取 1，其余 0）</td></tr>
+  </table>
+
+  <div class="intu"><div class="bt">四格逐个交代</div>
+    <p><strong>左上（连续 + 开）</strong>：<span class="math">π</span>。这是本讲主线，§2 已列。补一句开性为什么成立：<span class="math">ℝ</span> 的任一开集是开区间之并，而 <span class="math">π</span> 把开区间 <span class="math">(a,b)</span> 映成一段弧——只要 <span class="math">b−a ≤ 1</span> 就是真弧（不自重叠），而长区间可切成小段。<strong>关键是定义域没有端点</strong>，这一点 §7 会用它做 A/B 对照。</p>
+    <p><strong>右上（连续 + 不开）</strong>：常值映射与折线，§4 已讲。它们的共同点是<strong>坍缩</strong>：某个非空开集被压成低维的东西。</p>
+    <p><strong>左下（不连续 + 开）</strong>：<span class="math">id : (ℝ, 平凡) → (ℝ, 离散)</span>。平凡拓扑只有 <span class="math">∅, ℝ</span> 两个开集，它们的像是 <span class="math">∅, ℝ</span>，在离散拓扑里都开——<strong>所以它开</strong>。但 <span class="math">{0}</span> 在离散侧开，原像是 <span class="math">{0}</span>，在平凡侧不开——<strong>不连续</strong>。这一格最反直觉，但它说明：<strong>「不丢」比「不增」弱得多</strong>，因为定义域的拓扑太粗时，能让原像失败的开集在定义域里根本不存在。</p>
+    <p><strong>右下（都不）</strong>：<span class="math">1<sub>ℚ</sub></span>。它处处不连续（每点的邻域都同时含有理与无理点，像在 <span class="math">{0,1}</span> 里跳）。也不开：任一非空开集都含有理与无理点，像是 <span class="math">{0,1}</span>，在 <span class="math">ℝ</span> 里不开。<strong>这一格证明两个条件确实互不蕴含。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">6.2（命题 3.1.7，forth / back）</span></div>
+    <p>设 <span class="math">𝔉 = (W,R)</span>、<span class="math">𝔉′ = (W′,R′)</span> 为 Kripke 框架。<span class="math">f : W → W′</span> 满足</p>
+    <ul>
+      <li><strong>forth</strong>：<span class="math">xRy ⟹ f(x)R′f(y)</span>；</li>
+      <li><strong>back</strong>：<span class="math">f(x)R′y′ ⟹ ∃y ( xRy 且 f(y)=y′ )</span>。</li>
+    </ul>
+    <p>若两框架自反传递、赋 Alexandroff 拓扑（上集为开），则</p>
+    <div class="formula">forth ⟺ 连续&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; back ⟺ 开映射</div>
+    <p><strong>证明（forth 一侧）。</strong> 设 forth 成立，<span class="math">U′</span> 为 <span class="math">R′</span>-上集，<span class="math">x ∈ f<sup>−1</sup>[U′]</span> 且 <span class="math">xRy</span>。则 <span class="math">f(x)R′f(y)</span>，由 <span class="math">f(x) ∈ U′</span> 与上集性得 <span class="math">f(y) ∈ U′</span>，即 <span class="math">y ∈ f<sup>−1</sup>[U′]</span>。故原像是上集。<br>反向：取上集 <span class="math">↑f(x) = {z′ : f(x)R′z′}</span>，其原像是上集（由连续性）且含 <span class="math">x</span>（自反），故含所有 <span class="math">y</span> 满足 <span class="math">xRy</span>；于是 <span class="math">f(y) ∈ ↑f(x)</span>，即 <span class="math">f(x)R′f(y)</span>。<br>back 一侧完全对偶：把「原像是上集」换成「像是上集」，自反性负责让 <span class="math">x ∈ ↑x</span> 落回像里。∎</p>
+  </div>
+
+  <div class="intu"><div class="bt">这一格为什么在逻辑里有名字</div>
+    <p>forth + back 合起来，在模态逻辑里叫<strong>有界态射</strong>（p-态射）。它是模态逻辑的「同态」，作用是<strong>双向保持模态公式的真值</strong>：<span class="math">w ⊨ φ ⟺ f(w) ⊨ φ</span>。</p>
+    <p>定理 6.2 说的是：<strong>这个逻辑概念，在拓扑里恰好切成「连续 + 开」。</strong>于是四格表里的「左上」这一格，正好是「逻辑上完全保真」的那些映射。这条对应不是巧合：L06 讲过 Alexandroff 拓扑与预序的对应，而模态框架就是预序加标注。<strong>拓朴说「不增不丢」，逻辑说「双向保真」，代数说「同态且像」，三句话是一句话。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>最小的 forth / back 实验：<span class="math">W = {0,1}</span>，<span class="math">0R1</span>（自反传递），上集为 <span class="math">∅, {1}, {0,1}</span>。取 <span class="math">f(0)=0</span>、<span class="math">f(1)=0</span>。<span class="math">0R1</span> 需 <span class="math">f(0)Rf(1)</span> 即 <span class="math">0R0</span>，由自反成立——<strong>forth 有，故连续</strong>。但 <span class="math">f(1)=0</span>，取 <span class="math">y′=1</span>，需 <span class="math">y</span> 使 <span class="math">1Ry</span> 且 <span class="math">f(y)=1</span>，即 <span class="math">y=1</span> 而 <span class="math">f(1)=0</span>——<strong>back 无，故不开</strong>。这个映射把世界 1 抹掉了，是坍缩的极小模型。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>为什么 forth 只要求「前向」，back 要求「后向满」？用一个生活化的框架看：<span class="math">W</span> 是时刻，<span class="math">R</span> 是「未来于」。forth 说「<span class="math">x</span> 在 <span class="math">y</span> 之前，则 <span class="math">f(x)</span> 在 <span class="math">f(y)</span> 之前」——<strong>这是保序，即不颠倒时间</strong>。back 说「<span class="math">f(x)</span> 之后有 <span class="math">y′</span>，则 <span class="math">x</span> 之后有个 <span class="math">y</span> 映过去」——<strong>这是满性，即不遗漏未来的分支</strong>。<strong>保序 + 不遗漏 = 时间结构完全保持</strong>，恰好对应连续 + 开。这个读法比抽象定义好记。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① 「开 ⟹ 闭」错。折线 <span class="math">f(x)=x (x≤0), 0 (x&gt;0)</span> 两样都不是：<span class="math">f[[0,∞)) = {0}</span> 闭但 <span class="math">f[(−∞,0]] = (−∞,0]</span> 不闭。<strong>开集与闭集的四分，在「映射」这一层原样重演了一遍。</strong>② 「连续 + 双射 ⟹ 开」错，§7 有标准反例。③ forth / back 依赖框架关系，不是任意空间的通用判据——换拓扑就换说法。④ 别把「开映射」和「开集」搞混：前者是映射的性质，后者是子集的性质，同名不同类。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 3.1.4、注 3.1.4、例 3.1.5、定义 3.1.6、命题 3.1.7、定义 3.2.2、图 3.1。</p>
+</section>
+
+<!-- ============ O5 同胚 ============ -->
+<section id="homeo">
+  <h2><span class="sn">7</span>同胚与嵌入 <span class="tag top">O5</span><span class="tag alg">O5</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>四格表左上那一格还不够。要「两个空间是同一个」，得再加一条：<strong>不许重复</strong>（单射）。加上之后得到同胚——拓扑空间的同构。这一节的主线例子会给出一个漂亮的 A/B 对照：<strong>同一个圆，从 <span class="math">ℝ</span> 卷出来是同胚意义上的「覆叠」，从 <span class="math">[0,1)</span> 卷出来却连开映射都不是。</strong>差别只在定义域有没有端点。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">7.1（定义 3.2.1）</span></div>
+    <ul>
+      <li><strong>商映射</strong>：<span class="math">f</span> 满射，且 <span class="math">U</span> 开 ⟺ <span class="math">f<sup>−1</sup>[U]</span> 开（§8 详说）；</li>
+      <li><strong>同胚</strong>：<span class="math">f</span> 双射、连续、开；</li>
+      <li><strong>嵌入</strong>：把陪域缩到像得到的 <span class="math">f′ : X → f[X]</span> 是同胚（<span class="math">f[X]</span> 取子空间拓扑）。</li>
+    </ul>
+    <p>同胚的等价说法（习题 3.6）：<span class="math">f</span> 同胚 ⟺ 存在<strong>连续</strong>的 <span class="math">g : Y → X</span> 使 <span class="math">f∘g = id<sub>Y</sub></span>、<span class="math">g∘f = id<sub>X</sub></span>。<strong>「<span class="math">g</span> 连续」这四个字不能省</strong>——集合论逆总是存在，拓扑逆才要条件。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">7.2（引理 3.2.3）</span></div>
+    <p>商映射 ⟺ 满射且「<span class="math">U</span> 闭 ⟺ <span class="math">f<sup>−1</sup>[U]</span> 闭」；商映射必满射连续；满射 + 连续 + 开（或闭）⟹ 商映射。<br>嵌入必单射连续；单射 + 连续 + 开（或闭）⟹ 嵌入。</p>
+    <p><strong>但都只是部分逆命题</strong>（注 3.2.1）：商映射可以不开不闭，嵌入也可以不开不闭。</p>
+  </div>
+
+  <div class="proof"><div class="bt">嵌入的两个方向</div>
+    <p><strong>(1.e) 嵌入 ⟹ 单射 + 连续。</strong> <span class="math">f′ : X → f[X]</span> 同胚故单射，于是 <span class="math">f</span> 单射。取 <span class="math">V ⊆ Y</span> 开，<span class="math">V ∩ f[X]</span> 在子空间中开，由 <span class="math">f′</span> 连续得 <span class="math">(f′)<sup>−1</sup>[V ∩ f[X]] = f<sup>−1</sup>[V]</span> 在 <span class="math">X</span> 中开。</p>
+    <p><strong>(2.e) 单射 + 连续 + 开 ⟹ 嵌入。</strong> <span class="math">f′</span> 是双射。对 <span class="math">Y</span> 中开集 <span class="math">V</span>，<span class="math">(f′)<sup>−1</sup>[V ∩ f[X]] = f<sup>−1</sup>[V]</span> 开，故 <span class="math">f′</span> 连续。又对 <span class="math">X</span> 中开集 <span class="math">U</span>，<span class="math">f′[U] = f[U] ∩ f[X]</span>，其中 <span class="math">f[U]</span> 在 <span class="math">Y</span> 中开，故此像在 <span class="math">f[X]</span> 中开。∎</p>
+    <p><strong>两个证明共用同一个动作：把「<span class="math">Y</span> 中的开集」换成「<span class="math">f[X]</span> 中的开集」，即与 <span class="math">f[X]</span> 取交。</strong>这就是 L09 子空间拓扑的定义在干活——<strong>嵌入的本质是「先缩到像上，再谈同胚」</strong>。</p>
+  </div>
+
+  <h3>A/B 对照：同一个圆，两种卷法</h3>
+  <div class="diagram">π : ℝ    → S¹ ,  t ↦ e^{2πit}        [0,1) → S¹ ,  t ↦ e^{2πit}
+    ├ 满射 ✓                            ├ 满射 ✓
+    ├ 单射 ✗（t ≡ t+n）                 ├ 单射 ✓
+    ├ 连续 ✓                            ├ 连续 ✓
+    ├ 开   ✓                            ├ 开   ✗  ← 差别只在这里
+    └ 商映射 ✓（§8）                    └ 商映射 ✗</div>
+  <p class="cap">定义域有没有「端点」，决定了卷出来的映射是否开</p>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">(−1,1) ≅ ℝ</span>，同胚 <span class="math">f(x) = tan(πx/2)</span>。由此对任意 <span class="math">a&lt;b</span> 有 <span class="math">(a,b) ≅ ℝ</span>。这正是注 3.3.1 说的「拓扑空间可以伸展」：<strong>长度、直径这些度量概念在同胚下全部失效</strong>，留下的只有「断没断、有没有洞」这类结构信息。甜甜圈与咖啡杯的笑话讲的其实是这件事。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>连续双射不必是同胚</strong>，标准反例就在上面那张图的右侧：</p>
+    <div class="formula">f : [0,1) → S¹,&nbsp;&nbsp; t ↦ (cos 2πt, sin 2πt)</div>
+    <p>连续、双射。但<strong>不是同胚</strong>。看开性：<span class="math">[0, 1/2)</span> 是 <span class="math">[0,1)</span> 的开集（子空间拓扑），而它的像是一段「有起点、没有终点」的弧——在 <span class="math">S¹</span> 里不含起点的小邻域，故不开。<strong>读法：起点 0 这一端被「剪断」了，剪口在像里留下一个缺口。</strong>而 <span class="math">π</span> 的定义域是无端点的直线，每个点两侧都有余地，所以卷起来处处干净。</p>
+    <p><strong>这个对照是本节最值得记住的东西</strong>：它不是「找到某个性质不满足」的技巧题，而是让你看见<strong>端点是拓扑结构的真实内容</strong>，不是一个可以随便去掉的技术细节。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>「单射 + 连续 = 嵌入」错</strong>。取 <span class="math">id : (ℝ, 离散) → (ℝ, 欧氏)</span>：单射、连续（离散定义域），但不是嵌入——逆（欧氏 → 离散）不连续。<strong>缺的正是「开」这一半。</strong>② <strong>「同胚是等价关系」对</strong>（习题 3.5），所以「同胚于」可以传递使用，这是后文「沿同胚搬运性质」的许可证。③ <strong>嵌入 ≠ 包含映射</strong>：习题 3.7 说明 <span class="math">U ⊆ X</span> 开时 <span class="math">U ↪ X</span> 连续且开（故是嵌入）；<span class="math">U</span> 不开时只连续不开，一般不是嵌入。<strong>「<span class="math">U</span> 在 <span class="math">X</span> 中开」这件事，决定了它作为子空间是否与自身嵌入一致</strong>——这和本节 A/B 对照是同一个道理。④ 同胚不必「形状像」，可以极其奇异，讲义那句提醒是认真的。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 3.2.1、引理 3.2.3 及证明、注 3.2.1、例 3.2.4、注 3.3.1、习题 3.4/3.5/3.6/3.7。</p>
+</section>
+
+<!-- ============ O6 商映射 ============ -->
+<section id="quotient">
+  <h2><span class="sn">8</span>商映射与泛性质 <span class="tag top">O6</span><span class="tag alg">O6</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>前面都是「给定两空间，问映射好不好」。商映射反过来：<strong>把条件当定义，用它造空间</strong>。这是 L03 商代数的拓扑版，动作一模一样——<strong>把某些点认同成一类，然后要求新空间的结构恰好是使投影保持结构的那个</strong>。</p>
+    <p>而 §2 那个 <span class="math">π</span> 在这里终于找到自己的位置：<strong>它不是「恰好也是」商映射，它就是一个商映射，商掉的是 <span class="math">ℤ</span> 作用。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">8.1（定义 3.2.5）</span></div>
+    <p>设 <span class="math">∼</span> 是 <span class="math">X</span> 上的等价关系，<span class="math">q : X → X/∼</span> 为自然投影。商拓扑定义为</p>
+    <div class="formula">U ⊆ X/∼ 开 &nbsp;⟺&nbsp; q<sup>−1</sup>[U] 在 X 中开</div>
+    <p>这确实是拓扑，且 <span class="math">q</span> 确为商映射。</p>
+    <p><strong>注意方向</strong>：条件「<span class="math">q<sup>−1</sup>[U]</span> 开」越容易满足，能放进来的 <span class="math">U</span> 就越多，所以商拓扑是<strong>使 <span class="math">q</span> 连续的最细拓扑</strong>。再细一点，<span class="math">q</span> 就不连续了。</p>
+  </div>
+
+  <div class="intu"><div class="bt">与 L03 商代数逐条对照</div>
+    <table>
+      <tr><th></th><th>商代数 <span class="math">A/θ</span></th><th>商拓扑 <span class="math">X/∼</span></th></tr>
+      <tr><td>元素</td><td>等价类 <span class="math">[a]<sub>θ</sub></span></td><td>等价类 <span class="math">[x]<sub>∼</sub></span></td></tr>
+      <tr><td>良定义问题</td><td>要验证 <span class="math">a<sub>i</sub>θb<sub>i</sub> ⟹ f(a⃗)θf(b⃗)</span></td><td>用原像定义，<strong>免验</strong></td></tr>
+      <tr><td>投影</td><td><span class="math">π</span> 是满同态</td><td><span class="math">q</span> 是商映射</td></tr>
+      <tr><td>极值方向</td><td><span class="math">θ</span> 取<strong>最大</strong>同余</td><td>取<strong>最细</strong>拓扑</td></tr>
+      <tr><td>泛性质</td><td>在 <span class="math">θ</span> 上常值的同态唯一分解</td><td>在类上常值的连续映射唯一分解</td></tr>
+    </table>
+    <p><strong>为什么一个「最大」一个「最细」？</strong>因为代数的条件是等式（「<span class="math">f(a⃗) = f(b⃗)</span>」，认同得越少越容易满足，故取最大），拓扑的条件是包含（「<span class="math">q<sup>−1</sup>[U]</span> 开」，开集越少越容易满足，故取最细）。<strong>这是两者之间唯一的实质差别，其余处处同构。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">8.2（习题 3.9.3，泛性质）</span></div>
+    <p>每个在等价类上常值的连续映射 <span class="math">f : X → Y</span>，唯一诱导 <span class="math">f̃ : X/∼ → Y</span> 使 <span class="math">f = f̃ ∘ q</span>；且</p>
+    <div class="formula">f̃ 连续 ⟺ f 连续</div>
+    <p><strong>这条才是「为什么要这样定义商拓扑」的真正答案。</strong>它说：<strong>要在商空间上构造连续映射，只需在 <span class="math">X</span> 上构造，再检查它尊重认同。</strong>「尊重认同」是集合条件，「连续」是拓扑条件，两者被这条定理彻底解耦——这就是商空间所有实际用法的技术基础。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>端点粘合：<span class="math">I = [0,1]</span>，<span class="math">x ∼ y ⟺ x=y</span> 或 <span class="math">{x,y} = {0,1}</span>。商空间 <span class="math">[0,1]/∼ ≅ S¹</span>。<strong>「取商＝粘合」的字面意思</strong>：0 和 1 认同成一类，区间卷成圆。<br>更狠的是 Möbius 带（例 3.2.7）：<span class="math">I²</span> 上令 <span class="math">(x,y) ∼ (x′,y′)</span> 当 <span class="math">(x,y)=(x′,y′)</span> 或 <span class="math">[x = 1−x′ ∈ {0,1}, y = 1−y′]</span>——一条边翻转后粘到对边。<strong>三步构造：<span class="math">[0,1]</span> 子空间 → 积 → 商</strong>，全是 L09 讲过的东西，组合起来正好给出该几何对象应有的拓扑。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>连续满射不一定是商映射</strong>（习题 3.9.2）。取 <span class="math">X = (ℝ, 欧氏)</span>、<span class="math">Y = (ℝ, 离散)</span>、<span class="math">f = id</span>。它满射、连续（从粗到细）。但 <span class="math">{0}</span> 在 <span class="math">Y</span> 中开，原像 <span class="math">{0}</span> 在 <span class="math">X</span> 中不开——若 <span class="math">f</span> 是商映射，<span class="math">Y</span> 的开集必须恰好是那些拉回后开的集合，而 <span class="math">{0}</span> 不符合。<strong>失败原因：<span class="math">Y</span> 的拓扑比商拓扑更细。</strong>商映射的定义是「<span class="math">Y</span> 的拓扑<em>恰好</em>是商拓扑」，多一个开集都不行。这是引理 3.2.3 只说「部分逆命题」的根本原因。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>「商映射 = 连续满射」错</strong>，上例即是；正确配方是「满射 + 连续 + 开（或闭）」。② <strong>「商空间继承原空间的好性质」错</strong>：分离性、紧致性都可能崩塌——认同两个点，Hausdorff 就可能失去。这是 L12 的题目。③ <strong>「商拓扑是使 <span class="math">q</span> 连续的最粗拓扑」错，是最细</strong>。混淆来自「商＝取最小」的直觉——这里的「最小」是指认同得多，而非开集少。④ 泛性质里的「唯一」是<strong>集合层面</strong>唯一（<span class="math">f̃</span> 的值完全由 <span class="math">f</span> 决定），连续性要另验；但由「<span class="math">f̃</span> 连续 ⟺ <span class="math">f</span> 连续」这条，验起来很省事。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 3.2.5、例 3.2.6/3.2.7、习题 3.9、注 3.2.1。</p>
+</section>
+
+<!-- ============ 融合 ============ -->
+<section id="fusion">
+  <h2><span class="sn">9</span>融合接口</h2>
+
+  <div class="fusion"><div class="bt">三线对照</div>
+    <table>
+      <tr><th>拓扑</th><th>逻辑</th><th>代数</th></tr>
+      <tr><td>连续（不增知识）</td><td>翻译保真：<span class="math">Y</span> 中可验证 ⟹ <span class="math">X</span> 中可验证</td><td>同态（保运算）</td></tr>
+      <tr><td>开（不丢知识）</td><td>back 条件 / 满性</td><td>同态的像</td></tr>
+      <tr><td>同胚</td><td>两种语言表达力等价（可互定义）</td><td>同构 / 项等价（L05）</td></tr>
+      <tr><td>嵌入</td><td>一种语言可忠实译进另一种</td><td>嵌入 / 子代数（L03）</td></tr>
+      <tr><td>商映射 / 商拓扑</td><td>取商后命题降为「类上的命题」</td><td>商代数 <span class="math">A/θ</span>（L03）</td></tr>
+      <tr><td>forth + back</td><td>有界态射，双向保模态真值</td><td>Alexandroff 拓扑 ← 预序（L06）</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">收束</div>
+    <p>整讲其实只有两句话。<strong>第一句：连续是单向的，只禁止凭空造知识，允许坍缩。</strong>所以高分答案永远不会是「连续保开集」。<strong>第二句：同胚是两个单向条件的交集</strong>——不增 + 不丢 + 不重复。有了它，拓扑学第一次有了判断「两个空间是否同一个」的尺子，也有了「沿同胚搬运性质」的许可证。</p>
+    <p>往前看：L12 会把连续用到单点集上，问「点能不能被分开」；L13 / L18 会把开覆盖和连续的原像结合，问「空间够不够小」。进入 L15 之后的代数化，连续映射与同态的关系会以「桥」的形式再出现一次——那时 §8 那张商代数／商拓扑对照表会直接派上用场。</p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+
+  <div class="ex"><div class="bt">O1 · 连续</div>
+  <ol>
+    <li><span class="tag top">O1</span> 用查基的办法证明 <span class="math">f(x) = |x|</span> 连续，再把值域改成 <span class="math">[0,∞)</span> 取子空间拓扑，说明结论不变。</li>
+    <li><span class="tag alg">O1</span> 设 <span class="math">f, g : X → ℝ</span> 连续。证明 <span class="math">{x : f(x) = g(x)}</span> 闭，并举例说明它未必开。<br><span style="color:#8a93a5">提示：写成某个连续映射下闭集的原像。</span></li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O2 · 认识论读法</div>
+  <ol start="3">
+    <li><span class="tag log">O2</span> 用「不增 / 不丢 / 不重复」三个词分别解释：为什么 <span class="math">π : ℝ → S¹</span> 不是同胚，尽管它既不增也不丢。这个区分在认识论上对应什么？</li>
+    <li><span class="tag log">O2</span> 各举一个「只增不减」「只减不增」「既增又减」的翻译场景（可用自然语言翻译、数据压缩、投影等作类比），并说明对应的拓扑条件是哪一条。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O3 · 点连续</div>
+  <ol start="5">
+    <li><span class="tag top">O3</span> 把上面的 ε–δ／拓扑词典补全一行：<strong>「<span class="math">δ</span> 可以取得多小」</strong>在拓扑语言里对应什么？说明为什么一般拓扑空间里不能反译回 ε–δ。</li>
+    <li><span class="tag alg">O3</span> 证明：<span class="math">f</span> 在 <span class="math">x</span> 连续 ⟺ 对每个 <span class="math">S</span>，<span class="math">x ∈ cl(S) ⟹ f(x) ∈ cl(f[S])</span>。与定理 3.2 的证明对比，指出哪一步用到了「<span class="math">x</span> 固定」。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O4 · 四格表</div>
+  <ol start="7">
+    <li><span class="tag top">O4</span> 把四格表补成 2×2，每格填一个映射并给一句理由。要求四格的例子互不相同（不能复用本讲的例子）。</li>
+    <li><span class="tag alg">O4</span> 证明：若 <span class="math">f</span> 双射，则「<span class="math">f</span> 开」⟺「<span class="math">f<sup>−1</sup></span> 连续」。由此说明同胚可以改写成「连续 + 逆连续」。</li>
+    <li><span class="tag log">O4</span> 用命题 3.1.7 验证自反传递框架上的有界态射 = 连续 + 开。再举一个只 forth 不 back 的例子，并说明它在模态逻辑里会导致什么（提示：某些公式的真值只能单向保持）。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O5 · 同胚与嵌入</div>
+  <ol start="10">
+    <li><span class="tag top">O5</span> 证明 <span class="math">(−1,1) ≅ ℝ</span>，再证明 <span class="math">[0,1)</span> 与 <span class="math">S¹</span> 不同胚。后者请<strong>不用</strong>「连通性」以外的工具（L14 会正式讲，这里可以先凭直觉）。</li>
+    <li><span class="tag alg">O5</span> 证明习题 3.6 的两向等价，并指出证明中哪一步必须用「<span class="math">g</span> 连续」而不能只用集合论逆。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O6 · 商映射</div>
+  <ol start="12">
+    <li><span class="tag top">O6</span> 在 <span class="math">I²</span> 上取 Möbius 带的关系，验证商拓扑确实是拓扑，并说明例 3.2.7 三步（子空间 / 积 / 商）各自在做什么。</li>
+    <li><span class="tag alg">O6</span> 证明习题 3.9：<span class="math">q</span> 是商映射；泛性质成立且 <span class="math">f̃</span> 连续 ⟺ <span class="math">f</span> 连续。最后与 L03 商代数泛性质并排比较，说明「最大 / 最细」的差别从何而来。</li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L10.html">← 上一讲：L10 闭集、邻域、闭包与内部算子</a>
+  <a href="L11.html">对照：L11 正文版 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L11 备选版 · 来源：拓扑讲义 Ch3 §3.0–3.2、习题 3.1–3.9 · v0.2-alt</footer>
+
+</main></div>
+</body>
+</html>

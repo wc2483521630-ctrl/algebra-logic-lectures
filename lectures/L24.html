@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L24 关系代数与 RRA · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第六篇 对偶与表示：三条线的汇合点</span><span class="sep">/</span><span>L24</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 24 · 2 学时 · 从具体关系走到抽象公理 · 拓展版</div>
+  <h1>关系代数与 RRA</h1>
+  <div class="sub">「把关系当成数来算」——从三个元素上的有序对开始，一路走到 Tarski 的公理，再问一句：这些公理够不够</div>
+  <div class="metarow"><span>来源：UAL §7.1（定义 7.1.1/7.1.2/7.1.3/7.1.13、定理 7.1.4/7.1.8/7.1.9/7.1.10/7.1.11/7.1.14）、§5.2（定义 5.2.1、命题 5.2.2）、§2.8（正规 BAO）、练习 2.6.16；回指 L01 二元关系、L06 BAO、L16 Alg<sup>m</sup> 与 Alg<sub>⊨</sub>、L18 紧致、L19 完全、L20 Beth、L21 插值、L22 判定、L23 Stone 对偶</span>
+    <span class="tag alg">代数</span><span class="tag log">逻辑</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：为什么要给关系装上运算</a></li>
+  <li><a href="#basics">从零开始：二元关系的六个运算（O1）</a></li>
+  <li><a href="#cbra">具体关系代数 cBRA 与 BRA（O1）</a></li>
+  <li><a href="#axioms">术语迷宫与 Tarski 公理（O2）</a></li>
+  <li><a href="#represent">表示问题与 RRA（O3）</a></li>
+  <li><a href="#nonrep">RA ≠ RRA：反例在哪里（O4）</a></li>
+  <li><a href="#arrow">箭头逻辑与五座桥的收束（O5）</a></li>
+  <li><a href="#fusion2">接回 L23：三层例与融合图（O6）</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">这一讲从最基础的地方起步。你只需要知道「二元关系是有序对的集合」就够了，其余全部现造。我们要走的路是：<strong>具体关系 → 找出运算规律 → 写成公理 → 问公理有没有把「关系」刻画准</strong>。最后一步给出本讲的核心悬念：答案是否定的。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>它回答的问题</th></tr>
+      <tr><td>二元关系 <span class="math">R ⊆ U × U</span></td><td>L01 有序对与笛卡儿积</td><td>最原始的材料是什么？</td></tr>
+      <tr><td>复合 <span class="math">◦</span>、逆 <span class="math">⁻¹</span>、恒等 <span class="math">Id</span></td><td>上面一条</td><td>关系之间能做哪些运算？</td></tr>
+      <tr><td>cBRA（具体关系代数）</td><td>布尔运算 + 上面三种</td><td>把这些关系装进一个代数长什么样？</td></tr>
+      <tr><td>BRA / ARA / RA / RRA</td><td>L06 正规 BAO、L04 HSP</td><td>具体、抽象、可表示，四层怎么分？</td></tr>
+      <tr><td>三角形规则</td><td>复合与补的相互作用</td><td>Tarski 那条最难的公理在说什么？</td></tr>
+      <tr><td><span class="math">RRA = SP setRRA</span></td><td>L04 子直积、L23 表示</td><td>「可表示」到底是什么意思？</td></tr>
+      <tr><td>Lyndon 代数 / 非可表示 RA</td><td>RA 公理</td><td>公理够不够？不够，最小的反例只有 16 个元素</td></tr>
+      <tr><td>箭头逻辑 <span class="math">L<sub>REL</sub></span></td><td>L16 <span class="math">Alg<sup>m</sup></span> 与 <span class="math">Alg<sub>⊨</sub></span></td><td>这套代数对应哪个逻辑？</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>有序对集合 <span class="math">U × U</span> → 六个运算（布尔四件 + 复合 + 逆）→ 具体代数 cBRA → 取同构像得 BRA → 写成等式公理得 ARA → 加三角形规则与 <span class="math">Id</span> 得 RA → 加上「真的由关系实现」的要求得 RRA → <strong>RA ⊋ RRA，公理漏了东西</strong> → 漏的东西在逻辑上表现为箭头逻辑没有插值、没有 Beth、没有有限 Hilbert 系统。<strong>整讲一台发动机：抽象公理比具体关系好算，但好算的代价是可能多出「假关系」。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 目标 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>手算三个元素上的复合、逆、补，说清 cBRA 与 BRA 是什么</td><td><a href="#basics">§3</a>、<a href="#cbra">§4</a></td><td><a href="#ex">E1, E2, E3</a></td></tr>
+    <tr><td><b>O2</b></td><td>分清 cBRA/BRA/ARA/RA/RRA 五层，逐条验证 Tarski 公理</td><td><a href="#axioms">§5</a></td><td><a href="#ex">E4, E5</a></td></tr>
+    <tr><td><b>O3</b></td><td>写出「可表示」的定义，说明 <span class="math">RRA = SP setRRA</span> 与 <span class="math">Id</span> 的作用</td><td><a href="#represent">§6</a></td><td><a href="#ex">E6, E7</a></td></tr>
+    <tr><td><b>O4</b></td><td>解释为什么 <span class="math">RA ≠ RRA</span>，说出 Lyndon 代数与 QRA 的角色</td><td><a href="#nonrep">§7</a></td><td><a href="#ex">E8, E9</a></td></tr>
+    <tr><td><b>O5</b></td><td>叙述箭头逻辑 <span class="math">L<sub>REL</sub></span>，用五座桥解释它的性质清单</td><td><a href="#arrow">§8</a></td><td><a href="#ex">E10, E11</a></td></tr>
+    <tr><td><b>O6</b></td><td>说明 L23 的超滤子方法在这一讲遇到什么新门槛，并读懂三层例</td><td><a href="#fusion2">§9</a></td><td><a href="#ex">E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：为什么要给关系装上运算</h2>
+
+  <div class="intu"><div class="bt">从你已经会的三样东西走过来</div>
+    <p>命题逻辑的语义是「真值」，代数化后得到<strong>布尔代数</strong>；模态逻辑加上「必然」，代数化后得到<strong>带算子的布尔代数</strong>（L06 的 BAO）；现在轮到关系：把「有序对的集合」当作真值，逻辑里的连接词就变成<strong>关系运算</strong>。这条递进线是同一台机器换了输入：</p>
+    <div class="formula">真值        → 布尔代数
+可能世界集合  → BAO（□ = 内部 / 闭包）
+有序对集合   → 关系代数（◦ = 复合、⁻¹ = 逆、Id = 恒等）</div>
+  </div>
+
+  <p>为什么偏偏要研究二元关系？因为它同时出现在三个地方：<strong>关系数据库</strong>里一张表就是二元关系，查询就是复合与选择；<strong>程序语义</strong>里程序是「输入—输出」关系，顺序执行就是复合；<strong>模态与动态逻辑</strong>里可达关系是 Kripke 框架的骨架。Tarski 在 1940 年代做了一件大胆的事：不问「这些关系有什么性质」，而问「<strong>把关系当成数，能列出一套代数公理吗</strong>」。一旦列出来，就可以用泛代数的全部机器研究它——这正是本课程从 L01 到 L22 一直在练的手艺。</p>
+
+  <p>但这里埋着一个陷阱。公理是<strong>人写的等式</strong>，关系是<strong>具体存在的东西</strong>。人写的公理可能太宽：允许一些「满足公理、却根本不是任何关系族」的怪代数混进来。于是本讲的悬念是：</p>
+  <div class="formula">满足 Tarski 公理（RA）　=？　真的能由二元关系实现（RRA）</div>
+  <p>答案是<strong>不等于</strong>。而且这个「不等于」会一路传导到逻辑那一边，让箭头逻辑丢掉插值、Beth 和有限 Hilbert 系统。<strong>这就是本讲值得花两学时的理由：它是前面五座桥的第一批「结算单」。</strong></p>
+</section>
+
+<!-- ============ O1 基础手算 ============ -->
+<section id="basics">
+  <h2><span class="sn">3</span>从零开始：二元关系的六个运算 <span class="tag alg">O1</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">二元关系</span></div>
+    <p>集合 <span class="math">U</span> 上的<strong>二元关系</strong>是笛卡儿积 <span class="math">U × U</span> 的子集。比如 <span class="math">U = {1,2,3}</span>，那么「小于」关系是 <span class="math">{(1,2), (1,3), (2,3)}</span>，「等于」关系是 <span class="math">{(1,1),(2,2),(3,3)}</span>。<strong>关键：关系就是有序对的集合，没有别的神秘东西。</strong></p>
+  </div>
+
+  <p>把 <span class="math">U</span> 固定住，令 <span class="math">V = U × U</span>（九个有序对）。下面六个运算都在这九个有序对上做。先固定两个关系作全程例子：</p>
+  <div class="formula">R = {(1,2), (2,3)}　　S = {(2,1), (3,2)}</div>
+
+  <div class="def"><div class="bt">六个运算 <span class="num">前四个是布尔运算，后两个是关系特有的</span></div>
+    <table>
+      <tr><th>运算</th><th>定义</th><th>在本例中的结果</th></tr>
+      <tr><td>并 <span class="math">R ∪ S</span></td><td>属于 <span class="math">R</span> 或属于 <span class="math">S</span></td><td><span class="math">{(1,2),(2,3),(2,1),(3,2)}</span></td></tr>
+      <tr><td>交 <span class="math">R ∩ S</span></td><td>两者都属于</td><td><span class="math">∅</span>（这是导出运算：<span class="math">R∩S = −(−R ∪ −S)</span>）</td></tr>
+      <tr><td>补 <span class="math">−R</span></td><td><span class="math">V − R</span>，其余七个有序对</td><td>九个有序对里去掉 <span class="math">(1,2),(2,3)</span></td></tr>
+      <tr><td>顶 <span class="math">V</span></td><td>全体有序对 <span class="math">U × U</span></td><td>九个有序对</td></tr>
+      <tr><td>复合 <span class="math">R ◦ S</span></td><td><span class="math">{(u,w) : ∃v, (u,v)∈R 且 (v,w)∈S}</span></td><td><span class="math">{(1,1),(2,2)}</span>（见下面逐步算）</td></tr>
+      <tr><td>逆 <span class="math">R⁻¹</span></td><td><span class="math">{(v,u) : (u,v)∈R}</span></td><td><span class="math">{(2,1),(3,2)} = S</span></td></tr>
+    </table>
+  </div>
+
+  <div class="proof"><span class="pt">复合手算：为什么 R◦S = {(1,1),(2,2)}</span>
+    <p>复合的定义是「先走 <span class="math">R</span> 再走 <span class="math">S</span>，中间接点相同」。逐个检查：</p>
+    <ul>
+      <li>从 <span class="math">1</span> 出发：<span class="math">R</span> 只能到 <span class="math">2</span>；<span class="math">S</span> 从 <span class="math">2</span> 能到 <span class="math">1</span>。所以 <span class="math">(1,1) ∈ R◦S</span>。</li>
+      <li>从 <span class="math">2</span> 出发：<span class="math">R</span> 只能到 <span class="math">3</span>；<span class="math">S</span> 从 <span class="math">3</span> 能到 <span class="math">2</span>。所以 <span class="math">(2,2) ∈ R◦S</span>。</li>
+      <li>从 <span class="math">3</span> 出发：<span class="math">R</span> 哪儿也去不了，所以没有以 <span class="math">3</span> 开头的复合对。</li>
+    </ul>
+    <p>再看反方向：<span class="math">S◦R = {(2,3),(3,3)}</span>（请自己按同样方法验一遍）。<strong>复合不交换！</strong>这是关系代数与布尔代数最不一样的地方，也是它难算的根源。</p>
+  </div>
+
+  <div class="intu"><div class="bt">两个值得现在就记住的小事实</div>
+    <p><strong>① 逆会把复合的顺序反过来：</strong><span class="math">(R◦S)⁻¹ = S⁻¹◦R⁻¹</span>。直观上，把一条「先 <span class="math">R</span> 后 <span class="math">S</span>」的路径倒着走，当然变成「先 <span class="math">S</span> 的逆，后 <span class="math">R</span> 的逆」。</p>
+    <p><strong>② 复合对并分配：</strong><span class="math">(R ∪ S)◦T = (R◦T) ∪ (S◦T)</span>。因为「先走 <span class="math">R</span> 或 <span class="math">S</span>，再走 <span class="math">T</span>」就是两种走法的并。<strong>这两条正是 L06 说关系代数是「正规 BAO」的原因。</strong></p>
+  </div>
+
+  <div class="box warn"><div class="bt">一个最容易踩的坑：补是相对的</div>
+    <p><span class="math">−R</span> 永远是<strong>相对于顶元 <span class="math">V</span></strong> 的补，不是相对于整个 <span class="math">U × U</span>（虽然本例里两者恰好相同）。下一节会看到，UAL 的具体关系代数允许 <span class="math">V</span> 是 <span class="math">U × U</span> 的某个子集——此时 <span class="math">−R = V − R</span>，补的世界变小了。<strong>这个细节正是后面区分 BRA 与 RRA 的关键。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O1 cBRA 与 BRA ============ -->
+<section id="cbra">
+  <h2><span class="sn">4</span>具体关系代数 cBRA 与 BRA <span class="tag alg">O1</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">UAL 7.1.1 / 7.1.2</span></div>
+    <p>一个<strong>具体二元关系代数</strong>（cBRA）是形如</p>
+    <div class="formula">A = ⟨A, ∪, −, V, ◦, ⁻¹⟩</div>
+    <p>的代数，其中 <span class="math">A</span> 是一族二元关系，<span class="math">V</span> 是其中最大的那个（叫<strong>单位</strong>），五个运算分别是并、相对 <span class="math">V</span> 的补、单位、复合、逆；而且 <span class="math">A</span> 对这些运算封闭。<strong>「具体」的意思是：元素真的就是有序对集合。</strong></p>
+    <p>一个<strong>二元关系代数</strong>（BRA）是某个 cBRA 的同构像，即 <span class="math">BRA = I cBRA</span>（UAL 定义 7.1.2）。</p>
+  </div>
+
+  <div class="intu"><div class="bt">这个定义其实由两块拼成</div>
+    <p>把 cBRA 拆开看，它同时是两样你已经很熟的东西：</p>
+    <div class="formula">⟨A, ∪, −, V⟩　是布尔代数（BA）
+⟨A, ◦, ⁻¹⟩　　是对合半群（结合、有逆、逆逆归原）
+两者共用同一个载体 A，并合成正规 BAO</div>
+    <p>这正是 L06 定理 6.5 那套「判别式簇 / BAO」的语言。UAL 在定义 7.1.2 后特意点出这一点：<strong>关系代数并不陌生，它就是「布尔代数 + 对合半群」焊在一起</strong>。你先前学的每一件 BAO 工具，在这里都能直接用。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">UAL 7.1.4 / 7.1.8 / 7.1.9</span></div>
+    <ol>
+      <li><strong>7.1.4：</strong>BRA 是等式类，即存在一族等式 <span class="math">E</span> 使 <span class="math">BRA = Mod(E)</span>。</li>
+      <li><strong>7.1.8：</strong>BRA <strong>不可有限公理化</strong>——没有有限多条等式能描出它。</li>
+      <li><strong>7.1.9：</strong><span class="math">Eq(BRA)</span> 是递归可枚举但<strong>不可判定</strong>的。</li>
+    </ol>
+    <p>证明路线用到了 L04 的子直表示、L07 的判别式簇：先证 <span class="math">BRA = SP Sir(BRA)</span>，再证子直既约成员构成一个伪公理化类并有判别式项，最后得到等式类。<strong>第 7 讲学的 Jónsson 式技术，在这里第一次真正兑现。</strong></p>
+  </div>
+
+  <div class="box"><div class="bt">UAL 自己的评价</div>
+    <p>教材在 §7.1 里写了一句很值得记住的话：<strong>只用 BRA 就能说明代数逻辑的大部分主要结果、思想与问题</strong>。换句话说，这一讲不是边角料——它是整个领域的浓缩样本。后面 L27 的案例「箭头逻辑」会把它接回逻辑主线。</p>
+  </div>
+</section>
+
+<!-- ============ O2 术语迷宫与公理 ============ -->
+<section id="axioms">
+  <h2><span class="sn">5</span>术语迷宫与 Tarski 公理 <span class="tag alg">O2</span></h2>
+
+  <div class="box warn"><div class="bt">先解决一个真正的麻烦：五个名字长得太像</div>
+    <p>UAL 这本书把关系代数分成五层，别的教材往往只讲其中两层。若不等读清楚，很容易以为自己在读同一件事。下面这张表是本讲的地图，建议你先记住它再往下走。</p>
+  </div>
+
+  <div class="thm"><div class="bt">对照 <span class="num">五层术语（本讲地图）</span></div>
+    <table>
+      <tr><th>名字</th><th>全称</th><th>怎么得到</th><th>语言</th><th>一句话</th></tr>
+      <tr><td><span class="math">cBRA</span></td><td>具体二元关系代数</td><td>直接拿一族有序对集合</td><td><span class="math">∪,−,V,◦,⁻¹</span></td><td>元素真的是关系</td></tr>
+      <tr><td><span class="math">BRA</span></td><td>二元关系代数</td><td><span class="math">I cBRA</span>（同构像）</td><td>同上</td><td>换了个名字的具体物</td></tr>
+      <tr><td><span class="math">ARA</span></td><td>BRA 的抽象逼近</td><td>公理 (1)–(4)</td><td>同上</td><td>按规律写公理，不管是不是真关系</td></tr>
+      <tr><td><span class="math">RA</span></td><td>关系代数（Tarski）</td><td>公理 (1)–(3) + (5) + (6)</td><td>多一个 <span class="math">Id</span></td><td>标准抽象公理类</td></tr>
+      <tr><td><span class="math">RRA</span></td><td>可表示关系代数</td><td><span class="math">SP setRRA</span></td><td>同 <span class="math">RA</span></td><td>真的能由关系实现</td></tr>
+    </table>
+    <p><strong>读法：</strong>常见教材说「RA 是抽象的、RRA 是可表示的」，UAL 在这两层前面又加了三层（cBRA、BRA、ARA）来把「具体到抽象」的过程拆细。<strong>牢记一个包含链：<span class="math">RRA ⊆ BRA</span>，而 <span class="math">RA ⊋ RRA</span>。</strong>最后那个真包含是本讲的高潮。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">UAL 7.1.3：ARA 的四组公理（逐条讲人话）</span></div>
+    <p><strong>(1) 布尔公理：</strong>交换、结合、<span class="math">x ∪ 1 = 1</span>，加上一条缩写的补元律。作用只是保证 <span class="math">⟨A,∪,−,1⟩</span> 是布尔代数——你已在 L01 见过。</p>
+    <p><strong>(2) 对合半群公理：</strong></p>
+    <div class="formula">(x ◦ y) ◦ z = x ◦ (y ◦ z)　　(x ◦ y)⁻¹ = y⁻¹ ◦ x⁻¹　　x⁻¹⁻¹ = x</div>
+    <p>三条分别说：复合可结合（走三段路不用管括号）、逆会反序（§3 的小事实①）、逆两次回到原样。<strong>§3 已经用手算验证过后两条。</strong></p>
+    <p><strong>(3) 正规 BAO 公理：</strong></p>
+    <div class="formula">(x ∪ y) ◦ z = (x ◦ z) ∪ (y ◦ z)　　(x ∪ y)⁻¹ = x⁻¹ ∪ y⁻¹　　0 ◦ x = 0,　0⁻¹ = 0</div>
+    <p>两条分配 + 两条保底元。第一条是 §3 的小事实②；<span class="math">0 ◦ x = 0</span> 说「空关系开头，走不出任何路」。</p>
+    <p><strong>(4) 连接两半的桥：</strong><span class="math">−(x⁻¹) = (−x)⁻¹</span>（补与逆交换），以及 <span class="math">x ≤ 1 ◦ x</span>、<span class="math">−(1 ◦ x) = 1 ◦ −(1 ◦ x)</span>（说 <span class="math">x ↦ 1◦x</span> 是补闭包算子，L02 的老朋友）。</p>
+    <p><strong>关键：ARA 没有 <span class="math">Id</span>，也没有三角形规则。</strong>它只抓住了「关系代数大概长什么样」，还留着口子。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">UAL 7.1.13：RA 在 ARA 上再加两条</span></div>
+    <div class="formula">(5)　x⁻¹ ◦ [−(x ◦ y)] ≤ −y
+(6)　Id ◦ x = x</div>
+    <p><strong>(6) 好懂：</strong><span class="math">Id</span> 是复合的单位元。<span class="math">Id = {(u,u) : u ∈ U}</span>，恒等关系接在任何关系前面都不改变它。UAL 特意指出这条在逻辑里对应<strong> Leibniz 律</strong>：相等的东西不可区分。</p>
+    <p><strong>(5) 是 Tarski 最有名的那条，下面单独拆。</strong></p>
+  </div>
+
+  <div class="proof"><span class="pt">验证公理 (5)：在具体关系里它为什么成立</span>
+    <p>要证 <span class="math">R⁻¹ ◦ (−(R◦S)) ⊆ −S</span>。取左边任意一个有序对 <span class="math">(u,w)</span>，按复合定义，存在某个 <span class="math">v</span> 使</p>
+    <div class="formula">(u,v) ∈ R⁻¹　即　(v,u) ∈ R,　　且　　(v,w) ∉ R ◦ S.</div>
+    <p>现在反证 <span class="math">(u,w) ∈ S</span>。那么 <span class="math">(v,u) ∈ R</span> 且 <span class="math">(u,w) ∈ S</span>，按复合定义就有 <span class="math">(v,w) ∈ R◦S</span>——与上面第二条直接矛盾。所以 <span class="math">(u,w) ∉ S</span>，即它在 <span class="math">−S</span> 里。<span class="qed">∎</span></p>
+    <p><strong>这条公理的全部内容就是这个反证：</strong>「<span class="math">R</span> 走一步到不了 <span class="math">S</span> 的终点」这件事，与 <span class="math">R⁻¹</span> 和 <span class="math">S</span> 的补相容。</p>
+  </div>
+
+  <div class="intu"><div class="bt">公理 (5) 的另一种说法：三角形规则</div>
+    <p>UAL 指出 (5) 等价于下面这条更对称的 <strong>(5′) 三角形规则</strong>：</p>
+    <div class="formula">x ∩ (y ◦ z) = 0　当且仅当　y ∩ (x ◦ z⁻¹) = 0　当且仅当　z ∩ (y⁻¹ ◦ x) = 0.</div>
+    <p>把 <span class="math">x, y, z</span> 想成三角形的三条边：<span class="math">y</span> 是第一条边，<span class="math">z</span> 是第二条，<span class="math">x</span> 是合成后的第三条。<span class="math">x ∩ (y◦z) = 0</span> 说「<span class="math">x</span> 这条边不是由 <span class="math">y</span> 接 <span class="math">z</span> 走出来的」，也就是<strong>这个三角形不存在</strong>。另外两行只是把三条边换了个位置重新说一遍。<strong>三种说法等价，正是公理 (5) 的功劳。</strong></p>
+  </div>
+
+  <div class="box warn"><div class="bt">一个常见的记号转换表</div>
+    <p>别的书里同一个东西常写成另一套符号，看到别慌：</p>
+    <div class="formula">UAL 的 ∪ 　= 常见教材的 ∨ 或 +
+UAL 的 ◦ 　= 常见教材的 ;
+UAL 的 ⁻¹ 　= 常见教材的 ⌣ 或 ˘
+UAL 的 V / Id = 常见教材的 1 / 1′</div>
+    <p>本讲义统一用 UAL 记号，遇到别的文献按这张表翻译即可。</p>
+  </div>
+</section>
+
+<!-- ============ O3 表示问题与 RRA ============ -->
+<section id="represent">
+  <h2><span class="sn">6</span>表示问题与 RRA <span class="tag alg">O3</span></h2>
+
+  <p class="lead">现在到了关键分岔。前面造的 RA 是<strong>按公理定义的类</strong>：只要满足等式就算成员。但我们还想要一个更严格的要求——<strong>它真的能由二元关系实现吗</strong>？这就是「表示」问题。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">setRRA 与 RRA（UAL §5.2、§7.1）</span></div>
+    <ul>
+      <li><strong>集合关系代数</strong> <span class="math">setRRA</span>：形如 <span class="math">⟨𝓟(U×U), ∪, −, V, ◦, ⁻¹, Id⟩</span> 的代数及其子代数，其中 <span class="math">V = U×U</span>（<strong>方形单位</strong>），<span class="math">Id = {(u,u) : u∈U}</span>。</li>
+      <li><strong>表示关系代数</strong> <span class="math">RRA = SP setRRA</span>：集合关系代数的子代数之积。等价地，<span class="math">A ∈ RRA</span> 当且仅当存在集合 <span class="math">U</span> 与单同态
+        <div class="formula">h : A → ⟨𝓟(U×U), ∪, −, ◦, ⁻¹, Id⟩</div>
+        保全部运算——也就是给 <span class="math">A</span> 的每个元素找到一批真正的有序对，并且复合、逆、恒等都按真的关系运算对上。</li>
+    </ul>
+    <p><strong>「可表示」的意思非常朴素：这个抽象代数可以被实现成一个关系族。</strong>若做不到，它就是「假关系」——满足公理却不是任何真正的二元关系系统。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">UAL 7.1.10（RRA 的基本性质）</span></div>
+    <p>RRA 是<strong>不可有限公理化</strong>的判别式簇，其等式理论<strong>递归可枚举但不可判定</strong>。</p>
+    <p>这几条与 BRA 的 7.1.4 / 7.1.8 / 7.1.9 完全平行，证明也是照搬。<strong>请把它与 L22 对照：</strong>「不可有限公理化 ⇒ 没有有限完全且强可靠的 Hilbert 系统」，「r.e. + 不可判定 ⇒ 逻辑那边的有效式集算不出来」。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">UAL 7.1.11（<span class="math">Id</span> 是唯一的额外门槛）</span></div>
+    <p>记 <span class="math">E₀</span> 为一组有限等式（逆与复合的交互、三角形规则、一条分配式）。则</p>
+    <div class="formula">Eq(BSR) ∪ E₀　　　　　　公理化 BRA
+Eq(BSR) ∪ E₀ ∪ {Id ◦ x = x}　　公理化 RRA.</div>
+    <p><strong>这条定理信息量很大：</strong>从 BRA 走到 RRA，只需要补一条 <span class="math">Id◦x=x</span>。教材的解读是——<strong>RRA 不可有限公理化的「全部罪魁」是复合运算 <span class="math">◦</span></strong>；逆和恒等借助复合都可以有限地公理化。</p>
+    <p>回到 §3 的提醒：BRA 允许 <span class="math">V</span> 是 <span class="math">U×U</span> 的任意子集（相对化），而 <span class="math">Id◦x=x</span> 强迫单位变成<strong>方形</strong>。<strong>所以「可表示」与「相对化」的差别，就卡在方不方形这一点上。</strong></p>
+  </div>
+
+  <div class="box"><div class="bt">一个术语对照，免得读文献时迷路</div>
+    <p>常见教材里 <span class="math">setRRA</span> 常被称为「<strong>完全可表示关系代数</strong>」，而 RRA 是它们的同构闭包与乘积闭包。UAL 的写法 <span class="math">RRA = SP setRRA</span> 是把这件事压缩成一个式子：<strong>具体物 → 取子代数 → 取积，就得到整个可表示类。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O4 RA ≠ RRA ============ -->
+<section id="nonrep">
+  <h2><span class="sn">7</span>RA ≠ RRA：反例在哪里 <span class="tag alg">O4</span></h2>
+
+  <div class="intu"><div class="bt">先用一个便宜的论证看出「一定有反例」</div>
+    <p>RA 是由有限多条等式（(1)–(3) + (5) + (6)）定义的，所以它<strong>有限可公理化</strong>。如果 <span class="math">RA = RRA</span>，那么 RRA 也有限可公理化——这与定理 7.1.10 直接冲突。<strong>所以 RA 里必定有不能表示的元素</strong>，而且反例多到让 RRA 根本写不出有限公理。</p>
+    <p>这个论证只告诉我们「有」，没告诉我们「长什么样」。下面给出具体构造。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">Lyndon 代数（UAL §7.1）</span></div>
+    <p>一个有限 <strong>Lyndon 代数</strong>是满足以下条件的有限 RA：</p>
+    <ul>
+      <li><span class="math">Id</span> 是一个原子；</li>
+      <li>每个原子 <span class="math">a</span> 满足 <span class="math">a⁻¹ = a</span> 且 <span class="math">a ◦ a = a ∪ Id</span>；</li>
+      <li>任意两个不同的非 <span class="math">Id</span> 原子 <span class="math">a, b</span> 满足 <span class="math">a ◦ b = 1 − (a ∪ b)</span>。</li>
+    </ul>
+    <p>这是一套<strong>纯组合的配方</strong>：只要指定若干原子，复合表就被规则完全定死，不需要真的画出有序对。UAL 指出：这样的代数里<strong>无穷多个不可表示，也无穷多个可表示</strong>。<strong>最小的不可表示 RA 只有 16 个元素</strong>（McKenzie 发现）——小到可以手算，却已经不是任何关系的代数。</p>
+  </div>
+
+  <div class="box warn"><div class="bt">另一种造反例的办法：把可表示的「掰弯」</div>
+    <p>从一个可表示 RA 出发，用<strong>分裂</strong>或<strong>膨胀</strong>把某些原子的复合关系改掉，就能造出不可表示的 RA。UAL 还提到一个很有意思的证明路线：<strong>找无穷多个不可表示 RA，使它们的超滤子积反而可表示</strong>——由此推出 RRA 不可有限公理化。<strong>这里又看见了 L04 的超积和 L18 的紧致性。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">UAL 7.1.14（什么时候抽象就够用）</span></div>
+    <p>令 <span class="math">φ</span> 与 <span class="math">ψ</span> 为</p>
+    <div class="formula">φ = ∃xy (x⁻¹◦x ≤ Id ∧ y⁻¹◦y ≤ Id ∧ x⁻¹◦y = 1)
+ψ = ∀x∃y (x ≠ 0 → [0 ≠ y ∧ y ≤ x ∧ y⁻¹◦y ≤ Id]).</div>
+    <p>则对 <span class="math">Σ = {φ}</span> 与 <span class="math">Σ = {ψ}</span> 都有</p>
+    <div class="formula">RRA ∩ ModΣ = RA ∩ ModΣ.</div>
+    <p>满足 <span class="math">φ</span> 的叫<strong>拟投射 RA（QRA）</strong>，满足 <span class="math">ψ</span> 的叫<strong>函数稠密 RA</strong>。<strong>好消息：这两类里，RA 与 RRA 重合</strong>——也就是说只要多满足一条这样简单的性质，抽象公理就够用了。教材特别注明：<strong>「每个 QRA 可表示」是 Tarski 的定理</strong>，Maddux 给过优雅的代数证明。</p>
+  </div>
+
+  <div class="intu"><div class="bt">φ 到底在说什么（值得拆开看）</div>
+    <p>条件 <span class="math">x⁻¹◦x ≤ Id</span> 的意思是：<span class="math">x</span> 是<strong>部分函数</strong>——同一个起点不会通过 <span class="math">x</span> 走到两个不同终点（把 §3 的复合定义代进去验一下就清楚）。而 <span class="math">x⁻¹◦y = 1</span> 说这两条部分函数<strong>合起来铺满了整个方形</strong>：任意两点的组合都能被接上。于是 <span class="math">φ</span> 在说「这个代数里有足够多的函数式关系，可以把每一对点定位出来」。<strong>这正是把抽象元素实现为真正关系所需要的坐标系统</strong>——Tarski 的表示构造就靠它起步。</p>
+  </div>
+
+  <div class="box"><div class="bt">一句话总结本节的立场</div>
+    <p><strong>RA 是「便宜的近似」，RRA 是「昂贵但真实」。</strong>RA 有限公理化、好算；RRA 不可有限公理化、等式理论不可判定，但它是逻辑真正要的语义。两者的差距不是技术细节，而是<strong>逻辑本身的复杂度</strong>——下一节看得最清楚。</p>
+  </div>
+</section>
+
+<!-- ============ O5 箭头逻辑 ============ -->
+<section id="arrow">
+  <h2><span class="sn">8</span>箭头逻辑与五座桥的收束 <span class="tag log">O5</span><span class="tag alg">O5</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">UAL 5.2.1：箭头逻辑 L<sub>REL</sub></span></div>
+    <p>连接词 <span class="math">{∧, ¬, ⊥, ◦, ⁻¹, Id}</span>。一个模型的世界不是点，而是<strong>箭头</strong>：取 <span class="math">W = U × U</span>，把 <span class="math">⟨u,z⟩</span> 读作「从 <span class="math">u</span> 到 <span class="math">z</span> 的箭头」。赋值 <span class="math">v : P → 𝓟(W)</span> 给每个变元一族箭头。三条新连接词的语义是：</p>
+    <ul>
+      <li><span class="math">M, ⟨u,z⟩ ⊨ φ◦ψ</span> 当且仅当存在 <span class="math">x</span> 使 <span class="math">M,⟨u,x⟩ ⊨ φ</span> 且 <span class="math">M,⟨x,z⟩ ⊨ ψ</span>——<strong>首尾相接的两支箭</strong>。</li>
+      <li><span class="math">M, ⟨u,z⟩ ⊨ φ⁻¹</span> 当且仅当 <span class="math">M,⟨z,u⟩ ⊨ φ</span>——<strong>把箭倒过来</strong>。</li>
+      <li><span class="math">M, ⟨u,z⟩ ⊨ Id</span> 当且仅当 <span class="math">z = u</span>——<strong>原地不动的箭</strong>。</li>
+    </ul>
+    <p>于是 <span class="math">mng(φ◦ψ) = mng(φ) ◦ mng(ψ)</span>，<span class="math">mng(φ⁻¹) = mng(φ)⁻¹</span>，<span class="math">mng(Id)</span> 是恒等关系。<strong>语义就是 §3 的手算规则。</strong>有效式定义为 <span class="math">mng(φ) = W</span>（在所有箭头上成立）。</p>
+  </div>
+
+  <div class="box"><div class="bt">历史小注（UAL 原文）</div>
+    <p>Tarski 在 1941 年定义 <span class="math">L<sub>REL</sub></span>，本意是给出<strong>第一个不可判定的命题逻辑</strong>。它虽然叫「命题逻辑」，复杂度却几乎追平一阶逻辑。<strong>这一句就解释了为什么它的代数对应物这么难。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">UAL 5.2.2（接回 L16）</span></div>
+    <div class="formula">Alg<sup>m</sup>(L<sub>REL</sub>) = setRRA　　Alg<sub>⊨</sub>(L<sub>REL</sub>) = RRA.</div>
+    <p>请把这条与 L16 的区分对上：<span class="math">Alg<sup>m</sup></span> 是<strong>具体</strong>语义代数的类（这里就是具体关系族），<span class="math">Alg<sub>⊨</sub></span> 是<strong>抽象</strong>的类（对同构封闭）。从前者到后者要取 <span class="math">SP</span> 闭包——正好是 <span class="math">RRA = SP setRRA</span>。</p>
+  </div>
+
+  <div class="thm"><div class="bt">五座桥的结算单 <span class="num">UAL §5.2 原文给出的性质清单</span></div>
+    <table>
+      <tr><th>桥</th><th><span class="math">L<sub>REL</sub></span> 的表现</th><th>为什么会这样（代数侧理由）</th></tr>
+      <tr><td>L18 紧致</td><td><strong>有</strong></td><td>标准紧致性论证照常通过</td></tr>
+      <tr><td>L19 完全</td><td><strong>没有</strong>有限完全且强可靠的 Hilbert 系统</td><td>RRA 不可有限公理化</td></tr>
+      <tr><td>L20 Beth</td><td><strong>没有</strong></td><td>同构闭包带来的性质缺失</td></tr>
+      <tr><td>L21 插值</td><td><strong>没有</strong></td><td>RRA 中外射不必是满射，故<strong>无超合并</strong></td></tr>
+      <tr><td>L22 判定</td><td><strong>不可判定</strong></td><td><span class="math">Eq(RRA)</span> 不可判定</td></tr>
+    </table>
+    <p>教材还给出 <span class="math">L<sub>REL</sub></span> 的<strong>演绎项</strong>：<span class="math">⊤ ◦ φ₀ ◦ ⊤ → ⊤ ◦ φ₁ ◦ ⊤</span>（<span class="math">⊤</span> 是全关系）。这正是 L19 讲过的「把带前提的后承折算成空前提后承」的那一招，只是这次用在箭头逻辑上。</p>
+  </div>
+
+  <div class="intu"><div class="bt">这张表为什么是本讲的高潮</div>
+    <p>前面五讲我们一座一座地过桥，每次都问「这个性质在代数那边的对应物是什么」。现在把五座桥同时对准<strong>同一个逻辑</strong>，答案一目了然：<strong>紧致靠的是普遍机制（所以有），其余四样都卡在 RRA 这个代数类的复杂上（所以没有）</strong>。你在 L18–L22 学的不是五个孤立的定理，而是一套能一次性诊断一个逻辑的工具。</p>
+  </div>
+</section>
+
+<!-- ============ O6 融合 ============ -->
+<section id="fusion2">
+  <h2><span class="sn">9</span>接回 L23：三层例与融合图 <span class="tag alg">O6</span><span class="tag log">O6</span></h2>
+
+  <div class="intu"><div class="bt">L23 的方法在这里遇到了新门槛</div>
+    <p>上一讲我们靠「取超滤子当点」把布尔代数变成 Stone 空间。表示关系代数时，Tarski 的原始想法如出一辙：<strong>把抽象元素送到「超滤子对」构成的某种关系上</strong>，让复合对应于路径拼接。但这里多了一道硬门槛——可表示要求关系真的活在<strong>方形 <span class="math">U × U</span></strong> 上，而 Stone 空间的点只是超滤子，不自带方形结构。这道门槛就是 <span class="math">Id◦x=x</span>；它不一定能跨过去，于是才有了非可表示的 RA。</p>
+    <p><strong>定理 7.1.14 的 QRA 正好是「跨得过去」的充分条件</strong>：那些代数里有足够多的部分函数关系，可以把超滤子对坐标化，从而铺出方形。<strong>L23 的机器没变，变的是我们要它交出的东西更严格了。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子 <span class="num">手算能验完</span></div>
+    <p><span class="math">U = {1,2,3}</span>，<span class="math">A = 𝓟(U×U)</span>（九个有序对的全部子集，共 <span class="math">2⁹ = 512</span> 个元素）。这是最小的非平凡集合关系代数，<span class="math">R ∈ setRRA</span>。§3 的 <span class="math">R◦S = {(1,1),(2,2)}</span> 与 <span class="math">R⁻¹ = S</span> 都在这个代数里，全部公理可以直接手算验证。<strong>有限情形是所有定义的试算场。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子 <span class="num">代数与逻辑真的接上</span></div>
+    <p>箭头逻辑 <span class="math">L<sub>REL</sub></span> 的理论，按 L16 的方法商出 Lindenbaum–Tarski 代数，得到 <span class="math">setRRA</span> 的成员；取 <span class="math">SP</span> 闭包得到 <span class="math">RRA</span>（命题 5.2.2）。<strong>逻辑 → 代数 → 逻辑这条闭环，在关系代数上走得最完整</strong>，也最残酷：它把 RRA 的所有坏性质（无插值、无 Beth、不可判定）一并传回逻辑。</p>
+  </div>
+  <div class="ex"><div class="bt">边界例子 <span class="num">公理管不到的地方</span></div>
+    <p>16 个元素的最小非可表示 RA，以及无穷多个 Lyndon 代数。<strong>它们满足全部 Tarski 公理，却不是任何集合上的关系族。</strong>这类例子不是病态：RRA 不可有限公理化正是靠它们证明的。<strong>抽象公理与具体实现之间的这道裂缝，是本讲最该带走的印象。</strong></p>
+  </div></div>
+
+  <div class="diagram"><pre>  逻辑                     代数                       具体物
+  ─────────────────      ─────────────────      ─────────────────
+  箭头逻辑 LREL             RRA（可表示）             𝓟(U×U) 的子族
+  φ ◦ ψ                    x ◦ y                     先走 x 再走 y
+  φ⁻¹                      x⁻¹                       把箭倒过来
+  Id                       Id                        ⟨u,u⟩
+  可证 / 有效              等式成立                   关系恒等式
+  插值不成立               无超合并                   外射不必是满射
+  无有限 Hilbert 系统      不可有限公理化             复合 ◦ 太强
+  ─────────────────      ─────────────────      ─────────────────
+         中间那列比右边宽：RA ⊋ RRA，多出来的就是「假关系」
+         左边那列因此丢掉 Beth、插值与有限完全证明系统</pre></div>
+
+  <div class="box warn"><div class="bt">全讲一句话</div>
+    <p><strong>关系代数 = 布尔代数 + 复合，表示问题 = 这些复合能不能真的画成路径。</strong>答案是不一定；而「不一定」这三个字的代数代价是 <span class="math">RA ⊋ RRA</span>，逻辑代价是箭头逻辑没有插值。</p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+  <ol>
+    <li><span class="tag alg">O1</span> 取 <span class="math">U = {1,2,3}</span>，<span class="math">R = {(1,2),(2,3)}</span>，<span class="math">S = {(2,1),(3,2)}</span>。手算 <span class="math">S◦R</span>、<span class="math">R◦R</span>、<span class="math">S◦S</span>，并验证 <span class="math">(R◦S)⁻¹ = S⁻¹◦R⁻¹</span>。</li>
+    <li><span class="tag alg">O1</span> 在上面同一个 <span class="math">U</span> 上，令 <span class="math">Id = {(1,1),(2,2),(3,3)}</span>。验证 <span class="math">Id◦R = R</span> 与 <span class="math">R◦Id = R</span>，再验证 <span class="math">R⁻¹◦R ⊆ Id</span> 是否成立（不成立，请指出反例的有序对）。</li>
+    <li><span class="tag alg">O1</span> 具体写出 <span class="math">U = {1,2}</span> 时的 cBRA <span class="math">⟨𝓟(U×U), ∪, −, V, ◦, ⁻¹⟩</span> 的全部四个元素，并列出 <span class="math">◦</span> 的运算表。<strong>提示：</strong>四个关系是 <span class="math">∅, Id, V−Id, V</span>。</li>
+    <li><span class="tag alg">O2</span> 把 cBRA 的六个运算按「布尔侧 / 半群侧 / 连接桥」分成三组，并说明每一组在 §5 的哪条公理里出现。</li>
+    <li><span class="tag alg">O2</span> 用三角形规则 <span class="math">(5′)</span> 重新证明公理 <span class="math">(5)</span> 在具体关系里成立。<strong>提示：</strong>把「没有三角形」的三种说法各写成一个有序对的存在性否定。</li>
+    <li><span class="tag alg">O3</span> 写出 <span class="math">A ∈ RRA</span> 的两种等价定义（用 <span class="math">SP setRRA</span>、用单同态 <span class="math">h</span>），并说明为什么 <span class="math">setRRA ⊆ RRA</span> 而反向不显然。</li>
+    <li><span class="tag top">O3</span> 解释 <span class="math">Id◦x=x</span> 为什么把「相对化的单位」逼成「方形单位」。<strong>提示：</strong>若 <span class="math">V ⊆ U×U</span> 不是整个积，取 <span class="math">x = V</span> 看 <span class="math">Id◦V</span>。</li>
+    <li><span class="tag alg">O4</span> 补全 §7 开头的论证：写出「RA 有限公理化 + RRA 不可有限公理化 ⇒ RA ≠ RRA」的详细推理，并指出为什么这里必须用到「RA 由有限多条等式定义」。</li>
+    <li><span class="tag alg">O4</span> 查阅 Lyndon 代数的三条配方，取三个非 <span class="math">Id</span> 原子 <span class="math">a,b,c</span>，用规则算出 <span class="math">a◦b</span> 与 <span class="math">a◦(b◦c)</span>，说明为什么这套配方完全决定了代数而不需要真的画出有序对。</li>
+    <li><span class="tag log">O5</span> 在 <span class="math">U = {1,2,3}</span> 的箭头世界里，判断公式 <span class="math">⟨1,3⟩ ⊨ φ◦ψ</span> 成立需要什么条件；再写出 <span class="math">φ = Id</span> 与 <span class="math">ψ = Id</span> 时 <span class="math">φ◦ψ</span> 的含义。</li>
+    <li><span class="tag log">O5</span> 从 §8 的表出发，逐条写出「RRA 不可有限公理化 ⇒ L<sub>REL</sub> 无有限 Hilbert 系统」与「RRA 无超合并 ⇒ L<sub>REL</sub> 无插值」的推理链（各回指 L19 与 L21 的对应定理）。</li>
+    <li><span class="tag alg">O6</span> 比较 L23 的 Stone 表示与本讲的表示：两者都取「超滤子作点」吗？为什么关系代数这边要多一道 <span class="math">Id</span> 的门槛？</li>
+    <li><span class="tag log">O6</span> 综合题：用 §9 的图说明「RA ⊋ RRA」这一个小缺口，如何在逻辑那一侧放大成四个坏性质（无有限 Hilbert、无 Beth、无插值、不可判定）。<strong>最后用一句话写出你对「公理 vs 表示」的理解。</strong></li>
+  </ol>
+</section>
+
+<div class="footnav">
+  <a href="L23.html">← 上一讲：L23 Stone 对偶：布尔代数 ↔ Stone 空间</a>
+  <a href="L25.html" style="font-size:13.5px">下一讲：L25 空间模态逻辑：S4、S4.2 与信念逻辑 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L24 · 来源：UAL §7.1（定义 7.1.1/7.1.2/7.1.3/7.1.13、定理 7.1.4/7.1.8/7.1.9/7.1.10/7.1.11/7.1.14）、§5.2（定义 5.2.1、命题 5.2.2）· v0.1</footer>
+
+</main></div>
+</body>
+</html>

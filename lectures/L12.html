@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L12 分离公理：可区分性与滤子 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第三篇 拓扑：用逻辑的眼光看空间</span><span class="sep">/</span><span>L12</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 12 · 2 学时 · 拓扑篇</div>
+  <h1>分离公理：可区分性与滤子</h1>
+  <div class="sub">「能不能证明两个模型不是同一个」——这个认识论问题，问出了 T0 到 T4 一整条阶梯</div>
+  <div class="metarow"><span>来源：拓扑讲义 Ch4 §4.1–4.5（定义 4.2.1/4.2.3/4.2.6、命题 4.2.4、定义 4.3.1、定理 4.3.4、定义 4.4.2/4.4.4、例 4.4.6、定义 4.5.1/4.5.2/4.5.4、引理 4.5.3、例 4.5.6/4.5.7）；UAL 定义 2.2.62/2.2.63、3.3.18</span>
+    <span class="tag top">拓扑</span><span class="tag log">逻辑</span><span class="tag alg">代数</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：一个问不出来的问题</a></li>
+  <li><a href="#t0">拓扑可区分与 T0（O1）</a></li>
+  <li><a href="#filter">滤子基与滤子（O2）</a></li>
+  <li><a href="#conv">邻域滤子与收敛（O3）</a></li>
+  <li><a href="#haus">Hausdorff 与唯一收敛（O4）</a></li>
+  <li><a href="#ladder">分离公理阶梯与反例库（O5）</a></li>
+  <li><a href="#normal">正规、Tychonoff 与 Urysohn（O6）</a></li>
+  <li><a href="#fusion">融合接口</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">本讲从 L08 的认识论读法里挖出一个新问题：不只是「什么可验证」，而是「能不能验证两个东西不一样」。答这个问题的工具是滤子，答案的强弱等级就是分离公理。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>它回答的问题</th></tr>
+      <tr><td>拓扑可区分 / T0</td><td>L08 开集</td><td>两个模型能不能被某个可验证命题分开？</td></tr>
+      <tr><td>滤子基 / 滤子</td><td>L02 滤子（代数侧）</td><td>怎么把「越来越多知识」打包成一个对象？</td></tr>
+      <tr><td>邻域滤子 <span class="math">𝒩(x)</span></td><td>L10 邻域</td><td>一个点的局部信息长什么样？</td></tr>
+      <tr><td>收敛</td><td>滤子 + 邻域滤子</td><td>一个理论在逼近哪个模型？</td></tr>
+      <tr><td>Hausdorff (T2)</td><td>收敛 + 唯一性</td><td>极限唯一吗？</td></tr>
+      <tr><td>正规 / Tychonoff</td><td>闭集 + 连续函数（L11）</td><td>不交闭集能不能被函数分开？</td></tr>
+    </table>
+  </div>
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>开集 → 「存在 <span class="math">U</span> 含 <span class="math">x</span> 不含 <span class="math">y</span>」= T0 → 加强成「<span class="math">U</span> 含 <span class="math">x</span>、补含 <span class="math">y</span>」= T1 → 邻域滤子 <span class="math">𝒩(x)</span> → 收敛概念 → 「每个滤子至多收敛一点」= T2 → 再加强到闭集层面 = 正规 → 用连续函数替代开集 = Tychonoff。<strong>整条阶梯只在问一件事：两个东西分不分得开；强度差别在于「用什么工具分」——开集、开集加补集、还是连续函数。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 目标 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>判定一个空间是否 T0，说清 T0 与「可验证不同」的精确关系</td><td><a href="#t0">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>构造滤子基并写出其向上闭包，判断给定族是否为滤子</td><td><a href="#filter">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>验证 <span class="math">𝒩(x)</span> 是滤子，判定滤子是否收敛到某点</td><td><a href="#conv">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>证明或否证 Hausdorff 性，用「滤子极限唯一」这一等价刻画</td><td><a href="#haus">§6</a></td><td><a href="#ex">E7, E8</a></td></tr>
+    <tr><td><b>O5</b></td><td>在 T0 / T1 / T2 阶梯上定位一个空间，并调用反例库</td><td><a href="#ladder">§7</a></td><td><a href="#ex">E9, E10, E11</a></td></tr>
+    <tr><td><b>O6</b></td><td>陈述正规性、Urysohn 引理，说明正规强在哪、弱在哪</td><td><a href="#normal">§8</a></td><td><a href="#ex">E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：一个问不出来的问题</h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>L08 把拓扑空间读成「模型集 <span class="math">X</span> + 可验证命题族 <span class="math">τ</span>」。那么自然要问：<strong>给你两个模型 <span class="math">x, y</span>，你能验证它们不是同一个吗？</strong></p>
+    <p>在普通逻辑里这不成问题——找一个在 <span class="math">x</span> 成立、在 <span class="math">y</span> 不成立的性质就行。但数学里往往没有这么便宜的事。讲义抬出的例子是连续统假设：<span class="math">ℵ<sub>1</sub> = 2<sup>ℵ<sub>0</sub></sup></span> 在 ZFC 中不可判定。你没法给出一个可验证命题 <span class="math">U</span> 装住一个模型、另一个可验证命题 <span class="math">V</span> 装住另一个，且证明 <span class="math">U ∩ V = ∅</span>——因为「证明它们不交」这件事本身可能就做不到。</p>
+    <p><strong>这就是本讲的起点：不是每个空间都能把点分开。能不能分开，是一个需要额外假设的性质。</strong>整讲就是把「分开」这件事按强度分级，并造一套工具（滤子）来测它。</p>
+  </div>
+
+  <div class="warn"><div class="bt">注意一个易混点</div>
+    <p>经典逻辑里对模型 <span class="math">x</span> 和命题 <span class="math">φ</span>，总有「<span class="math">x ⊨ φ</span> 或 <span class="math">x ⊭ φ</span>」。但在直觉主义背景下，这两者未必有一个能被证明。按 L08 的认识论读法，「能验证 <span class="math">x</span> 不满足 <span class="math">U</span>」需要的是 <span class="math">x ∈ int(X − U)</span>——<strong>注意是内部，不是补集</strong>。</p>
+    <p>这个区别很要紧：<span class="math">y ∉ U</span> 只是「<span class="math">y</span> 不在 <span class="math">U</span> 里」，而「能验证 <span class="math">y</span> 不满足 <span class="math">U</span>」要求 <span class="math">X − U</span> 含 <span class="math">y</span> 的一个邻域。前者是集合事实，后者是认识论事实。<strong>T1 与 T0 的差别，正好卡在这两者之间。</strong>下面会看到这一点。</p>
+  </div>
+</section>
+
+<!-- ============ O1 T0 ============ -->
+<section id="t0">
+  <h2><span class="sn">3</span>拓扑可区分与 T0 <span class="tag top">O1</span><span class="tag log">O1</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>最弱的分开要求是什么？不是「用不交的开集分开」（那太强），也不是「一个含一个不含还要求能验证不含」（那也偏强），而是最朴素的一句：<strong>存在一个可验证命题，只装住其中一个。</strong>这就是 T0。它是「可区分」这件事的下限——低于 T0，就真的分不开了。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.1（定义 4.4.4）</span></div>
+    <p>若存在开集 <span class="math">U</span> 使 <span class="math">x ∈ U</span>、<span class="math">y ∉ U</span>，<strong>或</strong> <span class="math">y ∈ U</span>、<span class="math">x ∉ U</span>，称 <span class="math">x, y</span> <strong>拓扑可区分</strong>。若每对不同点都拓扑可区分，称 <span class="math">X</span> 为 <strong>T0 空间</strong>。</p>
+    <p><strong>注意那个「或」。</strong>方向不必固定：可以 <span class="math">U</span> 只装 <span class="math">x</span>，也可以只装 <span class="math">y</span>，有一个方向就行。这个不对称正是 T0 弱于 T1 的地方——T1 要求两个方向同时成立。</p>
+  </div>
+
+  <div class="def"><div class="bt">对照：T1（定义 4.4.2）</div>
+    <p>若对每对不同点 <span class="math">x, y</span>，存在开集 <span class="math">U<sub>x</sub></span> 使 <span class="math">x ∈ U<sub>x</sub></span>、<span class="math">y ∉ U<sub>x</sub></span>，称 <span class="math">X</span> 为 <strong>Fréchet 空间</strong>或 <strong>T1 空间</strong>。</p>
+    <p>把两个定义摆在一起看，差别只有一处：<strong>T1 要求「对每对 <span class="math">x,y</span>」都能找到「含 <span class="math">x</span> 不含 <span class="math">y</span>」的开集</strong>——也就是两个方向都能做到；而 T0 只要有一个方向做到就算。<strong>T1 ⟹ T0</strong>，反之不成立。</p>
+    <p>讲义在这里插了一句关键的观察：<span class="math">y ∉ U<sub>x</sub></span> <strong>不</strong>意味着能验证 <span class="math">y</span> 不满足 <span class="math">U<sub>x</sub></span>，因为 <span class="math">X − U<sub>x</sub></span> 未必开。要验证这一点，需 <span class="math">y ∈ int(X − U<sub>x</sub>)</span>。<strong>所以按认识论解释，Fréchet 条件尚且不足以确认两个模型彼此不同</strong>——这就是为什么讲义认为在带动念成分的情境里，真正值得关心的是 T0 而不是 T1。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">3.2（例 4.4.6，Kripke 框架的刻画）</span></div>
+    <p>对自反传递 Kripke 框架 <span class="math">𝔉 = (W, R)</span>，赋 Alexandroff 拓扑：</p>
+    <ol>
+      <li>诱导拓扑满足 T1，当且仅当 <span class="math">R</span> 是恒等关系；</li>
+      <li>诱导拓扑满足 T0，当且仅当 <span class="math">R</span> 为偏序（还满足反对称性）。</li>
+    </ol>
+    <p>反过来，任意 T0 Alexandroff 空间都通过</p>
+    <div class="formula">x ≤ y&nbsp;&nbsp;⟺&nbsp;&nbsp;∀U 开,&nbsp;&nbsp;x ∈ U ⟹ y ∈ U</div>
+    <p>诱导一个偏序 Kripke 框架。这个序可以读作「<strong>拥有更多知识</strong>」——<span class="math">y</span> 在 <span class="math">x</span> 之上，意味着凡是 <span class="math">x</span> 能验证的 <span class="math">y</span> 都能验证。</p>
+  </div>
+
+  <div class="intu"><div class="bt">这条定理为什么漂亮</div>
+    <p>它把三个不同领域的东西焊在一起：<strong>拓扑的 T0 ⟷ 序论的反对称 ⟷ 认识论的「信息单调递增」</strong>。</p>
+    <p>取一个预序但不是偏序的框架（比如两点互相可达、互相不分），诱导出的拓扑里两点不可区分，于是不 T0。加了反对称之后，两点若互相「知道得不比对方少」，就只能是同一个点——<strong>这正是 T0 的定义在做的事：不许有两个点对所有命题的真值完全一致。</strong></p>
+    <p>并且它说明了 L08 与 L06 的接口：Alexandroff 拓扑 ← 预序，双向翻译。T0 ⇔ 反对称，T1 ⇔ 离散（恒等关系）。<strong>在 Alexandroff 这一族里，分离公理完全翻译成了序论条件。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>Sierpiński 空间：<span class="math">X = {a, b}</span>、<span class="math">τ = {∅, {b}, {a,b}}</span>。它有 T0 但没有 T1：<span class="math">{b}</span> 是含 <span class="math">b</span> 不含 <span class="math">a</span> 的开集，所以两点可区分（一个方向够）；但含 <span class="math">a</span> 的开集只有 <span class="math">{a,b}</span>，一定也含 <span class="math">b</span>，所以反方向做不到。<strong>「只能沿一个方向区分」是 T0 而并非 T1 的标准形状。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>含多于一点的不可分空间（平凡拓扑）：<span class="math">τ = {∅, X}</span>。任取两个不同点 <span class="math">x, y</span>，仅有的开集是 <span class="math">∅</span> 和 <span class="math">X</span>，一个都不含一个不含另一个——<strong>连 T0 都没有</strong>。认识论读法：这种论域里没有任何可验证命题能区分模型，所有模型在知识上完全等价。<strong>这是 T0 的反面，也是「分离公理」这个词的来由：这里根本分不开。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>别把 T0 读成「两个点不相等」。</strong>任何空间里 <span class="math">x ≠ y</span> 都是集合事实；T0 说的是「能否被可验证命题分开」，是拓扑性质。同一批点上换拓扑，T0 会变。② <strong>别以为 T0 的「方向」可以整理成统一方向。</strong>Sierpiński 空间里能装 <span class="math">b</span> 不能装 <span class="math">a</span>，但反过来不行——这个不对称不是缺陷，它正是「信息多少有偏序」的表现（定理 3.2 第 2 条）。③ <strong>T0 不等于可分。</strong>「可分」在拓扑里指有可数稠密子集，是完全另一回事，中文都叫「分」容易混。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 §4.1（认识论理论）、定义 4.4.2、定义 4.4.4、例 4.4.5、例 4.4.6 及关于 spectral space 与无点拓扑的评论。</p>
+</section>
+
+<!-- ============ O2 滤子 ============ -->
+<section id="filter">
+  <h2><span class="sn">4</span>滤子基与滤子 <span class="tag alg">O2</span><span class="tag top">O2</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>「两个点能不能分开」这个问题用开集直接问，只能得到粗糙的答案（是/否）。要更细，得换个对象问：<strong>不问单点，问「逼近这个点的所有知识」。把「越来越多、彼此相容的知识」打包成一个集合族，就是滤子。</strong></p>
+    <p>讲义的说法是：我们需要刻画「<strong>确定性理论</strong>」。一个理论越确定，它承诺的事实越多（集合越小），但必须彼此相容（交不空）。<strong>滤子正是这两条的形式化。</strong>这个对象在 L02 已经以「闭包系统的对偶」出现过，这里是它在拓扑里的第二次登场。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.1（定义 4.2.1）</span></div>
+    <p>设 <span class="math">X</span> 为集合。若 <span class="math">𝔉 ⊆ 𝓟(X) − {∅}</span> 满足</p>
+    <ul>
+      <li><span class="math">X ∈ 𝔉</span>；</li>
+      <li><span class="math">A, B ∈ 𝔉 ⟹ A ∩ B ∈ 𝔉</span>，</li>
+    </ul>
+    <p>称 <span class="math">𝔉</span> 为<strong>滤子基</strong>。若它还向上封闭——<span class="math">A ∈ 𝔉</span>、<span class="math">A ⊆ B ⊆ X</span> 蕴含 <span class="math">B ∈ 𝔉</span>——则称为<strong>滤子</strong>。</p>
+    <p>两条公理各管一件事：<strong>「<span class="math">X ∈ 𝔉</span>」说不排除任何可能</strong>（最弱的知识总是相容的）；<strong>「交封闭」说知识可以叠加</strong>（同时接受两条，得到更强的一条）。向上封闭则是「知识只会变多不会变少」——<strong>正因为这一条太自然，很多教材直接把它写进定义</strong>。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.2（定义 4.2.3，向上闭包）</span></div>
+    <p>对滤子基 <span class="math">𝔉</span>，其<strong>向上闭包</strong>为</p>
+    <div class="formula">𝔉<sup>↑</sup> = { C ⊆ X : ∃G ∈ 𝔉, G ⊆ C }</div>
+    <p>这是一个滤子。<strong>所以「滤子基」和「滤子」不是两类对象，而是同一件事的两个详略版本</strong>：基是生成元（少而具体），滤子是闭包（多而抽象）。<strong>用基是为了省事，用滤子是为了好算。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">4.3（UAL 命题 2.2.63，基的显式形式）</span></div>
+    <p>设 <span class="math">E ⊆ 𝓟(I)</span>，<span class="math">𝔉</span> 为 <span class="math">E</span> 生成的滤子（即含 <span class="math">E</span> 的所有滤子之交）。则</p>
+    <div class="formula">𝔉 = { X : X = I 或 ∃Y<sub>1</sub>,…,Y<sub>n</sub> ∈ E,&nbsp; Y<sub>1</sub> ∩ ⋯ ∩ Y<sub>n</sub> ⊆ X }</div>
+    <p>并且 <span class="math">𝔉</span> 是真滤子（不含 <span class="math">∅</span>）<strong>当且仅当</strong> <span class="math">E</span> 具有<strong>有限交性质</strong>（任取有限个成员，交非空）。</p>
+    <p><strong>这条命题是后面所有紧致性论证的地基。</strong>它说：<strong>「生成一个相容的理论」= 「每一小批承诺都不矛盾」</strong>。有限交性质是局部的、可逐个检查的条件；真滤子是全局的、一次性的要求。命题 4.3 把全局问题化归成局部检查——<strong>这正是 L18 紧致性定理的雏形。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>在 <span class="math">{a,b,c,d}</span> 上，<span class="math">𝔉 = {{a}, {a,b}, {a,c}, {a,b,c,d}}</span> 是滤子基（交封闭，含全集）。它的向上闭包是<strong>所有含 <span class="math">a</span> 的子集</strong>之族。<strong>这类由单个集合「撑起来」的滤子叫主滤子</strong>，是最好算的一类：由 <span class="math">{a}</span> 生成，等于「<span class="math">a</span> 的一切性质」。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>非主滤子是真正有趣的东西。取无限集 <span class="math">ℕ</span>，令</p>
+    <div class="formula">𝔉 = { A ⊆ ℕ : ℕ − A 有限 }</div>
+    <p>（余有限集族）。它交封闭（两个余有限集的交仍余有限）、含 <span class="math">ℕ</span>、向上封闭——是滤子。<strong>但它不是主的</strong>：没有任何单个集合生成它，因为对任意 <span class="math">A ∈ 𝔉</span>，你总能把 <span class="math">A</span> 再删掉一个元素，得到的仍余有限。<strong>主滤子对应「确定的知识」（知道就是知道某个具体事实），非主滤子对应「趋近但永不抵达」——这是「极限」这个直觉真正的代数化。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>本讲的「滤子基」比多数教材强。</strong>许多书只要求「非空且任意两成员有更小的成员在族内」，不要求交本身属于该族、也不要求含 <span class="math">X</span>。讲义沿用了较强的约定（译注 2 明确说明了这一点）。<strong>做题时先确认用的是哪套定义</strong>，否则「滤子基的交封闭」这条会莫名不成立。② <strong>别把滤子与理想搞混。</strong>滤子向上封闭、交封闭（朝「大」走）；理想向下封闭、并封闭（朝「小」走）。在布尔代数里两者由补运算互换（L06 讲过），但在一般格上不是。③ <strong><span class="math">∅</span> 永远不在真滤子里。</strong>一旦 <span class="math">∅ ∈ 𝔉</span>，由向上封闭得 <span class="math">𝔉 = 𝓟(X)</span>，叫<strong>非真滤子</strong>——它对应「矛盾的理论」，什么都承诺，因而毫无信息。这类退化情形在定理陈述里必须排除。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 4.2.1、例 4.2.2、定义 4.2.3 及译注 2；UAL 定义 2.2.62、命题 2.2.63。</p>
+</section>
+
+<!-- ============ O3 收敛 ============ -->
+<section id="conv">
+  <h2><span class="sn">5</span>邻域滤子与收敛 <span class="tag top">O3</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>有了滤子，就可以定义「逼近」。但逼近谁？逼近一个点。所以先把「一个点的全部局部信息」打包成滤子——这就是邻域滤子。然后说：<strong>一个滤子收敛到 <span class="math">x</span>，意思是它的每个成员都最终落进 <span class="math">x</span> 的每个邻域里。</strong>这就是「越来越确定，最后确定到了 <span class="math">x</span>」。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.1（<span class="math">𝒩(x)</span>，命题 4.2.4）</span></div>
+    <p>对拓扑空间 <span class="math">(X, τ)</span> 与 <span class="math">x ∈ X</span>，记 <span class="math">𝒩(x)</span> 为 <span class="math">x</span> 的全部邻域之族。则 <span class="math">𝒩(x)</span> <strong>是滤子</strong>。</p>
+  </div>
+
+  <div class="proof"><div class="bt">证明（三行）</div>
+    <p><span class="math">X</span> 是 <span class="math">x</span> 的邻域，故 <span class="math">X ∈ 𝒩(x)</span>。若 <span class="math">U, V ∈ 𝒩(x)</span>，取含 <span class="math">x</span> 的开集 <span class="math">U′ ⊆ U</span>、<span class="math">V′ ⊆ V</span>，则 <span class="math">x ∈ U′ ∩ V′ ⊆ U ∩ V</span>，故 <span class="math">U ∩ V</span> 仍是邻域。若 <span class="math">V ∈ 𝒩(x)</span>、<span class="math">V ⊆ K</span>，则 <span class="math">K</span> 显然仍是邻域，故向上封闭。∎</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.2（定义 4.2.6，收敛）</span></div>
+    <p>设 <span class="math">𝔉</span> 为 <span class="math">X</span> 上的滤子或滤子基。若对每个 <span class="math">U ∈ 𝒩(x)</span>，存在 <span class="math">V ∈ 𝔉</span> 使 <span class="math">V ⊆ U</span>，称 <span class="math">𝔉</span> <strong>收敛到 <span class="math">x</span></strong>，<span class="math">x</span> 称为其<strong>极限</strong>。</p>
+    <p><strong>这句话的形式值得盯住：<span class="math">∃V ∈ 𝔉, V ⊆ U</span>。</strong>不是「<span class="math">V</span> 落在 <span class="math">U</span> 里」这么简单，而是「<span class="math">𝔉</span> 里有一个成员整个缩在 <span class="math">U</span> 里面」——即<strong>滤子比邻域滤子更细</strong>。<span class="math">𝔉</span> 承诺得越多，越容易收敛。极端情形：<span class="math">𝔉</span> 含单点集 <span class="math">{x}</span> 时，它对任何 <span class="math">𝒩(x)</span> 的成员都能取 <span class="math">V = {x}</span>，故必收敛到 <span class="math">x</span>。<strong>越确定的理论越容易有极限。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">5.3（例 4.2.5 / 4.2.7，两个标准收敛）</span></div>
+    <p><strong>(a) 实直线上的区间族。</strong>对所有含 <span class="math">a</span> 的开区间组成的族 <span class="math">𝒬<sub>a</sub></span>，它收敛到 <span class="math">a</span>。并且<strong>不会收敛到别的点</strong>：设 <span class="math">a ≠ b</span>，不妨 <span class="math">a &lt; b</span>，由有理数稠密性取 <span class="math">a ∈ (c,d)</span>、<span class="math">b ∈ (e,f)</span>、<span class="math">(c,d) ∩ (e,f) = ∅</span>；若 <span class="math">𝒬<sub>a</sub></span> 收敛到 <span class="math">b</span>，则某个含 <span class="math">a</span> 的区间 <span class="math">(c′,d′) ⊆ (e,f)</span>，矛盾。</p>
+    <p><strong>(b) Cantor 空间的柱集族。</strong>固定 <span class="math">x ∈ 2<sup>ω</sup></span>，族 <span class="math">{C(x ↾ n) : n ∈ ω}</span> 是滤子基且收敛到 <span class="math">x</span>。证：若 <span class="math">U</span> 是 <span class="math">x</span> 的邻域，取开邻域 <span class="math">V ⊆ U</span>，写 <span class="math">V = ⋃<sub>i∈I</sub>C(s<sub>i</sub>)</span>，则某个 <span class="math">C(s<sub>i</sub>)</span> 含 <span class="math">x</span>，故 <span class="math">s<sub>i</sub> ⊴ x</span>；于是对某个 <span class="math">n</span> 有 <span class="math">s<sub>i</sub> = x ↾ n</span>，从而 <span class="math">C(x ↾ n) ⊆ V</span>。</p>
+  </div>
+
+  <div class="intu"><div class="bt">两个例子在说什么</div>
+    <p>都是「<strong>取交＝不断细化集合，最终逼近一个点</strong>」。(a) 里是区间越缩越窄；(b) 里是柱集越来越长（约束越来越多）。<strong>这两个例子正好是 L09 讲过的两种基</strong>：度量式的（开区间）和逻辑式的（有限前缀）。</p>
+    <p>但讲义紧接着泼了一盆冷水：<strong>收敛的定义本身不保证唯一性。</strong>习题里会出现滤子同时收敛到多个点的空间，而且「看起来相当合理」。这正是下一节要处理的问题——<strong>分离公理就是为了控制这件事</strong>。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>在 <span class="math">ℝ</span> 里，<span class="math">𝔉 = {(0, 1/n) : n ≥ 1}<sup>↑</sup></span> 收敛到 <span class="math">0</span>，不收敛到任何别的点。这是「<span class="math">x<sub>n</sub> → 0</span>」的滤子版：<strong>不用序列，只用一个集合族。</strong>好处是：序列在一般拓扑空间里不够用（L11 §3 边界与误解里提过），滤子够用。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>在平凡拓扑 <span class="math">τ = {∅, X}</span> 上（<span class="math">|X| ≥ 2</span>），<strong>每个滤子都收敛到每个点</strong>。因为对任意 <span class="math">x</span>，<span class="math">𝒩(x) = {X}</span>，而任何滤子都含 <span class="math">X</span>，取 <span class="math">V = X ⊆ X</span> 即可。<strong>这不是病态构造，这是「分离失败」的极端形态</strong>：空间粗到没有任何局部信息，于是「极限」这个词失去了区分能力。所有收敛都发生，等于没有收敛。<strong>这个例子预告了定理 6.1：唯一收敛 ⟺ Hausdorff。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>「收敛到 <span class="math">x</span>」不等于「<span class="math">x ∈ ⋂𝔉</span>」。</strong>非主滤子的交可以是空的，但它照样收敛（比如上面的 <span class="math">(0,1/n)</span> 族，交是空集，却收敛到 0）。收敛是「越来越贴近」，不是「包含」——这个区别是本讲最容易踩的坑。② <strong>滤子基与它的向上闭包收敛性相同</strong>，因为定义里只要求「存在成员落在 <span class="math">U</span> 里」，加不加向上封闭不影响。③ <strong>「滤子收敛」与「序列收敛」在度量空间里一致，但不能互相替换。</strong>一般空间里序列太少（可能没有可数邻域基），必须用滤子——这一点 L13 会正式用上。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义命题 4.2.4 及证明、定义 4.2.6 及译注 3、例 4.2.5、例 4.2.7、译注 4（历史说明）。</p>
+</section>
+
+<!-- ============ O4 Hausdorff ============ -->
+<section id="haus">
+  <h2><span class="sn">6</span>Hausdorff 与唯一收敛 <span class="tag top">O4</span><span class="tag log">O4</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>上一节说了：收敛可能不唯一。那么「让收敛唯一」这个要求，翻译成开集语言是什么？<strong>答案是不交邻域条件——Hausdorff。</strong>这个等价是本讲的核心定理，它把「分析里的极限唯一」和「拓扑里的分离」认成同一件事。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">6.1（定义 4.3.1）</span></div>
+    <p>若任意不同点 <span class="math">x, y ∈ X</span> 都有<strong>不交</strong>开邻域 <span class="math">U<sub>x</sub>, V<sub>y</sub></span>，即</p>
+    <div class="formula">x ∈ U<sub>x</sub>,&nbsp;&nbsp; y ∈ V<sub>y</sub>,&nbsp;&nbsp; U<sub>x</sub> ∩ V<sub>y</sub> = ∅</div>
+    <p>称 <span class="math">X</span> 为 <strong>Hausdorff 空间</strong>或 <strong>T2 空间</strong>。</p>
+    <p>讲义在这里记了一个双关语：Hausdorff 空间里每两点都被开集「隔开」（housed off）。<strong>认识论上的读法才是重点</strong>：这意味着<strong>能证明两个不同模型确实不同</strong>——存在分别在二者成立的可验证性质 <span class="math">U, V</span>，<strong>并且能验证二者不可能同时成立</strong>（<span class="math">U ∩ V = ∅</span> 是一条可验证的否定）。</p>
+    <p><strong>对比 T0：</strong>T0 只要求「有一个开集装一个不装另一个」；T2 要求「两个方向都装，而且两个开集不交」。<strong>「不交」这一步才是关键</strong>——它让你能验证「二者不会同时成立」，而不只是「二者被区分」。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">6.2（定理 4.3.4，核心等价）</span></div>
+    <p>对拓扑空间 <span class="math">(X, τ)</span>，下列等价：</p>
+    <ol>
+      <li><span class="math">X</span> Hausdorff；</li>
+      <li><span class="math">X</span> 上每个滤子<strong>至多收敛到一个点</strong>。</li>
+    </ol>
+  </div>
+
+  <div class="proof"><div class="bt">证明（两向，都值得细看）</div>
+    <p><strong>(1 ⟹ 2)</strong> 设 <span class="math">𝔉</span> 同时收敛到不同的 <span class="math">x, y</span>。取不交开邻域 <span class="math">U ∋ x</span>、<span class="math">V ∋ y</span>；由收敛性，存在 <span class="math">U′ ∈ 𝔉</span> 使 <span class="math">U′ ⊆ U</span>，存在 <span class="math">V′ ∈ 𝔉</span> 使 <span class="math">V′ ⊆ V</span>。但 <span class="math">U′ ∩ V′ = ∅</span>，由交封闭得 <span class="math">∅ ∈ 𝔉</span>，与 <span class="math">𝔉</span> 是真滤子矛盾。</p>
+    <p><strong>(2 ⟹ 1)</strong> 证逆否。设 <span class="math">X</span> 非 Hausdorff，则存在 <span class="math">x ≠ y</span> 使它们<strong>任意</strong>一对开邻域都相交。令</p>
+    <div class="formula">𝔉 = { U ∩ V : x ∈ U, y ∈ V, U, V 开 }</div>
+    <p>这是滤子基：<span class="math">X = X ∩ X ∈ 𝔉</span>；两个成员之交可写成 <span class="math">(U ∩ U′) ∩ (V ∩ V′) ∈ 𝔉</span>；由假设不含空集。取向上闭包 <span class="math">𝔉<sup>↑</sup></span>。对 <span class="math">x</span> 的任意邻域 <span class="math">W</span>，取开邻域 <span class="math">U ⊆ W</span>，则 <span class="math">U = U ∩ X ∈ 𝔉</span>，故 <span class="math">𝔉<sup>↑</sup></span> 收敛到 <span class="math">x</span>；同理收敛到 <span class="math">y</span>。∎</p>
+    <p><strong>这个证明的构造值得记住</strong>：它从「分离失败」直接造出一个双极限滤子——<strong>取「<span class="math">x</span> 的邻域」与「<span class="math">y</span> 的邻域」的所有交。</strong>不是随便造的，而是「同时逼近两点」这个描述的最字面翻译。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">6.3（命题 4.3.5，保持性）</span></div>
+    <p>若 <span class="math">X</span> 及各 <span class="math">X<sub>i</sub></span> 为 Hausdorff，则：<span class="math">X</span> 的任意子空间 Hausdorff；积 <span class="math">∏<sub>i</sub>X<sub>i</sub></span> Hausdorff；拓扑和 <span class="math">⨆<sub>i</sub>X<sub>i</sub></span> Hausdorff。</p>
+    <p><strong>但商一般不保持</strong>——见下面那个反例。</p>
+  </div>
+
+  <div class="intu"><div class="bt">反例 4.3.6：双重点实直线</div>
+    <p>取两份实直线的拓扑和 <span class="math">ℝ ⊔ ℝ</span>，点记为 <span class="math">⟨x,0⟩</span>、<span class="math">⟨x,1⟩</span>。对每个 <span class="math">x ≠ 0</span> 把这两点等同，<strong>但保留两个不同的零点</strong>。所得商空间叫「双重点实直线」。</p>
+    <p><strong>这两个零点不能被任何不交开邻域分开。</strong>证：设 <span class="math">U<sub>0</sub>, U<sub>1</sub></span> 分别是 <span class="math">[⟨0,0⟩]</span>、<span class="math">[⟨0,1⟩]</span> 的开邻域。由商拓扑，原像开，故分别含两个副本中的区间 <span class="math">(a,b)×{0}</span>、<span class="math">(c,d)×{1}</span>，其中 <span class="math">a, c &lt; 0 &lt; b, d</span>。令</p>
+    <div class="formula">ε = ½ min{|a|, |b|, |c|, |d|} &gt; 0</div>
+    <p>则 <span class="math">⟨ε,0⟩</span>、<span class="math">⟨ε,1⟩</span> 分别落在两个原像内，<strong>而它们被等同</strong>，故 <span class="math">[⟨ε,0⟩] = [⟨ε,1⟩] ∈ U<sub>0</sub> ∩ U<sub>1</sub></span>。<strong>交不空。</strong></p>
+    <p><strong>这个反例的机制很值得琢磨</strong>：原空间 <span class="math">ℝ ⊔ ℝ</span> 是 Hausdorff 的（命题 6.3 第 3 条），但把 <span class="math">x ≠ 0</span> 的点两两认同之后，<strong>两个零点周围的邻域被迫通过被认同的点「短路」了</strong>。直观上：0 附近的 <span class="math">ε</span> 点已经被粘成同一个点，于是任何想分开两个零点的邻域都必须同时包含这个粘合点。<strong>取商会破坏分离性，这是商构造的固有代价，L13 还会遇到同样的问题。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>离散空间 Hausdorff（单点集就开，直接取 <span class="math">{x}, {y}</span>）；含多于一点的不可分空间不 Hausdorff。更实质的：<span class="math">ℝ</span> Hausdorff（用不相交的开区间），Cantor 空间 <span class="math">2<sup>ω</sup></span> Hausdorff。<strong>Cantor 空间的证法特别干净</strong>：若 <span class="math">x ≠ y</span>，取有限序列 <span class="math">t ⊴ x</span> 而 <span class="math">t ⋬ y</span>，则 <span class="math">C(t)</span> 与其补集分别是含 <span class="math">x, y</span> 的不交开集——<strong>因为 <span class="math">2<sup>ω</sup> − C(t) = ⋃<sub>s∈Len(n)−{t}</sub>C(s)</span> 也开</strong>（有限多柱集之并）。<strong>这一族基本开集「彼此补得开」，即每个柱集都是 clopen</strong>——L10 埋的伏笔在这里兑现：clopen 多，就等于分辨力强。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>定理 6.2 的证明顺手送了一个<strong>「分离失败」的免费诊断工具</strong>：想知道一个空间是否 Hausdorff，就去问<strong>「有没有滤子同时收敛到两个点」</strong>。在双重点实直线上，取「两个零点的邻域之交」生成的滤子，它同时收敛到两个零点——<strong>这就是它不 Hausdorff 的证明。</strong>这个诊断的价值在于：它把「找一对分不开的点」这种几何/构造性的活，变成「找一个双极限对象」这种代数的活。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>T2 ⟹ T1 ⟹ T0，反向全不成立。</strong>反例分别是：Sierpiński（T0 非 T1）、余有限拓扑（T1 非 T2，见 §7）。② <strong>「Hausdorff」与「每个序列至多一个极限」不等价</strong>（一般空间里）。序列版本弱于滤子版本——因为序列只能处理第一可数空间。<strong>这是为什么本讲用滤子而不讲序列。</strong>③ <strong>子空间保持、积保持、和不保持，商不保持</strong>——四条要分开记，别一律说「构造都保持 Hausdorff」。④ 双重点例子里，两个零点是<strong>同一个商空间里的不同点</strong>，不是同一个点；「分不开」不等于「相等」，这正是 T0 之后各公理要处理的核心区分。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 4.3.1、注 4.3.1、例 4.3.2、例 4.3.3、定理 4.3.4 及证明、命题 4.3.5、例 4.3.6 及图 4.1。</p>
+</section>
+
+<!-- ============ O5 阶梯 ============ -->
+<section id="ladder">
+  <h2><span class="sn">7</span>分离公理阶梯与反例库 <span class="tag top">O5</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>现在有了 T0、T1、T2 三个条件，还有 T4。它们构成一条阶梯。但只知道阶梯不够——<strong>还得知道每一级是否严格更弱，靠什么空间来证。</strong>这一节的任务就是建一个反例库，让每一格的「严格性」都有一个具体见证。</p>
+  </div>
+
+  <div class="diagram">T4 (正规 + T1)  ── 更强 ──  能分离不交闭集
+      │                       例：ℝ、紧 Hausdorff
+      ▼
+T3 (正则 + T1)  ── 用连续函数分离点与闭集（Tychonoff）
+      │
+      ▼
+T2 (Hausdorff)  ── 不交开邻域 ── 等价于「滤子极限唯一」
+      │                       ✗ 余有限拓扑、Zariski 拓扑
+      ▼
+T1 (Fréchet)    ── 每点都是闭集（含 x 不含 y 的开集，两个方向都行）
+      │                       ✗ Sierpiński 空间
+      ▼
+T0              ── 存在开集只装住其中一个（一个方向够）
+      │                       ✗ 平凡拓扑（含多于一点）
+      ▼
+（无）           ── 连可区分都做不到</div>
+  <p class="cap">分离公理阶梯，右侧标出「在这一级失败」的见证空间</p>
+
+  <div class="intu"><div class="bt">反例库：三个必记的空间</div>
+    <p><strong>① Sierpiński 空间</strong>　<span class="math">X = {a,b}</span>、<span class="math">τ = {∅, {b}, {a,b}}</span>。<strong>T0 而非 T1</strong>。它能区分（<span class="math">{b}</span> 只装 <span class="math">b</span>），但只能沿一个方向——含 <span class="math">a</span> 的开集必含 <span class="math">b</span>。<strong>作用：证明 T0 ≠ T1。</strong></p>
+    <p><strong>② 余有限拓扑</strong>　<span class="math">X</span> 无限，<span class="math">U</span> 开当且仅当 <span class="math">U = ∅</span> 或 <span class="math">X − U</span> 有限。<strong>T1 而非 T2</strong>。它 T1：<span class="math">X − {y}</span> 是含 <span class="math">x</span> 不含 <span class="math">y</span> 的开集。它不 T2：两个非空开集都余有限，<strong>交必非空</strong>（因为两个有限集的并不可能是整个无限集）。<strong>作用：证明 T1 ≠ T2。</strong></p>
+    <p><strong>③ Zariski 拓扑</strong>　<span class="math">ℝ</span> 上取闭集为「某族多项式的公共零点集」：<span class="math">U = {x : ∀f ∈ S, f(x) = 0}</span>。<strong>不 Hausdorff</strong>（事实上不 T2，且比余有限更粗的意味）。理由：非零多项式只有有限多个零点，<strong>两个非空开集的补集都有限，交必非空</strong>。<strong>作用：说明分离失败在代数几何里是常态，不是病态构造。</strong></p>
+    <p>注意后两个的失败机制相同：<strong>开集都「太大」（补集太小），交不空。</strong>T2 要求能造出两个不交的开集，而这需要「开集能小」——这正是 L09 里「基够细」这件事的分离版本。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>把三个空间排在阶梯上：Sierpiński 卡在 T0、余有限卡在 T1、双重点实直线卡在 T2（它 T1 但非 T2）。<strong>四个反例，四个不同的失败层级</strong>——这就是「阶梯是严格的」这件事的全部证据。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>为什么 T2 是「有用」的那一级，而 T0/T1 只是「够用」？</strong>因为 T2 给了极限唯一性（定理 6.2），而极限唯一性是把分析搬进拓扑的前提。T1 只保证「点是闭集」，T0 只保证「点可区分」——两者都不足以让「收敛」这个词有意义。<strong>这是历史上 Hausdorff 公理一度被当作拓扑空间的必备条件的原因（译注 4 提到的历史）：当时的数学家要的是「能做分析的空间」，而 T2 恰好是那条线。</strong>后来才发现，代数几何、域论里的自然空间（Zariski 拓扑、谱空间）都只到 T0，于是标准放宽了。<strong>阶梯的意义不是「越高越好」，而是「标出你在哪一级，就知道哪些定理能用」。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>「正则」「正规」的定义有版本差异。</strong>有的书把正则/正规定义成「不交闭集可分离」（不预设 T1），有的要求额外的 T1（即 T3/T4）。<strong>讲义的定义 4.5.1 是「设 X 为 Hausdorff 空间」再加不交闭集条件</strong>，也就是已经包含了 T2。做题时务必对准定义。② <strong>T0 不等于 T1 的「弱化版」，而是另一个方向的条件。</strong>T1 要求两个方向都能找到开集；T0 只要一个方向。但它们不是简单的「数量差别」——T0 允许不对称，T1 强制对称，这个差别在 Alexandroff/Kripke 情境里是关键（定理 3.2）。③ <strong>「T1 ⟺ 每点是闭集」</strong>这条等价很好用（习题会要），但注意它等价于「对每对 <span class="math">x ≠ y</span> 存在含 <span class="math">x</span> 不含 <span class="math">y</span> 的开集」——即定义 4.4.2 的逐点版本。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义例 4.4.1（Zariski）、定义 4.4.2（T1）、例 4.4.3（余有限）、定义 4.4.4（T0）、例 4.4.5（Sierpiński）、例 4.4.6、译注 4。</p>
+</section>
+
+<!-- ============ O6 正规 ============ -->
+<section id="normal">
+  <h2><span class="sn">8</span>正规、Tychonoff 与 Urysohn <span class="tag top">O6</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>T2 用「开集」分离点。如果对象不是点，而是<strong>闭集</strong>呢？这就需要更强的条件。而一旦能分离闭集，就可以做一件 T2 做不到的事：<strong>造出连续函数</strong>。这就是 Urysohn 引理——<strong>它把「拓扑上分得开」翻译成「数值上分得开」，从而把抽象空间接到实直线上。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">8.1（定义 4.5.1，正规）</span></div>
+    <p>设 <span class="math">X</span> 为 Hausdorff 空间。若任意两个不交闭集 <span class="math">E, F</span> 都有不交开邻域，即存在开集 <span class="math">U, V</span> 满足</p>
+    <div class="formula">E ⊆ U,&nbsp;&nbsp; F ⊆ V,&nbsp;&nbsp; U ∩ V = ∅</div>
+    <p>称 <span class="math">X</span> <strong>正规</strong>，或为 <strong>T4 空间</strong>。</p>
+    <p>讲义的评价是：<strong>正规 T1 空间比 Hausdorff 更强——不仅能区分模型，还能验证模型不满足某些性质。</strong>后半句的意思：<span class="math">E</span> 是闭集，可以想成「满足某个可证伪命题的模型集」（L10：闭集＝可证伪）；把 <span class="math">E</span> 和 <span class="math">F</span> 用不交开集分开，等于同时验证了「在 <span class="math">E</span> 上某性质成立」和「在 <span class="math">F</span> 上它不成立」。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">8.2（定义 4.5.2 / 4.5.4）</span></div>
+    <p>若不交闭集 <span class="math">E, F ⊆ X</span> 存在<strong>连续</strong>映射 <span class="math">f : X → [0,1]</span> 满足 <span class="math">E ⊆ f<sup>−1</sup>[{0}]</span>、<span class="math">F ⊆ f<sup>−1</sup>[{1}]</span>，称二者<strong>可由连续函数分离</strong>。</p>
+    <p>称 <span class="math">X</span> 为 <strong>Tychonoff 空间</strong>，若它满足 T1，且对每个闭集 <span class="math">A</span> 与 <span class="math">x ∉ A</span>，<span class="math">A</span> 与 <span class="math">{x}</span> 可由连续函数分离。</p>
+  </div>
+
+  <div class="thm"><div class="bt">引理 <span class="num">8.3（Urysohn 引理，引理 4.5.3）</span></div>
+    <p>设 <span class="math">X</span> 为 T1 空间。<strong><span class="math">X</span> 正规 ⟺ 每对不交闭集均可由连续函数分离。</strong></p>
+    <p>（讲义未给证明——这个证明要用到「往 <span class="math">[0,1]</span> 里插二进有理数」的经典构造，是点集拓扑里最长的一段技术活之一。这里接受它，重点看它的<strong>用法</strong>。）</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">8.4（命题 4.5.5）</span></div>
+    <p>正规空间必为 Tychonoff 空间。直接由 Urysohn 引理得到：取 <span class="math">E = A</span>、<span class="math">F = {x}</span>（两个不交闭集），引理给出分离函数。</p>
+  </div>
+
+  <div class="intu"><div class="bt">例 4.5.6：<span class="math">ℝ</span> 为什么正规</div>
+    <p>这是本讲唯一一个完整的「正规性验证」，值得看清它的两步。</p>
+    <p><strong>第一步：造距离函数。</strong>对非空 <span class="math">A ⊆ ℝ</span>，令 <span class="math">f<sub>A</sub>(x) = d(x,A) = inf{|x−a| : a ∈ A}</span>。它连续：由三角不等式，对每个 <span class="math">a ∈ A</span> 有 <span class="math">|z−a| ≤ |z−x| + |x−a|</span>，取下确界再交换 <span class="math">x, z</span>，得</p>
+    <div class="formula">|d(z,A) − d(x,A)| ≤ |z−x|</div>
+    <p>即 <span class="math">f<sub>A</sub></span> 是 <span class="math">1</span>-Lipschitz，当然连续。<strong>这个不等式是关键</strong>：它说「到集合的距离」不会比「点之间的距离」变化得更快。</p>
+    <p><strong>第二步：归一化。</strong>设 <span class="math">E, F</span> 是不交非空闭集，令</p>
+    <div class="formula">h(x) = f<sub>E</sub>(x) / ( f<sub>E</sub>(x) + f<sub>F</sub>(x) )</div>
+    <p>闭性与不交性保证每个点到其中至少一个集合的距离为正，故分母非零，<span class="math">h</span> 良定义且连续。<span class="math">x ∈ E</span> 时 <span class="math">h(x) = 0</span>；<span class="math">x ∈ F</span> 时 <span class="math">h(x) = 1</span>。若某个集合为空，用常值函数即可。由 Urysohn 引理，<span class="math">ℝ</span> 正规。</p>
+    <p><strong>记住这个「两个距离相除」的配方</strong>——它在好多地方重现：证明完全正则性、构造单位分解、定义度量空间上的 bump 函数。<strong>它的本质是：用「离谁更近」来造一个 0 到 1 之间的连续插值。</strong></p>
+  </div>
+
+  <div class="intu"><div class="bt">例 4.5.7：Hausdorff 而不正规（Sorgenfrey 平面）</div>
+    <p>这是本讲最难但最有价值的一个例子。它证明<strong>阶梯的顶端也严格</strong>。</p>
+    <p><strong>构造。</strong>在 <span class="math">ℝ</span> 上以半开区间 <span class="math">[a,b)</span> 为基生成拓扑 <span class="math">τ<sub>sor</sub></span>，称 <strong>Sorgenfrey 直线</strong>。两份的积 <span class="math">S = ℝ × ℝ</span> 叫 <strong>Sorgenfrey 平面</strong>，基本开集是「左闭右开」的矩形。</p>
+    <p><strong>它 Hausdorff。</strong>若 <span class="math">⟨x,y⟩ ≠ ⟨a,b⟩</span>：当 <span class="math">x = a</span>（不妨 <span class="math">y &lt; b</span>），取 <span class="math">y &lt; c &lt; b</span>、<span class="math">d &gt; x</span>，则 <span class="math">[x,d) × [y,c)</span> 与 <span class="math">[a,d) × [c, b+ε)</span> 分含两点且不交；当 <span class="math">x ≠ a</span>，在第一坐标上作类似分离。</p>
+    <p><strong>它不正规</strong>，用<strong>反对角线</strong> <span class="math">Δ = {⟨x,−x⟩ : x ∈ ℝ}</span>：</p>
+    <ul>
+      <li><span class="math">Δ</span> 是闭集（<span class="math">⟨a,b⟩ ∉ Δ</span> 时可取小矩形避开直线 <span class="math">a+b=0</span>）；</li>
+      <li><span class="math">Δ</span> 的子空间拓扑<strong>离散</strong>，因为 <span class="math">([x,x+ε) × [−x,−x+ε)) ∩ Δ = {⟨x,−x⟩}</span>。</li>
+    </ul>
+    <p><strong>Jones 引理（引理 4.5.8）</strong>：设 <span class="math">X</span> 为可分正规空间、<span class="math">D</span> 为闭离散子空间，则 <span class="math">2<sup>|D|</sup> ≤ 2<sup>ℵ<sub>0</sub></sup></span>。由于 <span class="math">|Δ| = 2<sup>ℵ<sub>0</sub></sup></span>，由 Cantor 定理 <span class="math">2<sup>|Δ|</sup> &gt; 2<sup>ℵ<sub>0</sub></sup></span>，与引理矛盾。<strong>故 Sorgenfrey 平面不正规。</strong></p>
+    <p><strong>这个例子的教益有三层。</strong>① 正规性<strong>不被积保持</strong>——两份正规的直线，积却不正规（对比命题 6.3：Hausdorff 是被积保持的）。② 证明用的是<strong>基数论证</strong>，不是构造——这是集合论拓扑的典型手法，也解释了为什么这类问题会反过来影响集合论公理。③ <strong>「可分 + 闭离散子集太大」</strong>这个组合是正规性的硬约束：正规空间里闭离散子集不能比实数多。<strong>这是一条非常强的限制，也说明正规比 Hausdorff 强得多。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">ℝ</span> 正规（例 4.5.6 的完整证明）；紧 Hausdorff 空间正规。这两个是最常用的。注意：<strong><span class="math">ℝ</span> 的正规性证明用到了度量</strong>（距离函数），所以它对度量空间普遍成立——<strong>所有度量空间都正规</strong>，因为 <span class="math">d(x,A)</span> 的构造在整个度量空间里都成立。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>Urysohn 引理为什么重要？</strong>它说「拓扑分离 ⟺ 函数分离」。往一个方向看：函数分离显然推出开集分离（取 <span class="math">f<sup>−1</sup>[[0,1/2)]</span> 和 <span class="math">f<sup>−1</sup>[(1/2,1]]</span>，两个不交开集）。<strong>难的是反方向</strong>——从开集分离造出连续函数。这一步的技术核心是「二进有理数插值」：在 <span class="math">E</span> 与 <span class="math">F</span> 之间不断插入中间闭集，用正规性逐层分离，最终得到一个在 <span class="math">[0,1]</span> 的二进制小数上都有定义的函数，再延拓到全体。</p>
+    <p><strong>这条引理是整个「把拓扑空间嵌入方块」传统的起点</strong>：Tychonoff 定理说每个 Tychonoff 空间都能嵌入某个 <span class="math">[0,1]<sup>κ</sup></span>，用的就是 Urysohn 函数族作为坐标。<strong>L13 讲紧致化时会再见到它。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>「正规 ⟹ 可度量」错</strong>。正规性只保证能分离闭集，不保证存在度量。反例是 <strong>Sorgenfrey 直线</strong>：它正规（可用 Urysohn 引理验证），但不可度量——它不第二可数，而度量空间必第二可数。<strong>正规与可度量是两个独立方向的性质。</strong></p>
+    <p>② <strong>「正规被积保持」错</strong>，Sorgenfrey 平面是反例。这条最容易记错，因为 Hausdorff 是被积保持的。<strong>凡是「保持性」的问题，一定要逐个构造记，不能类推。</strong></p>
+    <p>③ <strong>Urysohn 引理要求 T1</strong>（讲义明写「设 <span class="math">X</span> 为 T1 空间」）。少了 T1，单点集未必闭，<span class="math">{x}</span> 与 <span class="math">A</span> 就不一定是「一对不交闭集」，引理的前提不成立。</p>
+    <p>④ 定义 4.5.1 已经把 Hausdorff 写进前提，所以「正规」在本讲里自动是 T2 的；<strong>不要以为可以拿一个非 Hausdorff 空间去验正规性</strong>。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 4.5.1/4.5.2/4.5.4、引理 4.5.3（Urysohn）、命题 4.5.5、例 4.5.6 及证明、例 4.5.7（Sorgenfrey 平面）、引理 4.5.8（Jones）、图 4.2、命题 4.5.9。</p>
+</section>
+
+<!-- ============ 融合 ============ -->
+<section id="fusion">
+  <h2><span class="sn">9</span>融合接口</h2>
+
+  <div class="fusion"><div class="bt">代数 ↔ 逻辑 ↔ 拓扑</div>
+    <table>
+      <tr><th>拓扑</th><th>逻辑</th><th>代数</th></tr>
+      <tr><td>滤子</td><td>确定性理论（承诺越来越多且相容）</td><td>对偶于理想；L02 闭包系统的对偶</td></tr>
+      <tr><td>滤子基 + 有限交性质</td><td>「每小批承诺都不矛盾」</td><td>生成滤子的显式形式（UAL 2.2.63）</td></tr>
+      <tr><td>收敛</td><td>理论在逼近一个模型</td><td>极限的代数化（非主滤子）</td></tr>
+      <tr><td>T0（可区分）</td><td>能验证两个模型不同（单向）</td><td>Alexandroff 拓扑下 ⟺ 偏序反对称</td></tr>
+      <tr><td>T1</td><td>点＝闭集＝可证伪的单点命题</td><td>Alexandroff 下 ⟺ 离散（恒等关系）</td></tr>
+      <tr><td>T2 (Hausdorff)</td><td><strong>每个理论至多一个模型</strong></td><td>滤子极限唯一</td></tr>
+      <tr><td>正规 + Urysohn</td><td>闭集可被「数值评分」分离</td><td>可嵌入 <span class="math">[0,1]<sup>κ</sup></span></td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">要留意一个同名的坑</div>
+    <p>UAL 里也有「滤子性质」（filter property，定义 3.3.18），但它<strong>不是</strong>本讲的拓扑滤子。UAL 的滤子性质说的是：一个逻辑 <span class="math">L</span> 存在派生联结词，使得「两个公式的语义值相等」可以用一族二元联结词来表达，「公式有效」可以用一族等式来表达。<strong>它是「语义值能由公式内部表达」这件事的技术条件，和集合上的滤子只有名字上的联想。</strong></p>
+    <p>真正与拓扑滤子对应的是 UAL 的<strong>生成滤子</strong>（定义 2.2.62）：由集合族 <span class="math">E</span> 生成滤子、有限交性质、命题 2.2.63 的显式刻画。<strong>那一条和本讲命题 4.3 是同一个东西</strong>——只是 UAL 在布尔代数/幂集上用它做模型论，拓扑讲义在一般拓扑空间上用它做收敛。<strong>两处都在为 L18 的紧致性定理铺路：有限交性质 = 局部相容，真滤子 = 全局相容。</strong></p>
+  </div>
+
+  <div class="intu"><div class="bt">收束</div>
+    <p>整讲只有一个问题：<strong>两个东西分不分得开？</strong>滤子是工具（把「逼近」打包），收敛是现象（理论在逼近模型），分离公理是等级（用什么工具分、分到什么程度）。</p>
+    <p>最有用的那一级是 T2，因为它等价于「极限唯一」——<strong>这是把分析搬进拓扑的入场券</strong>。而 L13 会拿走这根接力棒：<strong>紧致性 = 每个素滤子都收敛</strong>，配上 T2 就得到「极限存在且唯一」。<strong>存在性由紧致给，唯一性由 Hausdorff 给——两条拼起来，才是分析里那个熟悉的「极限存在唯一」。</strong>这就是为什么 L12 必须在 L13 之前。</p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+
+  <div class="ex"><div class="bt">O1 · T0 与可区分</div>
+  <ol>
+    <li><span class="tag top">O1</span> 证明：<span class="math">X</span> 是 T0 空间 ⟺ 对任意 <span class="math">x ≠ y</span>，存在开集 <span class="math">U</span> 使 <span class="math">x, y</span> 中恰有一个属于 <span class="math">U</span>。<br><span style="color:#8a93a5">提示：把「或」的两个情形合并成一个「恰有一个」。</span></li>
+    <li><span class="tag log">O1</span> 用定理 3.2 验证：取 <span class="math">W = {0,1}</span>、<span class="math">R</span> 为全关系（<span class="math">0R1</span> 且 <span class="math">1R0</span>，自反传递），说明诱导拓扑不是 T0，并指出哪个序公理失效。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O2 · 滤子</div>
+  <ol start="3">
+    <li><span class="tag alg">O2</span> 判断下列各族是否为滤子基 / 滤子：<span class="math">(a)</span> <span class="math">ℕ</span> 上的余有限集族；<span class="math">(b)</span> <span class="math">{A ⊆ ℕ : 1 ∈ A}</span>；<span class="math">(c)</span> 实直线上所有含 <span class="math">0</span> 的开区间之族。对每族写出向上闭包。</li>
+    <li><span class="tag alg">O2</span> 用命题 4.3 证明：若 <span class="math">E</span> 有有限交性质，则它生成的滤子是真滤子；反之若生成的滤子是真滤子，则 <span class="math">E</span> 有有限交性质。再举一个 <span class="math">E</span> 无有限交性质的例子，说明此时生成的「滤子」是什么。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O3 · 收敛</div>
+  <ol start="5">
+    <li><span class="tag top">O3</span> 在 <span class="math">ℝ</span> 上验证：<span class="math">𝔉 = {(0, 1/n) : n ≥ 1}<sup>↑</sup></span> 收敛到 <span class="math">0</span>。再说明它为什么不收敛到 <span class="math">1</span>。<br><span style="color:#8a93a5">提示：找一个 1 的邻域，使 𝔉 中没有任何成员落在里面。</span></li>
+    <li><span class="tag top">O3</span> 在 Cantor 空间 <span class="math">2<sup>ω</sup></span> 中，验证柱集族 <span class="math">{C(x↾n)}</span> 是滤子基且收敛到 <span class="math">x</span>。再举一个该空间中的滤子，它收敛到 <span class="math">x</span> 但不含任何柱集。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O4 · Hausdorff</div>
+  <ol start="7">
+    <li><span class="tag top">O4</span> 完整证明定理 6.2 的两个方向，并说明 (1⟹2) 中哪一步用到了「滤子含空集就非真」。</li>
+    <li><span class="tag log">O4</span> 在双重点实直线上，具体写出一个同时收敛到两个零点的滤子（用 §6 的构造），并验证它确实收敛到两点。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O5 · 阶梯与反例</div>
+  <ol start="9">
+    <li><span class="tag top">O5</span> 证明「<span class="math">X</span> 是 T1 ⟺ 每个单点集是闭集」。再说明为什么 T0 没有这个刻画。</li>
+    <li><span class="tag top">O5</span> 在余有限拓扑上：证明它 T1、不 T2；再找出一个同时收敛到两个点的滤子，与定理 6.2 对照。</li>
+    <li><span class="tag alg">O5</span> 证明命题 6.3 的三条（子空间、积、拓扑和保持 Hausdorff），并各指出证明中用到哪个开集族的具体形状。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O6 · 正规与 Urysohn</div>
+  <ol start="12">
+    <li><span class="tag top">O6</span> 仿照例 4.5.6，证明任意度量空间都正规。指出哪一步必须用「<span class="math">d(x,A) = 0 ⟺ x ∈ cl(A)</span>」。</li>
+    <li><span class="tag alg">O6</span> 陈述 Urysohn 引理，并用它证明命题 4.5.5（正规 ⟹ Tychonoff）。再说明为什么引理需要 T1 前提。<br><span style="color:#8a93a5">提示：考虑单点集在非 T1 空间里是否闭。</span></li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L11.html">← 上一讲：L11 连续映射、同胚、嵌入与商映射</a>
+  <span style="font-size:13.5px;color:#9aa3b2">下一讲：</span><a href="L13.html">L13 素滤子、紧致性与紧致化 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L12 · 来源：拓扑讲义 Ch4 §4.1–4.5、UAL 定义 2.2.62/2.2.63 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

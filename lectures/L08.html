@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L08 开集 = 可验证命题 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第三篇 拓扑：用逻辑的眼光看空间</span><span class="sep">/</span><span>L08</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 08 · 2 学时 · 拓扑篇开篇</div>
+  <h1>开集 = 可验证命题</h1>
+  <div class="sub">把三条关于「可验证」的直觉，熬成一个用了上百年的定义——全课翻译词典从这里出发</div>
+  <div class="metarow"><span>来源：拓扑讲义 Ch2 §2.1（定义 2.0.1、例 2.1.1、表 2.1、注 2.1.1）</span>
+    <span class="tag top">拓扑</span><span class="tag log">逻辑</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：这个定义为什么长这样</a></li>
+  <li><a href="#topology">拓扑三公理与逐条认识论论证（O1）</a></li>
+  <li><a href="#truthset">命题 ↔ 真值集：逻辑联结词的翻译（O2）</a></li>
+  <li><a href="#verify">可验证 / 可证伪与天鹅例子（O3）</a></li>
+  <li><a href="#asym">为什么并任意、交有限（O4）</a></li>
+  <li><a href="#dictionary">翻译词典与邻域滤子（O5）</a></li>
+  <li><a href="#examples">五种拓扑的认识论巡览（O6）</a></li>
+  <li><a href="#fusion">融合接口</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单（简） ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">本讲是全课的翻译词典起点。只列主干，每个概念的动机与三层例证见正文。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>概念</th><th>依赖</th></tr>
+      <tr><td>拓扑空间（O1–O3）</td><td>L01 集合、L02 闭包系统</td><td>可验证 / 可证伪 (ver)/(fal)</td><td>真值集</td></tr>
+      <tr><td>命题 → 真值集 <span class="math">[[P]]</span></td><td>L01 一阶逻辑语义</td><td>开集 = 可验证命题</td><td>拓扑 + 可验证</td></tr>
+      <tr><td>天鹅例子 / Sierpiński 空间</td><td>上面两者交汇</td><td>翻译词典（表 2.1）</td><td>全课主线</td></tr>
+    </table>
+  </div>
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p><span class="math">[[P]]</span> 把命题变成集合 → (ver) 把「可验证」变成集合条件 → 三条封闭条件 (O1)(O2)(O3) → 拓扑空间定义。倒过来读就是翻译词典：<strong>点 = 认识世界，开集 = 可验证命题，邻域 = 在这一点为真的可验证命题</strong>。这条线一路通到 L18 的紧致性桥。</p>
+  </div>
+</section>
+
+<!-- ============ 学习目标对照 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>陈述拓扑三公理，并逐条说出它的认识论理由</td><td><a href="#topology">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>用真值集翻译 ∨、∧、¬ 与无穷析取，解释为何「并可任意」</td><td><a href="#truthset">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>用 (ver)/(fal) 判定可验证性，独立重现天鹅例子</td><td><a href="#verify">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>解释并/交不对称、Alexandroff 拓扑与对补不封闭</td><td><a href="#asym">§6</a></td><td><a href="#ex">E7, E8, E9</a></td></tr>
+    <tr><td><b>O5</b></td><td>用翻译词典读出点与开集的逻辑意义，说出邻域滤子的来路</td><td><a href="#dictionary">§7</a></td><td><a href="#ex">E10, E11</a></td></tr>
+    <tr><td><b>O6</b></td><td>辨认离散 / 平凡 / Sierpiński / 余有限 / Alexandroff 拓扑并给出认识论读法</td><td><a href="#examples">§8</a></td><td><a href="#ex">E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：这个定义为什么长这样</h2>
+  <p class="lead">拓扑定义摆在你面前时，三条公理显得又抽象又随意：为什么空集和全集必须在里面？为什么并可以取任意多个，交却只准有限个？中文讲义开篇自己就承认：数学界用了二十世纪相当长的时间才就这个定义达成共识。</p>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>它解决的是<strong>「怎么让一个抽象定义变得可记忆、可推理」</strong>。定义本身是共识的结果，但共识不等于理解。讲义给的出路是：给 <span class="math">X</span> 和 <span class="math">τ</span> 一个认识论解释——<span class="math">X</span> 是认识世界的集合，<span class="math">τ</span> 是可验证命题的集合——于是三条公理不再是三条禁令，而是「可验证性应该满足什么」的三条推论。</p>
+    <p>这不是历史考据，也不是修辞包装。它后面要真干活：L09 的基变成「基本可验证命题」，L10 的闭包/内部变成「可证伪 / 必然」，L18 的紧致变成「完备性」。整门课的逻辑线就挂在这个解释上。</p>
+  </div>
+  <p class="src"><b>来源：</b>拓扑讲义 Ch2 开篇（第 82–86 行）、§2.1 开头。</p>
+</section>
+
+<!-- ============ O1 拓扑三公理 ============ -->
+<section id="topology">
+  <h2><span class="sn">3</span>拓扑三公理与逐条认识论论证 <span class="tag top">O1</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>拓扑要同时满足两件互相拉扯的事：足够一般（能把各种「类似空间」的对象都囊括进来），又足够受限（还得像我们直觉中的「空间」）。最终选定的定义只有三条。问题是：这三条凭什么？认识论解释给出的答案是——<strong>每一条都是「可验证命题」这个词的意思所要求的</strong>。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.1（拓扑讲义定义 2.0.1）</span></div>
+    <p>设 <span class="math">X</span> 为集合。若子集族 <span class="math">τ ⊆ 𝓟(X)</span> 满足：</p>
+    <ol>
+      <li><span class="math">(O1)</span> <span class="math">∅, X ∈ τ</span>；</li>
+      <li><span class="math">(O2)</span> <span class="math">τ</span> 对任意并封闭：若 <span class="math">(U<sub>i</sub>)<sub>i∈I</sub> ⊆ τ</span>，则 <span class="math">⋃<sub>i∈I</sub>U<sub>i</sub> ∈ τ</span>；</li>
+      <li><span class="math">(O3)</span> <span class="math">τ</span> 对有限交封闭：若 <span class="math">{U<sub>1</sub>,…,U<sub>n</sub>} ⊆ τ</span>，则 <span class="math">U<sub>1</sub> ∩ ⋯ ∩ U<sub>n</sub> ∈ τ</span>。</li>
+    </ol>
+    <p>称 <span class="math">⟨X, τ⟩</span> 为拓扑空间，<span class="math">U ⊆ X</span> 是开集当且仅当 <span class="math">U ∈ τ</span>。</p>
+  </div>
+
+  <div class="intu"><div class="bt">三条公理的认识论论证</div>
+    <p>解释的设定是：<span class="math">(X)</span> 把 <span class="math">X</span> 看成认识世界的集合；<span class="math">(τ)</span> 把 <span class="math">τ</span> 看成可验证命题的集合。逐条检查：</p>
+    <ul>
+      <li><span class="math">(O1)</span> 全集 <span class="math">X = [[⊤]]</span> 对应逻辑真。逻辑真总能被验证——论域既然是 <span class="math">X</span>，我们默认知道 <span class="math">x ∈ X</span>。空集 <span class="math">∅ = [[⊥]]</span> 对应逻辑假。逻辑假从不为真，因此它空泛地满足可验证性：注意 (ver) 的前提是「只要 <span class="math">P</span> 在世界 <span class="math">x</span> 为真」，这个前提对 <span class="math">⊥</span> 永远不成立，条件因此空真。</li>
+      <li><span class="math">(O2)</span> 设 <span class="math">(U<sub>i</sub>)<sub>i∈I</sub> ⊆ τ</span> 对应可验证命题 <span class="math">P<sub>i</sub></span>。若 <span class="math">⋁<sub>i∈I</sub>P<sub>i</sub></span> 在 <span class="math">x</span> 为真，则是某个 <span class="math">P<sub>i</sub></span> 在 <span class="math">x</span> 为真；由 <span class="math">P<sub>i</sub></span> 可验证，可以在 <span class="math">x</span> 验证它，从而验证这个析取。<strong>一个析取项就够，所以任意多都行。</strong></li>
+      <li><span class="math">(O3)</span> 设 <span class="math">U<sub>1</sub>,…,U<sub>n</sub> ∈ τ</span> 对应 <span class="math">P<sub>1</sub>,…,P<sub>n</sub></span>。若 <span class="math">P<sub>1</sub> ∧ ⋯ ∧ P<sub>n</sub></span> 在 <span class="math">x</span> 为真，则每个 <span class="math">P<sub>i</sub></span> 都在 <span class="math">x</span> 为真且可验证；依次验证这有限多个命题，就验证了合取。<strong>只有有限多个，才能一个个验完。</strong></li>
+    </ul>
+    <p>这样，三条公理就从「规定」变成了「解释的推论」。后面遇到的每个拓扑概念，都可以问同一个问题：它在说可验证命题的什么事？</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>两个极端。离散拓扑 <span class="math">𝓟(X)</span>：每个子集都开，即<strong>每个命题都可验证</strong>——完全可观察的认识框架。平凡拓扑 <span class="math">{∅, X}</span>：只有 <span class="math">⊤</span> 和 <span class="math">⊥</span> 可验证——几乎什么都验证不了。这两个例子把「开集的多少」和「知识的多寡」直接对上了。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><span class="math">X = {a, b}</span>，<span class="math">τ = {∅, X, {b}}</span>。<span class="math">{b}</span> 开而 <span class="math">{a}</span> 不开：在同一个世界集上，命题「有非白天鹅」可验证而「全是白天鹅」不可验证（详见 §5）。它小到能画在纸上，却已经完整展示了「可验证性是一种非平凡结构」，而不是每个子集都自动可验证。这就是天鹅例子的准确身份——Sierpiński 空间。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>讲义例 2.2.1 里的 <span class="math">τ<sub>4</sub> = {∅, {x}}</span> 不是拓扑：缺了 <span class="math">X</span>，违反 (O1)。<span class="math">τ<sub>3</sub> = {∅, X, {x}, {y}}</span> 也不是：<span class="math">{x} ∪ {y} = {x,y} ∉ τ</span>，违反 (O2)。<strong>三条各管一件事，缺一不可</strong>——尤其别把「有限交封闭」误记成「对交封闭」，两者差别正是 §6 的主题。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义定义 2.0.1、§2.1 的 (O1)–(O3) 论证、例 2.2.1。</p>
+</section>
+
+<!-- ============ O2 真值集翻译 ============ -->
+<section id="truthset">
+  <h2><span class="sn">4</span>命题 ↔ 真值集：逻辑联结词的翻译 <span class="tag log">O2</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>要把「可验证命题」变成 <span class="math">X</span> 的子集，先得回答一个更基本的问题：命题变成集合之后，逻辑联结词变成什么？只有把这件事钉死，三条公理的翻译才不是比喻而是可核对的等式。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.1（拓扑讲义 §2.1）</span></div>
+    <p>把命题 <span class="math">P</span> 与它在 <span class="math">X</span> 中为真的世界之集对应：</p>
+    <div class="formula">[[P]] = { x ∈ X | P 在世界 x 中为真 } ⊆ X</div>
+    <p>在这个对应下：</p>
+    <div class="formula">[[P ∨ Q]] = [[P]] ∪ [[Q]]<br>[[P ∧ Q]] = [[P]] ∩ [[Q]]<br>[[¬P]] = X − [[P]]</div>
+    <p>对形如 <span class="math">⋁<sub>i∈I</sub>P<sub>i</sub></span> 的无穷析取，同样的论证仍适用：<span class="math">[[⋁<sub>i∈I</sub>P<sub>i</sub>]] = ⋃<sub>i∈I</sub>[[P<sub>i</sub>]]</span>。</p>
+  </div>
+
+  <div class="intu"><div class="bt">翻译为什么是这个方向</div>
+    <p>逐条看就很机械：<span class="math">P ∨ Q</span> 在 <span class="math">x</span> 为真，就是「<span class="math">P</span> 在 <span class="math">x</span> 真」或「<span class="math">Q</span> 在 <span class="math">x</span> 真」，也就是 <span class="math">x</span> 属于两个真值集的并。合取对应交、否定对应补，同理。于是：</p>
+    <ul>
+      <li>(O2) 任意并封闭 <span class="math">⇐</span> 可验证命题对无穷析取封闭；</li>
+      <li>(O3) 有限交封闭 <span class="math">⇐</span> 可验证命题对有限合取封闭。</li>
+    </ul>
+    <p>这一步是全课翻译词典的语法层：<strong>∨↔∪、∧↔∩、¬↔补</strong>。后面 L15 把逻辑公式规范化、L16 做解释时，反复用的就是这套对应。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">P =</span>「第 1 只天鹅白」，<span class="math">Q =</span>「第 2 只天鹅白」。<span class="math">[[P∨Q]]</span> 就是「至少一只白」为真的那些世界，恰是 <span class="math">[[P]] ∪ [[Q]]</span>。<span class="math">[[P∧Q]] = [[P]] ∩ [[Q]]</span>，<span class="math">[[¬P]] = X − [[P]]</span>。这三行看一眼就懂，但它们撑起了整门课的语法翻译。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>无穷析取 <span class="math">⋁<sub>n∈ω</sub>P<sub>n</sub></span> 对应<strong>任意并</strong> <span class="math">⋃<sub>n∈ω</sub>[[P<sub>n</sub>]]</span>——注意这里不是「可数并」的特权，而是 O2 允许的任意指标集。无穷析取之所以能被有限信息验证，是因为一个析取项为真就够了（§6 展开）。这条观察解释了为什么 O2 里敢写「任意」，它是逻辑事实逼出来的，不是为了数学方便选的。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>最容易错的是否定：<span class="math">[[¬P]] = X − [[P]]</span> 是集合补，但<strong>补运算不保开</strong>。也就是说，<span class="math">P</span> 可验证（<span class="math">[[P]]</span> 开）完全不蕴含 <span class="math">¬P</span> 可验证（<span class="math">[[¬P]]</span> 开）。翻译保的是真值集的等式，不是「可验证」这个属性。这个裂缝后面要用闭包算子来补：L10 会给出 <span class="math">cl</span> 与 <span class="math">int</span>，把「能验证到什么程度」这件事精确化。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 §2.1 的命题–真值集对应式与导论表。</p>
+</section>
+
+<!-- ============ O3 可验证与天鹅 ============ -->
+<section id="verify">
+  <h2><span class="sn">5</span>可验证 / 可证伪与天鹅例子 <span class="tag top">O3</span><span class="tag log">O3</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>「可验证」到目前为止还只是日常词。要让它推出三条公理，得把它说清楚。讲义给出的定义故意用「有可能在 x 验证」而不是「已经在 x 验证过」——这一字之差，正是它既能容纳黑天鹅、又能解释归纳问题的关键。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.1（拓扑讲义 §2.1）</span></div>
+    <ul>
+      <li><span class="math">(ver)</span> 命题 <span class="math">P</span> 可验证，当且仅当：只要 <span class="math">P</span> 在世界 <span class="math">x</span> 为真（<span class="math">x ∈ [[P]]</span>），就有可能在 <span class="math">x</span> 验证 <span class="math">P</span>。</li>
+      <li><span class="math">(fal)</span> 命题 <span class="math">P</span> 可证伪，当且仅当：只要 <span class="math">P</span> 在世界 <span class="math">x</span> 为假（<span class="math">x ∉ [[P]]</span>），就有可能在 <span class="math">x</span> 证伪 <span class="math">P</span>。</li>
+    </ul>
+    <p>讲义特别注明：(fal) 与 Karl Popper 的可证伪性标准非常相似，几乎可以看作它的改述。注意 <span class="math">P</span> 可证伪 <span class="math">⇔</span> <span class="math">¬P</span> 可验证——两者是同一件事的两说法。</p>
+  </div>
+
+  <div class="thm"><div class="bt">例 <span class="num">5.2（拓扑讲义例 2.1.1，天鹅例子）</span></div>
+    <p>考虑两个命题：</p>
+    <ul>
+      <li><span class="math">(∃¬W S)</span>：存在一只不是白色的天鹅；</li>
+      <li><span class="math">(∀W S)</span>：所有天鹅都是白色的，恰是前者的否定。</li>
+    </ul>
+    <p>观察到一只黑天鹅，就验证了 <span class="math">(∃¬W S)</span> 并证伪了 <span class="math">(∀W S)</span>。反过来似乎不能先验地验证 <span class="math">(∀W S)</span>：无论遇到多少只白天鹅，都无法确定下一只的颜色——这就是归纳问题。于是 <span class="math">(∃¬W S)</span> 可验证，<span class="math">(∀W S)</span> 不可验证。</p>
+    <p>形式化：设只有两个可能世界 <span class="math">a</span>（所有天鹅白）与 <span class="math">b</span>（有非白天鹅），<span class="math">X = {a, b}</span>。四个子集的角色是：</p>
+    <ul>
+      <li><span class="math">∅ ↔ ⊥</span>，可验证，开；</li>
+      <li><span class="math">X ↔ ⊤</span>，可验证，开；</li>
+      <li><span class="math">{a} ↔ (∀W S)</span>，不可验证，<strong>不开</strong>；</li>
+      <li><span class="math">{b} ↔ (∃¬W S)</span>，可验证，开。</li>
+    </ul>
+    <p>得 <span class="math">τ = {∅, X, {b}}</span>，确有拓扑：(O1) 显然；任意并仍是这三者之一；任意有限交（甚至无穷交）也一样。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>一只黑天鹅落在眼前：世界 <span class="math">b</span> 成为现实，<span class="math">(∃¬W S)</span> 当场验证。这是 (ver) 最直白的样子——命题为真，且有一份有限证据可以当场出示。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>归纳问题才是这例子的重心：<span class="math">(∀W S)</span> 在世界 <span class="math">a</span> 里为真，却<strong>不可验证</strong>，因为任何有限次观察都不足以穷尽全部天鹅。讲义把「永远看不完」变成一个点的拓扑性质：<span class="math">{a}</span> 不是开集。哲学上的归纳难题，在这里被压缩成「单点不开」四个字——这就是认识论解释真正干活的地方。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>别把「可验证」读成「真」：<span class="math">(∀W S)</span> 在 <span class="math">a</span> 里是真的，但不可验证；真与可验证是两回事。另一个容易忽略的边界：<span class="math">P</span> 与 <span class="math">¬P</span> 可以同时可验证，当且仅当 <span class="math">[[P]]</span> 既开又闭（clopen）。在连通空间里这样的集合只有 <span class="math">∅</span> 和 <span class="math">X</span>——这是 L14 连通性的种子：连通 = 除了平凡命题，没有命题能被正反两边都验证。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 (ver)/(fal) 定义、例 2.1.1、第 199–200 行、脚注 1（Popper）。</p>
+</section>
+
+<!-- ============ O4 不对称 ============ -->
+<section id="asym">
+  <h2><span class="sn">6</span>为什么并任意、交有限 <span class="tag top">O3</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>这是初学者最常被绊住的地方：拓扑定义对并和交明显偏心。为什么不能干脆要求「对任意交也封闭」那样不是更整齐吗？答案藏在验证的<strong>有限性</strong>里，而且这答案直接给出了一个重要的特殊拓扑类。</p>
+  </div>
+
+  <div class="intu"><div class="bt">机关：无穷析取可由有限信息验证，无穷合取不行</div>
+    <p>设可数无穷只天鹅，<span class="math">P<sub>n</sub></span> 表示「第 <span class="math">n</span> 只天鹅是白色」。每个 <span class="math">P<sub>n</sub></span> 都能直接检查。但：</p>
+    <ul>
+      <li>无穷析取 <span class="math">⋁<sub>n∈ω</sub>P<sub>n</sub></span> 只要一个析取项为真就可在有限时间验证；</li>
+      <li>无穷合取 <span class="math">⋀<sub>n∈ω</sub>P<sub>n</sub></span> 需要检查<strong>全部</strong>无穷多只天鹅，有限时间做不到。</li>
+    </ul>
+    <p>所以 O2 敢写「任意并」，O3 只能写「有限交」。讲义还提醒：拓扑并非<strong>不能</strong>对任意交封闭，只是定义不要求；若确实如此，就称为 <strong>Alexandroff 拓扑</strong>。</p>
+    <p>另一处不对称是对补：某些情况下 <span class="math">P</span> 及其否定都可验证，但并非总是如此——天鹅例子里 <span class="math">(∃¬W S)</span> 可验证而 <span class="math">(∀W S)</span> 不可验证。这正对应开集族一般不对补封闭。</p>
+    <p>讲义注 2.1.1 还留了个诚实的口子：可数并与任意并有细微区别；对一列可有限验证的命题，适当安排并行检查可在某个析取项为真时验证其可数析取，任意并则不能这样简单处理。本课程不深究，把这个解释当直观用即可。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>任何有限拓扑都自动是 Alexandroff 的：指标集再大，有限空间里只有有限多个不同子集，任意交其实只是有限交。<strong>别在有限空间上试图观察并/交不对称——它只有在无限空间里才显形。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>Alexandroff 拓扑的原型是预序上的上集拓扑：给定预序 <span class="math">⟨X, ⊑⟩</span>，令开集恰为 <span class="math">⊑</span>-上集（<span class="math">x ∈ U</span> 且 <span class="math">x ⊑ y</span> 则 <span class="math">y ∈ U</span>）。任意上集之交仍是上集，所以任意交封闭。认识论读法极顺：可验证命题沿「知识推进」单调——在某处可验证，在知识更多的世界也可验证。这为 L02 的闭包系统、L12 的 specialization 序提供了具体模型。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>在无限集 <span class="math">X = ℕ</span> 上取余有限拓扑（开集为 <span class="math">∅</span> 及有限补集）。令 <span class="math">U<sub>n</sub> = ℕ − {2n}</span>，每个 <span class="math">U<sub>n</sub></span> 都开，但 <span class="math">⋂<sub>n∈ℕ</sub>U<sub>n</sub></span> = 奇数集，它的补是偶数集、无限，故不是有限补——不是一个开集。<strong>余数有限拓扑不是 Alexandroff 的</strong>，这就是「任意交不封闭」的活例子。顺带一提：在有限集上余有限拓扑会塌成离散拓扑，两种描述撞车，引用例子时务必带上「无限集」这个条件。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义第 190–200 行（无穷交 / 补的论证）、第 247 行（Alexandroff 拓扑）、注 2.1.1。</p>
+</section>
+
+<!-- ============ O5 翻译词典 ============ -->
+<section id="dictionary">
+  <h2><span class="sn">7</span>翻译词典与邻域滤子 <span class="tag top">O5</span><span class="tag log">O5</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>前面是零散的对应，这一节把它们编成一本可以查的词典。它解决的是「以后每遇到一个拓扑概念，怎么立刻问出它的逻辑意思」——有了词典，L09 的基、L10 的闭包、L12 的分离公理都能机器式地翻译过去。词典里还要补一行讲义没明写、但后面要反复用的：邻域。</p>
+  </div>
+
+  <div class="def"><div class="bt">翻译词典 <span class="num">7.1（讲义表 2.1，末行为本讲补充）</span></div>
+    <table>
+      <tr><th>逻辑 / 认识论</th><th>拓扑</th></tr>
+      <tr><td>认识世界 / 情境 / 模型 / 满足某性质的对象</td><td>点 <span class="math">x ∈ X</span></td></tr>
+      <tr><td>可验证命题 <span class="math">P</span></td><td>开集 <span class="math">U ∈ τ</span></td></tr>
+      <tr><td><span class="math">P</span> 在 <span class="math">x</span> 中为真</td><td><span class="math">x ∈ [[P]]</span></td></tr>
+      <tr><td>在 <span class="math">x</span> 为真的可验证命题</td><td><span class="math">x</span> 的开邻域 <span class="math">U ∈ τ, x ∈ U</span></td></tr>
+      <tr><td><span class="math">¬P</span> 可验证</td><td><span class="math">[[P]]</span> 的补开，即 <span class="math">[[P]]</span> 闭</td></tr>
+      <tr><td>任意析取 / 有限合取</td><td>任意并 / 有限交</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">补上「邻域滤子」这一环</div>
+    <p>把 <span class="math">x</span> 处的开邻域收集起来：<span class="math">𝒩<sub>open</sub>(x) = {U ∈ τ : x ∈ U}</span>。它对有限交封闭、含 <span class="math">X</span>、不含 <span class="math">∅</span>。但注意它还不是 L02 意义下的滤子——滤子要求对上集封闭，而开集的上集未必开。</p>
+    <p>把它上闭化就得到真正的邻域滤子：<span class="math">𝒩(x) = {V ⊆ X : 存在 U ∈ τ 使 x ∈ U ⊆ V}</span>。这是 L02 滤子概念在拓扑里的第一个实例，直通 L12「滤子收敛」与 L18「超滤子刻画紧致」。逻辑读法：在 <span class="math">x</span> 处成立的所有事实（不止可验证的那些），构成一个理论——而理论就是滤子。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>天鹅空间里 <span class="math">𝒩<sub>open</sub>(a) = {X}</span>，<span class="math">𝒩<sub>open</sub>(b) = {X, {b}}</span>。<span class="math">a</span> 只有平凡的可验证命题，<span class="math">b</span> 多一条 <span class="math">{b}</span>。这两个邻域系的差别，精确对应「在 <span class="math">a</span> 处 ∀WS 为真却不可验证」与「在 <span class="math">b</span> 处 ∃¬WS 可验证」。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>邻域滤子把「一个点是许多命题汇聚的地方」变成代数对象：<span class="math">V, W ∈ 𝒩(x) ⇒ V ∩ W ∈ 𝒩(x)</span>，且上闭。这正是 L02 的滤子三条。于是「点」在代数侧有了替身——不必真有点，一个滤子就能当作「一个可能世界」。这句伏笔在 L23 Stone 对偶（点 = 素滤子）和无点拓扑里兑现。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>这本词典是<strong>认识论解释</strong>，不是定理：不是每个拓扑都必须按这个读法理解，换个框架（例如把开集读成「可测量」或「算法可枚举」）也能自洽。全课选定这个读法，是因为它让三条公理、闭包算子和紧致桥都自然。另外别把 <span class="math">𝒩<sub>open</sub>(x)</span> 和 <span class="math">𝒩(x)</span> 混用：前者只含开集、不对上闭；后者才是滤子。写收敛时用的是后者。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义表 2.1、§2.1「可验证命题 ↔ 开集」；邻域滤子的滤子化参照 L02 与讲义后续章节。</p>
+</section>
+
+<!-- ============ O6 例子巡览 ============ -->
+<section id="examples">
+  <h2><span class="sn">8</span>五种拓扑的认识论巡览 <span class="tag top">O6</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>同一个集合可以装很多种拓扑，每种拓扑就是一套「什么可验证」的约定。把几个典型约定并排摆出来，能看清「开集多寡」与「知识多寡」的对应，也能提前认出后面各讲的主角。</p>
+  </div>
+
+  <div class="def"><div class="bt">五种拓扑 <span class="num">8.1</span></div>
+    <table>
+      <tr><th>拓扑</th><th>开集</th><th>认识论读法</th></tr>
+      <tr><td>离散拓扑</td><td>全部子集</td><td>每个命题都可验证，完全可观察</td></tr>
+      <tr><td>平凡拓扑</td><td><span class="math">∅, X</span></td><td>只有 <span class="math">⊤, ⊥</span> 可验证，几乎不可观察</td></tr>
+      <tr><td>Sierpiński 空间</td><td><span class="math">∅, X, {b}</span></td><td>存在性可验证、全称不可验证（天鹅）</td></tr>
+      <tr><td>余有限拓扑（<span class="math">X</span> 无限）</td><td><span class="math">∅</span> 与有限补集</td><td>只能验证「排除有限多个可能」的命题</td></tr>
+      <tr><td>Alexandroff 拓扑</td><td>预序的上集</td><td>可验证性沿知识推进单调</td></tr>
+    </table>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>离散与平凡是两个端点：一端「什么都查得到」，一端「什么也查不到」。任何拓扑都夹在它们之间——这是后面比较拓扑粗细（L09）时的两个参照点。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>Sierpiński 空间是 <span class="math">T<sub>0</sub></span> 而非 <span class="math">T<sub>1</sub></span> 的最小模型：<span class="math">{b}</span> 开，所以 <span class="math">{a}</span> 与 <span class="math">{b}</span> 能被开集区分（<span class="math">T<sub>0</sub></span>）；但 <span class="math">{a}</span> 不闭，所以单点未必闭（非 <span class="math">T<sub>1</sub></span>）。它同时是天鹅例子的准确身份、L12 分离公理的最小反例、以及后面 specialization 序的标准样例。一个两点的空间，串起三讲。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>余有限拓扑必须写在无限集上：有限集上它塌成离散拓扑，读法完全变了。另外余有限拓扑不是 Alexandroff 的（§6 边界例），而 Alexandroff 也不等于余有限——两者是不同维度的特殊化：前者管「任意交」，后者管「补集大小」。<strong>别把几个特殊拓扑当成一条线上的等级。</strong></p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义例 2.1.1、例 2.2.1、第 247 行（Alexandroff 拓扑）；分离公理见讲义 Ch4 / 本课 L12。</p>
+</section>
+
+<!-- ============ 融合接口 ============ -->
+<section id="fusion">
+  <h2><span class="sn">9</span>融合接口</h2>
+  <div class="fusion"><div class="bt">代数 ↔ 逻辑 ↔ 拓扑</div>
+    <table>
+      <tr><th>代数侧（L02 / L03）</th><th>逻辑侧</th><th>拓扑侧（本讲）</th></tr>
+      <tr><td>闭包系统 / 闭包算子</td><td>可验证命题的封闭条件</td><td>开集族 <span class="math">τ</span> 的 (O1)–(O3)</td></tr>
+      <tr><td>滤子 <span class="math">𝒩(x)</span></td><td>在 <span class="math">x</span> 处成立的理论</td><td><span class="math">x</span> 的邻域滤子</td></tr>
+      <tr><td>理想 / 同余（L03）</td><td><span class="math">¬P</span> 可验证</td><td><span class="math">[[P]]</span> 闭（补开）</td></tr>
+      <tr><td>超滤子 / 超积（L04）</td><td>完备性（有限可满足 <span class="math">⇒</span> 整体可满足）</td><td>紧致性（L18：每个超滤子收敛）</td></tr>
+    </table>
+    <p><strong>这三个词说的是同一件事：</strong>可验证命题对有限合取封闭 = 开集对有限交封闭 = 邻域系对有限交封闭。全课把它们当同一个结构反复使用，L18 的紧致桥则是这张表最后一行的兑现。</p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+  <div class="box"><ol>
+    <li><span class="tag top">O1</span> 逐条验证讲义例 2.2.1 中 <span class="math">τ<sub>1</sub>, τ<sub>2</sub>, τ<sub>3</sub>, τ<sub>4</sub></span> 哪些是拓扑；对每个失败者指出违反 (O1)/(O2)/(O3) 中的哪一条，并举出具体集合。</li>
+    <li><span class="tag log">O1</span> 用 (ver) 解释为什么 <span class="math">∅</span> 是「空泛可验证」：写出 (ver) 的条件式，说明对 <span class="math">⊥</span> 它为何真。</li>
+    <li><span class="tag log">O2</span> 对 <span class="math">P =</span>「<span class="math">n</span> 是偶数」与 <span class="math">Q =</span>「<span class="math">n</span> 是素数」（<span class="math">X = ℕ</span>），写出 <span class="math">[[P∨Q]], [[P∧Q]], [[¬P]]</span> 的具体集合。</li>
+    <li><span class="tag log">O2</span> 证明 <span class="math">[[⋁<sub>i∈I</sub>P<sub>i</sub>]] = ⋃<sub>i∈I</sub>[[P<sub>i</sub>]]</span>，并说明这个等式怎样推出 O2 的「任意并」。</li>
+    <li><span class="tag top">O3</span> 用 (ver)/(fal) 判定：「下一步棋将将军」与「这盘棋里已经将军过」哪个可验证、哪个可证伪？给出你的认识框架设定。</li>
+    <li><span class="tag log">O3</span> 把天鹅例子改写成一个含三个世界的版本：加入「尚无天鹅被观察到」这一世界，写出对应的 <span class="math">τ</span>，并说明哪些命题可验证。</li>
+    <li><span class="tag top">O4</span> 构造一个拓扑，使无穷多个开集之交不开（不要用余有限拓扑），并解释为什么该例子说明 O3 只能要求有限交。</li>
+    <li><span class="tag top">O4</span> 证明有限空间上的每个拓扑都是 Alexandroff 拓扑，并说明为什么这个结论在无限空间上失败。</li>
+    <li><span class="tag log">O4</span> 在余有限拓扑（<span class="math">X = ℕ</span>）中给出一对 <span class="math">P, ¬P</span> 都可验证的命题，并说明 <span class="math">[[P]]</span> 是 clopen。</li>
+    <li><span class="tag top">O5</span> 对 Sierpiński 空间写出完整的 <span class="math">𝒩<sub>open</sub>(a)</span> 与 <span class="math">𝒩<sub>open</sub>(b)</span>，再把它们上闭化成邻域滤子 <span class="math">𝒩(a)</span> 与 <span class="math">𝒩(b)</span>，验证滤子三条。</li>
+    <li><span class="tag log">O5</span> 解释「点 = 素滤子」这句话在本讲里还只是伏笔：说出 <span class="math">𝒩(x)</span> 与 L02 滤子的联系，以及为什么现在还不能把点换成任意滤子（提示：收敛还没定义）。</li>
+    <li><span class="tag top">O6</span> 对 <span class="math">X = {a,b,c}</span> 找出一个 <span class="math">T<sub>0</sub></span> 非 <span class="math">T<sub>1</sub></span> 的拓扑，并用「哪些单点开 / 闭」解释它为何是 Sierpiński 式结构。</li>
+    <li><span class="tag log">O6</span> 对比离散拓扑与 Alexandroff 上集拓扑：证明离散拓扑是 Alexandroff 的（取相等序），并解释为什么「所有命题可验证」对应「每个世界互不可比较」。</li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L07.html">← 上一讲：L07 同余分配、算术、Maltsev 与有限代数</a>
+  <a href="L09.html">下一讲：L09 基、子基与生成新拓扑 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L08 · 来源：拓扑讲义 Ch2 §2.1（定义 2.0.1、例 2.1.1、表 2.1、注 2.1.1）· v0.1</footer>
+
+</main></div>
+</body>
+</html>

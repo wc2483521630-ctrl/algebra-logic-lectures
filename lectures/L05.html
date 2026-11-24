@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L05 Clone、不变关系与 Maltsev 条件 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第二篇 代数骨架</span><span class="sep">/</span><span>L05</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 05 · 2 学时</div>
+  <h1>Clone、不变关系与 Maltsev 条件</h1>
+  <div class="sub">基本运算并不基本——真正的对象是「所有能造出来的运算」，以及它守住的关系</div>
+  <div class="metarow"><span>来源：Bergman Ch4 §4.1–4.2, §4.6–4.8</span><span>UAL §2.3</span>
+    <span class="tag alg">代数</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：基本运算的暴政</a></li>
+  <li><a href="#clone">Clone：运算的闭包（O1）</a></li>
+  <li><a href="#inv">不变关系与 Pol–Inv 对偶（O2）</a></li>
+  <li><a href="#congs">同余的新刻画与生成（O3）</a></li>
+  <li><a href="#eqtheory">等式理论与全不变同余（O4）</a></li>
+  <li><a href="#maltsev">Maltsev 条件（O5）</a></li>
+  <li><a href="#interp">簇之间的解释（O6）</a></li>
+  <li><a href="#fusion">融合接口</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单（简） ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">先点清本讲的新概念。依赖只列最直接的几条，够安排讲序即可。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>概念</th><th>依赖</th></tr>
+      <tr><td>Clone <span class="math">Clo(A)</span></td><td>L02 闭包</td><td>全不变同余</td><td>L03 同余</td></tr>
+      <tr><td>多项式运算 <span class="math">Pol(A)</span></td><td>Clone</td><td>等式理论</td><td>L04 项代数</td></tr>
+      <tr><td>不变关系 <span class="math">R(F)</span></td><td>L01 关系</td><td>Maltsev 项 / 条件</td><td>自由代数</td></tr>
+      <tr><td>多态 <span class="math">F(Θ)</span></td><td>不变关系</td><td>解释 / 项等价</td><td>项代数</td></tr>
+    </table>
+  </div>
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>L02 闭包 → <strong>Clone</strong> → <strong>Pol–Inv 对偶</strong> → <strong>同余新刻画</strong>；另一支 L04 项代数 → <strong>全不变同余 / 等式理论</strong> → <strong>Maltsev 条件</strong>与<strong>解释</strong>。两支在「用项的性质刻画簇」处合流。</p>
+  </div>
+</section>
+
+<!-- ============ 学习目标对照 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>判断一个运算集是否 clone，区分 Clo(A) 与 Pol(A)</td><td><a href="#clone">§2</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>用 Pol–Inv 对偶在运算集与关系集之间转换</td><td><a href="#inv">§3</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>用定理 4.16 认出同余，用定理 4.17 构造生成同余</td><td><a href="#congs">§4</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>解释等式理论为何是全不变同余</td><td><a href="#eqtheory">§5</a></td><td><a href="#ex">E7</a></td></tr>
+    <tr><td><b>O5</b></td><td>用 Maltsev 项判定同余可换簇</td><td><a href="#maltsev">§6</a></td><td><a href="#ex">E8, E9</a></td></tr>
+    <tr><td><b>O6</b></td><td>构造簇之间的解释，判断项等价</td><td><a href="#interp">§7</a></td><td><a href="#ex">E10, E11</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：基本运算的暴政</h2>
+  <p class="lead">在群论里，你以为群就是「一个集合带乘法、逆元、单位元」。但真正决定群的行为的，是<strong>所有由这几样东西造出来的表达式</strong>——<span class="math">xyx⁻¹, (xy)⁻¹z, x²y³…</span> 基本运算只是生成器，不是本质。</p>
+  <div class="intu"><div class="bt">一个思想实验</div>
+    <p>把同一个载体 <span class="var">A</span> 装上不同的「基本运算」集合 <span class="math">F</span> 与 <span class="math">G</span>，但只要 <span class="math">F</span> 和 <span class="math">G</span> 生成同一个 clone——即能造出完全相同的所有运算——那么子代数、同余、直积这些结构全都一样。<strong>区分「基本」与「导出」是人为的；clone 才是那个不随人为选择而变的对象。</strong></p>
+    <p>本讲前半段把这个洞见做成形式（§2–§3），后半段收获它的果实：同余的全新刻画（§4）、Maltsev 条件（§6）、簇之间的翻译（§7）。</p>
+  </div>
+</section>
+
+<!-- ============ O1 Clone ============ -->
+<section id="clone">
+  <h2><span class="sn">3</span>Clone：运算的闭包 <span class="tag alg">O1</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.1（Bergman 4.1）</span></div>
+    <p>集合 <span class="var">A</span> 上的 <strong>clone</strong> 是 <span class="math">Op(A)</span>（<span class="var">A</span> 上所有有限元运算之集）的子集 <span class="math">C</span>，满足：</p>
+    <ol>
+      <li>含全部投影 <span class="math">p<sup>n</sup><sub>k</sub>(x₁,…,x<sub>n</sub>)=x<sub>k</sub></span>；</li>
+      <li>对<strong>广义复合</strong>封闭：若 <span class="math">f∈C</span> 是 <span class="math">m</span> 元，<span class="math">g₁,…,g<sub>m</sub>∈C</span> 都是 <span class="math">n</span> 元，则 <span class="math">f(g₁,…,g<sub>m</sub>)∈C</span>。</li>
+    </ol>
+    <p>换句话说，clone 就是「把一些运算放在盒子里，允许你取投影、做复合，怎么也跑不出去」的闭包系统。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例子（Bergman 4.2）</div>
+    <ol>
+      <li><span class="math">Op(A)</span> 与 <span class="math">Proj(A)={p<sup>n</sup><sub>k</sub>}</span> 是最小与最大的 clone。</li>
+      <li><span class="math">ℚ</span> 上形如 <span class="math">a₁x₁+⋯+a<sub>n</sub>x<sub>n</sub> (a<sub>i</sub>∈ℤ)</span> 的线性函数全体；加上常数项得仿射函数 clone。</li>
+      <li><span class="math">E(A)</span>：所有幂等运算 <span class="math">f(x,…,x)=x</span>；<span class="math">U(A)</span>：所有本质一元运算。都是 clone。</li>
+    </ol>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.2（两个主角；Bergman 4.6）</span></div>
+    <p>对代数 <span class="math">A=⟨A,F⟩</span>：</p>
+    <ul>
+      <li><strong>项运算 clone</strong> <span class="math">Clo(A)=Clo<sub>A</sub>(F)</span>：由 <span class="math">F</span> 生成的 clone，即 <span class="math">A</span> 上所有项函数。它只含「用基本运算能表达的」。</li>
+      <li><strong>多项式运算 clone</strong> <span class="math">Pol(A)</span>：由 <span class="math">F∪Op₀(A)</span> 生成——除了基本运算，还允许把 <span class="var">A</span> 的元素当常量参数硬塞进去。例如群里的 <span class="math">f(x)=axb</span> 是多项式运算，一般不是项运算。</li>
+    </ul>
+    <p><span class="math">Clo(A)⊆Pol(A)</span>，二者都是 clone（定理 4.3 给出生成方法：逐层加入投影与复合）。</p>
+  </div>
+
+  <div class="intu"><div class="bt">为什么区分两者</div>
+    <p><span class="math">Clo</span> 对应「不使用参数的公式」，<span class="math">Pol</span> 对应「允许用元素作参数的公式」。同余只需要 <span class="math">Clo</span> 保持（L03 定义 3.4）；但刻画同余的等价条件会自然用到 <span class="math">Pol</span>（§4 定理 4.16）。逻辑里的对应是：不使用参数的可定义性 vs 带参数可定义性，这条分界在模型论里极其重要。</p>
+  </div>
+  <p class="src"><b>来源：</b>Bergman §4.1 定义 4.1、4.2、4.6，定理 4.3。</p>
+</section>
+
+<!-- ============ O2 Pol-Inv ============ -->
+<section id="inv">
+  <h2><span class="sn">4</span>不变关系与 Pol–Inv 对偶 <span class="tag alg">O2</span></h2>
+  <p class="lead">这是 L02 Galois 连接的一个最重要实例，只是两极换成了「运算」与「关系」。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.3（保持关系；Bergman 4.11）</span></div>
+    <p><span class="math">f</span> 是 <span class="math">n</span> 元运算，<span class="math">θ</span> 是 <span class="math">k</span> 元关系。说 <span class="math">f</span> <strong>保持</strong> <span class="math">θ</span>（记 <span class="math">f:θ</span>），若：把 <span class="math">n</span> 个 <span class="math">θ</span> 的元素排成矩阵，按<strong>列</strong>逐列作用 <span class="math">f</span>，得到的一行仍在 <span class="math">θ</span> 中。</p>
+    <div class="diagram">  x₁₁  x₁₂  …  x₁k   ∈ θ      按列作用 f
+  x₂₁  x₂₂  …  x₂k   ∈ θ      ↓
+   ⋮     ⋮        ⋮      ⋮
+  xₙ₁  xₙ₂  …  xₙk   ∈ θ      ↓
+ ─────────────────────────────────
+  f(x₁₁,…,xₙ₁) … f(x₁k,…,xₙk) ∈ θ</div>
+    <div class="proof"><span class="pt">引理 4.12（一眼看穿）。</span><span class="math">f:θ</span> 当且仅当 <span class="math">θ</span> 是代数 <span class="math">⟨A<sup>k</sup>, f<sup>k</sup>⟩</span> 的子代数载体。把「保持」翻译成「对提升后的运算封闭」，定义立刻变轻。</div>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.4（两个极性；Bergman 4.13）</span></div>
+    <div class="formula">R(F) = { σ∈Rel(A) : F:σ }　　F(Θ) = { g∈Op(A) : g:Θ }</div>
+    <p><span class="math">R(F)</span> 是被 <span class="math">F</span> 守住的全部关系；<span class="math">F(Θ)</span> 是守住 <span class="math">Θ</span> 的全部运算，叫 <strong>polymorphisms</strong>（多态）。这就是 L02 定义 2.35 的 Galois 连接，两极是 <span class="math">Op(A)</span> 与 <span class="math">Rel(A)</span>，闭集满足 <span class="math">F=F(R(F))</span>。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">5.5（Bergman 4.14）</span></div>
+    <p>对任意关系集 <span class="math">Θ</span>，<span class="math">F(Θ)</span> 是 clone。若 <span class="math">A</span> <strong>有限</strong>，则每个 clone 都形如 <span class="math">F(Θ)</span>。</p>
+    <div class="intu" style="margin:8px 0"><p>有限集上，「clone」与「Galois 闭的运算集」是同一件事——<strong>有限性把 clone 的形状完全交给关系去描述</strong>。比如偏序 <span class="math">⟨P,≤⟩</span> 的保序运算 clone 就是 <span class="math">F(≤)</span>。这正是 L02「闭包算子 ↔ 闭集格」对偶的又一次现身。</p></div>
+  </div>
+
+  <div class="fusion"><div class="bt">L02 的方法在这里复用</div>
+    <p>你不需要重新证明 Galois 连接的四条性质——L02 定理 2.35 已经给了。这里只做了一次「代入」：把那里的极性 <span class="math">◮/◭</span> 换成这里的保持关系 <span class="math">R/F</span>。<strong>这就是抽象的价值：一次证明，处处使用。</strong> 后面 L21 的 Pol–Inv 对偶、L16 的代数化可定义性，都还是同一台机器。</p>
+  </div>
+  <p class="src"><b>来源：</b>Bergman §4.2 定义 4.11/4.13、引理 4.12、定理 4.14；L02 §7（Galois 连接）。</p>
+</section>
+
+<!-- ============ O3 同余新刻画 ============ -->
+<section id="congs">
+  <h2><span class="sn">5</span>同余的新刻画与生成 <span class="tag alg">O3</span></h2>
+
+  <div class="thm"><div class="bt">定理 <span class="num">5.6（五个等价条件；Bergman 4.16）</span></div>
+    <p>设 <span class="math">θ</span> 是 <span class="var">A</span> 上的等价关系。以下等价：</p>
+    <div class="formula">(a) θ 是同余　⟺　(b) Clo(A):θ　⟺　(c) Pol(A):θ　⟺　(d) Pol₁(A):θ　⟺　(e) F(A):θ</div>
+    <p>其中 <span class="math">F(A)</span> 是<strong>基本平移</strong>的全体：形如 <span class="math">f(a₁,…,a<sub>i−1</sub>,x,a<sub>i+1</sub>,…,a<sub>n</sub>)</span> 的一元运算（定义 4.15），即「只留一个空位、其余位置填死」。</p>
+    <div class="proof"><span class="pt">证明思路。</span>(a)⟺(b) 几乎是定义（<span class="math">Clo(A)</span> 正是所有项函数）。(a)⇒(c)：由定理 4.14，<span class="math">F(θ)</span> 是 clone；<span class="math">θ</span> 自反给出常量运算保持它，<span class="math">θ</span> 是同余给出基本运算保持它，故 <span class="math">Pol(A)⊆F(θ)</span>。(e)⇒(a) 是漂亮的串行论证：对 <span class="math">a<sub>i</sub>θb<sub>i</sub></span>，逐坐标换元 <span class="math">g<sub>i</sub>(x)=f(b₁,…,b<sub>i−1</sub>,x,a<sub>i+1</sub>,…)</span>，用基本平移保持 <span class="math">θ</span> 再传递，得到 <span class="math">f(a)θf(b)</span>。<span class="qed">∎</span></div>
+  </div>
+
+  <div class="intu"><div class="bt">为什么 (e) 最有用</div>
+    <p>检验同余时，(a) 要求验证所有 <span class="math">n</span> 元基本运算；而 (e) 只要求验证<strong>一元</strong>的基本平移。对复杂运算（比如 <span class="math">n=10</span>）这是巨大的简化。<strong>「多元相容」可以拆成一串「一元相容」</strong>——这是 Maltsev 风格的典型技巧。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">5.7（Maltsev 的生成同余构造；Bergman 4.17）</span></div>
+    <p>对任意 <span class="math">θ⊆A²</span>，<span class="math">Cg(θ)</span>（由 <span class="math">θ</span> 生成的同余）等于所有满足下列条件的对 <span class="math">⟨a,b⟩</span>：存在 <span class="math">z₀,…,z<sub>n</sub>∈A</span>，存在 <span class="math">⟨x<sub>i</sub>,y<sub>i</sub>⟩∈θ</span>，与基本平移的复合 <span class="math">f<sub>i</sub>∈F(A)<sup>*</sup></span>，使</p>
+    <div class="formula">a = z₀,　b = z<sub>n</sub>,　{z<sub>i</sub>, z<sub>i+1</sub>} = { f<sub>i</sub>(x<sub>i</sub>), f<sub>i</sub>(y<sub>i</sub>) }</div>
+    <div class="intu" style="margin:8px 0"><p>读作：<strong>从 <span class="math">θ</span> 中的一对点出发，用一元平移把它们搬到别处，再把一串这样的「跳跃」首尾相接</strong>，能连到的所有对，正好就是生成同余。这是 L03「<span class="math">Cg</span> 是闭包算子」的具体展开——现在你知道它一步步怎么闭包了。</p></div>
+  </div>
+  <p class="src"><b>来源：</b>Bergman §4.2 定理 4.16、4.17；定义 4.15。</p>
+</section>
+
+<!-- ============ O4 全不变同余 ============ -->
+<section id="eqtheory">
+  <h2><span class="sn">6</span>等式理论与全不变同余 <span class="tag alg">O4</span><span class="tag log">逻辑</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.8（全不变同余；Bergman 4.57）</span></div>
+    <p>同余 <span class="math">θ</span> 叫<strong>全不变</strong>，若对任意自同态 <span class="math">f∈End(A)</span>：</p>
+    <div class="formula">⟨a,b⟩∈θ ⟹ ⟨f(a),f(b)⟩∈θ</div>
+    <p>全体记作 <span class="math">Con<sub>fi</sub>(A)</span>。等价说法：<span class="math">Con<sub>fi</sub>(A)=Con(A<sup>+</sup>)</span>，其中 <span class="math">A<sup>+</sup>=⟨A, F∪End(A)⟩</span> 把自同态也当作基本运算。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">5.9（Bergman 4.58）</span></div>
+    <p><span class="math">Con<sub>fi</sub>(A)</span> 是 <span class="math">Con(A)</span> 的完全子格，且是代数格。</p>
+  </div>
+
+  <div class="intu"><div class="bt">为什么等式理论 = 全不变同余</div>
+    <p>L04 项代数 <span class="math">F<sub>t</sub>(X)</span> 的元素是项。一个<strong>等式理论</strong>（一组对 <span class="var">V</span> 成立的等式）就是项之间的一个等价关系；它同余（因为等式可代入），而且全不变（因为对项作代入就是自同态——把变量换成任意项）。<strong>「代入保持可证性」正是全不变性的定义。</strong></p>
+    <p>于是研究「簇的等式公理」可以改研究 <span class="math">F<sub>t</sub></span> 上的全不变同余。Bergman 定理 4.59 进一步说明：簇 <span class="math">V</span> 在代数 <span class="var">A</span> 上诱导的同余 <span class="math">λ<sub>V</sub></span> 总是全不变的。<strong>用格论工具比直接用公理化更能操纵这件事。</strong></p>
+  </div>
+
+  <div class="fusion"><div class="bt">逻辑侧的读法</div>
+    <p>全不变同余 ≍ 「在任意代入下封闭的理论」。逻辑里我们要求定理集对代入封闭（否则 <span class="math">⊢φ</span> 换成 <span class="math">⊢φ[p/q]</span> 会失效），这就是同一条性质。L06 的布尔代数滤子、L16 的 Leibniz 同余，都从这里长出来。</p>
+  </div>
+  <p class="src"><b>来源：</b>Bergman §4.6 定义 4.57、命题 4.58、定理 4.59。</p>
+</section>
+
+<!-- ============ O5 Maltsev ============ -->
+<section id="maltsev">
+  <h2><span class="sn">7</span>Maltsev 条件 <span class="tag alg">O5</span></h2>
+  <p class="lead">这是泛代数最漂亮的结论之一：一个关于<strong>所有</strong>代数的同余性质，等价于某个<strong>一元项</strong>满足两条等式。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.10（同余可换）</span></div>
+    <p>同余 <span class="math">α,β</span> <strong>可换</strong>，若 <span class="math">α∘β = β∘α</span>。代数 / 簇叫<strong>同余可换</strong>，若其任意两个同余可换。（注意 <span class="math">α∘β</span> 一般只是关系；可换时它等于 <span class="math">α∨β</span>。）</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">5.11（Maltsev 定理，1954；Bergman 4.64）</span></div>
+    <p>对簇 <span class="var">V</span>，以下等价：</p>
+    <ol>
+      <li><span class="var">V</span> 同余可换；</li>
+      <li>三生成自由代数 <span class="math">F<sub>V</sub>(3)</span> 同余可换；</li>
+      <li>存在三元项 <span class="math">q(x,y,z)</span> 使 <span class="math">V ⊨ q(x,y,y)≈x≈q(y,y,x)</span>。</li>
+    </ol>
+    <div class="proof"><span class="pt">证明核心（(c)⇒(a)）。</span>设 <span class="math">a α c β b</span>。用 <span class="math">q</span> 造链：</div>
+    <div class="formula">a = q(a,b,b) β q(a,c,b) α q(a,a,b) = b</div>
+    <div class="proof" style="margin-top:0">第一等号用 <span class="math">q(x,y,y)=x</span>；中间一步 <span class="math">b β c</span> 让第 2 位变；再一步 <span class="math">a α c</span> 让第 3 位变；末等号用 <span class="math">q(y,y,x)=x</span>。于是 <span class="math">⟨a,b⟩∈β∘α</span>，得证。<span class="qed">∎</span></div>
+    <p><strong>(b)⇒(c)</strong> 是自由代数的反向魔术：在 <span class="math">F=F<sub>V</sub>(x,y,z)</span> 中取 <span class="math">α=Cg(x,y), β=Cg(y,z)</span>，则 <span class="math">⟨x,z⟩∈α∘β=β∘α</span>，故有 <span class="math">u</span> 使 <span class="math">x β u α z</span>；因 <span class="math">F</span> 由三生成元生成，<span class="math">u=q<sup>F</sup>(x,y,z)</span>。再用自由性把 <span class="math">x,y</span> 一起映到 <span class="math">a</span>、<span class="math">z</span> 映到 <span class="math">b</span>，就读出两条等式。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例子 · Maltsev 项长什么样</div>
+    <ul>
+      <li>群：<span class="math">q(x,y,z)=x·y⁻¹·z</span>。验证 <span class="math">q(x,y,y)=x·y⁻¹·y=x</span>，<span class="math">q(y,y,x)=y·y⁻¹·x=x</span>。</li>
+      <li>环：<span class="math">q(x,y,z)=x−y+z</span>。</li>
+      <li>拟群：<span class="math">q(x,y,z)=(x/(y\y))·(y\z)</span>。</li>
+      <li><strong>反例</strong>：三元素链（以及任何非平凡格簇）不同余可换，因此没有 Maltsev 项。</li>
+    </ul>
+  </div>
+
+  <div class="intu"><div class="bt">什么是「Maltsev 条件」</div>
+    <p>定理 4.64 的模式——「某个全局结构性质 ⟺ 存在满足若干等式的项」——被称为 <strong>Maltsev 条件</strong>。它是泛代数的万能翻译器：把「簇的性质」翻译成「项的等式」，于是可以用逻辑/证明论工具研究结构。L07 讨论同余分配簇、算术簇时，会遇到一整串这样的条件（Jónsson 项、优先项、near-unanimity 项）。</p>
+  </div>
+  <p class="src"><b>来源：</b>Bergman §4.7 定理 4.64 及其后讨论。</p>
+</section>
+
+<!-- ============ O6 解释 ============ -->
+<section id="interp">
+  <h2><span class="sn">8</span>簇之间的解释 <span class="tag alg">O6</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.12（解释；Bergman 4.76）</span></div>
+    <p>设 <span class="math">V</span> 型为 <span class="math">ρ:F→ω</span>，<span class="math">W</span> 型为 <span class="math">σ:G→ω</span>。</p>
+    <ul>
+      <li><strong>严格解释</strong>：映射 <span class="math">D: F→T<sub>σ</sub>(X<sub>ω</sub>)</span>，把 <span class="math">V</span> 的每个运算符号译成 <span class="math">W</span> 语言的一个项（元数相符），且对每个 <span class="math">A∈W</span>，用这些项解释出的代数 <span class="math">A<sup>D</sup>∈V</span>。</li>
+      <li><strong>无谓解释</strong>：把 0 元符号换成取常值的 1 元项。</li>
+      <li><strong>解释</strong>：严格解释（可先做无谓解释）。</li>
+    </ul>
+    <div class="intu" style="margin:8px 0"><p>注意方向有点反：<span class="math">D</span> 是「把 <span class="math">V</span> 的符号译成 <span class="math">W</span> 的项」，却给出一个从 <span class="math">W</span> 到 <span class="math">V</span> 的代数变换。<strong>因为翻译项，就是告诉你在 <span class="math">W</span>-代数上怎么造出 <span class="math">V</span>-结构。</strong></p></div>
+  </div>
+
+  <div class="ex"><div class="bt">例子（Bergman §4.8 开头）</div>
+    <ul>
+      <li>环忘掉乘法 → 阿贝尔群（reduct，删掉运算）。</li>
+      <li>阿贝尔群上定义 <span class="math">x·y=0</span> → 环。</li>
+      <li>群上定义 <span class="math">x/y=x·y⁻¹, x\y=x⁻¹·y</span> → 拟群。</li>
+      <li>布尔代数 ↔ 布尔环，两个互为逆的解释。</li>
+    </ul>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.13（项等价；Bergman 4.77）</span></div>
+    <p><span class="math">V</span> 与 <span class="math">W</span> <strong>项等价</strong>，若存在解释 <span class="math">D: V→W</span> 与 <span class="math">E: W→V</span> 使 <span class="math">A<sup>ED</sup>=A</span>、<span class="math">B<sup>DE</sup>=B</span>。项等价的簇在泛代数意义下「是同一个」：子代数、积、自由代数全部对应。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">5.14（解释的刻画；Bergman 4.78）</span></div>
+    <p>对无 0 元符号的簇 <span class="math">V,W</span> 与变换 <span class="math">T: W→V</span>，以下等价：(1) <span class="math">T</span> 来自某个解释；(2) <span class="math">T</span> 保持载体（<span class="math">A</span> 与 <span class="math">T(A)</span> 同载体）且把同态送成同态。</p>
+  </div>
+
+  <div class="fusion"><div class="bt">融合：解释为「逻辑之间的翻译」铺路</div>
+    <p>把簇看作某个逻辑的代数对应物，簇之间的解释就是<strong>逻辑之间的解释</strong>（interpretability）：用 <span class="math">W</span> 的语言定义 <span class="math">V</span> 的连通词，把 <span class="math">V</span> 的定理翻译成 <span class="math">W</span> 的定理。L16 会看到，代数化的逻辑之间做解释，正对应这里的结构。项等价则对应「表达力相同」——比如布尔代数与布尔环，命题逻辑的两种代数外壳。</p>
+  </div>
+  <p class="src"><b>来源：</b>Bergman §4.8 定义 4.76/4.77，定理 4.78；UAL §2.3（范畴语言）。</p>
+</section>
+
+<!-- ============ 融合 ============ -->
+<section id="fusion">
+  <h2><span class="sn">9</span>融合接口</h2>
+  <table>
+    <tr><th>本讲概念</th><th>逻辑侧对应</th><th>后续讲次</th></tr>
+    <tr><td>Pol–Inv 对偶</td><td>可定义关系 / 多态；L02 Galois 连接的实例</td><td>L16 代数化</td></tr>
+    <tr><td>全不变同余</td><td>对代入封闭的理论</td><td>L06 BAO、L16</td></tr>
+    <tr><td>Maltsev 条件</td><td>用项的等式刻画模型类的性质</td><td>L07 同余分配/算术簇</td></tr>
+    <tr><td>簇的解释 / 项等价</td><td>逻辑间的解释 / 表达力相同</td><td>L16 解释</td></tr>
+  </table>
+  <div class="fusion"><div class="bt">方法上的一句话</div>
+    <p>本讲两次沿用 L02：<strong>clone 是闭包系统</strong>，<strong>Pol–Inv 是 Galois 连接</strong>。一次抽象，三次复用。到 L16 你会发现，逻辑的「理论—模型」对偶也是同一台机器——这正是「万物融合」这个讲义名的由来。</p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按学习目标编号）</h2>
+  <div class="exercise"><ol>
+    <li><span class="tag alg">O1</span> 验证 <span class="math">E(A)</span>（幂等运算全体）是 clone：检查投影幂等、复合封闭。</li>
+    <li><span class="tag alg">O1</span> 对群 <span class="math">G</span>，举例一个多项式运算但不是项运算（提示：用元素作参数的平移），并说明为何 <span class="math">Clo(G)⊆Pol(G)</span>。</li>
+    <li><span class="tag alg">O2</span> 用引理 4.12 证明：偏序 <span class="math">⟨P,≤⟩</span> 的保序运算集 <span class="math">F(≤)</span> 是 clone。</li>
+    <li><span class="tag alg">O2</span> 对 <span class="math">A={0,1}</span>，列出全部二元关系，计算 <span class="math">F(≤)</span>（<span class="math">≤</span> 为通常序），并与 <span class="math">Op(A)</span> 比较。</li>
+    <li><span class="tag alg">O3</span> 用定理 4.16(e) 证明：群的同余由单位元的正规子群决定（提示：基本平移 <span class="math">axb</span> 保持等价关系 <span class="math">aN=bN</span>）。</li>
+    <li><span class="tag alg">O3</span> 对 <span class="math">A=⟨{0,1,2}, f⟩</span>（<span class="math">f</span> 为一元后继模 3），取 <span class="math">θ={⟨0,1⟩}</span>，用定理 4.17 构造 <span class="math">Cg(θ)</span>。</li>
+    <li><span class="tag alg">O4</span><span class="tag log">逻辑</span> 说明为什么「等式理论对代入封闭」对应「同余全不变」：把代入 <span class="math">σ</span> 看成项代数 <span class="math">F<sub>t</sub>(X)</span> 的自同态，验证定义 5.8。</li>
+    <li><span class="tag alg">O5</span> 验证 <span class="math">q(x,y,z)=x·y⁻¹·z</span> 满足 Maltsev 等式，并用它把 <span class="math">a α c β b</span> 改写成 <span class="math">β∘α</span> 的见证。</li>
+    <li><span class="tag alg">O5</span> 证明三元素链不同余可换（提示：取 <span class="math">α=Cg(0,1), β=Cg(1,2)</span>，验证 <span class="math">⟨0,2⟩∈α∘β</span> 但不在 <span class="math">β∘α</span>）。</li>
+    <li><span class="tag alg">O6</span> 写出「布尔代数 → 布尔环」「布尔环 → 布尔代数」两个解释的项定义，并验证它们互为逆。</li>
+    <li><span class="tag alg">O6</span> 用定理 4.78 说明：为什么「环 → 单位群」不是解释（提示：载体变了）。</li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L04.html">← 上一讲：L04 子直积、超积、自由代数与 Birkhoff 定理</a>
+  <a href="L06.html">下一讲：L06 布尔代数、BAO 与判别式簇 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L05 · 来源 Bergman Ch4 §4.1–4.2/§4.6–4.8 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

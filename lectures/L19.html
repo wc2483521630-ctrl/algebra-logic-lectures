@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L19 桥之二：完全性 ↔ 有限公理化 ↔ Hilbert 系统 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第五篇 桥定理：全课核心</span><span class="sep">/</span><span>L19</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 19 · 2 学时 · 桥之二</div>
+  <h1>桥之二：完全性 ↔ 有限公理化 ↔ Hilbert 系统</h1>
+  <div class="sub">逻辑说「有效 = 可证」，代数说「等式理论有基」，语法说「有台会算的机器」——三句话是同一句</div>
+  <div class="metarow"><span>来源：UAL §4.2.1–4.2.2（定理 4.2.9/4.2.18、Hilbert 系统与可允许规则）；Gödel 完全性定理、Henkin 构造；拓扑讲义 Ch5.3；回指 L02 闭包算子与 Galois 连接、L04 Birkhoff 定理、L15 四元组、L16 公式代数、L18 紧致桥</span>
+    <span class="tag log">逻辑</span><span class="tag alg">代数</span><span class="tag top">拓扑</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：从「有没有」到「能不能算」</a></li>
+  <li><a href="#hilbert">Hilbert 系统三件套（O1）</a></li>
+  <li><a href="#sound">可靠、完全，与「完全 ⟹ 紧致」（O2）</a></li>
+  <li><a href="#char">定理 4.2.9/4.2.18：双向代数刻画（O3）</a></li>
+  <li><a href="#henkin">Henkin 构造与典范模型（O4）</a></li>
+  <li><a href="#axiom">有限公理化与有限基（O5）</a></li>
+  <li><a href="#topo">拓扑侧：理论–模型对应与紧致化（O6）</a></li>
+  <li><a href="#fusion2">融合接口：第二座三面一体图</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">L18 回答的是「有没有模型」：有限片段都相容，整体就有。那是存在性命题，靠超滤子，非构造。这一回答另一个问题——<strong>「有效式能不能被一台机器一步步算出来？」</strong>那是生成性命题，靠有限证明。<strong>两件事的接缝，就在「证明是有限对象」这一句上。</strong></p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>它回答的问题</th></tr>
+      <tr><td>Hilbert 系统 <span class="math">⟨Fm, Ax, R⟩</span></td><td>L01 语法、L18 后承</td><td>「有效式」能不能由有限规则机械生成？</td></tr>
+      <tr><td>可证 <span class="math">⊢</span> 与有效 <span class="math">⊨</span></td><td>L01 语义、L18 定义 3.1/3.2</td><td>两套记号为什么必须分清，又为什么能重合？</td></tr>
+      <tr><td>可靠 / 完全 / 强可靠 / 强完全</td><td>上面 + L18</td><td>「⊢ ⊆ ⊨」与「⊨ ⊆ ⊢」各自叫什么？</td></tr>
+      <tr><td>有限证明（有限支持性）</td><td>L02 闭包算子的有限特征</td><td>完全性为什么反过来蕴含紧致性？</td></tr>
+      <tr><td>定理 4.2.9 / 4.2.18</td><td>L16 代数对应、L18 紧致桥</td><td>有 Hilbert 系统，代数侧要有什么性质？</td></tr>
+      <tr><td>Henkin 极大一致集</td><td>L16 公式代数、L18 Stone 空间</td><td>完全性证明里补上的那个「点」是谁？</td></tr>
+      <tr><td>典范模型</td><td>L06 Stone 表示、L14 Stone 空间</td><td>纯语法造出来的模型长什么样？</td></tr>
+      <tr><td>有限公理化 / 有限基</td><td>L04 Birkhoff、L05 项等价</td><td>「公理有限」在代数侧对应什么？</td></tr>
+      <tr><td>理论–模型对应</td><td>L02 Galois 连接、L13 紧致化</td><td>拓扑侧怎么看「一致理论」和「点」？</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>Hilbert 的证明<strong>有限</strong> → <span class="math">⊢</span> 天然有有限特征（L02）→ 可靠 + 完全把 <span class="math">⊨</span> 认成 <span class="math">⊢</span> → <span class="math">⊨</span> 继承紧致性（L18）→ 反过来，L18 的紧致性加上 Henkin 的极大一致集（正是 L18 的 Stone 空间点）造出典范模型 → 完全性成立 → 把「有限公理」翻成代数的「有限等式基」（L04 Birkhoff）→ 理论–模型对应是 Galois 连接，补极大一致集就是紧致化（L13）。<strong>整讲一台发动机：有限性。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 目标 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>写出 Hilbert 系统三件套、证明的有限支持性，区分可证与有效、可导出规则与可允许规则</td><td><a href="#hilbert">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>分清弱/强可靠与弱/强完全，并证明「可靠 + 完全 ⟹ 紧致」</td><td><a href="#sound">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>陈述定理 4.2.9/4.2.18 的双向性，说明每方向用哪座翻译桥</td><td><a href="#char">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>走完 Henkin 构造四步，说清极大一致集 = 超滤子 = Stone 空间点</td><td><a href="#henkin">§6</a></td><td><a href="#ex">E7, E8</a></td></tr>
+    <tr><td><b>O5</b></td><td>把有限公理化译成代数的有限等式基，说清它不等于可判定，并给出不完全性边界</td><td><a href="#axiom">§7</a></td><td><a href="#ex">E9, E10</a></td></tr>
+    <tr><td><b>O6</b></td><td>用 Galois 连接写理论–模型对应，把 Henkin 扩张读成 Stone 空间里的紧致化</td><td><a href="#topo">§8</a></td><td><a href="#ex">E11, E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：从「有没有」到「能不能算」</h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>L18 的紧致性定理给了你一张存在性证明：<strong>有限片段都有模型，整体就有模型。</strong>但那张证明靠的是非主超滤子和超积——L13 早就说过，非主超滤子写不出具体例子。<strong>所以你知道解存在，却拿不到它。</strong></p>
+    <p>这一讲换一个问法。不问「解在不在」，问<strong>「哪些式子是有效的，我能不能一台机器把它一个个列出来？」</strong>如果答案是能，那台机器就是 Hilbert 系统：有限条公理模式、有限条推理规则，剩下全靠机械代入。<strong>这是从存在问题走向生成问题。</strong></p>
+    <p>两件事看着不相干，其实被一个词焊死了：<strong>有限</strong>。Hilbert 证明是一条有限公式序列；有限，就意味着每一步只用有限多个前提。于是 <span class="math">⊢</span> 天生满足「可证的总有有限理由」。如果完全性说 <span class="math">⊨</span> 和 <span class="math">⊢</span> 是同一件事，那么 <span class="math">⊨</span> 也继承这个性质——那正是 L18 的紧致性。</p>
+    <p><strong>一句话：完全性 = 紧致性 + 一台有限证明的发动机。</strong>L18 造好了紧致性这一半，这一讲把发动机装上。</p>
+  </div>
+
+  <div class="diagram"><pre>
+                 逻辑            语法              代数
+            ┌─────────────┬─────────────┬─────────────┐
+  对象       │ 有效式 ⊨ φ   │ 可证式 ⊢ φ   │ 等式 E 成立  │
+  发动机     │ （语义真值）  │ Hilbert 机器 │ HSP / 基     │
+  有限性     │ 紧致性       │ 证明有限     │ 有限等式基   │
+            └──────┬──────┴──────┬──────┴──────┬──────┘
+                   │ 完全性      │ 可靠性      │ Birkhoff
+                   └─────────────┼─────────────┘
+                        ⊨  =  ⊢  ⟺  模型的等式理论
+                  第二座桥：把「有效」翻成「可证」，再翻成「可算的代数」
+  </pre></div>
+
+  <div class="warn"><div class="bt">先把话说清楚：两个「完全」别混</div>
+    <p>① <strong>这里的「完全」是「有效式都可证」，不是「公理写得满满当当」。</strong>它是语义与语法的吻合度，不是公理的多少。一个公理很少的系统完全可能完全（命题逻辑就是这样）。</p>
+    <p>② <strong><span class="math">⊢</span> 和 <span class="math">⊨</span> 必须分开写，哪怕它们最后相等。</strong>写成同一个符号，你就看不出「完全性」在证明什么了。<strong>整讲的价值就在让这两套记号先分家、再握手。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O1 ============ -->
+<section id="hilbert">
+  <h2><span class="sn">3</span>Hilbert 系统三件套 <span class="tag log">O1</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.1（Hilbert 型推理系统）</span></div>
+    <p>一个 Hilbert 系统是三元组 <span class="math">D = ⟨Fm(L), Ax, R⟩</span>：</p>
+    <ul>
+      <li><strong><span class="math">Ax</span>：公理</strong>，通常是一族公理模式（把某几个变元任意代入公式都算公理）。</li>
+      <li><strong><span class="math">R</span>：推理规则</strong>，如分离规则 MP「从 <span class="math">φ</span> 与 <span class="math">φ → ψ</span> 得 <span class="math">ψ</span>」、概括规则「从 <span class="math">φ</span> 得 <span class="math">∀x φ</span>」（<span class="math">x</span> 不在前提中自由出现）。</li>
+      <li><strong>证明</strong>：从 <span class="math">Γ ∪ Ax</span> 出发的一条<strong>有限</strong>公式序列，每一项或是公理实例、或是 <span class="math">Γ</span> 的成员、或由前面项用某条规则得到。记 <span class="math">Γ ⊢<sub>D</sub> φ</span>；<span class="math">Thm(D) = {φ : ∅ ⊢<sub>D</sub> φ}</span>。</li>
+    </ul>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">3.2（有限支持性）</span></div>
+    <p>若 <span class="math">Γ ⊢ φ</span>，则存在<strong>有限</strong> <span class="math">Γ₀ ⊆ Γ</span> 使 <span class="math">Γ₀ ⊢ φ</span>。</p>
+    <div class="proof"><span class="pt">证明。</span>一条证明只有有限步，每步用到的 <span class="math">Γ</span> 中前提至多有限多个，把这些前提收集起来就是 <span class="math">Γ₀</span>；同一条证明同时也是从 <span class="math">Γ₀</span> 出发的证明。<span class="qed">∎</span></div>
+    <p><strong>别小看这一行。</strong>它是 L02 闭包算子「有限特征」在语法侧的实例：<span class="math">C<sub>⊢</sub>(Γ) = ⋃<sub>Γ₀ ⊆ Γ 有限</sub> C<sub>⊢</sub>(Γ₀)</span>。下一节会看到，整个 L19 都是从这一行长出来的。</p>
+  </div>
+
+  <div class="intu"><div class="bt">⊢ 与 ⊨：先分家，再握手</div>
+    <p><span class="math">Γ ⊨ φ</span> 说的是：每个满足 <span class="math">Γ</span> 的模型都满足 <span class="math">φ</span>——这是<strong>真值</strong>问题，语言里谈的是模型和赋值。<span class="math">Γ ⊢ φ</span> 说的是：存在一条从 <span class="math">Γ</span> 到 <span class="math">φ</span> 的有限证明——这是<strong>符号操作</strong>问题，语言里根本没有模型。</p>
+    <p>它们凭什么该相等？<strong>一点都不显然。</strong>一个是关于「所有模型」的全称命题，一个是关于「存在一条序列」的存在命题。<strong>完全性定理的全部内容，就是说这两件毫不相似的事情恰好重合。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><strong>命题逻辑的 Hilbert 系统。</strong>几条公理模式（如 <span class="math">φ → (ψ → φ)</span>）加分离规则，就足以生成全部重言式。系统有限、规则单一、证明可检查。<strong>这是「有效 = 可证」最干净的样板</strong>：你写出的每个重言式，原则上都能被这台机器有限步吐出来。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>分离规则为什么必须是保真的。</strong>若 <span class="math">φ</span> 与 <span class="math">φ → ψ</span> 都有效，则 <span class="math">ψ</span> 有效——所以 MP 这条规则把有效式送到有效式。<strong>本质在于：一条推理规则要能进 Hilbert 系统，它得是语义上站得住的推理。</strong>否则系统会证出假式子，可靠性失败，桥从这一头就断了。所谓「Hilbert 系统的规则」，其实就是 <span class="math">⊨</span> 自身满足的闭包规则被抄到了语法侧。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>可导出规则 ≠ 可允许规则。</strong>规则「前提集 <span class="math">Δ</span> 得结论 <span class="math">ψ</span>」<strong>可导出</strong>，指 <span class="math">Δ ⊢ ψ</span>；<strong>可允许</strong>，指对任意代入 <span class="math">σ</span>，只要 <span class="math">σ</span> 把 <span class="math">Δ</span> 全送进定理集，就把 <span class="math">ψ</span> 也送进去。可导出必可允许，<strong>反之不必</strong>（中间逻辑里有大量反例）。<strong>这说明「定理集」比「规则清单」更基本</strong>：完全性只保证定理集对上，不保证你选的规则清单唯一。</p>
+    <p>② <strong>公理模式的「有限」不是「公式有限」。</strong>一条模式 <span class="math">φ → (ψ → φ)</span> 代表无穷多条实例。有限公理化说的是模式有限，见 §7。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL §4.2.1（Hilbert 系统、可允许规则）；L02 闭包算子的有限特征；L01 语法与语义。</p>
+</section>
+
+<!-- ============ O2 ============ -->
+<section id="sound">
+  <h2><span class="sn">4</span>可靠、完全，与「完全 ⟹ 紧致」 <span class="tag log">O2</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.1（四个词，两种强度）</span></div>
+    <table>
+      <tr><th>名称</th><th>陈述</th><th>包含关系</th></tr>
+      <tr><td>弱可靠</td><td><span class="math">⊢ φ ⟹ ⊨ φ</span></td><td>定理都是有效式</td></tr>
+      <tr><td>强可靠</td><td><span class="math">Γ ⊢ φ ⟹ Γ ⊨ φ</span></td><td>带前提也保真</td></tr>
+      <tr><td>弱完全</td><td><span class="math">⊨ φ ⟹ ⊢ φ</span></td><td>有效式都是定理</td></tr>
+      <tr><td>强完全</td><td><span class="math">Γ ⊨ φ ⟹ Γ ⊢ φ</span></td><td>带前提也能证</td></tr>
+    </table>
+    <p>强可靠是「<span class="math">⊢ ⊆ ⊨</span>」（作为二元关系），强完全是「<span class="math">⊨ ⊆ ⊢</span>」。<strong>两者同时成立，就是 <span class="math">⊢ = ⊨</span>。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">4.2（完全 + 可靠 ⟹ 紧致；L19 与 L18 的接缝）</span></div>
+    <p>设逻辑 <span class="math">L</span> 有强可靠且强完全的 Hilbert 系统，则 <span class="math">L</span> 后果紧致（L18 定义 3.2）：<span class="math">Γ ⊨ φ ⟹</span> 存在有限 <span class="math">Γ₀ ⊆ Γ</span> 使 <span class="math">Γ₀ ⊨ φ</span>。</p>
+    <div class="proof"><span class="pt">证明（三步，每步都是前面见过的）。</span>
+      <p>① 由强完全，<span class="math">Γ ⊨ φ ⟹ Γ ⊢ φ</span>。</p>
+      <p>② 由命题 3.2（证明有限），存在有限 <span class="math">Γ₀ ⊆ Γ</span> 使 <span class="math">Γ₀ ⊢ φ</span>。</p>
+      <p>③ 由强可靠，<span class="math">Γ₀ ⊢ φ ⟹ Γ₀ ⊨ φ</span>。</p>
+      <p>串起来即得。<span class="qed">∎</span></p>
+    </div>
+    <p>在有 <span class="math">¬</span> 与 <span class="math">⊥</span> 的熟悉情形，由 L18 §3 的等价，后果紧致再给出可满足紧致：<strong>「每个有限片段有模型 ⟹ 整体有模型」。</strong></p>
+  </div>
+
+  <div class="intu"><div class="bt">这个定理为什么是整讲的枢纽</div>
+    <p>它说明<strong>完全性比紧致性强</strong>：完全性不仅保证「有限都行就整体行」，还额外给了你一台能有限步验证的机器。<strong>L18 的紧致桥是它的影子，不是它的全部。</strong></p>
+    <p>更要紧的是方向：<strong>「可靠 + 完全 ⟹ 紧致」是容易的，「紧致 ⟹ 完全」却不能照搬。</strong>前者只需把有限证明走三遍；后者要凭空造出一个模型来，得动用 Henkin 构造（§6）。<strong>这个不对称，是本讲后半段全部技术的来源。</strong></p>
+  </div>
+
+  <div class="warn"><div class="bt">紧致性不够</div>
+    <p>① <strong>紧致是完全的必要条件，但单靠它造不出 Hilbert 系统。</strong>还需要代数侧的条件（定理 4.2.18），核心是 <span class="math">⊨</span> 的等价关系要能被代数同余捕捉（L16 的代数对应）。</p>
+    <p>② <strong>二阶逻辑是反面的镜子。</strong>满语义的二阶逻辑紧致性失败（L18 §8 的「有限群」论证同型），因此根本不存在强可靠且完全的有限 Hilbert 系统。<strong>紧致性一断，桥就塌。</strong></p>
+  </div>
+
+  <p class="src"><b>来源：</b>UAL §4.2.1–4.2.2；L18 定义 3.1/3.2 与 §3 两紧致性等价；L02 闭包算子有限特征。</p>
+</section>
+
+<!-- ============ O3 ============ -->
+<section id="char">
+  <h2><span class="sn">5</span>定理 4.2.9/4.2.18：双向代数刻画 <span class="tag alg">O3</span><span class="tag log">逻辑</span></h2>
+
+  <div class="thm"><div class="bt">定理 <span class="num">5.1（UAL 定理 4.2.9，语法 ⟹ 代数）</span></div>
+    <p>设 <span class="math">L</span> 有强可靠、有限完全的 Hilbert 系统。则 <span class="math">⊢</span> 与 <span class="math">⊨</span> 在有限前提上一致，配合紧致性在全集上一致；于是 <span class="math">L</span> 的有效式恰好是从 <span class="math">Ax</span> 用规则可导出的式子，<strong>代数侧的表达就是：<span class="math">Alg<sub>⊨</sub>(L)</span> 中成立的等式，恰由这族公理的等式翻译生成。</strong></p>
+    <div class="proof"><span class="pt">证明骨架。</span>用 L16 的翻译把公式 <span class="math">φ</span> 送到等式 <span class="math">ε(φ)</span>，把 <span class="math">⊢</span> 送到代数的等式可导性；再用 L04 的 Birkhoff 定理「等式可证 ⟺ 所有模型成立」闭合。<span class="qed">∎</span></div>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">5.2（UAL 定理 4.2.18，代数 ⟹ 语法）</span></div>
+    <p>反过来，若 <span class="math">Alg<sub>⊨</sub>(L)</span> 的等式理论可由一族等式以有限步规则生成（相应的代数性质），且 <span class="math">L</span> 紧致，则可造出强可靠且完全的 Hilbert 系统。</p>
+    <div class="proof"><span class="pt">证明骨架。</span>把这族生成元抄成公理模式、把有限步生成规则抄成推理规则，得到 <span class="math">D</span>；先由构造得 <span class="math">⊢ ⊆ ⊨</span>；反向用 <span class="math">⊨</span> 的紧致性把无穷的语义后承压成有限，再用生成元的完备性得到有限证明。<span class="qed">∎</span></div>
+  </div>
+
+  <div class="intu"><div class="bt">两方向各用哪座桥</div>
+    <table>
+      <tr><th>方向</th><th>用的工具</th><th>关键一步</th></tr>
+      <tr><td>语法 ⟹ 代数（4.2.9）</td><td>L16 翻译 + L04 Birkhoff</td><td>把「可证」读成代数里的等式可导</td></tr>
+      <tr><td>代数 ⟹ 语法（4.2.18）</td><td>L18 紧致性 + §4 的有限支持性</td><td>用紧致把「所有模型成立」压成有限证明</td></tr>
+    </table>
+    <p><strong>和 L18 定理 4.1.5/4.1.6 的模板一模一样</strong>：一边是逻辑性质，一边是代数性质，靠 L16 的翻译 + L04 的构造兑现。<strong>你已经见过第二遍了。</strong></p>
+  </div>
+
+  <div class="box def"><div class="bt">技术注解（可跳过）</div>
+    <p>上面在「有 <span class="math">¬</span>、<span class="math">Alg<sub>⊨</sub>(L)</span> 一阶刻画」的熟悉情形写得干净。UAL 一般设定下要补两处：一是没有 <span class="math">¬</span> 时用 <span class="math">mng</span> 形式化「反例模型」；二是 <span class="math">Alg<sup>m</sup>(L)</span> 与 <span class="math">Alg<sub>⊨</sub>(L)</span> 的差距要靠 L16 的可代数化条件弥合。<strong>本讲义的目标仍是看清桥的形状与发动机，纯技术验证留给原书。</strong></p>
+  </div>
+
+  <p class="src"><b>来源：</b>UAL 定理 4.2.9、4.2.18、§4.2.1–4.2.2；L04 定理 4.12（Birkhoff）；L16 代数对应；L18 紧致桥。</p>
+</section>
+
+<!-- ============ O4 ============ -->
+<section id="henkin">
+  <h2><span class="sn">6</span>Henkin 构造与典范模型 <span class="tag log">O4</span><span class="tag top">拓扑</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>§4 只证了「完全 ⟹ 紧致」，方向是<strong>向下</strong>的：从完全性推出紧致性，容易。现在要证<strong>向上</strong>的那个方向——从语义的 <span class="math">Γ ⊨ φ</span> 造出语法的 <span class="math">Γ ⊢ φ</span>，也就是：给定 <span class="math">Γ</span> 一致，造一个模型满足它。<strong>没有现成模型可用，只能自己造一个。</strong></p>
+    <p>怎么造？用<strong>语法的材料</strong>造——这就是 Henkin 构造。它的思路和 L13 补 Stone–Čech、L18 用超滤子取极限，是同一个动作的第三种写法：<strong>把相容的理论扩张到极大，再把极大理论当成一个点。</strong></p>
+  </div>
+
+  <div class="proof"><div class="bt">四步构造（Gödel 完全性定理的 Henkin 证明）</div>
+    <p><strong>第 1 步：加见证。</strong>给每个公式 <span class="math">∃x φ(x)</span> 配一个新常元 <span class="math">c<sub>φ</sub></span>，加入公理 <span class="math">∃x φ(x) → φ(c<sub>φ</sub>)</span>。<strong>作用：让每个存在断言有一个「看得见的证人」。</strong>不加这一步，后面造出的模型里量词没有着落。</p>
+    <p><strong>第 2 步：扩张成极大一致集。</strong>设 <span class="math">Γ</span> 一致，用枚举加逐步扩张（或 Zorn 引理）把它扩成 <span class="math">Γ<sup>*</sup> ⊇ Γ</span>，满足对每句 <span class="math">ψ</span>，恰有 <span class="math">ψ ∈ Γ<sup>*</sup></span> 或 <span class="math">¬ψ ∈ Γ<sup>*</sup></span>，且 <span class="math">Γ<sup>*</sup></span> 一致。<strong>作用：把理论逼到「对每件事都表态」的饱和状态。</strong></p>
+    <p><strong>第 3 步：造典范模型（项模型）。</strong>论域取闭项的等价类：<span class="math">t ∼ s ⟺ (t = s) ∈ Γ<sup>*</sup></span>。函数符号按项解释，关系符号按 <span class="math">Γ<sup>*</sup></span> 成员解释。<strong>作用：用语法自身的材料（项）当模型的点。</strong></p>
+    <p><strong>第 4 步：真值引理。</strong>归纳证明：对每句 <span class="math">ψ</span>，<span class="math">M<sup>*</sup> ⊨ ψ ⟺ ψ ∈ Γ<sup>*</sup></span>。原子式由解释定义，布尔连接词由极大一致性（第 2 步），量词由见证（第 1 步）。于是 <span class="math">M<sup>*</sup> ⊨ Γ</span>，<strong><span class="math">Γ</span> 有模型</strong>。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="fusion"><div class="bt">这三处原来是同一个东西</div>
+    <p><strong>极大一致集 <span class="math">Γ<sup>*</sup></span> = L16 公式代数 <span class="math">F/∼<sub>L</sub></span> 上的超滤子</strong>（把 <span class="math">Γ<sup>*</sup></span> 里公式的等价类收成一族，它对交封闭、向上封闭、极大）。而超滤子空间正是 <strong>L18 §6 的 Stone 空间 <span class="math">Spec(L)</span> 的点</strong>。</p>
+    <p>再看 L13：Stone–Čech 紧致化补上的点，也是非主超滤子。<strong>三处对照：</strong></p>
+    <table>
+      <tr><th>场合</th><th>被补的对象</th><th>它的真身</th></tr>
+      <tr><td>L13 紧致化</td><td>空间缺点，补上的点</td><td>非主超滤子</td></tr>
+      <tr><td>L18 紧致性</td><td>有限相容理论的整体模型</td><td>超积 <span class="math">∏A<sub>Δ</sub>/U</span></td></tr>
+      <tr><td>L19 完全性</td><td>一致理论的模型</td><td>极大一致集 = 超滤子 = 典范模型</td></tr>
+    </table>
+    <p><strong>Henkin 构造就是 Stone 表示定理的正确性证明穿上了语法的衣服。</strong>L06 把布尔代数的点取作超滤子，这里把逻辑的点取作极大一致集——同一批点。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>命题逻辑的 Henkin 构造最简单：没有量词，第 1 步省掉；极大一致集直接给每个变元指派真值（<span class="math">p ∈ Γ<sup>*</sup></span> 就令 <span class="math">p</span> 真）。<strong>于是「每个一致公式集可满足」就是命题逻辑紧致性，典范模型退化成一个真值指派。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>一阶逻辑里见证常元那一步是命门。<span class="math">Γ = {∃x φ(x)}</span> 一致，若不给证人，你手上没有一个项能充当 <span class="math">φ</span> 的对象；加了 <span class="math">c<sub>φ</sub></span>，模型里立刻有 <span class="math">[c<sub>φ</sub>]</span> 满足 <span class="math">φ</span>。<strong>本质在于：模型的点不必是「原本就有的东西」，可以是为理论专门造出来的证人。</strong>这正是它区别于超积构造的地方——超积从已有模型取极限，Henkin 从语法造新点。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>完全性定理不等于「每个理论有模型」。</strong>只有<strong>一致</strong>理论才有。不一致理论（含 <span class="math">φ ∧ ¬φ</span>）没有模型，也不用证。<strong>把「一致」忘掉是初学时最常见的错。</strong></p>
+    <p>② <strong>典范模型满足 <span class="math">Γ</span>，但不唯一。</strong>极大扩张有很多种选法，每种给一个不同的 <span class="math">Γ<sup>*</sup></span>，模型各不相同。<strong>完全性只承诺「存在一个」，不承诺「哪个」。</strong>这和 L18 超滤子不唯一是同一件事。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>Gödel 完全性定理的 Henkin 证明；L16 公式代数 <span class="math">F/∼<sub>L</sub></span>；L18 §6 Stone 空间；L06 Stone 表示；L13 §8 紧致化。</p>
+</section>
+
+<!-- ============ O5 ============ -->
+<section id="axiom">
+  <h2><span class="sn">7</span>有限公理化与有限基 <span class="tag alg">O5</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">7.1（两个「有限」）</span></div>
+    <p><strong>逻辑侧：</strong>称 <span class="math">L</span> <strong>有限公理化</strong>，若存在<strong>有限</strong>条公理模式与<strong>有限</strong>条推理规则，其生成的定理集恰为 <span class="math">Thm(L)</span>。</p>
+    <p><strong>代数侧：</strong>称 <span class="math">Alg<sub>⊨</sub>(L)</span> <strong>有限基</strong>，若存在<strong>有限</strong>个等式生成它的全部等式理论。</p>
+    <div class="intu" style="margin:8px 0"><p><strong>两个「有限」靠 Birkhoff 对上：</strong>L04 定理 4.12 说「等式可证 ⟺ 所有模型成立」，于是「有限公理生成定理」正好翻译成「有限等式生成等式理论」。<strong>这就是标题里「有限公理化」那一格的位置</strong>——它是完全性桥在有限性层面的精细版本。</p></div>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>布尔代数有限基（几条等式即可，L06），对应命题逻辑有限公理化；群、格、环都是有限基的经典簇。<strong>这些「有限」是看得见摸得着的：写下几行等式，整簇的性质就定了。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>为什么有限基这么值钱？因为它把一个可能无穷的等式理论<strong>压缩成有限数据</strong>。有了有限数据，才能谈算法、谈判定、谈自动定理证明。<strong>本质在于：有限基 = 可存储、可检查的一小段代数编码。</strong>§5 定理 4.2.18 里「等式理论由有限步规则生成」说的正是这件事。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>有限基 ≠ 可判定。</strong>有限公理化的理论仍可能不可判定——一阶逻辑本身有限公理化（少量模式 + MP + 概括），但有效性问题是不可判定的（Church）。<strong>别把「公理写得下」当成「机器能判定」。</strong></p>
+    <p>② <strong>有的簇不是有限基。</strong>泛代数里已构造出需要无穷多等式、任何有限子集都不够的簇。<strong>对应逻辑就没有有限公理化</strong>——这是「有限性」这条线索真正断裂的地方。</p>
+    <p>③ <strong>真算术不可递归公理化</strong>（Gödel 第一不完全定理）：不是「完全性定理错了」，而是 <span class="math">Th(ℕ)</span> 这套语义后承无法由任何<strong>递归</strong>的 Hilbert 系统生成。<strong>完全性定理对一阶逻辑仍然成立；不完全性说的是特定理论的公理集找不到。</strong>把两者混为一谈，是这一讲最容易踩的坑。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL §4.2.2、有限公理化与有限基；L04 定理 4.12（Birkhoff）；L06 布尔代数；Church 不可判定性、Gödel 不完全性定理（边界说明）。</p>
+</section>
+
+<!-- ============ O6 ============ -->
+<section id="topo">
+  <h2><span class="sn">8</span>拓扑侧：理论–模型对应与紧致化 <span class="tag top">O6</span></h2>
+
+  <div class="intu"><div class="bt">Galois 连接：把理论摆成闭集</div>
+    <p>回忆 L02 的 Galois 连接。这里取两个映射：</p>
+    <div class="formula">Γ ↦ Mod(Γ) = {A : A ⊨ Γ}, &nbsp;&nbsp; K ↦ Th(K) = {φ : 每个 A ∈ K 满足 φ}。</div>
+    <p>这是一对反变 Galois 连接，闭包算子 <span class="math">Γ ↦ Th(Mod(Γ))</span> 正是 <span class="math">⊨</span> 的理论闭包。<strong>闭集就是「理论」</strong>——被自己模型集完全刻画的理论。L18 §6 已经把 <span class="math">Mod(Γ)</span> 认成 Stone 空间的闭子集；这里只是把同一件事写成 Galois 连接的形状。</p>
+  </div>
+
+  <div class="def"><div class="bt">命题 <span class="num">8.1（三栏翻译）</span></div>
+    <table>
+      <tr><th>逻辑</th><th>拓扑</th></tr>
+      <tr><td>理论 <span class="math">Γ</span>（一致）</td><td><span class="math">Spec(L)</span> 中非空的闭集 / 相容的闭集族</td></tr>
+      <tr><td>极大一致集 <span class="math">Γ<sup>*</sup></span></td><td><span class="math">Spec(L)</span> 的一个点（超滤子）</td></tr>
+      <tr><td>Henkin 扩张 <span class="math">Γ ⊆ Γ<sup>*</sup></span></td><td>在闭集里选一点 = 补上缺失的点</td></tr>
+      <tr><td><span class="math">Γ</span> 有模型</td><td>该闭集非空（交非空）</td></tr>
+      <tr><td>完全性 <span class="math">Γ ⊨ φ ⟹ Γ ⊢ φ</span></td><td>闭集包含关系可由点（超滤子）见证</td></tr>
+    </table>
+  </div>
+
+  <div class="fusion"><div class="bt">紧致化视角：Henkin 扩张就是补点</div>
+    <p>L13 §8 说 Stone–Čech 紧致化把「相容但没有具体模型的理论」补成空间里的点。现在看清了：<strong>Henkin 第 2 步把 <span class="math">Γ</span> 扩成 <span class="math">Γ<sup>*</sup></span>，就是在 <span class="math">Spec(L)</span> 里选一个点；第 3 步的典范模型，就是把那个点读出成一个模型。</strong></p>
+    <p>于是三件事彻底合一：<strong>完全性证明 = Stone 表示 + 真值引理；紧致性定理 = 超滤子收敛；紧致化 = 补上超滤子点。</strong>三本教材用的是同一批超滤子，只是穿了不同衣服。</p>
+  </div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 Ch5.3（紧致化）；L02 Galois 连接；L13 §8 Stone–Čech；L18 §6 Stone 空间翻译表。</p>
+</section>
+
+<!-- ============ 融合接口 ============ -->
+<section id="fusion2">
+  <h2><span class="sn">9</span>融合接口：第二座三面一体图</h2>
+  <p class="lead">L18 画了紧致性的三面一体图。这里画完全性的——同一副骨架，把「紧致」换成「可证」。</p>
+
+  <div class="diagram"><pre>
+                 「有效 = 可证」· 三副面孔
+                        │
+     ┌──────────────────┼──────────────────┐
+     │                  │                  │
+   逻辑 L            语法 D              代数 Alg⊨(L)
+     │                  │                  │
+  Γ ⊨ φ            Γ ⊢ φ            等式 E 可导
+     │                  │                  │
+  语义真值          有限证明           有限生成
+     │                  │                  │
+     ▼                  ▼                  ▼
+  完全性 ◀──── 可靠 + 有限支持性 ────▶ Birkhoff
+     │                  │                  │
+     └── 紧致性（L18） ◀─┴─ 有限公理化/有限基 ─┘
+              Henkin 极大一致集 = 超滤子 = Stone 点
+  </pre></div>
+  <p class="cap">图：三列从上到下逐行对齐；第二座桥与第一座共用「有限性」这块积木。</p>
+
+  <div class="def"><div class="bt">两座桥对照</div>
+    <table>
+      <tr><th></th><th>第一座（L18）</th><th>第二座（L19）</th></tr>
+      <tr><td>逻辑性质</td><td>紧致性</td><td>完全性</td></tr>
+      <tr><td>代数性质</td><td>对超积封闭</td><td>等式理论有限生成</td></tr>
+      <tr><td>语法侧</td><td>后承有有限特征</td><td>Hilbert 系统有限证明</td></tr>
+      <tr><td>拓扑侧</td><td>超滤子收敛</td><td>极大一致集 = Stone 点</td></tr>
+      <tr><td>共同发动机</td><td colspan="2">有限性 + L16 翻译 + L04 构造</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">把这座桥记成一句话</div>
+    <p><strong>「有效 = 可证」在代数里叫「等式可证 ⟺ 所有模型成立」，在语法里叫「有台有限步的机器」，而把它们焊在一起的是「证明有限」这一个词。</strong></p>
+    <p>到这里，紧致性与完全性两条线汇合：<strong>完全性比紧致性强，多出来的正是一台有限证明机。</strong>下一讲 L20 走第三座桥——可定义性 ↔ 同态满射 ↔ 可区分性，会把「能不能定义」翻成「同态会不会丢信息」，拓扑侧读出 T0 分离。<strong>骨架照旧：逻辑性质翻译成代数性质，靠 L16 的翻译和 L04 的构造兑现。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+
+  <div class="ex"><div class="bt">O1 · Hilbert 系统</div>
+  <ol start="1">
+    <li><span class="tag log">O1</span>写出一个 Hilbert 系统三件套，并完整证明命题 3.2（有限支持性）。<strong>指出证明里「有限」用在哪一句；若允许无穷长的证明，哪一步先坏掉？</strong></li>
+    <li><span class="tag log">O1</span>举一个「可允许但不可导出」的规则的形状，并说明：为什么完全性定理只保证定理集对上，不保证规则清单唯一。（提示：§3 边界例。）</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O2 · 可靠与完全</div>
+  <ol start="3">
+    <li><span class="tag log">O2</span>把弱/强可靠、弱/强完全四条各写成包含关系，并验证「强可靠 + 强完全 ⟺ <span class="math">⊢ = ⊨</span>」。</li>
+    <li><span class="tag log">O2</span>逐句复述定理 4.2 的三步证明。<strong>反过来说「紧致 ⟹ 完全」为什么不能照搬？</strong>缺的那一块是什么？（提示：§4 的警告框与 §6。）</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O3 · 双向刻画</div>
+  <ol start="5">
+    <li><span class="tag alg">O3</span>写出定理 4.2.9 与 4.2.18 的陈述，各标注用到的桥（L16 翻译 / Birkhoff / 紧致性）。<strong>两方向的前提为什么不对称？</strong></li>
+    <li><span class="tag alg">O3</span>对照 L18 的定理 4.1.5/4.1.6，写出两座桥的模板：逻辑性质 ⟺ 代数性质，各自靠什么兑现。<strong>回头看，为什么第一次见会觉得像魔术？</strong></li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O4 · Henkin 构造</div>
+  <ol start="7">
+    <li><span class="tag log">O4</span>走完 Henkin 四步，对每步回答：「去掉这一步，<span class="math">Γ</span> 的模型会在哪里造不出来？」重点看见证常元那一步。</li>
+    <li><span class="tag top">O4</span>证明：极大一致集 <span class="math">Γ<sup>*</sup></span> 对应公式代数 <span class="math">F/∼<sub>L</sub></span> 上的一个超滤子。<strong>再说明为什么这与 L06 的 Stone 表示是同一批点。</strong></li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O5 · 有限公理化</div>
+  <ol start="9">
+    <li><span class="tag alg">O5</span>解释「有限公理化」如何靠 Birkhoff 译成「有限等式基」。<strong>为什么有限基这么值钱？</strong>再举一个不是有限基的簇（或说明去哪里找）。</li>
+    <li><span class="tag log">O5</span>辨析三句话：① 一阶逻辑完全；② 一阶逻辑有效式不可判定；③ 真算术不可递归公理化。<strong>它们矛盾吗？各自说的是什么？</strong></li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O6 · 拓扑侧</div>
+  <ol start="11">
+    <li><span class="tag top">O6</span>写出理论–模型对应的两个映射，验证它们构成 Galois 连接，并说明「闭集 = 理论」这一句的确切含义。</li>
+    <li><span class="tag top">O6</span>把 Henkin 扩张 <span class="math">Γ ⊆ Γ<sup>*</sup></span> 读成 <span class="math">Spec(L)</span> 里的补点操作，再对到 L13 的 Stone–Čech 紧致化。<strong>三处补的点是不是同一批？</strong></li>
+    <li><span class="tag log">O6</span>综合题：把 L18 的「紧致性定理 = 超滤子收敛」与 L19 的「完全性定理 = 极大一致集造典范模型」并排写。<strong>指出两者用的超滤子是同一批，但一个从模型取极限、一个从语法造点——这个差别为什么重要？</strong></li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L18.html">← 上一讲：L18 紧致性 ↔ 对超积封闭 ↔ 拓扑紧致</a>
+  <a href="L20.html">下一讲：L20 桥之三：可定义性 ↔ 同态满射 ↔ 可区分性</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L19 · 来源：UAL §4.2.1–4.2.2（定理 4.2.9/4.2.18）、Gödel 完全性定理、Henkin 构造、拓扑讲义 Ch5.3 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

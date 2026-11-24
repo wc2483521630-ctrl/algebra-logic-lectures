@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L29 案例 5–8：FOL 的各种变体 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第七篇 案例工坊</span><span class="sep">/</span><span>L29</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 29 · 2 学时 · 案例工坊第三站 · 拧语义的旋钮</div>
+  <h1>案例 5–8：FOL 的各种变体</h1>
+  <div class="sub">同一套一阶语言，只改「什么算模型」，逻辑就换一副脾气：有的把不可判定治好了，有的把 Hilbert 系统找回来了，有的把 Gödel 完全性弄丢了。四个案例，四种代价</div>
+  <div class="metarow"><span>来源：UAL §5.5（定义 5.5.1、命题 5.5.2）、§5.6（定义 5.6.1、命题 5.6.2）、§5.7（命题 5.7.1、定理 5.7.2）、§5.8（命题 5.8.1、推论 5.8.2）、Table 5.1、§7.2–7.3；回指 L15 旋钮二与 L<sub>vd</sub> 初见、L16 语义代入、L17 多排序缺口、L19 Hilbert 系统与图式、L20 Beth、L21 插值、L22 判定桥与 Gip、L24 关系代数、L27 四步流程、L28 有限变元片段</span>
+    <span class="tag log">逻辑</span><span class="tag alg">代数</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">O1　为什么要拧语义；一条反变原理</a></li>
+  <li><a href="#an">O2　案例 5：非标准语义 L<sub>n</sub><sup>an</sup> 与「概念代数」</a></li>
+  <li><a href="#vd">O3　案例 6：变量依赖 L<sub>n</sub><sup>vd</sup> 与「可采纳赋值」</a></li>
+  <li><a href="#ranked">O4　案例 7：排序版与 Gödel 完全性</a></li>
+  <li><a href="#rf">O5　案例 8：无排序版与不紧致反例</a></li>
+  <li><a href="#compare">O6　四案例总表与「没有免费午餐」</a></li>
+  <li><a href="#examples">三层例：典型 / 本质 / 边界</a></li>
+  <li><a href="#fusion2">融合接口：第十一张图</a></li>
+  <li><a href="#ex">习题</a></li>
+</ol></div>
+
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系 <span class="tag alg">先摆牌</span></h2>
+  <div class="box"><div class="bt">本讲新概念（八个，按依赖排序）</div>
+    <ol>
+      <li><strong>非标准语义</strong>：模型不再是通常的关系结构，而是更抽象、或带额外约束的对象；公式不变，模型类一换，逻辑全变（L15「旋钮二」的正式登场）。</li>
+      <li><strong>抽象模型 <span class="math">⟨A, R<sup>M</sup>⟩</span></strong>：<span class="math">A</span> 是<strong>简单</strong>柱体代数，解释成 <span class="math">A</span> 的元素——把「模型」直接读作「可能的概念代数」。</li>
+      <li><strong>可采纳赋值集 <span class="math">W</span></strong>：变量依赖语义里只允许 <span class="math">W ⊆ ⁿM</span> 里的取值；<span class="math">W = ⁿM</span> 是标准模型，其余非标准。</li>
+      <li><strong>相对化柱体集合代数 <span class="math">Crs<sub>n</sub></span></strong>：把 <span class="math">Cs<sub>n</sub></span> 的相对化到 <span class="math">W</span> 的版本；变量依赖逻辑的代数对应物。</li>
+      <li><strong>排序函数 <span class="math">ρ : R → ω</span></strong>：每个关系符号有固定元数；有它叫<strong>排序版</strong>，没有它叫<strong>无排序版</strong>。</li>
+      <li><strong>条件可代数化</strong>：只有加上一组<strong>条件</strong> <span class="math">S(ρ)</span> 才组合、才代入；比可代数化弱一档。</li>
+      <li><strong>图式不完全性</strong>：每个实例都可证、整条图式却没有统一证明——排序版 Gödel 完全性与它并存，正是本讲最微妙处。</li>
+      <li><strong>反变原理</strong>：模型类越大，有效式越少；靠 <span class="math">Mod</span> 与 <span class="math">Th</span> 的 Galois 连接（L02）支配全讲。</li>
+    </ol>
+  </div>
+  <div class="diagram"><div class="bt">依赖图（箭头 = 「先懂左边才懂右边」）</div>
+<pre>  L15 旋钮二（换模型类）───────┐
+  L02 Mod/Th 反变 ───────────┼──反变原理：模型↑ 有效式↓
+                              │            │
+              ┌───────────────┴────────────┴──────────────┐
+              ▼                                            ▼
+   L28 有限变元 L_n                              换「什么算模型」
+   （变量个数刻度）                                        │
+              │                        ┌───────────────────┼────────────────┐
+              ▼                        ▼                   ▼                ▼
+      L_n^an 抽象模型          L_n^vd 可采纳W     L^ranked 有ρ      L^rf 无ρ
+      simpleCA_n              Crs_n              Csf_ω/Lf_ω        Csf_ω/SPLf_ω
+              │                        │                   │                │
+      修好 Hilbert            修好可判定         Gödel 完全        代入性完好
+      丢 Beth/可判定           丢有限 Hilbert      丢代入性           丢紧致/Beth
+              └────────────────────────┴───────────────────┴────────────────┘
+                                       ▼
+                          L27 四步流程 + L19–L22 六桥读性质
+                                       ▼
+                         Table 5.1 总对照 + 「没有免费午餐」</pre>
+  </div>
+  <p class="src"><b>与前讲的分工：</b>L15 只把 <span class="math">L<sub>vd</sub></span> 当四元组的一例点到，没给代数对应物；L17 坦白 UAL 的多排序缺口；L28 把变量个数做成刻度。本讲把「换模型」这个旋钮一口气拧到底：<strong>四个案例全部走 L27 的四步流程，并且每一次改动都要问「修好了什么、弄丢了什么」</strong>。</p>
+</section>
+
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习</h2>
+  <div class="box"><div class="bt">六个目标，每个都有对应讲解和练习</div>
+    <table>
+      <tr><th>目标</th><th>要拿到什么</th><th>讲解</th><th>练习</th></tr>
+      <tr><td><span class="tag log">O1</span></td><td>说清反变原理，看懂「扩大模型类」为什么是双刃剑</td><td><a href="#motive">§2</a></td><td><a href="#ex">E1, E2</a></td></tr>
+      <tr><td><span class="tag alg">O2</span></td><td>L<sub>n</sub><sup>an</sup> 的 Algᵐ/Alg⊨，为何修好 Hilbert 却丢了 Beth</td><td><a href="#an">§3</a></td><td><a href="#ex">E3, E4</a></td></tr>
+      <tr><td><span class="tag alg">O3</span></td><td>L<sub>n</sub><sup>vd</sup> 的可采纳赋值与 Crs<sub>n</sub>，为何治好不可判定</td><td><a href="#vd">§4</a></td><td><a href="#ex">E5, E6</a></td></tr>
+      <tr><td><span class="tag log">O4</span></td><td>排序版条件可代数化；Gödel 完全性证明；图式不完全</td><td><a href="#ranked">§5</a></td><td><a href="#ex">E7, E8</a></td></tr>
+      <tr><td><span class="tag log">O5</span></td><td>无排序版的不紧致反例、弱 Beth 反例、非有限图式公理化</td><td><a href="#rf">§6</a></td><td><a href="#ex">E9, E10</a></td></tr>
+      <tr><td><span class="tag alg">O6</span></td><td>四案例总表；「Gödel 只在非代入版成立」的口径</td><td><a href="#compare">§7</a></td><td><a href="#ex">E11, E12</a></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============ O1 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>为什么要拧语义；一条反变原理 <span class="tag log">O1</span></h2>
+  <p class="lead">前四讲我们一直换<strong>代数</strong>：BA、RRA、CA<sub>n</sub>、RCA<sub>n</sub>，看同一台桥机器跑出什么结果。这一讲反过来——<strong>代数工具不动，专换模型类</strong>，看逻辑的脾气怎么变。这是 L15 说的旋钮二，UAL 在这里把它拧了四下。</p>
+
+  <div class="def"><div class="bt">原理 <span class="num">反变：模型类越大，有效式越少</span></div>
+    <p>设逻辑 <span class="math">L = ⟨F, M, mng, ⊨⟩</span>，有效式集 <span class="math">E(M) = {φ ∈ F : 对所有 M ∈ M，M ⊨ φ}</span>。若 <span class="math">M ⊆ M′</span>，则</p>
+    <div class="formula">M′ ⊆ M　⟹　E(M) ⊆ E(M′).</div>
+    <p><strong>为什么反着走？</strong>有效式要「对所有模型成立」。模型越多，要通过的检查越多，能活下来的公式越少。<strong>把模型类放大，等于把有效式集收紧。</strong>这就是 L02 的 Galois 连接 <span class="math">Mod ⊣ Th</span> 在起作用：<span class="math">M</span> 与 <span class="math">Th(M)</span> 反向对应。</p>
+  </div>
+
+  <div class="intu"><div class="bt">直觉 · 这一讲所有「治疗」的共同机制</div>
+    <p>前面几讲的老毛病——没有 Hilbert 系统、不可判定、没有 Beth——<strong>都不是公式的错，是模型类选得太「规矩」造成的</strong>。把模型类放宽一点，多塞进一些「怪模型」，有些公式就不再有效，逻辑就变弱；而变弱之后，恰好能把原先卡住的性质捞回来。</p>
+    <p>这事听起来像作弊：<strong>把定理删掉就「完全」了</strong>。但下面四个案例会说明，它一点也不廉价——每放回一样东西，都要付另一样东西作代价。UAL 把四笔账摆在同一张表（Table 5.1）上，本讲最后一节就读这张表。</p>
+  </div>
+
+  <div class="ex"><div class="bt">典型 · 反变在眼前发生</div>
+    <p>UAL §5.5 给了一个两变量公式，说的是「若 <span class="math">R</span> 的定义域至多一个元素，则 <span class="math">R</span> 等于它的定义域乘值域」。它在通常语义 <span class="math">L<sub>2</sub></span> 里有效，在抽象模型语义 <span class="math">L<sup>a</sup><sub>2</sub></span> 里<strong>不再有效</strong>——因为抽象模型里 <span class="math">R</span> 的解释是柱体代数里的一个元素，不再是一批有序对，「定义域」「值域」这些概念没有通常意义。模型类一放宽，这条定理就掉了。</p>
+    <p>变量依赖侧同理：<span class="math">∃v₀(v₀ = v₁)</span> 在通常语义里是重言式，在变量依赖语义里不是——因为可采纳赋值集 <span class="math">W</span> 可能根本不含任何让 <span class="math">v₀</span> 与 <span class="math">v₁</span> 相等的赋值。</p>
+  </div>
+
+  <div class="warn"><div class="bt">别把「模型多」与「表达力强」搞混</div>
+    <p>扩大模型类之后，有效式变少，逻辑<strong>变弱</strong>；但<strong>可表达的公式集一点没变</strong>（四案例的公式集全是同一套 <span class="math">F<sup>n</sup><sub>R</sub></span> 或其 ω 维版本）。变的只是「哪些公式算对」。判断一个改动是好是坏，必须同时看公式侧和模型侧——这正是四元组 <span class="math">⟨F, M, mng, ⊨⟩</span> 把两样都写出来的原因（L15）。</p>
+  </div>
+</section>
+
+<!-- ============ O2 案例5 非标准语义 ============ -->
+<section id="an">
+  <h2><span class="sn">3</span>案例 5：非标准语义 L<sub>n</sub><sup>an</sup> 与「概念代数」 <span class="tag alg">O2</span></h2>
+  <p class="lead">这个语义来自 Leon Henkin。招数很激进：既然 L<sub>n</sub> 缺 Hilbert 系统是因为模型类太「实」，那干脆把模型改成抽象的柱体代数——让模型自己就是「概念的系统」。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.5.1（带抽象模型的 FOL，n 变元）</span></div>
+    <p>语言与 <span class="math">L<sub>n</sub></span> 完全相同：原子公式 <span class="math">R(v₀,…,v<sub>n−1</sub>)</span>，连接词 <span class="math">∧, ¬, ⊥, v<sub>i</sub>=v<sub>j</sub>, ∃v<sub>i</sub></span>。模型类换成</p>
+    <div class="formula">M<sup>na,R</sup> = {⟨A, R<sup>M</sup>⟩<sub>R∈R</sub> : A ∈ CA<sub>n</sub> 是<b>简单</b>的，且 R<sup>M</sup> ∈ A}.</div>
+    <p>意义函数是从公式代数 <span class="math">F<sup>n</sup><sub>R</sub></span> 到 <span class="math">A</span> 的<strong>唯一同态</strong>，在原子上满足 <span class="math">mng<sub>M</sub>(R)=R<sup>M</sup></span>、<span class="math">mng<sub>M</sub>(v<sub>i</sub>=v<sub>j</sub>)=d<sup>A</sup><sub>ij</sub></span>，并且</p>
+    <div class="formula">mng<sub>M</sub>(∃v<sub>i</sub>φ) = c<sub>i</sub>(mng<sub>M</sub>(φ)),　mng<sub>M</sub>(φ∧ψ) = mng<sub>M</sub>(φ) ∧ mng<sub>M</sub>(ψ),</div>
+    <p>否定与 <span class="math">⊥</span> 照常；<span class="math">M ⊨<sup>a</sup> φ</span> 当且仅当 <span class="math">mng<sub>M</sub>(φ)=1<sup>A</sup></span>。</p>
+  </div>
+
+  <div class="intu"><div class="bt">直觉 · 「模型 = 可能的概念代数」</div>
+    <p>在通常语义里，一个模型给出一批关系，公式的含义是「满足它的赋值集合」；含义全体组成<strong>可定义关系的代数</strong>。把这个代数直接拿来当模型，就是 Henkin 的想法：<strong>模型不必先有「点」，只要有一套能演算的概念就行</strong>。</p>
+    <p>注意「简单」这个要求：<span class="math">CA<sub>n</sub></span> 里只有 <span class="math">0</span> 与 <span class="math">1</span> 两个同余的代数。它保证 <span class="math">mng<sub>M</sub>(φ)=1</span> 这个真值判据不会退化——在一个有非平凡同余的代数里，「等于顶元」与「在商里等于顶元」不是一回事。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">5.5.2</span></div>
+    <p><span class="math">L<sup>an</sup><sub>n</sub></span> 对所有 <span class="math">n &lt; ω</span> 都是可代数化的一般逻辑，且</p>
+    <div class="formula">Alg<sup>m</sup>(L<sup>an</sup><sub>n</sub>) = simpleCA<sub>n</sub>,　　Alg<sub>⊨</sub>(L<sup>an</sup><sub>n</sub>) = CA<sub>n</sub>.</div>
+  </div>
+
+  <div class="proof"><span class="pt">四步走一遍 L27 的流程。</span>
+    <ol>
+      <li><strong>规范形式。</strong>公式代数 <span class="math">F<sup>n</sup><sub>R</sub></span> 就是自由 <span class="math">CA<sub>n</sub></span>，因为柱体算子 <span class="math">c<sub>i</sub></span> 与对角线 <span class="math">d<sub>ij</sub></span> 已把量词与等号代数化。</li>
+      <li><strong>Alg<sup>m</sup>。</strong>模型的意义函数值域恰是简单 <span class="math">CA<sub>n</sub></span>，同态核给出全部「模型可见」的同余，故 <span class="math">Alg<sup>m</sup> = simpleCA<sub>n</sub></span>。</li>
+      <li><strong>Alg<sub>⊨</sub>。</strong>有效等式由所有简单代数决定；<span class="math">CA<sub>n</sub></span> 是 <span class="math">SP</span>(simpleCA<sub>n</sub>)（每个代数是简单代数的子直积），故闭包是全部 <span class="math">CA<sub>n</sub></span>。</li>
+      <li><strong>桥搬运。</strong><span class="math">CA<sub>n</sub></span> 是簇、有 <span class="math">⊢<sub>n</sub></span> 这套强完全系统，逐条搬到逻辑侧。</li>
+    </ol>
+  </div>
+
+  <div class="box"><div class="bt">搬出来的性质（UAL §5.5 原文逐条）</div>
+    <ul>
+      <li><strong>强完全的 Hilbert 系统 <span class="math">⊢<sub>n</sub></span>，因而紧致。</strong>这正是换语义要治的病：L28 说 <span class="math">L<sub>n</sub></span> 没有有限 Hilbert 系统，<span class="math">L<sup>an</sup><sub>n</sub></span> 把模型放宽后就有了。</li>
+      <li><strong><span class="math">L<sup>a</sup><sub>2</sub></span>：Beth 有、有限代数性质有、可判定；重言式公式代数无限但原子。</strong>「原子」是个漂亮的细节：原子公式对应原子元素，理论仍可逐点分解。</li>
+      <li><strong><span class="math">n &gt; 2</span>：三条全反。</strong>无 Beth、无有限代数性质、不可判定；而且 <span class="math">n ≥ 3</span> 时可以在里面建集合论，于是重言式公式代数<strong>非原子</strong>。</li>
+    </ul>
+  </div>
+
+  <div class="warn"><div class="bt">代价在哪儿</div>
+    <p>换来 Hilbert 系统，付出的代价是 <span class="math">n ≥ 2</span> 丢 Beth、<span class="math">n ≥ 3</span> 丢可判定。为什么会这样？Beth 与可判定各走各的桥（L20、L22）：Beth 要看 <span class="math">simpleCA<sub>n</sub></span> 里满射是否满，<span class="math">n≥2</span> 时失败；可判定要看自由代数是否原子、理论是否有限基，<span class="math">n≥3</span> 时集合论可解释，全崩。<strong>修好完全性桥，不等于修好所有桥。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O3 案例6 变量依赖 ============ -->
+<section id="vd">
+  <h2><span class="sn">4</span>案例 6：变量依赖 L<sub>n</sub><sup>vd</sup> 与「可采纳赋值」 <span class="tag alg">O3</span></h2>
+  <p class="lead">这个语义来自 István Németi，是 guarded fragment 的源头之一。招数正相反：不动代数的抽象性，而是给赋值<strong>设卡</strong>——只允许某些赋值算数。结果把不可判定性治好了。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.6.1（变量依赖 FOL，n 变元）</span></div>
+    <p>公式集与 <span class="math">L<sub>n</sub></span> 相同。模型是三元组 <span class="math">⟨M, R<sup>M</sup>, W⟩</span>：其中 <span class="math">R<sup>M</sup> ⊆ ⁿM</span>，而</p>
+    <div class="formula">W ⊆ ⁿM　称为<b>可采纳赋值集</b>。</div>
+    <p>真值定义里唯一但致命的改动在存在量词：</p>
+    <div class="formula">M ⊨ ∃v<sub>i</sub> φ[h]　⟺　存在 h′ ∈ W，h 与 h′ 至多在 i 处不同，且 M ⊨ φ[h′].</div>
+    <p>注意关键：<strong>h′ 必须在 W 里</strong>。原本可以独立挑一个值 <span class="math">a</span>，现在这个 <span class="math">a</span> 与其余赋值的搭配必须「可采纳」。<span class="math">W = ⁿM</span> 的模型叫标准模型，其余叫非标准。</p>
+    <p>整体有效性：<span class="math">M ⊨<sup>vd,n</sup> φ</span> 当且仅当对所有 <span class="math">h ∈ W</span> 有 <span class="math">M ⊨ φ[h]</span>；意义函数 <span class="math">mng<sub>M</sub>(φ) = {h ∈ W : M ⊨ φ[h]}</span>。</p>
+  </div>
+
+  <div class="intu"><div class="bt">直觉 · 把「依赖」编码进 W</div>
+    <p>「变量依赖」说的是：给 <span class="math">v<sub>i</sub></span> 选什么值，可能依赖于别的变量现在取什么值。把这种依赖一次性写进 <span class="math">W</span>——<span class="math">W</span> 本身就是一批「允许同时出现」的赋值——就把依赖逻辑变成了普通逻辑加一个约束。<strong>这是相对化技术：从 <span class="math">Cs<sub>n</sub></span> 相对化到任意 n 元关系 <span class="math">W</span>，得到 <span class="math">Crs<sub>n</sub></span>。</strong></p>
+    <p>顺带一提，它也是 guarded fragment 的亲戚：量词不再是「全宇宙随便挑」，而是「在一个已给定的关系里挑」——这正是 guarded 的精神。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">5.6.2</span></div>
+    <p><span class="math">L<sup>vd</sup><sub>n</sub></span> 对所有 <span class="math">n &lt; ω</span> 都是可代数化的一般逻辑，且</p>
+    <div class="formula">Alg<sup>m</sup>(L<sup>vd</sup><sub>n</sub>) = Crs<sub>n</sub>,　　Alg<sub>⊨</sub>(L<sup>vd</sup><sub>n</sub>) = ICrs<sub>n</sub>.</div>
+    <p>这里 <span class="math">Crs<sub>n</sub></span> 是 n 维<strong>相对化柱体集合代数</strong>：把 <span class="math">Cs<sub>n</sub></span> 的顶元从整个 <span class="math">ⁿM</span> 换成 <span class="math">W</span>，柱体算子相应相对化。</p>
+  </div>
+
+  <div class="box"><div class="bt">Crs<sub>n</sub> 的代数性质（UAL §5.6 原文六条）</div>
+    <ol>
+      <li><span class="math">n ≠ 1</span> 时是簇；<span class="math">n ≥ 2</span> 时<strong>不是</strong>判别式簇。</li>
+      <li><strong>等式理论可判定</strong>——这是本案例的金矿。</li>
+      <li>有有限代数性质与有限基性质：非有效式可以用有限模型当场反证。</li>
+      <li><span class="math">n ≥ 3</span> 不可有限公理化，但有一条漂亮的无限公理模式。</li>
+      <li>有超合并性质，故满射必满（L21 的桥）。</li>
+      <li>自由 <span class="math">Crs<sub>n</sub></span> 非原子。</li>
+    </ol>
+  </div>
+
+  <div class="box"><div class="bt">搬到逻辑侧（<span class="math">n ≥ 3</span>）</div>
+    <ul>
+      <li><strong>可判定</strong>；非有效式可由有限模型反证。</li>
+      <li><strong>紧致</strong>；但<strong>没有有限强完全可靠推理系统</strong>——有的只是一条「有限模式、无限多条公理」的 Hilbert 式系统。（对照：L<sup>an</sup> 有有限系统却不可判定；两者刚好互补。）</li>
+      <li><strong>插值有、Beth 有</strong>（靠超合并与满射满）。</li>
+      <li><strong>有弱 Gödel 不完全性</strong>，重言式公式代数非原子（靠自由代数非原子）。</li>
+    </ul>
+  </div>
+
+  <div class="intu"><div class="bt">直觉 · 两种「非标准」治的是两种不同的病</div>
+    <table>
+      <tr><th>语义</th><th>怎么改模型</th><th>治好了什么</th><th>代价</th></tr>
+      <tr><td><span class="math">L<sup>an</sup><sub>n</sub></span></td><td>模型换成抽象概念代数（放宽）</td><td>有限 Hilbert 系统、强完全</td><td>Beth（n≥2）、可判定（n≥3）</td></tr>
+      <tr><td><span class="math">L<sup>vd</sup><sub>n</sub></span></td><td>给赋值加可采纳约束（换种类）</td><td>可判定、Beth、插值</td><td>有限 Hilbert 系统</td></tr>
+    </table>
+    <p><strong>这一对照是全讲最值钱的一格</strong>：它证明 L18（紧致＝存在性）与 L19（Hilbert＝生成性）确实是两件事——一个逻辑可以紧致却没有有限证明系统（L<sup>vd</sup>），也可以有有限证明系统却不可判定（L<sup>an</sup>）。当初把它们分成两座桥，在这里得到回报。</p>
+  </div>
+
+  <div class="ex"><div class="bt">边界 · 不是所有有效式都能救回来</div>
+    <p>排除一部分非标准模型能找回有效式：要求 <span class="math">W</span> 是所谓的 <span class="math">D<sub>n</sub></span>-单元或 <span class="math">G<sub>n</sub></span>-单元，就能恢复很多重言式且仍可判定。但<strong>恢复不了全部</strong>：量词交换图式 <span class="math">∃v<sub>i</sub>∃v<sub>j</sub>φ ↔ ∃v<sub>j</sub>∃v<sub>i</sub>φ</span> 在变量依赖版里无效，而且很难（也许不可能）在保持可判定的前提下靠约束 <span class="math">W</span> 的形状把它找回来。<strong>「驯服」一个逻辑是有极限的。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O4 排序版 ============ -->
+<section id="ranked">
+  <h2><span class="sn">5</span>案例 7：排序版 FOL 与 Gödel 完全性 <span class="tag log">O4</span></h2>
+  <p class="lead">前面六个案例都是「有限变元」的有限语言。现在放到 ω 个变元，看真正的日常一阶逻辑。这里出现全讲最反直觉的事实：<strong>Gödel 完全性成立的版本，恰恰不是代入性的版本</strong>。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">§5.7（排序版 L<sup>ranked</sup><sub>FOL</sub>）</span></div>
+    <p>连接词 <span class="math">C<sub>ω</sub> = {∧, ¬, ⊥, ∃v<sub>i</sub>, v<sub>i</sub>=v<sub>j</sub> : i,j &lt; ω}</span>。给一个<strong>排序函数</strong> <span class="math">ρ : R → ω</span>（<span class="math">ρ(R)</span> 是关系符号 <span class="math">R</span> 的元数），原子公式是 <span class="math">R(v₀,…,v<sub>ρ(R)−1</sub>)</span>——变量序由 <span class="math">ρ</span> 定死，简写为 <span class="math">R</span>。</p>
+    <p>模型 <span class="math">⟨M, R<sup>M</sup>⟩</span>，其中 <span class="math">R<sup>M</sup></span> 是 <span class="math">ρ(R)</span> 元关系；意义函数</p>
+    <div class="formula">mng<sub>M</sub>(R) = {h ∈ <sup>ω</sup>M : h↾ρ(R) ∈ R<sup>M</sup>},　M ⊨ φ ⟺ mng<sub>M</sub>(φ) = <sup>ω</sup>M.</div>
+    <p>为了让它成为一般逻辑，签名取 <span class="math">Sig<sub>FOL</sub> = {Dom(ρ) : ρ 是到 ω 的显式函数}</span>。<strong>为什么非要「显式」？</strong>否则 <span class="math">{(R,2)}</span> 与 <span class="math">{(R,3)}</span> 是两个签名，并起来 <span class="math">{(R,2),(R,3)}</span> 却不是——一般逻辑要求签名对并可封闭（L17 的机构论也在意这件事）。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">5.7.1</span></div>
+    <p><span class="math">L<sup>ranked</sup><sub>FOL</sub></span> 是<strong>条件可代数化</strong>的一般逻辑，<strong>不是</strong>可代数化的，并且</p>
+    <div class="formula">Alg<sup>m</sup>(L<sup>ranked</sup><sub>FOL</sub>) = Csf<sub>ω</sub>,　　Alg<sub>⊨</sub>(L<sup>ranked</sup><sub>FOL</sub>) = Lf<sub>ω</sub>.</div>
+    <p>这里 <span class="math">Csf<sub>ω</sub></span> 是 ω 维局部有限<strong>正则</strong>柱体集合代数，<span class="math">Lf<sub>ω</sub></span> 是 ω 维局部有限柱体代数。</p>
+  </div>
+
+  <div class="proof"><span class="pt">「条件」二字从哪来？</span>
+    <p>组合性、滤子性质都直接成立。代入则要加一组条件：</p>
+    <div class="formula">S(ρ) = {R ↔ ∃v<sub>i</sub> R : ρ(R) ≤ i}.</div>
+    <p>意思是：如果 <span class="math">R</span> 的元数不超过 <span class="math">i</span>，那么多量化一个用不到的变量不改变含义。有这组等式，代入性质才成立（命题 3.3.33(iii)），所以只能叫「条件可代数化」。</p>
+  </div>
+
+  <div class="ex"><div class="bt">边界 · 它确实不是代入性的</div>
+    <p>取 <span class="math">n</span> 元关系符号 <span class="math">R</span>，令 <span class="math">φ</span> 为 <span class="math">v₀=v₁ ∧ ⋯ ∧ v₀=v<sub>n</sub></span>。那么</p>
+    <div class="formula">⊨ R → ∀v<sub>n</sub> R,　　但　　⊭ φ → ∀v<sub>n</sub> φ.</div>
+    <p>原子公式的元数固定，不能随便拿一个复杂公式的含义来当它——这就是非代入性的根源：原子只能取「有限固定元数」的含义，而公式的含义可以是任意大的有限元数。下一案例专门修这个。</p>
+  </div>
+
+  <div class="proof"><span class="pt">Alg<sub>⊨</sub> = Lf<sub>ω</sub> 的证明骨架（教材用了四步）。</span>
+    <ol>
+      <li>左边包含关系直接；反向要证 <span class="math">S Alg<sub>⊨</sub> = Alg<sub>⊨</sub></span>，再证 <span class="math">Lf<sub>ω</sub> ⊆ SP<sub>C</sub> Csf<sub>ω</sub></span>。</li>
+      <li>任取 <span class="math">B ∈ Lf<sub>ω</sub></span>，写成子直不可约代数 <span class="math">A<sub>i</sub></span> 的积。每个 <span class="math">A<sub>i</sub></span> 是 <span class="math">B</span> 的同态像，故仍在 <span class="math">Lf<sub>ω</sub></span>；子直不可约的 <span class="math">Lf<sub>ω</sub></span> 是简单的。</li>
+      <li>代数方法证明 <span class="math">simple Lf<sub>ω</sub> ⊆ I Csf<sub>ω</sub></span>，于是 <span class="math">B</span> 嵌进 <span class="math">∏ A<sub>i</sub></span>（<span class="math">A<sub>i</sub> ∈ Csf<sub>ω</sub></span>）。</li>
+      <li>取其中的<strong>有限维元素</strong>做成子代数 <span class="math">C</span>：对每个 <span class="math">a</span> 取上界 <span class="math">n<sub>a</sub></span>，造显式函数 <span class="math">ρ</span>，用同态 <span class="math">f</span> 映到 <span class="math">C ∈ SP Alg<sup>m</sup></span>，且核包含 <span class="math">S(ρ)</span>。于是 <span class="math">C ∈ Alg<sub>⊨</sub></span>，而 <span class="math">B ⊆ C</span>。</li>
+    </ol>
+    <p><strong>这四步值得走一遍</strong>：它示范了代数侧怎么用「子直积 → 简单 → 表示」把逻辑的语义闭包算到底，L23 的 Stone 表示也是这个套路。</p>
+  </div>
+
+  <div class="box"><div class="bt">其他搬到逻辑侧的性质</div>
+    <ul>
+      <li><strong>紧致</strong>（定理 4.1.9 + <span class="math">Lf<sub>ω</sub></span> 的代数性质）。</li>
+      <li><strong>满射必满</strong>：反向走 Beth 定理 + 桥定理 4.3.19，从逻辑搬回代数；这是 L20 那座桥反过来用。</li>
+      <li>有模型的拼补性质与单元素签名。</li>
+    </ul>
+  </div>
+
+  <div class="def"><div class="bt">推理系统 <span class="num">⊢<sub>ρ</sub> 与 Gödel 完全性</span></div>
+    <p>加公理模式 <span class="math">(R0) R → ∀v<sub>i</sub> R</span>（当 <span class="math">ρ(R) ≤ i</span>），记成 <span class="math">Ax<sub>ρ</sub></span>；然后</p>
+    <div class="formula">⊢<sub>ρ</sub> = {⟨Σ, φ⟩ : Σ ∪ Ax<sub>ρ</sub> ⊢<sub>ω</sub> φ,　Σ ∪ {φ} ⊆ L<sup>ρ</sup><sub>FOL</sub>}.</div>
+    <p>即在非排序系统的推理里允许使用 <span class="math">Ax<sub>ρ</sub></span> 作为额外前提。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">5.7.2（Gödel 完全性）</span></div>
+    <p>对 <span class="math">L<sup>ρ</sup><sub>FOL</sub></span> 的每个公式 <span class="math">φ</span>：</p>
+    <div class="formula">⊨ φ　⟺　⊢<sub>ρ</sub> φ.</div>
+    <p class="pt">证明（教材原文四行，这里拆开）。</p>
+    <ol>
+      <li>设 <span class="math">≡ = {(φ,ψ) : ⊢<sub>ρ</sub> φ ↔ ψ}</span>，<span class="math">F = F<sub>ρ</sub>/≡</span>。由定理 5.4.6(i)，<span class="math">F ∈ CA<sub>ω</sub></span>。</li>
+      <li><span class="math">F</span> 由有限维元素生成（因为 <span class="math">Rng(ρ) ⊆ ω</span>），故 <span class="math">F ∈ Lf<sub>ω</sub></span>。</li>
+      <li>若 <span class="math">⊬<sub>ρ</sub> φ</span>，则 <span class="math">F<sub>ρ</sub>/≡ ⊭ φ = 1</span>，于是 <span class="math">Lf<sub>ω</sub> ⊭ φ = 1</span>（因为 <span class="math">F ∈ Lf<sub>ω</sub></span>）。</li>
+      <li>由命题 5.7.1 与定理 3.3.5 得 <span class="math">Lf<sub>ω</sub> ⊆ SP Csf<sub>ω</sub></span>，故 <span class="math">Csf<sub>ω</sub> ⊭ φ = 1</span>，即 <span class="math">⊭ φ</span>。反向（可靠）显然。</li>
+    </ol>
+  </div>
+
+  <div class="warn"><div class="bt">全讲最微妙的一格：图式不完全性</div>
+    <p>存在有效<strong>图式</strong> <span class="math">Φ</span>，满足 <span class="math">⊨ Φ</span> 却 <span class="math">⊬<sub>ρ</sub> Φ</span>。这跟 Gödel 完全性矛盾吗？不矛盾——区别在「逐个」与「统一」：</p>
+    <ul>
+      <li>由定理 5.7.2，<span class="math">Φ</span> 的<strong>每个实例</strong>都是 <span class="math">⊢<sub>ρ</sub></span> 可证的。</li>
+      <li>但这些证明<strong>因实例而异</strong>。虽然有一个统一的「因」<span class="math">Φ</span> 使它们有效，却给不出一个统一的 <span class="math">⊢<sub>ρ</sub></span> 证明。</li>
+      <li>根源：排序版与非排序版 <span class="math">L<sub>ω</sub></span> 的图式语言相同、有效图式也相同（推论 4.2.6，因为 <span class="math">Eq(Lf<sub>ω</sub>) = Eq(RCA<sub>ω</sub>)</span>），<span class="math">⊢<sub>ρ</sub></span> 与 <span class="math">⊢<sub>ω</sub></span> 可证的图式也相同。非排序版的图式不完全就这样传了过来。</li>
+    </ul>
+    <p><strong>补救</strong>：用定理 7.3.9(i) <span class="math">Dc<sub>ω</sub> ⊆ RCA<sub>ω</sub></span>，给语言加一族全新变量 <span class="math">w<sub>i</sub></span>（不出现在老公式里），并加公理说明它们对老公式无影响，得到 <span class="math">⊢<sub>ρ+</sub></span>；它对公式图式强完全。<strong>又是「借变量」——L28 的定理 5.4.7 在这里换了一件衣服重现。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O5 无排序版 ============ -->
+<section id="rf">
+  <h2><span class="sn">6</span>案例 8：无排序版 FOL 与不紧致反例 <span class="tag log">O5</span></h2>
+  <p class="lead">无排序版由 Henkin–Tarski 引入。它把上一案例的「补丁」<span class="math">ρ</span> 直接删掉：关系符号的元数不写在语言里，交给模型决定。结果代入性修好了，紧致性与 Beth 却塌了。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">§5.8（无排序版 L<sup>rf</sup><sub>FOL</sub>）</span></div>
+    <p>原子公式仍是关系符号 <span class="math">R</span> 本身，但<strong>没有 <span class="math">ρ</span> 告诉它几元</strong>。模型</p>
+    <div class="formula">M<sup>R</sup> = {⟨M, R<sup>M</sup>⟩<sub>R∈R</sub> : (∀R ∈ R)(∃n ∈ ω) R<sup>M</sup> ⊆ <sup>n</sup>M},</div>
+    <p>即每个 <span class="math">R<sup>M</sup></span> 是某个有限元数上的关系，元数由模型现场给。意义函数</p>
+    <div class="formula">mng<sub>M</sub>(R) = {h ∈ <sup>ω</sup>M : h↾n ∈ R<sup>M</sup> 对某个 n}.</div>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">5.8.1</span></div>
+    <p><span class="math">L<sup>rf</sup><sub>FOL</sub></span> 是<strong>可代数化</strong>的一般逻辑（这次没有「条件」二字），且</p>
+    <div class="formula">Alg<sup>m</sup>(L<sup>rf</sup><sub>FOL</sub>) = Csf<sub>ω</sub>,　　Alg<sub>⊨</sub>(L<sup>rf</sup><sub>FOL</sub>) = SP Lf<sub>ω</sub>.</div>
+    <p class="src">注：教材这里第二个等式误印成 <span class="math">Alg<sup>m</sup></span>；由 <span class="math">SP Csf<sub>ω</sub> = SP Lf<sub>ω</sub></span> 可知应为 <span class="math">Alg<sub>⊨</sub></span>，本讲按正确写法。</p>
+    <p>为什么代入性这次成立？因为 <span class="math">Mng<sub>R</sub> = Hom(F<sub>R</sub>, Csf<sub>ω</sub>)</span>：原子符号的元数不固定，它可以取任意有限元公式的含义——上一案例那个「固定元数」的枷锁去掉了。</p>
+  </div>
+
+  <div class="proof"><span class="pt">不紧致的漂亮反例（教材用三行，这里逐步走）。</span>
+    <p>取任意一个关系符号 <span class="math">R</span>，令</p>
+    <div class="formula">Σ = {¬(R ↔ ∃v<sub>i</sub> R) : i &lt; ω}.</div>
+    <ol>
+      <li><strong>先看每条公式在说什么。</strong><span class="math">R → ∃v<sub>i</sub>R</span> 总有效（L28 的柱体公理）；反向 <span class="math">∃v<sub>i</sub>R → R</span> 成立，当且仅当 <span class="math">R</span> 的含义不依赖第 <span class="math">i</span> 个变量。</li>
+      <li><strong>所以 <span class="math">¬(R ↔ ∃v<sub>i</sub>R)</span> 在说</strong>：「<span class="math">R</span> 确实依赖第 <span class="math">i</span> 个变量」。</li>
+      <li><strong>有限子集可满足。</strong>给定 <span class="math">{i₁,…,i<sub>k</sub>}</span>，取模型让 <span class="math">R<sup>M</sup></span> 是 <span class="math">m</span> 元关系（<span class="math">m &gt; max i<sub>j</sub></span>），且真的依赖这 <span class="math">k</span> 个变量。可行。</li>
+      <li><strong>整体不可满足。</strong>任何模型里 <span class="math">R<sup>M</sup></span> 只有某个固定有限元数 <span class="math">m</span>；对一切 <span class="math">i ≥ m</span>，<span class="math">R</span> 不依赖 <span class="math">v<sub>i</sub></span>，于是 <span class="math">R ↔ ∃v<sub>i</sub>R</span> 成立，<span class="math">Σ</span> 那条公式失败。</li>
+    </ol>
+    <p><strong>结论：</strong><span class="math">L<sup>rf</sup><sub>FOL</sub></span> 不紧致。由定理 4.1.6 反向读出代数事实 <span class="math">SP Csf<sub>ω</sub> ≠ Up SP Csf<sub>ω</sub></span>——<strong>这是逻辑直觉帮代数挣来的结果</strong>，教材特意点出这一点。</p>
+  </div>
+
+  <div class="box"><div class="bt">弱 Beth 也失败（教材的反例，讲清直觉）</div>
+    <p>取关系符号 <span class="math">R, S</span>，令 <span class="math">π(i)R</span> 表示「把 <span class="math">R</span> 的前两个变元交换」的公式（教材用 <span class="math">∃v<sub>i</sub>(v<sub>i</sub>=v₀ ∧ ∃v₀(v₀=v₁ ∧ ∃v₁(v₁=v<sub>i</sub> ∧ R))) </span> 写出来）。考虑</p>
+    <div class="formula">Σ = {∀v₀∀v₁((∃v<sub>i</sub>R ↔ R) → (S ↔ π(i)R)) : i ≥ 2}.</div>
+    <p>当 <span class="math">R</span> 不依赖第 <span class="math">i</span> 个变量时，<span class="math">π(i)R</span> 的含义就是「交换 <span class="math">R</span> 前两个变元」，而且<strong>与选哪个 <span class="math">i</span> 无关</strong>。所以 <span class="math">Σ</span> 是「<span class="math">S</span> 由 <span class="math">R</span> 强隐含定义」的一组句子。<strong>但没有显式定义</strong>：任给公式 <span class="math">φ</span>，取 <span class="math">n</span> 严格大于 <span class="math">φ</span> 中出现的最大变元指标，在 <span class="math">M = n × n</span> 上造一个特制的 <span class="math">R<sup>M</sup></span>（按 <span class="math">a<sub>i</sub>(0)=i</span> 与 <span class="math">Σ a<sub>i</sub>(1) ≡ 0 (mod n)</span> 规则），可验证 <span class="math">φ</span> 的含义不等于 <span class="math">Σ</span> 所规定的 <span class="math">S</span>。</p>
+    <p><strong>代数回响</strong>：<span class="math">SP Lf<sub>ω</sub></span> 中满射<strong>不</strong>满，而 <span class="math">Lf<sub>ω</sub></span> 中满射满（上一案例）。同一个 Beth 桥，在两个代数类上给出相反答案——又一次「逻辑帮代数」。</p>
+  </div>
+
+  <div class="thm"><div class="bt">推论 <span class="num">5.8.2（非有限图式公理化）</span></div>
+    <p>若 <span class="math">⟨Ax, Ru⟩</span> 定义了对 <span class="math">L<sup>rf</sup><sub>FOL</sub></span> 强可靠且弱完全的推理系统 <span class="math">⊢</span>，则 <span class="math">Ax</span> 与 <span class="math">Ru</span> 必须涉及<strong>无穷多个公式变元</strong>。<span class="math">L<sub>ω</sub></span> 同样。依据是定理 7.3.4：<span class="math">RCA<sub>n</sub></span> 不是有限图式可公理化的。</p>
+  </div>
+
+  <div class="warn"><div class="bt">这不推翻 Gödel——口径要钉死</div>
+    <p>读者容易觉得推论 5.8.2 与 Gödel 完全性冲突。<strong>不冲突</strong>：Gödel 定理 5.7.2 只对<strong>排序版</strong> <span class="math">L<sup>ranked</sup><sub>FOL</sub></span> 成立，对 <span class="math">L<sup>rf</sup><sub>FOL</sub></span> 不成立。两个版本的本质差别是：</p>
+    <div class="formula">L<sup>ranked</sup><sub>FOL</sub> <b>不是</b>代入性的；　L<sup>rf</sup><sub>FOL</sub> 是代入性的.</div>
+    <p>教材的原话更狠：<strong>已知的结构化一阶逻辑版本里，没有一个能让 Gödel 完全性成立</strong>——除了少数靠加新连接词绕开推论 5.8.2 的构造（[190] 等）。<strong>代入性与完全性在这里是鱼与熊掌。</strong></p>
+  </div>
+
+  <div class="box"><div class="bt">三版 FOL 的同与异</div>
+    <table>
+      <tr><th>版本</th><th>有效图式</th><th>可容许规则</th><th>有效性判定</th><th>Gödel 完全</th></tr>
+      <tr><td>非排序 <span class="math">L<sub>ω</sub></span></td><td rowspan="3">三者相同</td><td rowspan="3">三者相同，且可容许图式集递归可枚举</td><td rowspan="3">不可判定（定理 7.3.3 + 4.2.5 + 4.5.2）</td><td>无</td></tr>
+      <tr><td>排序 <span class="math">L<sup>ranked</sup></span></td><td>有（但图式不完全）</td></tr>
+      <tr><td>无排序 <span class="math">L<sup>rf</sup></span></td><td>无</td></tr>
+    </table>
+    <p>「相同」的理由是一条代数等式：<span class="math">SP Up Csf<sub>ω</sub> = RCA<sub>ω</sub> = Alg<sub>⊨</sub>(L<sub>ω</sub>)</span>。三版代数化后的形式共享同样的准等式，故有效图式与可容许规则一致（定理 4.2.5）。<strong>形式一样，脾气不同——差别全在「算不算模型」。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O6 总对照 ============ -->
+<section id="compare">
+  <h2><span class="sn">7</span>四案例总表与「没有免费午餐」 <span class="tag alg">O6</span></h2>
+  <p class="lead">UAL 第 5 章末尾有一张 Table 5.1，把八个案例摆在一起。这里按正文核准的口径，把本讲涉及的六行重画一遍——表格排版在原书里错位，所以每个格子都按各节正文核过。</p>
+
+  <div class="box"><div class="bt">Table 5.1（整理版）</div>
+    <table>
+      <tr><th>逻辑</th><th>Alg<sub>⊨</sub></th><th>Alg<sup>m</sup></th><th>紧致</th><th>Beth</th><th>插值</th><th>可判定</th><th>备注</th></tr>
+      <tr><td><span class="math">L<sub>C</sub></span> 命题</td><td>BA</td><td>{2}</td><td>有</td><td>有</td><td>有</td><td>有</td><td>无 Gip（代数是原子的）</td></tr>
+      <tr><td><span class="math">L<sub>REL</sub></span> 箭头</td><td>RRA</td><td>setRRA</td><td>有</td><td>无</td><td>无</td><td>无</td><td>有 Gip</td></tr>
+      <tr><td><span class="math">L<sup>an</sup><sub>n</sub></span> 抽象模型</td><td>CA<sub>n</sub></td><td>simpleCA<sub>n</sub></td><td>有</td><td>n≤1 有 / n≥2 无</td><td>n≤2 有 / n&gt;1 无</td><td>n≤2 有 / n≥3 无</td><td>有 <span class="math">⊢<sub>n</sub></span></td></tr>
+      <tr><td><span class="math">L<sup>vd</sup><sub>n</sub></span> 变量依赖</td><td>ICrs<sub>n</sub></td><td>Crs<sub>n</sub></td><td>有</td><td>有</td><td>有</td><td>有</td><td><strong>无</strong>有限 Hilbert 系统</td></tr>
+      <tr><td><span class="math">L<sup>ranked</sup><sub>FOL</sub></span></td><td>Lf<sub>ω</sub></td><td>Csf<sub>ω</sub></td><td>有</td><td>有</td><td>有</td><td>无</td><td>条件可代数化、非代入、Gödel 完全</td></tr>
+      <tr><td><span class="math">L<sup>rf</sup><sub>FOL</sub></span></td><td>SP Lf<sub>ω</sub></td><td>Csf<sub>ω</sub></td><td><strong>无</strong></td><td>无</td><td>无</td><td>无</td><td>代入性好、非有限图式公理化</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">直觉 · 读这张表的三个心得</div>
+    <ol>
+      <li><strong>紧致几乎永远有。</strong>六个案例里只有无排序版不紧致。紧致是「有限片段相容就有模型」的存在性承诺（L18），只要模型类还容纳得下超积极限，它就在。无排序版丢紧致，是因为「关系的元数」这件事本身可以是无穷的。</li>
+      <li><strong>Beth、插值、可判定各走各的桥。</strong><span class="math">L<sub>2</sub></span> 可判定却无 Beth；<span class="math">L<sup>vd</sup></span> 三者全有却无有限 Hilbert；<span class="math">L<sup>an</sup></span> 有 Hilbert 却无 Beth。三座桥的前提互不相同，所以出现「东边晴西边雨」是常态，不是矛盾。</li>
+      <li><strong>代数对应物决定一切。</strong>同一个公式集，<span class="math">Alg<sup>m</sup></span> 从 <span class="math">{2}</span> 换到 <span class="math">setRRA</span>、<span class="math">simpleCA<sub>n</sub></span>、<span class="math">Crs<sub>n</sub></span>、<span class="math">Csf<sub>ω</sub></span>，桥定理读出的性质就全变。<strong>L27 的四步流程不是比喻，是真的机器。</strong></li>
+    </ol>
+  </div>
+
+  <div class="fusion"><div class="bt">「没有免费午餐」的精确说法</div>
+    <p>每换一次语义，都是在<strong>有效式集</strong>与<strong>桥定理的前提</strong>之间做交易：</p>
+    <ul>
+      <li>放宽模型 → 有效式减少 → 可能捞回 Hilbert 系统（L<sup>an</sup>），代价是 Beth 与可判定。</li>
+      <li>给赋值设卡 → 有效式减少 → 捞回可判定与 Beth（L<sup>vd</sup>），代价是有限 Hilbert 系统。</li>
+      <li>加排序信息 → 捞回 Gödel 完全性（L<sup>ranked</sup>），代价是代入性与图式完全性。</li>
+      <li>删排序信息 → 捞回代入性（L<sup>rf</sup>），代价是紧致、Beth 与完全性。</li>
+    </ul>
+    <p><strong>一句话收束这一篇</strong>：桥定理告诉你「若代数有性质 P，则逻辑有性质 Q」；它从不承诺你能同时把 P 全占齐。<strong>案例工坊教的就是挑哪几座桥过。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 三层例 ============ -->
+<section id="examples">
+  <h2><span class="sn">8</span>三层例：典型 / 本质 / 边界 <span class="tag log">理解检验</span></h2>
+  <div class="tri">
+
+    <div class="ex"><div class="bt">典型 <span class="num">L<sub>2</sub> 与 L<sup>a</sup><sub>2</sub>：一对照就看明白</span></div>
+      <p>两个逻辑的公式集一模一样，模型类不同：<span class="math">L<sub>2</sub></span> 用通常关系模型，<span class="math">L<sup>a</sup><sub>2</sub></span> 用简单 <span class="math">CA<sub>2</sub></span> 当模型。结果：<span class="math">L<sup>a</sup><sub>2</sub></span> 多了一个强完全 Hilbert 系统，仍有 Beth 与可判定，重言式公式代数无限却原子。<strong>这是「放宽模型捞回完全性」最干净的一例——代价小到几乎看不出来。</strong>但一到 <span class="math">n ≥ 3</span>，同样操作就付出不可判定的代价，说明便宜是小维数的运气。</p>
+    </div>
+
+    <div class="ex"><div class="bt">本质 <span class="num">L<sup>vd</sup><sub>n</sub>：相对化是「驯服逻辑」的通用技术</span></div>
+      <p>把 <span class="math">Cs<sub>n</sub></span> 的顶元从整个 <span class="math">ⁿM</span> 换成任意 n 元关系 <span class="math">W</span>，得到 <span class="math">Crs<sub>n</sub></span>；逻辑上就是「量词只能在可采纳赋值里挑值」。<strong>这一步的本质不是「加限制」，而是「换顶元」</strong>——格还是那个格，1 换了，所有运算跟着相对化。它同时解释了三件事：为什么可判定（代数理论可判）、为什么有插值（有超合并）、为什么没有有限 Hilbert 系统（不可有限公理化）。<strong>一个动作，三个后果，全由桥定理读出。</strong>它还连着 guarded fragment 与 L26 的 locale：相对化与局部化是同一个念头的不同外衣。</p>
+    </div>
+
+    <div class="ex"><div class="bt">边界 <span class="num">L<sup>rf</sup><sub>FOL</sub>：把「元数」交给模型会怎样</span></div>
+      <p>去掉 <span class="math">ρ</span> 之后，原子符号可以先是二元、后在另一个模型里是三元——公式本身不说。这救回了代入性（原子可取任意有限元公式的含义），却让公式集 <span class="math">{¬(R ↔ ∃v<sub>i</sub>R)}</span> 变成一个漂亮的不紧致反例：每个模型里 <span class="math">R</span> 的元数是有穷的，但模型之间可以任意大，于是「每个有限片段都能满足、整体不能」。<strong>这条反例和上一条「捞回代入性」是同一个改动的两面</strong>——元数不固定既是药也是毒。再往边界站一步：若要求 <span class="math">W</span> 是 <span class="math">D<sub>n</sub></span>-单元或 <span class="math">G<sub>n</sub></span>-单元，能找回不少重言式且保持可判定，但量词交换图式始终找不回来。<strong>驯服有极限，这是本讲的最后一道边界。</strong></p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 融合 ============ -->
+<section id="fusion2">
+  <h2><span class="sn">9</span>融合接口：第十一张图 <span class="tag alg">全篇总览</span></h2>
+  <p>前五张图是翻译图，第六张是恒等图，第七、八、九、十张是各自的讲内结构。<strong>这一张是「选择图」</strong>：它不告诉你哪座桥对，而是把每个选择的代价标在箭头旁边。</p>
+  <div class="diagram"><div class="bt">四案例流水线 · 同一台机器，四个输入</div>
+<pre>  公式集（不动）──► 选模型类 ──► Alg^m / Alg|=
+                         │
+        ┌────────────────┼─────────────────┬─────────────────┐
+        ▼                ▼                 ▼                 ▼
+   L_n^an           L_n^vd           L^ranked          L^rf
+   simpleCA_n       Crs_n            Csf_ω/Lf_ω        Csf_ω/SPLf_ω
+   完全✓           可判定✓           Gödel✓            代入✓
+   Beth✗           Hilbert✗         代入✗              紧致✗
+        │                │                 │                 │
+        └──────┬─────────┴────────┬────────┴──────┬──────────┘
+               ▼                  ▼               ▼
+        L18 紧致桥         L19 证明桥        L20/21 Beth+插值桥
+        （几乎总通）        （看有限基）       （看超合并/满射）
+               │                  │               │
+               └──────────────────┴───────────────┘
+                                  ▼
+                    L27 四步流程：代数的性质 ──搬运──► 逻辑的性质
+                                  ▼
+                  没有免费午餐：修好一座桥，常常压断另一座</pre>
+  </div>
+  <div class="fusion"><div class="bt">与前六篇的接口</div>
+    <p><strong>第一篇（闭包与 Galois）</strong>：本讲的反变原理就是 <span class="math">Mod ⊣ Th</span>；<strong>第二篇（对偶与表示）</strong>：<span class="math">Alg<sub>⊨</sub> = SP Alg<sup>m</sup></span> 反复用来算闭包；<strong>第三、四篇（桥）</strong>：Table 5.1 每一行都是六座桥的一次结算；<strong>第五篇（判定与不完全）</strong>：Gip 与自由代数原子性在本讲的四行里各就各位；<strong>第六篇（对偶）</strong>：<span class="math">simpleCA<sub>n</sub></span>、<span class="math">Crs<sub>n</sub></span> 的表示问题回到 L24 的 RRA；<strong>第七篇</strong>：L27 两套极端案例 + 本讲四个变体，案例工坊的样本齐了，L30 用判别式簇收尾。</p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+
+  <div class="ex"><div class="bt">O1 · 反变原理</div>
+    <ol>
+      <li>严格证明反变原理：若 <span class="math">M ⊆ M′</span> 则 <span class="math">E(M′) ⊆ E(M)</span>。再用 L02 的 Galois 连接语言重述一遍，指出哪两个映射反向。</li>
+      <li>找一个具体公式（不必是教材那个），它在 <span class="math">L<sub>2</sub></span> 有效、在 <span class="math">L<sup>a</sup><sub>2</sub></span> 不有效；并解释为什么「模型变抽象」会让 <span class="math">R</span> 的定义域概念失效。</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">O2 · 抽象模型语义</div>
+    <ol start="3">
+      <li>写出 <span class="math">L<sup>an</sup><sub>n</sub></span> 四元组 <span class="math">⟨F, M, mng, ⊨⟩</span> 的四份具体内容，并说明为什么 <span class="math">mng<sub>M</sub></span> 是<strong>唯一</strong>的同态。</li>
+      <li>教材说「简单」是必要的。请分析：若允许有非平凡同余的 <span class="math">CA<sub>n</sub></span> 当模型，<span class="math">mng<sub>M</sub>(φ) = 1</span> 作为真值判据会出什么问题？（提示：考虑商映射下顶元的像。）</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">O3 · 变量依赖</div>
+    <ol start="5">
+      <li>令 <span class="math">M = {a,b}</span>、<span class="math">W = {(a,a),(b,b)} ⊆ ²M</span>。计算 <span class="math">M ⊨<sup>vd,2</sup> ∃v₀(v₀=v₁)</span> 是否成立，并说明标准模型 <span class="math">W = ²M</span> 下答案为何不同。</li>
+      <li>解释「相对化」这一动作：从 <span class="math">Cs<sub>n</sub></span> 到 <span class="math">Crs<sub>n</sub></span>，顶元与柱体算子各怎么改？再说明为什么这一改就让等式理论变得可判定。</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">O4 · 排序版与 Gödel</div>
+    <ol start="7">
+      <li>把定理 5.7.2 的四步证明补全：说明为什么 <span class="math">F = F<sub>ρ</sub>/≡</span> 由有限维元素生成，以及 <span class="math">Lf<sub>ω</sub> ⊆ SP Csf<sub>ω</sub></span> 在最后一步怎么用。</li>
+      <li>用自己的话解释「图式不完全」：为什么每个实例可证、整条图式却无统一证明？再解释加新变量 <span class="math">w<sub>i</sub></span> 为什么能救。</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">O5 · 无排序版</div>
+    <ol start="9">
+      <li>把 <span class="math">Σ = {¬(R ↔ ∃v<sub>i</sub>R) : i &lt; ω}</span> 的反例写成完整的四行证明，并说明它为什么同时给出 <span class="math">SP Csf<sub>ω</sub> ≠ Up SP Csf<sub>ω</sub></span>。</li>
+      <li>解释 <span class="math">π(i)R</span> 为什么给出「交换前两个变元」，以及为什么它与 <span class="math">i ≥ 2</span> 的选择无关。</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">O6 · 总对照</div>
+    <ol start="11">
+      <li>从 Table 5.1 里挑出两行，说明它们「紧致却有/无 Hilbert 系统」的差别，各由哪一章的哪座桥解释。</li>
+      <li>论证这句话：<strong>「Gödel 完全性只在非代入版 FOL 成立」</strong>。说清「代入性」在这里具体指什么、为什么它与完全性冲突，并回指 L17 的多排序缺口。</li>
+      <li>（选做）比较 <span class="math">L<sup>vd</sup><sub>n</sub></span> 与 <span class="math">L<sup>an</sup><sub>n</sub></span> 的「治疗方向」：若想要一个既可判定又有 Hilbert 系统的逻辑，从这两个案例出发你会怎样组合？哪里会撞墙？</li>
+    </ol>
+  </div>
+</section>
+
+<div class="footnav">
+  <a href="L28.html">← 上一讲：L28 案例 3–4：一阶逻辑的有限变元片段 L<sub>n</sub></a>
+  <a href="L30.html">下一讲：L30 案例 9：判别式簇的应用 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L29 · 来源：UAL §5.5–5.8（定义 5.5.1/5.6.1、命题 5.5.2/5.6.2/5.7.1/5.8.1、定理 5.7.2、推论 5.8.2）、Table 5.1、§7.2–7.3；回指 L02 Galois 连接、L15 旋钮二、L17 多排序缺口、L19–L22 桥定理、L24 关系代数、L27 四步流程、L28 有限变元 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

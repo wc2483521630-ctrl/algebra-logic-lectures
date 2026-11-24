@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>代数逻辑讲义 · 大纲 — 代数 / 拓扑 / 逻辑的三重汇流</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --paper:#ffffff; --ink:#1f2430; --ink-soft:#545d6b; --line:#e3e7ee;
+    --alg:#5b4bc4; --alg-bg:#f0edff; --top:#0e8a7d; --top-bg:#e7f6f3;
+    --log:#c2415c; --log-bg:#fdeef1; --fus:#b8860b; --fus-bg:#fdf5df;
+    --shadow:0 1px 3px rgba(20,28,45,.06),0 8px 24px rgba(20,28,45,.04);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",system-ui,sans-serif;
+    font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:250px 1fr;gap:36px}
+
+  /* header */
+  header{background:linear-gradient(120deg,#242b3d 0%,#34304f 55%,#3a2b46 100%);color:#fff;padding:54px 0 46px}
+  header .inner{max-width:1280px;margin:0 auto;padding:0 28px}
+  .kicker{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#c9c2e8;font-weight:600}
+  h1{font-size:36px;line-height:1.3;margin:12px 0 8px;font-weight:800;letter-spacing:.01em}
+  .sub{font-size:17px;color:#d8d3ec;margin-bottom:22px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px}
+  .meta span{font-size:12.5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);
+    padding:5px 12px;border-radius:100px;color:#eae7f5}
+
+  /* sidebar */
+  nav{position:sticky;top:24px;align-self:start;background:var(--paper);border:1px solid var(--line);
+    border-radius:14px;padding:18px 16px;box-shadow:var(--shadow);max-height:calc(100vh - 48px);overflow:auto}
+  nav .navtitle{font-size:11px;letter-spacing:.15em;color:var(--ink-soft);font-weight:700;margin-bottom:10px}
+  nav a{display:block;padding:6px 10px;border-radius:8px;font-size:13.5px;color:var(--ink-soft);margin:1px 0}
+  nav a:hover{background:var(--bg);color:var(--ink)}
+  nav a .n{color:#9aa3b2;font-variant-numeric:tabular-nums;margin-right:8px;font-size:12px}
+  nav hr{border:0;border-top:1px solid var(--line);margin:12px 0}
+
+  main{padding:34px 0 80px;min-width:0}
+  section{margin-bottom:44px;scroll-margin-top:20px}
+  h2{font-size:23px;font-weight:800;margin:0 0 6px;display:flex;align-items:center;gap:10px}
+  h2 .idx{font-size:13px;font-weight:700;color:#fff;background:var(--ink);width:26px;height:26px;
+    display:inline-flex;align-items:center;justify-content:center;border-radius:7px;flex:none}
+  .lead{color:var(--ink-soft);margin:0 0 18px;font-size:14.5px}
+  h3{font-size:17px;font-weight:750;margin:26px 0 10px;padding-left:12px;border-left:4px solid var(--ink)}
+
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:var(--shadow)}
+
+  /* three-thread diagram */
+  .threads{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:18px 0}
+  .thread{border-radius:12px;padding:16px 18px;border:1px solid}
+  .thread.alg{background:var(--alg-bg);border-color:#d9d2ff}
+  .thread.top{background:var(--top-bg);border-color:#bfe6df}
+  .thread.log{background:var(--log-bg);border-color:#f6cdd6}
+  .thread .t{font-weight:800;font-size:15px;margin-bottom:4px}
+  .thread.alg .t{color:var(--alg)} .thread.top .t{color:var(--top)} .thread.log .t{color:var(--log)}
+  .thread p{margin:0;font-size:13px;color:var(--ink-soft)}
+  .converge{text-align:center;font-size:13px;color:var(--ink-soft);margin:2px 0 0}
+  .converge b{color:var(--fus)}
+  .bigidea{background:var(--fus-bg);border:1px solid #eddcae;border-radius:12px;padding:16px 20px;margin-top:14px;font-size:14px}
+  .bigidea b{color:#8a6508}
+
+  /* lecture list */
+  .part{background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px}
+  .part-head{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .part-head .pn{font-size:12px;font-weight:800;color:#fff;background:var(--ink);border-radius:6px;padding:3px 9px}
+  .part-head h3{margin:0;border:0;padding:0;font-size:18px;font-weight:800}
+  .part-head .pd{font-size:13px;color:var(--ink-soft);margin-left:auto}
+  .lec{padding:16px 22px;border-bottom:1px dashed var(--line)}
+  .lec:last-child{border-bottom:0}
+  .lec:target{background:#fffdf4}
+  .lec-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .lec-num{font-size:12.5px;font-weight:800;color:var(--ink-soft);font-variant-numeric:tabular-nums;min-width:46px}
+  .lec-title{font-weight:750;font-size:15.5px}
+  .tags{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+  .tag{font-size:11px;font-weight:700;padding:2px 9px;border-radius:100px;border:1px solid}
+  .tag.alg{color:var(--alg);background:var(--alg-bg);border-color:#d9d2ff}
+  .tag.top{color:var(--top);background:var(--top-bg);border-color:#bfe6df}
+  .tag.log{color:var(--log);background:var(--log-bg);border-color:#f6cdd6}
+  .lec ul{margin:9px 0 0;padding-left:20px;color:var(--ink-soft);font-size:13.5px}
+  .lec li{margin:3px 0}
+  .fusion{margin-top:10px;background:var(--fus-bg);border-left:3px solid var(--fus);border-radius:0 8px 8px 0;
+    padding:8px 12px;font-size:13px;color:#6b5410}
+  .fusion b{color:#8a6508}
+  .src{font-size:12px;color:#8b94a3;margin-top:8px}
+  .src b{color:var(--ink-soft);font-weight:600}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:13px;background:var(--paper);border-radius:12px;overflow:hidden;
+    box-shadow:var(--shadow);border:1px solid var(--line)}
+  th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#eef1f6;font-size:12px;font-weight:700;color:var(--ink-soft);white-space:nowrap}
+  tr:last-child td{border-bottom:0}
+  td .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+  .dot.alg{background:var(--alg)} .dot.top{background:var(--top)} .dot.log{background:var(--log)}
+
+  .routes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .route{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:var(--shadow)}
+  .route h4{margin:0 0 4px;font-size:15px}
+  .route .wk{font-size:12px;color:var(--ink-soft);margin-bottom:10px}
+  .route ol{padding-left:18px;margin:0;font-size:13px;color:var(--ink-soft)}
+  .route li{margin:4px 0}
+
+  .note{background:#eef4fb;border:1px solid #d3e2f2;border-radius:10px;padding:14px 18px;font-size:13.5px;color:#33465e}
+  .note b{color:#1c3a5e}
+  footer{text-align:center;color:#9aa3b2;font-size:12px;padding:30px 0 50px}
+
+  @media(max-width:1000px){
+    .wrap{grid-template-columns:1fr} nav{position:relative;top:0;max-height:none}
+    .threads,.routes{grid-template-columns:1fr} h1{font-size:28px}
+  }
+  @media print{
+    nav{display:none} .wrap{display:block} body{background:#fff}
+    .part,.card,table,.route{box-shadow:none} .lec{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="inner">
+    <div class="kicker">Lecture Notes Outline · 讲义大纲 v0.1</div>
+    <h1>代数逻辑：代数、拓扑与逻辑的三重汇流</h1>
+    <div class="sub">Universal Algebra × Topology-in-and-via-Logic × Universal Algebraic Logic</div>
+    <div class="meta">
+      <span>核心教材 3 部 · 经典与讲义若干</span>
+      <span>建议 16 周 · 每周 2–3 学时</span>
+      <span>先修：集合论、一阶逻辑、近世代数</span>
+      <span>2026-11-23</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+<nav>
+  <div class="navtitle">目录</div>
+  <a href="#overview"><span class="n">§0</span>编写理念与融合结构</a>
+  <a href="#cover"><span class="n">§A</span>教材覆盖对照表</a>
+  <a href="#p1"><span class="n">I</span>共同基础：关系、序、闭包</a>
+  <a href="#p2"><span class="n">II</span>代数骨架</a>
+  <a href="#p3"><span class="n">III</span>拓扑：用逻辑的眼光</a>
+  <a href="#p4"><span class="n">IV</span>代数化：把逻辑翻成代数</a>
+  <a href="#p5"><span class="n">V</span>桥定理（核心）</a>
+  <a href="#p6"><span class="n">VI</span>对偶与表示：三线汇合</a>
+  <a href="#p7"><span class="n">VII</span>案例工坊</a>
+  <a href="#p8"><span class="n">VIII</span>推广与前沿</a>
+  <hr>
+  <a href="#routes"><span class="n">B</span>三条教学路线</a>
+  <a href="#refs"><span class="n">C</span>参考书目与来源</a>
+  <a href="#notes"><span class="n">D</span>编写说明</a>
+</nav>
+
+<main>
+
+<!-- ============ 编写理念 ============ -->
+<section id="overview">
+  <h2><span class="idx">§0</span>编写理念与融合结构</h2>
+  <p class="lead">这不是三门课的拼盘，而是围绕<strong>一条红线</strong>重新组织的一门课：一个逻辑性质，总能在代数一侧找到一个自然对应，在拓扑一侧找到它的空间表现。三者讲的是同一件事的三种语言。</p>
+
+  <div class="threads">
+    <div class="thread alg">
+      <div class="t">● 代数（Universal Algebra）</div>
+      <p>把「逻辑系统」压缩成一类代数。工具：同余、商、直积、子直积、自由代数、簇、同态。回答：这个逻辑的代数本质是什么？</p>
+    </div>
+    <div class="thread top">
+      <div class="t">● 拓扑（in &amp; via Logic）</div>
+      <p>把「可能世界 + 可验证命题」看成空间与开集。工具：滤子、超滤子、紧致、连通、无点拓扑。回答：可验证性如何塑造空间？</p>
+    </div>
+    <div class="thread log">
+      <div class="t">● 逻辑（Universal Algebraic Logic）</div>
+      <p>把各种逻辑放进统一规范形式，定义其代数对应物，再证明桥定理。回答：性质如何在逻辑与代数之间来回搬运？</p>
+    </div>
+  </div>
+  <p class="converge">三条线在 <b>「对偶 / 表示 / 桥定理」</b> 处交汇 —— 这是全课的枢纽</p>
+
+  <div class="bigidea">
+    <b>贯穿全课的红线：</b>「可验证性 → 开集 → 滤子 / 理论 → 同余 / 理想 → 代数对应物 → 桥定理」。
+    以天鹅例子起步：开集 = 可验证命题；再往上，<em>紧致性</em>在逻辑侧是「有限可满足即整体可满足」，在代数侧是「对超积封闭」，在拓扑侧是「每个超滤子收敛」——同一个定理，三副面孔。
+  </div>
+
+  <h3>三部分教材在课程中的角色</h3>
+  <div class="card" style="font-size:13.5px;color:var(--ink-soft)">
+    <p style="margin:0 0 8px"><span class="dot alg"></span><b style="color:var(--ink)">Bergman《Universal Algebra》</b>（2011）— 代数主干教材，Part I 打地基，Part II 同余分配 / 算术 / Maltsev / 有限代数作为专题深度，保证「代数」这条线足够硬。</p>
+    <p style="margin:0 0 8px"><span class="dot top"></span><b style="color:var(--ink)">《在逻辑中并经由逻辑学习拓扑》</b>（Aharoni–Almeida–Knudstorp，中译稿第 2–7 章）— 拓扑主干教材，自带认识论解释，是全课「融合」的黏合剂：开集/可验证、滤子/理论、紧致/完备、S4/内部算子。</p>
+    <p style="margin:0"><span class="dot log"></span><b style="color:var(--ink)">Andréka–Gyenis–Németi–Sain《Universal Algebraic Logic》</b>（2022）— 逻辑主干教材，提供规范形式、代数化方法、六座桥定理、八个案例与关系代数附录，是全课的「主线剧本」。</p>
+  </div>
+</section>
+
+<!-- ============ 覆盖对照表 ============ -->
+<section id="cover">
+  <h2><span class="idx">A</span>教材覆盖对照表</h2>
+  <p class="lead">三部教材的<strong>每一章都被纳入</strong>。下表给出逐章映射；彩色圆点表示该章归属的主线（可多属）。</p>
+  <table>
+    <thead><tr><th style="width:70px">教材</th><th style="width:210px">原书章节</th><th>讲义中的落点</th></tr></thead>
+    <tbody>
+      <!-- Bergman -->
+      <tr><td rowspan="9"><span class="dot alg"></span><b>Bergman<br>UA</b></td>
+        <td>Ch1 Algebras (1.1–1.5)</td><td>L03 代数、子代数、同态、同余、生成</td></tr>
+      <tr><td>Ch2 Lattices (2.1–2.6)</td><td>L02 序与格、闭包系统、Galois 连接；L23 Stone 对偶</td></tr>
+      <tr><td>Ch3 Nuts &amp; Bolts (3.1–3.5)</td><td>L03–L04 同构定理、直积、子直积、簇</td></tr>
+      <tr><td>Ch4 Clones/Terms (4.1–4.8)</td><td>L04 项与自由代数、Birkhoff；L05 Clone、Maltsev 条件；L05 解释</td></tr>
+      <tr><td>Ch5 Congruence Distributive (5.1–5.5)</td><td>L04 超滤子/超积；L07 专题：同余分配簇</td></tr>
+      <tr><td>Ch6 Arithmetical (6.1–6.2)</td><td>L07 专题：算术簇与判定性</td></tr>
+      <tr><td>Ch7 Maltsev (7.1–7.7)</td><td>L07 专题：Maltsev 簇、交换子、函数完全</td></tr>
+      <tr><td>Ch8 Finite Algebras (8.1–8.4)</td><td>L07 专题：有限代数与局部有限簇</td></tr>
+      <tr><td>Preface 教学哲学</td><td>§D 编写说明（工具先于应用、例子驱动）</td></tr>
+
+      <!-- Topology -->
+      <tr><td rowspan="7"><span class="dot top"></span><b>拓扑<br>中译稿</b></td>
+        <td>Ch2 基本定义与例子 (2.1–2.4)</td><td>L08 可验证命题 = 开集；L09 基/子基；L10 闭包/内部</td></tr>
+      <tr><td>Ch3 连续映射 (3.1–3.2)</td><td>L11 连续 = 不增知识的翻译；同胚/嵌入/商</td></tr>
+      <tr><td>Ch4 分离公理 (4.1–4.5)</td><td>L12 可区分性、滤子与收敛、T0–T4</td></tr>
+      <tr><td>Ch5 紧致性 (5.1–5.3)</td><td>L18 紧致性桥；L13 超滤子/紧致化/Stone–Čech</td></tr>
+      <tr><td>Ch6 连通性 (6.1–6.3)</td><td>L14 连通、全不连通、极端不连通</td></tr>
+      <tr><td>Ch7 进一步方向</td><td>L26 无点拓扑/locale；L25 空间模态逻辑；L32 描述集合论</td></tr>
+      <tr><td>全部插图与习题编号</td><td>沿用原编号，作为讲义思考题</td></tr>
+
+      <!-- UAL -->
+      <tr><td rowspan="10"><span class="dot log"></span><b>UAL<br>(2022)</b></td>
+        <td>Ch1 记号与基础 (1.1–1.8)</td><td>L01 集合/关系、闭包系统；L01′ 一阶逻辑速览</td></tr>
+      <tr><td>Ch2 UA 基础 (2.1–2.8)</td><td>L03–L07（与 Bergman 合并讲授）；L06 BAO</td></tr>
+      <tr><td>Ch3 框架与代数化 (3.1–3.4)</td><td>L15 规范形式；L16 代入/滤子性质；L17 与 AAL 比较</td></tr>
+      <tr><td>Ch4 桥定理 (4.1–4.6)</td><td>L18–L22（核心五座桥 + 判定性 + 不完全性）</td></tr>
+      <tr><td>Ch5 案例 (5.1–5.8)</td><td>L27–L29 案例工坊（逐一覆盖八个例子）</td></tr>
+      <tr><td>Ch6 推广与新逻辑 (6.1–6.2)</td><td>L31 推广与新逻辑</td></tr>
+      <tr><td>Ch7 关系代数 (7.1–7.3)</td><td>L24 关系代数、RRA、箭头逻辑的代数基础</td></tr>
+      <tr><td>Preface 三条教学路线</td><td>§B 教学路线（基础 / 进阶 / 专题）</td></tr>
+      <tr><td>Fig.0.1 依赖图</td><td>§0 融合结构图</td></tr>
+      <tr><td>全书定理编号</td><td>正文引用保留原编号，便于回查</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ PART I ============ -->
+<section id="p1">
+  <h2><span class="idx">I</span>共同基础：关系、序、闭包</h2>
+  <p class="lead">三条线共用的语言。闭包算子这一讲是全课第一个融合点：它同时是代数中的生成子代数、拓扑中的闭包、逻辑中的后承算子。</p>
+
+  <div class="part">
+    <div class="part-head"><span class="pn">L01</span><h3>集合、关系、函数、序</h3><span class="pd">2 学时</span></div>
+    <div class="lec" id="l1">
+      <div class="lec-top"><span class="lec-num">L01</span><span class="lec-title"><a href="lectures/L01.html" title="打开讲义正文">集合论基础与一阶逻辑速览</a> <span class="tag" style="color:var(--top);background:var(--top-bg);border-color:#bfe6df">正文已就绪</span></span>
+        <div class="tags"><span class="tag alg">代数</span><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>集合、类、元组；Russell 悖论；二元关系、等价关系、函数</li>
+        <li>序、序数、基数；序列；族的直接积；高阶关系</li>
+        <li>一阶逻辑语法与语义速览（词项、公式、满足、模型）</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>「三元组关系 ↔ 函数 ↔ 等价类」同时是后面同余关系、模态可达关系、商空间的共同前身。</div>
+      <div class="src"><b>来源：</b>UAL Ch1 §1.1–1.6, §1.8；Bergman Ch2 §2.1</div>
+    </div>
+    <div class="lec" id="l2">
+      <div class="lec-top"><span class="lec-num">L02</span><span class="lec-title"><a href="lectures/L02.html" title="打开讲义正文">格、闭包系统与 Galois 连接</a> <span class="tag" style="color:var(--top);background:var(--top-bg);border-color:#bfe6df">正文已就绪 · 深度讲</span></span>
+        <div class="tags"><span class="tag alg">代数</span><span class="tag top">拓扑</span></div></div>
+      <ul>
+        <li>偏序集、格、分配格与模格、完全格</li>
+        <li>闭包算子、代数格；Galois 连接的定义与基本性质</li>
+        <li>闭包系统：任意交封闭；生成闭包系统的标准方法</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>闭包算子 <em>C</em> 三副面孔 —— 代数 <em>Sg</em>（生成子代数）、拓扑 <em>cl</em>（闭包）、逻辑 <em>Cn</em>（后承）。Galois 连接是 Stone 对偶的雏形。</div>
+      <div class="src"><b>来源：</b>Bergman Ch2 §2.1–2.6；UAL §1.7；拓扑讲义 §2.4（内部/闭包算子）</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART II ============ -->
+<section id="p2">
+  <h2><span class="idx">II</span>代数骨架（Universal Algebra）</h2>
+  <p class="lead">代数线的主体，以 Bergman 为骨架、UAL Ch2 为补充。这一部分的每个概念后面都会在「代数化」中被用来表示某个逻辑。</p>
+
+  <div class="part">
+    <div class="part-head"><span class="pn">L03</span><h3>代数、同态、同余、商</h3><span class="pd">2 学时</span></div>
+    <div class="lec" id="l4">
+      <div class="lec-top"><span class="lec-num">L03</span><span class="lec-title"><a href="lectures/L03.html" title="正文已就绪">代数、子代数、同态、同余与商代数</a> <span class="tag log" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag alg">代数</span></div></div>
+      <ul>
+        <li>代数的类型与语言；子代数、生成子代数；同态与同构定理</li>
+        <li>同余关系：与「滤子/理想」的对偶；商代数；同余格</li>
+        <li>直积、子直积、约化积的构造（先讲构造，L04 再讲应用）</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>同余 ≍ 逻辑中的「可替换关系」≍ 拓扑中的「不可区分关系」。商代数 ≍ 商空间 ≍ Lindenbaum–Tarski 代数。</div>
+      <div class="src"><b>来源：</b>Bergman Ch1 §1.1–1.5, Ch3 §3.1–3.3；UAL §2.1, §2.2.1–2.2.5</div>
+    </div>
+    <div class="lec" id="l5">
+      <div class="lec-top"><span class="lec-num">L04</span><span class="lec-title"><a href="lectures/L04.html" title="正文已就绪">子直积、超积、自由代数与 Birkhoff 定理</a> <span class="tag log" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag alg">代数</span><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>子直积分解、Birkhoff 子直积定理；有限代数的直分解</li>
+        <li>超滤子、超积、Łoś 定理</li>
+        <li>项代数、自由代数；等式与等式类；Birkhoff 定理 <em>V = HSP</em>；拟簇 <em>SPP</em><sub>U</sub></li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>超积是逻辑紧致性的代数引擎；Birkhoff 定理是「逻辑完全性」在代数侧的原型（等式可证 ⇔ 所有模型成立）。</div>
+      <div class="src"><b>来源：</b>Bergman Ch3 §3.2–3.3, Ch4 §4.3–4.4；UAL §2.2.5–2.2.7, §2.4–2.5</div>
+    </div>
+    <div class="lec" id="l6">
+      <div class="lec-top"><span class="lec-num">L05</span><span class="lec-title"><a href="lectures/L05.html" title="正文已就绪">Clone、不变关系与 Maltsev 条件</a> <span class="tag log" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag alg">代数</span></div></div>
+      <ul>
+        <li>Clone 与多项式运算；不变关系；Pol–Inv Galois 连接</li>
+        <li>等式理论与全不变同余；Maltsev 条件</li>
+        <li>簇之间的解释（interpretation）；子簇格</li>
+      </ul>
+      <div class="src"><b>来源：</b>Bergman Ch4 §4.1–4.2, §4.6–4.8；UAL §2.3</div>
+    </div>
+    <div class="lec" id="l7">
+      <div class="lec-top"><span class="lec-num">L06</span><span class="lec-title"><a href="lectures/L06.html">布尔代数、带算子布尔代数 BAO、判别式簇</a> <span class="tag log" style="font-size:10px">正文已就绪</span></span>
+        <div class="tags"><span class="tag alg">代数</span><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>布尔代数、滤子与理想、Stone 表示定理（先述结论，L23 证明）</li>
+        <li>BAO / Boolean algebra with operators：模态代数与关系代数的共同抽象</li>
+        <li>判别式簇及其在代数逻辑中的核心作用</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>BAO 是「逻辑 ↔ 代数 ↔ 拓扑」的三通管：命题逻辑 → 布尔代数；模态逻辑 → BAO；拓扑空间 → 内部/闭包算子。</div>
+      <div class="src"><b>来源：</b>UAL §2.6–2.8；Bergman Ch2；拓扑讲义 Ch7「空间的模态逻辑」</div>
+    </div>
+    <div class="lec" id="l8">
+      <div class="lec-top"><span class="lec-num">L07</span><span class="lec-title"><a href="lectures/L07.html">专题：同余分配、算术、Maltsev 与有限代数</a> <span class="tag log" style="font-size:10px">正文已就绪</span></span>
+        <div class="tags"><span class="tag alg">代数</span></div></div>
+      <ul>
+        <li>超滤子与超积（回顾）；Jónsson 引理；同余分配簇</li>
+        <li>算术簇：large clone、primal 代数的稀有性</li>
+        <li>Maltsev 簇：可表示簇、中心化同余、交换子、极小簇、函数完全</li>
+        <li>有限代数与局部有限簇：极小代数、局部化、应用</li>
+      </ul>
+      <div class="fusion"><b>为什么保留：</b>这是 Bergman Part II 的深水区，也是判别式簇案例（L30）的工具箱；可作为选修或研究生专题。</div>
+      <div class="src"><b>来源：</b>Bergman Ch5–Ch8 全部；UAL §2.7</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART III ============ -->
+<section id="p3">
+  <h2><span class="idx">III</span>拓扑：用逻辑的眼光看空间</h2>
+  <p class="lead">以中文讲义为主线，逐节落实其认识论解释。这里的每个拓扑概念都配一个逻辑读法，为第五部分的桥定理准备几何直觉。</p>
+
+  <div class="part">
+    <div class="part-head"><span class="pn">L08</span><h3>开集 = 可验证命题</h3><span class="pd">2 学时</span></div>
+    <div class="lec" id="l11">
+      <div class="lec-top"><span class="lec-num">L08</span><span class="lec-title"><a href="lectures/L08.html" style="color:inherit;text-decoration:none;border-bottom:1px dashed #7c8fa8">拓扑空间与认识论解释</a> <span style="font-size:11px;color:#2f9e6e;font-weight:600">正文已就绪</span></span>
+        <div class="tags"><span class="tag top">拓扑</span><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>拓扑定义 (O1)(O2)(O3) 的认识论论证：可验证命题对任意析取、有限合取封闭</li>
+        <li>天鹅例子：X = {a, b}，τ = {∅, X, {b}}；可验证 / 可证伪 / 不可判定</li>
+        <li>命题 ↔ 真值集；∨ ↔ ∪，∧ ↔ ∩，¬ ↔ 补</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>这是全课「翻译词典」的出发点：可验证命题 ↔ 开集；在 x 为真的可验证命题 ↔ x 的开邻域。</div>
+      <div class="src"><b>来源：</b>拓扑讲义 Ch2 §2.1（含例 2.1.1、表 2.1）</div>
+    </div>
+    <div class="lec" id="l12">
+      <div class="lec-top"><span class="lec-num">L09</span><span class="lec-title"><a href="lectures/L09.html" style="color:inherit;text-decoration:none;border-bottom:1px dashed #7c8fa8">基、子基与生成新拓扑</a> <span style="font-size:11px;color:#2f9e6e;font-weight:600">正文已就绪</span></span>
+        <div class="tags"><span class="tag top">拓扑</span><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>基与子基的定义；用基/子基生成拓扑；拓扑的比较（细/粗）</li>
+        <li>由子基生成：有限交再任意并；积拓扑、子空间拓扑、商拓扑</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>基 = 一组基本可验证命题；子基通过「加强知识（有限合取）+ 弱化知识（析取）」生成全部可验证命题。</div>
+      <div class="src"><b>来源：</b>拓扑讲义 Ch2 §2.2–2.3（含注 2.2.1）</div>
+    </div>
+    <div class="lec" id="l13">
+      <div class="lec-top"><span class="lec-num">L10</span><span class="lec-title"><a href="lectures/L10.html" style="color:inherit;text-decoration:none;border-bottom:1px dashed #7c8fa8">闭集、邻域、闭包与内部算子</a> <span style="font-size:11px;color:#2f9e6e;font-weight:600">正文已就绪</span></span>
+        <div class="tags"><span class="tag top">拓扑</span><span class="tag alg">代数</span></div></div>
+      <ul>
+        <li>闭集 = 可证伪命题；既不开也不闭的命题（「外面下雨」vs JFK 念头）</li>
+        <li>邻域、闭包 cl、内部 int； Kuratowski 闭包公理</li>
+        <li>内部算子作为模态 □、闭包作为 ◇ 的预告</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>Kuratowski 闭包公理 ↔ 逻辑中的模态公理；内部算子是 S4 模态算子的拓扑实现（L25）。</div>
+      <div class="src"><b>来源：</b>拓扑讲义 Ch2 §2.4；Bergman Ch2 §2.4（闭包算子）</div>
+    </div>
+    <div class="lec" id="l14">
+      <div class="lec-top"><span class="lec-num">L11</span><span class="lec-title"><a href="lectures/L11.html">连续映射、同胚、嵌入与商映射</a></span>
+        <div class="tags"><span class="tag top">拓扑</span><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>连续性的开集定义与认识论定义：翻译「不增加知识」</li>
+        <li>开映射 =「不丢失知识」的翻译；同胚、嵌入、商映射</li>
+        <li>积空间、商空间的泛性质</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>连续映射 ↔ 逻辑翻译的保真性；同胚 ↔ 两种逻辑的表达力等价（可相互定义）。</div>
+      <div class="src"><b>来源：</b>拓扑讲义 Ch3 §3.1–3.2（含注 3.1.2、3.1.4）</div>
+    </div>
+    <div class="lec" id="l15">
+      <div class="lec-top"><span class="lec-num">L12</span><span class="lec-title"><a href="lectures/L12.html">分离公理：可区分性与滤子</a></span>
+        <div class="tags"><span class="tag top">拓扑</span><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>认识论问题：能否验证两个模型不同？滤子基、滤子、主滤子、邻域滤子</li>
+        <li>收敛、唯一收敛；T0 / T1 / T2 (Hausdorff) / 正则 / 正规</li>
+        <li>T0 的认识论意义：T0 才「可区分」；不可区分 ≍ 同余关系</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>滤子 ↔ 理论；收敛滤子 ↔ 确定性理论；Hausdorff ↔ 每个理论至多一个模型。这是 L13 紧致性的前置。</div>
+      <div class="src"><b>来源：</b>拓扑讲义 Ch4 §4.1–4.5；UAL §3.3.5（滤子性质）</div>
+    </div>
+    <div class="lec" id="l16">
+      <div class="lec-top"><span class="lec-num">L13</span><span class="lec-title"><a href="lectures/L13.html">素滤子、紧致性与紧致化</a></span>
+        <div class="tags"><span class="tag top">拓扑</span><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>素滤子（ultrafilter）：极大真滤子；Tarski 素滤子定理</li>
+        <li>紧致 = 每个开覆盖有有限子覆盖 ⇔ 每个素滤子收敛；闹钟例子</li>
+        <li>局部紧、紧致 Hausdorff、Alexandroff 单点紧致化、Stone–Čech 紧致化</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>紧致性 = 完备性（有限可满足 ⇒ 整体可满足）；素滤子 = 饱和理论；紧致化 = 给理论补上缺失的模型（L18 详证）。</div>
+      <div class="src"><b>来源：</b>拓扑讲义 Ch5 §5.1–5.3（含命题 5.2.9、5.3.15）</div>
+    </div>
+    <div class="lec" id="l17">
+      <div class="lec-top"><span class="lec-num">L14</span><span class="lec-title"><a href="lectures/L14.html">连通性、全不连通与 Stone 空间</a></span>
+        <div class="tags"><span class="tag top">拓扑</span><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>连通、道路连通；全不连通、全分离；孤立性与极端不连通</li>
+        <li>Stone 空间（紧致、Hausdorff、零维）与布尔代数的对偶预览</li>
+        <li>极端不连通在完全信念逻辑中的用途预告</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>零维 / 极端不连通空间是布尔代数与 Stone 对偶的几何形态；与 S4.2 及信念逻辑相连（L25）。</div>
+      <div class="src"><b>来源：</b>拓扑讲义 Ch6 §6.1–6.3；Ch7「空间的模态逻辑」</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART IV ============ -->
+<section id="p4">
+  <h2><span class="idx">IV</span>代数化：把逻辑翻译成代数</h2>
+  <p class="lead">UAL 第三章的主线剧本。把千差万别的逻辑放进统一规范形式，然后为每一个逻辑定义它的代数对应物。</p>
+
+  <div class="part">
+    <div class="part-head"><span class="pn">L15</span><h3>逻辑的规范形式</h3><span class="pd">2 学时</span></div>
+    <div class="lec" id="l18">
+      <div class="lec-top"><span class="lec-num">L15</span><span class="lec-title"><a href="lectures/L15.html">研究逻辑的统一框架</a></span>
+        <div class="tags"><span class="tag log">逻辑</span><span class="tag alg">代数</span></div></div>
+      <ul>
+        <li>逻辑的规范形式：语言、公式、语义、后承关系；语法与语义两要素</li>
+        <li>大量例子：命题逻辑、模态逻辑、一阶逻辑的规范表示</li>
+        <li>为什么需要规范形式：为了定义函数 Alg(L)</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>规范形式把「逻辑」变成一个可代数化的对象；这是把各类逻辑纳入通用代数机器的入口。</div>
+      <div class="src"><b>来源：</b>UAL Ch3 §3.1–3.2（定义 3.1.3/3.1.5/3.1.6；§3.2 全部例子）</div>
+    </div>
+    <div class="lec" id="l19">
+      <div class="lec-top"><span class="lec-num">L16</span><span class="lec-title"><a href="lectures/L16.html">代数对应物、代入性质与滤子性质</a></span>
+        <div class="tags"><span class="tag log">逻辑</span><span class="tag alg">代数</span></div></div>
+      <ul>
+        <li>连接词与公式代数、组合性；Alg<sub>⊨</sub>(L) 与 Alg<sup>m</sup>(L) 的定义</li>
+        <li>代入性质：语义代入、句法代入、条件代入；filtral 性质</li>
+        <li>一般逻辑（general logics）与替换性刻画</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>代入性质 ↔ 簇对同态像封闭（H）；滤子性质 ↔ 同余/理想结构。逻辑的「结构性质」开始对应代数的「算子封闭性」。</div>
+      <div class="src"><b>来源：</b>UAL Ch3 §3.3.1–3.3.6（至定理 3.3.36）</div>
+    </div>
+    <div class="lec" id="l20">
+      <div class="lec-top"><span class="lec-num">L17</span><span class="lec-title"><a href="lectures/L17.html">与抽象代数逻辑、模型论逻辑、机构论的比较</a></span>
+        <div class="tags"><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>UAL 与 AAL（Blok–Pigozzi、Czelakowski、Font–Jansana）的异同</li>
+        <li>与模型论逻辑、机构论（institutions）的关系</li>
+        <li>非替换形式的一阶逻辑：UAL 的特色与新意；多排序逻辑的缺口</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>把 UAL 放进更大的逻辑版图，说明「代数化」只是众多统一框架之一，各有侧重。</div>
+      <div class="src"><b>来源：</b>UAL §3.4；Preface；Bergman Ch2（格与序的准备）</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART V ============ -->
+<section id="p5">
+  <h2><span class="idx">V</span>桥定理：全课核心</h2>
+  <p class="lead">五座桥，每座都双向走：逻辑性质 ⇔ 代数性质，并在可能处补上拓扑对应。建议这一部分是课程高潮，投入最多学时。</p>
+
+  <div class="part">
+    <div class="part-head"><span class="pn">L18</span><h3>桥之一：紧致性</h3><span class="pd">2 学时 · 重头戏</span></div>
+    <div class="lec" id="l10">
+      <div class="lec-top"><span class="lec-num">L18</span><span class="lec-title"><a href="lectures/L18.html" title="正文已就绪">紧致性 ↔ 对超积封闭 ↔ 拓扑紧致</a> <span class="tag log" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag log">逻辑</span><span class="tag alg">代数</span><span class="tag top">拓扑</span></div></div>
+      <ul>
+        <li>逻辑侧：紧致性定义（有限可满足 ⇒ 整体可满足）、结构紧致性</li>
+        <li>代数侧：Alg 对超积封闭（定理 4.1.5、4.1.6）；Łoś 定理回顾</li>
+        <li>拓扑侧：紧致 ⇔ 每个超滤子收敛；Stone 空间的紧致性</li>
+        <li>双向应用：用代数方法证逻辑紧致 / 用逻辑方法证代数不可有限公理化</li>
+      </ul>
+      <div class="fusion"><b>三线汇合的样板：</b>同一命题在三个领域的三种证明。建议此处画一张「三面一体」图作为全课视觉锚点。</div>
+      <div class="src"><b>来源：</b>UAL §4.1；拓扑讲义 Ch5；Bergman §5.1</div>
+    </div>
+    <div class="lec" id="l10b">
+      <div class="lec-top"><span class="lec-num">L19</span><span class="lec-title"><a href="lectures/L19.html" title="正文已就绪">桥之二：完全性 ↔ 有限公理化 ↔ Hilbert 系统</a> <span class="tag log" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag log">逻辑</span><span class="tag alg">代数</span><span class="tag top">拓扑</span></div></div>
+      <ul>
+        <li>Hilbert 型推理系统、可允许规则、可靠与完全</li>
+        <li>代数刻画：有限完全 + 强可靠 ⇔ 相应代数性质（定理 4.2.9/4.2.18）</li>
+        <li>与拓扑「理论 — 模型」对应的紧致化视角</li>
+      </ul>
+      <div class="src"><b>来源：</b>UAL §4.2.1–4.2.2；拓扑讲义 Ch5.3</div>
+    </div>
+    <div class="lec" id="l12b">
+      <div class="lec-top"><span class="lec-num">L20</span><span class="lec-title"><a href="lectures/L20.html" title="正文已就绪">桥之三：可定义性 ↔ 同态满射 ↔ 可区分性</a> <span class="tag log" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag log">逻辑</span><span class="tag alg">代数</span><span class="tag top">拓扑</span></div></div>
+      <ul>
+        <li>Beth 可定义性（语法/语义/局部/弱）四种版本</li>
+        <li>代数刻画：同态的满射性（定理 4.3 系列）</li>
+        <li>拓扑读法：不可区分关系、T0 分离、商空间的泛性质</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>可定义 = 在同余/不可区分的商上「不丢失信息」；这是 L12 分离公理的代数化版本。</div>
+      <div class="src"><b>来源：</b>UAL §4.3.1–4.3.4；拓扑讲义 Ch4</div>
+    </div>
+    <div class="lec" id="l13b">
+      <div class="lec-top"><span class="lec-num">L21</span><span class="lec-title"><a href="lectures/L21.html" title="正文已就绪">桥之四：插值 ↔ 合并 / 超合并</a> <span class="tag log" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag log">逻辑</span><span class="tag alg">代数</span></div></div>
+      <ul>
+        <li>Craig 插值性质及例子；合并性质（amalgamation）</li>
+        <li>超合并（superamalgamation）↔ 插值的代数刻画（定理 4.4.24）</li>
+        <li>应用：插值缺失的逻辑该如何改造</li>
+      </ul>
+      <div class="src"><b>来源：</b>UAL §4.4.1–4.4.2（定理 4.4.18、4.4.24）</div>
+    </div>
+    <div class="lec" id="l14b">
+      <div class="lec-top"><span class="lec-num">L22</span><span class="lec-title"><a href="lectures/L22.html" title="正文已就绪">桥之五：判定性与 Gödel 不完全性</a> <span class="tag log" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag log">逻辑</span><span class="tag alg">代数</span></div></div>
+      <ul>
+        <li>判定性问题：从代数簇的有限基问题看逻辑的可判定性</li>
+        <li>Gödel 不完全性的代数侧面；不可有限公理化的例子</li>
+        <li>小结：六座桥的方法论 ——「译过去 → 用代数解 → 译回来」</li>
+      </ul>
+      <div class="src"><b>来源：</b>UAL §4.5–4.6；Bergman Ch5–Ch6（有限基问题）</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART VI ============ -->
+<section id="p6">
+  <h2><span class="idx">VI</span>对偶与表示：三条线的汇合点</h2>
+  <p class="lead">这一篇把前面分散的对偶集中起来，展示「点 = 素滤子 / 同态」这一核心机制如何同时支撑 Stone 对偶、模态语义与 locale 理论。</p>
+
+  <div class="part">
+    <div class="part-head"><span class="pn">L23</span><h3>Stone 对偶与关系代数</h3><span class="pd">2 学时</span></div>
+    <div class="lec" id="l21">
+      <div class="lec-top"><span class="lec-num">L23</span><span class="lec-title"><a href="lectures/L23.html" title="正文已就绪">Stone 对偶：布尔代数 ↔ Stone 空间</a> <span class="tag log" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag alg">代数</span><span class="tag top">拓扑</span><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>Stone 表示定理的完整证明：点 = 超滤子；开集 = 理想/滤子的集合</li>
+        <li>布尔代数同态 ↔ 连续映射；理想 ↔ 开集；商 ↔ 子空间</li>
+        <li>推广：Priestley 对偶、Esakia 对偶（预告）</li>
+      </ul>
+      <div class="fusion"><b>三线汇合：</b>代数（布尔代数）+ 拓扑（Stone 空间）+ 逻辑（命题理论的 Lindenbaum 代数）在此完全对齐。这是全课最重要的单一例子。</div>
+      <div class="src"><b>来源：</b>UAL §2.6；Bergman Ch2；拓扑讲义 Ch6、Ch5.3</div>
+    </div>
+    <div class="lec" id="l21b">
+      <div class="lec-top"><span class="lec-num">L24</span><span class="lec-title"><a href="lectures/L24.html" title="正文已就绪">关系代数与 RRA</a> <span class="tag log" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag alg">代数</span><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>二元关系代数、有限关系代数、全体有限关系</li>
+        <li>表示关系代数 RRA；与箭头逻辑、一阶逻辑的关系</li>
+      </ul>
+      <div class="src"><b>来源：</b>UAL Ch7 §7.1–7.3, §5.2</div>
+    </div>
+    <div class="lec" id="l23">
+      <div class="lec-top"><span class="lec-num">L25</span><span class="lec-title"><a href="lectures/L25.html" title="正文已就绪">空间模态逻辑：S4、S4.2 与信念逻辑</a> <span class="tag log" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag top">拓扑</span><span class="tag log">逻辑</span><span class="tag alg">代数</span></div></div>
+      <ul>
+        <li>内部算子 int 作 □、闭包 cl 作 ◇；S4 的拓扑完全性</li>
+        <li>极端不连通空间 ↔ 完全信念逻辑；S4.2</li>
+        <li>模态代数 ↔ 拓扑空间；拓扑语义与学习理论的联系</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>这是「拓扑作为逻辑语义」最直接的例子： McKinsey–Tarski 传统，把拓扑问题变成模态逻辑问题，反之亦然。</div>
+      <div class="src"><b>来源：</b>拓扑讲义 Ch7「空间的模态逻辑」；UAL §2.8（BAO）</div>
+    </div>
+    <div class="lec" id="l23b">
+      <div class="lec-top"><span class="lec-num">L26</span><span class="lec-title"><a href="lectures/L26.html" title="正文已就绪">无点拓扑、locale 与 Heyting 代数</a> <span class="tag alg" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag top">拓扑</span><span class="tag alg">代数</span></div></div>
+      <ul>
+        <li>locale：开集格 = 完备 Heyting 代数；点 = 完全素滤子</li>
+        <li>空间与代数的对偶：代数方法为何比点集方法更广</li>
+        <li>与直觉主义逻辑、topos 论的联系</li>
+      </ul>
+      <div class="fusion"><b>融合接口：</b>无点拓扑把「空间」彻底代数化；与 L02 闭包算子、L23 Stone 对偶构成一条完整的对偶谱系。</div>
+      <div class="src"><b>来源：</b>拓扑讲义 Ch7「无点拓扑」；Bergman Ch2（Heyting 代数预备）</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART VII ============ -->
+<section id="p7">
+  <h2><span class="idx">VII</span>案例工坊（UAL 第五章八例逐一覆盖）</h2>
+  <p class="lead">把前面的机器开动起来。每个案例都走一遍「放进规范形式 → 求代数对应物 → 检验桥定理 → 得到结论」的完整流程。</p>
+
+  <div class="part">
+    <div class="part-head"><span class="pn">L27</span><h3>命题逻辑、箭头逻辑与有限变元片段</h3><span class="pd">2 学时</span></div>
+    <div class="lec" id="l25">
+      <div class="lec-top"><span class="lec-num">L27</span><span class="lec-title"><a href="lectures/L27.html" title="正文已就绪">案例 1–2：经典命题逻辑 L<sub>C</sub> 与箭头逻辑 L<sub>REL</sub></a> <span class="tag alg" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag log">逻辑</span><span class="tag alg">代数</span></div></div>
+      <ul>
+        <li>L<sub>C</sub> → 布尔代数；完备性、紧致性、可定义性的代数证明</li>
+        <li>箭头逻辑 → 关系代数；与 L24 的关系代数呼应</li>
+      </ul>
+      <div class="src"><b>来源：</b>UAL §5.1–5.2</div>
+    </div>
+    <div class="lec" id="l26">
+      <div class="lec-top"><span class="lec-num">L28</span><span class="lec-title"><a href="lectures/L28.html" title="正文已就绪">案例 3–4：一阶逻辑的有限变元片段 L<sub>n</sub></a> <span class="tag alg" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag log">逻辑</span><span class="tag alg">代数</span></div></div>
+      <ul>
+        <li>带替换的有限变元片段；n 变元片段 L<sub>n</sub> (n ≤ ω)</li>
+        <li> cylinder algebra / 关系代数式的代数对应物；有限变元片段的可判定性</li>
+      </ul>
+      <div class="src"><b>来源：</b>UAL §5.3–5.4</div>
+    </div>
+    <div class="lec" id="l27">
+      <div class="lec-top"><span class="lec-num">L29</span><span class="lec-title"><a href="lectures/L29.html" title="正文已就绪">案例 5–8：FOL 的各种变体</a> <span class="tag alg" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>非标准语义 L<sub>n</sub><sup>an</sup>；变量依赖逻辑 L<sub>n</sub><sup>vd</sup></li>
+        <li>排序版 FOL；无排序（type-less）版 FOL</li>
+        <li>比较：这些变体如何改变代数对应物与桥定理的表现</li>
+      </ul>
+      <div class="src"><b>来源：</b>UAL §5.5–5.8</div>
+    </div>
+      <div class="lec" id="l28">
+      <div class="lec-top"><span class="lec-num">L30</span><span class="lec-title"><a href="lectures/L30.html" title="正文已就绪">案例 9：判别式簇的应用</a> <span class="tag alg" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag alg">代数</span><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>判别式簇方法在代数逻辑中的威力（UAL Ch7 与 Bergman Part II 的汇合）</li>
+        <li>从有限基问题到逻辑的有限公理化</li>
+      </ul>
+      <div class="fusion"><b>回顾：</b>这一讲把 Bergman 的深水区工具（L07）兑现成 UAL 承诺的代数逻辑结论。</div>
+      <div class="src"><b>来源：</b>UAL Ch7 §7.1；Bergman Ch6–Ch7；UAL Preface「13 周课程」第 13 讲</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART VIII ============ -->
+<section id="p8">
+  <h2><span class="idx">VIII</span>推广与前沿</h2>
+  <p class="lead">收尾指向开放问题：逻辑的推广、空间的逻辑分类，以及尚无定论的「统一科学」愿景。</p>
+
+  <div class="part">
+    <div class="part-head"><span class="pn">L31</span><h3>推广、新逻辑与开放方向</h3><span class="pd">2 学时</span></div>
+    <div class="lec" id="l29">
+      <div class="lec-top"><span class="lec-num">L31</span><span class="lec-title"><a href="lectures/L31.html" title="正文已就绪">逻辑的推广与新种类</a> <span class="tag log" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>UAL Ch6：一般化与新型逻辑</li>
+        <li>多排序逻辑：UAL 明确指出的缺口，与数学实践的关系</li>
+      </ul>
+      <div class="src"><b>来源：</b>UAL Ch6 §6.1–6.2；Preface</div>
+    </div>
+    <div class="lec" id="l30">
+      <div class="lec-top"><span class="lec-num">L32</span><span class="lec-title"><a href="lectures/L32.html" title="正文已就绪 · 全课收束">空间的逻辑、描述集合论与统一科学</a> <span class="tag top" style="margin-left:6px">正文已就绪</span></span>
+        <div class="tags"><span class="tag top">拓扑</span><span class="tag log">逻辑</span></div></div>
+      <ul>
+        <li>空间的模态逻辑：如何刻画一类空间的逻辑；如何为逻辑找完备空间类</li>
+        <li>描述集合论：Borel 层级、可计算性、βω 与集合论前沿</li>
+        <li>结语：Dedicated to the Unity of Science —— 三条线还能汇到哪里去</li>
+      </ul>
+      <div class="fusion"><b>收束：</b>回到 §0 的红线，用一节课回答：代数、拓扑、逻辑的「统一」究竟统一在什么之上。</div>
+      <div class="src"><b>来源：</b>拓扑讲义 Ch7「描述集合论」「空间的模态逻辑」及末注；UAL Preface</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 教学路线 ============ -->
+<section id="routes">
+  <h2><span class="idx">B</span>三条教学路线</h2>
+  <p class="lead">参照 UAL 前言给出的三套课程方案，结合本讲义的融合结构，给出三种用法。</p>
+  <div class="routes">
+    <div class="route">
+      <h4>路线 A · 代数逻辑基础</h4>
+      <div class="wk">13 周 · 每周 2 学时 · 面向逻辑/数学新生</div>
+      <ol>
+        <li>L01–L02 基础与闭包</li>
+        <li>L03–L06 代数骨架（略去 Bergman Part II）</li>
+        <li>L08–L14 拓扑的认识论速览</li>
+        <li>L15–L17 代数化</li>
+        <li>L18, L19–L22 桥定理</li>
+        <li>L27–L29 三个经典案例</li>
+      </ol>
+    </div>
+    <div class="route">
+      <h4>路线 B · 融合通论（推荐）</h4>
+      <div class="wk">16 周 · 每周 2–3 学时 · 完整覆盖</div>
+      <ol>
+        <li>第 1–4 周：L01–L07（基础 + 代数 + 闭包系统）</li>
+        <li>第 5–8 周：L08–L14（拓扑全套）</li>
+        <li>第 9–11 周：L15–L17 + L18–L22（代数化 + 桥）</li>
+        <li>第 12–13 周：L23–L26（对偶与表示）</li>
+        <li>第 14–15 周：L27–L30（案例工坊）</li>
+        <li>第 16 周：L31–L32（前沿与总结）</li>
+      </ol>
+    </div>
+    <div class="route">
+      <h4>路线 C · 研究生专题研讨</h4>
+      <div class="wk">一学期 · 每周 3 学时 · 需坚实泛代数与 FOL 基础</div>
+      <ol>
+        <li>快速过 L01–L06（学生自读）</li>
+        <li>精读 L18–L22 全部桥定理及证明</li>
+        <li>精读 L07（Bergman Part II）与 L30</li>
+        <li>研讨 L23–L26 对偶与无点拓扑</li>
+        <li>选题报告：UAL Ch5 案例 + Ch6 推广</li>
+      </ol>
+    </div>
+  </div>
+  <div class="note" style="margin-top:16px"><b>依赖原则：</b>沿用 Bergman 的教学法 ——「一个工具只在后面要用时才引入」。L02 的闭包算子在 L10、L13、L23 反复使用；L12 的滤子在 L18、L13 兑现；L06 的 BAO 在 L25 兑现。建议按此顺序，不要打散。</div>
+</section>
+
+<!-- ============ 参考 ============ -->
+<section id="refs">
+  <h2><span class="idx">C</span>参考书目与来源</h2>
+  <div class="card" style="font-size:13.5px">
+    <h3 style="margin-top:0">核心教材（本大纲已完整覆盖）</h3>
+    <ol style="padding-left:20px;color:var(--ink-soft)">
+      <li>Clifford Bergman, <em>Universal Algebra: Fundamentals and Selected Topics</em>, Chapman &amp; Hall/CRC, 2011.</li>
+      <li>Amity Aharoni, Rodrigo Nicolau Almeida, Søren Brinck Knudstorp, <em>Introduction to Topology in and via Logic</em>, Ch.2–7（中译稿，2024）。</li>
+      <li>H. Andréka, Z. Gyenis, I. Németi, I. Sain, <em>Universal Algebraic Logic — Dedicated to the Unity of Science</em>, Birkhäuser/Springer, 2022.</li>
+    </ol>
+    <h3>经典教材与讲义（补充，待正文阶段按主题引用）</h3>
+    <ul style="padding-left:20px;color:var(--ink-soft)">
+      <li>S. Burris &amp; H. Sankappanavar, <em>A Course in Universal Algebra</em> —— 泛代数经典，免费讲义。</li>
+      <li>R. McKenzie, G. McNulty &amp; A. Taylor, <em>Algebras, Lattices, Varieties</em> —— 高级泛代数。</li>
+      <li>C. Chang &amp; H. Keisler, <em>Model Theory</em> —— 模型论与超积的标准参考。</li>
+      <li>W. Blok &amp; D. Pigozzi, <em>Algebraizable Logics</em>；J. Czelakowski；J. Font &amp; R. Jansana —— AAL 一脉，与 UAL 对照阅读。</li>
+      <li>J. van Benthem, <em>Modal Logic for Open Minds</em>；<em>Modal Logic and Classical Logic</em> —— 模态逻辑与拓扑语义。</li>
+      <li>A. Chagrov &amp; M. Zakharyaschev, <em>Modal Logic</em> —— S4 及其扩张的完备参考。</li>
+      <li>P. Johnstone, <em>Stone Spaces</em>；S. Mac Lane &amp; I. Moerdijk, <em>Sheaves in Geometry and Logic</em> —— 无点拓扑/locale 与 topos。</li>
+      <li>H. Rasiowa &amp; R. Sikorski, <em>The Mathematics of Metamathematics</em> —— 代数逻辑的经典源头。</li>
+      <li>G. Gierz et al., <em>Continuous Lattices and Domains</em> —— 连续格与闭包系统。</li>
+      <li>网上讲义：Burris–Sankappanavar 公开 PDF；各校「Algebraic Logic」「Topological Logic」课程讲义（正文阶段按主题补入具体链接）。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 说明 ============ -->
+<section id="notes">
+  <h2><span class="idx">D</span>编写说明（v0.1 → 正文）</h2>
+  <div class="note">
+    <b>讲义正文入口（全课已完成）。</b><a href="lectures/L01.html">L01</a> 至 <a href="lectures/L32.html">L32</a> 共 32 讲正文全部写就，各讲标题即为可点击链接；另有对照版 <a href="lectures/L11-alt.html">L11-alt</a>。正文与大纲同目录，放在 <code>lectures/</code> 下，共享样式 <code>lectures/style.css</code>；每讲顶部有「返回大纲」链接，底部有上一讲 / 下一讲导航。<br><br>
+    <b>每讲结构。</b>① 概念清单与依赖关系（简）→ ② 学习目标 ↔ 讲解 ↔ 练习对照 → ③ 动机 → ④ 各目标主讲解（含证明与三层例）→ ⑤ 三线融合图 → ⑥ 习题与来源。定理编号保留原书编号以便回查；教材原文笔误处加「技术注」说明。<br><br>
+    <b>记号与依赖锁定：</b>正文开始时需固定三套记号（代数的 Alg/Con/Sub、逻辑的 ⊨/Cn/Mod、拓扑的 τ/int/cl），并在全文一致使用；定理编号保留原书编号以便回查。<br><br>
+    <b>待定项：</b>① 是否单列「证明细节附录」以容纳 Bergman Part II 与 UAL §4 的长证明；② 案例工坊的习题难度分级；③ 网上讲义的具体链接清单需在正文阶段逐一核实后补入。
+  </div>
+</section>
+
+<footer>代数逻辑讲义 · 大纲 v1.0（正文全 32 讲完成）· 始于 2026-11-23 · 三部核心教材全部章节已映射并入正文 · Dedicated to the unity of science</footer>
+
+</main>
+</div>
+</body>
+</html>

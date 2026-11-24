@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L22 桥之五：判定性与 Gödel 不完全性 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第五篇 桥定理：全课核心</span><span class="sep">/</span><span>L22</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 22 · 2 学时 · 桥之五 · 全篇收尾</div>
+  <h1>桥之五：判定性与 Gödel 不完全性</h1>
+  <div class="sub">「机器能不能算出来」——逻辑问可判定，代数问等式理论可判定与自由代数有没有原子</div>
+  <div class="metarow"><span>来源：UAL §4.5.1–4.5.6（定义 4.5.1/4.5.3/4.5.5、定理 4.5.2）、§4.6.1–4.6.13（定义 4.6.1/4.6.2/4.6.3、命题 4.6.6、定理 4.6.7/4.6.8/4.6.13）、推论 3.3.25、定理 3.3.36、定义 4.2.16；Bergman §5.4（有限基与定理 5.28）；回指 L02 闭包、L04 Birkhoff、L07 DPC/Baker、L16 Alg<sup>m</sup> 与 Alg<sub>⊨</sub>、L19 有限公理化、L20–L21 桥模板</span>
+    <span class="tag log">逻辑</span><span class="tag alg">代数</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：五个「有限」不是一回事</a></li>
+  <li><a href="#decide">可判定与递归可枚举（O1）</a></li>
+  <li><a href="#thm452">定理 4.5.2 的完整展开（O2）</a></li>
+  <li><a href="#fmp">有限模型 / 有限代数性质（O3）</a></li>
+  <li><a href="#finitebasis">有限基问题与判定性（O4）</a></li>
+  <li><a href="#gipdef">Gödel 不完全性的定义学（O5）</a></li>
+  <li><a href="#gipthm">定理 4.6.6 / 4.6.7 / 4.6.8 完整证明（O6）</a></li>
+  <li><a href="#fusion2">融合接口：第五座三面一体图 + 六座桥小结</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">前四座桥比的是「结构」。这一座比的是<strong>算法</strong>：一个逻辑问题是能不能算出来的？答案要在代数侧找——不是找某个同态、某个合并，而是找<strong>等式理论的可判定性</strong>和<strong>自由代数的原子性</strong>。这是 UAL 第 4 章的最后两节，也是六座桥的收尾。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>它回答的问题</th></tr>
+      <tr><td>可判定 / 递归可枚举（r.e.）</td><td>可计算性基础；Church 论题</td><td>「有算法」和「有半算法」差在哪？</td></tr>
+      <tr><td>逻辑的可判定（定义 4.5.1）</td><td>L01 有效式、L02 闭包</td><td>有效式集 <span class="math">Csq<sub>L</sub>(∅)</span> 可判定是什么意思？</td></tr>
+      <tr><td>翻译项 <span class="math">ε<sub>j</sub>, δ<sub>j</sub>, Δ<sub>i</sub></span></td><td>L16 代数化、推论 3.3.25</td><td>公式与等式怎么有效地互译？</td></tr>
+      <tr><td><span class="math">Alg<sub>⊨</sub>(L) = SP Alg<sup>m</sup>(L)</span></td><td>L16 定理 3.3.36</td><td>为什么判定用抽象类、两者等式理论为何相同？</td></tr>
+      <tr><td>定理 4.5.2</td><td>上面两条</td><td>逻辑可判定 ⟺ 等式理论可判定，怎么证？</td></tr>
+      <tr><td>fmp / fap（4.5.3 / 4.5.5）</td><td>L18 有限性、L19 紧致化</td><td>反例能在有限处找到吗？</td></tr>
+      <tr><td>有限基（Bergman §5.4）</td><td>L04 Birkhoff、L07 DPC/Baker</td><td>有限公理数据够不够得到算法？</td></tr>
+      <tr><td>Gip / wGip（4.6.1 / 4.6.3）</td><td>演绎项 4.2.16、约定 4.6.2</td><td>怎样不用「否定」也能说不完全？</td></tr>
+      <tr><td>Lindenbaum–Tarski 代数 <span class="math">Fr</span></td><td>L03 商代数、L16 自由代数</td><td>不完全性的代数影子是什么？</td></tr>
+      <tr><td>原子性</td><td>L14 Stone 空间的点</td><td><span class="math">wGip ⟺ Fr</span> 非原子怎么证？</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>翻译项 <span class="math">ε, δ, Δ</span> 把「<span class="math">⊨ φ</span>」搬成「等式成立」→ 于是逻辑可判定 ⟺ 等式理论可判定（4.5.2）→ r.e. 给「是」的半判定，fmp/fap 给「否」的半判定，两者合起来才是可判定 → 有限基只给 r.e.，不给判定 → 反过来，若逻辑可判定，则每个一致公式都能扩张成完全可判定的理论（4.6.7），所以没有 Gödel 性质 → 弱版的 Gödel 性质在代数上恰是「自由代数没有原子」（4.6.8）。<strong>整讲一台发动机：可判定性是「两半判定并行」，不完全性是「这个并行为什么行不通」。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 目标 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>分清可判定与 r.e.，会用「补集也 r.e.」判别可判定性</td><td><a href="#decide">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>用推论 3.3.25 与定理 3.3.36 逐步证明定理 4.5.2 的两个方向</td><td><a href="#thm452">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>证明 r.e. + fmp / fap ⟹ 可判定，说清「有限反例」的作用</td><td><a href="#fmp">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>说清有限基 ≠ 可判定，列举五个不同的「有限」</td><td><a href="#finitebasis">§6</a></td><td><a href="#ex">E7, E8</a></td></tr>
+    <tr><td><b>O5</b></td><td>解释 Gip 为何用「后承集不可判定」定义，证明 4.6.4(1) 与 4.6.6</td><td><a href="#gipdef">§7</a></td><td><a href="#ex">E9, E10</a></td></tr>
+    <tr><td><b>O6</b></td><td>逐步复现 4.6.7 的构造与 4.6.8 的双向证明（含两个断言），会用应用段</td><td><a href="#gipthm">§8</a></td><td><a href="#ex">E11, E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：五个「有限」不是一回事</h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>前面四座桥换了四种眼镜看同一个逻辑：有模型吗、能证明吗、能定义吗、能插值吗。这一问第五个、也是最有现实味道的问题：<strong>给定一句话，机器能不能在有限步内告诉我它对不对？</strong></p>
+    <p>一听就有一堆「有限」冒出来，它们长得像、其实完全不同。先把它们分开，这一讲就不会乱：</p>
+    <table>
+      <tr><th>「有限」</th><th>说的是什么</th><th>在哪一讲</th></tr>
+      <tr><td>有限证明</td><td>每份证明是有限长的对象</td><td>L19：给紧致性、给 r.e.</td></tr>
+      <tr><td>有限公理化 / 有限基</td><td>公理或等式的<strong>条数</strong>有限</td><td>L19 / L07：可存储的数据</td></tr>
+      <tr><td>有限模型 / 有限代数</td><td>结构本身的<strong>元素个数</strong>有限</td><td>本讲 O3：反例的落脚点</td></tr>
+      <tr><td>有限步终止</td><td>算法对每个输入都停机</td><td>本讲 O1：可判定的定义</td></tr>
+      <tr><td>有限个条件</td><td>翻译出有限多条等式要同时检验</td><td>本讲 O2：搬运可判定性的关键</td></tr>
+    </table>
+    <p><strong>最常犯的错是把「公理写得下」当成「机器算得出」。</strong>一阶逻辑的公理就写得下，有效性却算不出（Church）。本章最后两节，一半在讲「算得出」的代数条件，一半在讲「算不出」为什么反而是一种可以代数化的性质。</p>
+  </div>
+
+  <div class="diagram"><pre>
+               「算不算得出」的三副面孔
+                      │
+      ┌───────────────┼───────────────┐
+      │               │               │
+    逻辑 L          代数 Alg⊨(L)      Lindenbaum 代数 Fr
+      │               │               │
+  Csq(∅) 可判定    等式理论可判定      Fr 是否原子
+      │               │               │
+  算法两边夹        r.e. + fap       原子 ⟺ 完全扩张存在
+      │               │               │
+  有限模型性质      有限代数性质      没有原子 ⟹ wGip
+      │               │               │
+      └── 译过去 → 用代数解 → 译回来 ──┘
+  </pre></div>
+
+  <div class="warn"><div class="bt">先立一个规矩：这一讲每个证明都拆成小步</div>
+    <p>UAL 定理 4.5.2 的原文证明只有一句：「由推论 3.3.25 直接得出」。<strong>这句话正是你要我补上的地方</strong>：推论 3.3.25 到底说了什么、翻译为什么可计算、有限个条件为什么够用，下面 §4 一步一步写。定理 4.6.8 的两个方向、两个断言也一样，逐步展开，不省略中间那句「为什么」。</p>
+  </div>
+</section>
+
+<!-- ============ O1 ============ -->
+<section id="decide">
+  <h2><span class="sn">3</span>可判定与递归可枚举 <span class="tag log">O1</span></h2>
+
+  <p class="lead">先把算法这个词说精确。以下都是教材给出的直观说法，再由 Church 论题支撑：递归函数、图灵机可计算、各种合理的形式化，定义的都是同一个概念。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.1（可判定 / 递归可枚举）</span></div>
+    <p>设 <span class="var">A</span> 是对象集合 <span class="var">H</span> 的子集。</p>
+    <ul>
+      <li><strong><span class="var">A</span> 可判定</strong>（可计算）：存在算法，对任意 <span class="math">h ∈ H</span>，在有限步后回答 <span class="math">h ∈ A</span> 还是 <span class="math">h ∉ A</span>。</li>
+      <li><strong><span class="var">A</span> 递归可枚举</strong>（r.e. / 半可判定 / 图灵可识别）：存在算法，若 <span class="math">h ∈ A</span> 则有限步后指出这一点；若 <span class="math">h ∉ A</span> 则<strong>可能永远不指出</strong>。等价说法：有算法把 <span class="var">A</span> 的成员逐个列成一张表（可以无穷长、可以永不停）。</li>
+    </ul>
+    <p>注意两个定义的差别只在「否」的那一侧：<strong>可判定要求「是」与「否」都能在有限步给出；r.e. 只要求「是」能给出。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">例 3.2（教材给的例子）</div>
+    <ul>
+      <li><strong>可判定：</strong>空集、全集、任何有限集或余有限集、素数集；命题逻辑的有效式集（在全体命题公式中）。</li>
+      <li><strong>r.e. 但不可判定：</strong>一阶逻辑的有效式集。由完全性定理，有效的公式能被证明枚举出来；由 Church 定理，没有一个算法能判定任意公式是否有效。</li>
+      <li><strong>连 r.e. 都不是：</strong>真算术（标准自然数模型里所有真的句子），Tarski 的不可定义性定理。</li>
+    </ul>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">3.3（判别法）</span></div>
+    <p>设 <span class="var">H</span> 可判定（在逻辑里就是「公式的语法可判定」），则</p>
+    <div class="formula">A 可判定　⟺　A 是 r.e. 且 H − A 也是 r.e.</div>
+  </div>
+
+  <div class="proof"><span class="pt">证明（分两步，一步一个方向）。</span>
+    <p><strong>第 1 步（⇒）：</strong>设有判定算法 <span class="var">D</span>。因 <span class="var">H</span> 可判定，可把 <span class="var">H</span> 的对象排成一个有效序列 <span class="math">h₁, h₂, h₃, …</span>。造枚举 <span class="var">A</span> 的程序：依次取 <span class="math">h<sub>n</sub></span>，用 <span class="var">D</span> 测，回答「是」就输出它。造枚举补集的程序：同样的循环，回答「否」就输出。<strong>这里用到 <span class="var">D</span> 对每个输入都停机</strong>——否则循环会卡住，两个枚举都造不出来。</p>
+    <p><strong>第 2 步（⇐）：</strong>设 <span class="math">E<sub>A</sub></span> 枚举 <span class="var">A</span>，<span class="math">E<sub>¬A</sub></span> 枚举补集。对输入 <span class="math">h</span>，<strong>交错运行</strong>这两个程序：跑 <span class="math">E<sub>A</sub></span> 一步、跑 <span class="math">E<sub>¬A</sub></span> 一步、再各跑一步……因为 <span class="math">h</span> 必在且只在一个集合里，它终会在某一条输出流里出现。出现在 <span class="math">E<sub>A</sub></span> 就答「是」，出现在 <span class="math">E<sub>¬A</sub></span> 就答「否」。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.4（逻辑的可判定；UAL 4.5.1）</span></div>
+    <p>逻辑 <span class="math">L = ⟨F<sub>L</sub>, M<sub>L</sub>, mng<sub>L</sub>, ⊨<sub>L</sub>⟩</span> <strong>可判定</strong>，若它的有效式集</p>
+    <div class="formula">Th<sub>L</sub>(M<sub>L</sub>) = Csq<sub>L</sub>(∅) = { φ ∈ F<sub>L</sub> : ⊨<sub>L</sub> φ }</div>
+    <p>是 <span class="math">F<sub>L</sub></span> 的可判定子集。同理说 <span class="math">L</span> 的<strong>有效式 r.e.</strong>，指这个集合是 r.e.。</p>
+  </div>
+
+  <div class="intu"><div class="bt">为什么先定义集合，再定义「逻辑可判定」</div>
+    <p>因为可判定性本来就是<strong>集合的性质</strong>：给一个集合，问「判断归属」的算法存不存在。逻辑只是提供了「哪个集合」——有效式集 <span class="math">Csq<sub>L</sub>(∅)</span>。把这两层分开，后面才能把问题原封不动搬到代数的等式集合上（§4）。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><strong>命题逻辑可判定。</strong>给公式 <span class="math">φ</span>，列出它出现的 <span class="math">n</span> 个变元的所有 <span class="math">2<sup>n</sup></span> 个真值指派，逐个算 <span class="math">φ</span> 的值。全真则有效，否则反例就是一个指派。<strong>这就是「两个半判定并行」的最简单样子：真值表从两头把答案夹住。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>为什么 r.e. 不够？</strong>一阶逻辑有效式是 r.e.：不断跑证明搜索，有效式终会被证出。但无效式呢？没有通用办法知道「还要找多久」——搜索可能永远不停。<strong>r.e. 只给了「是」那半边，缺「否」那半边；可判定 = 两半边都齐。</strong>下面所有技术（fmp、fap）本质上都是在补另外半边。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p><strong>「判定」不等于「快速判定」。</strong>可判定只要求有限步终止，不要求步数少。真值表算法的步数是指数的，仍然是判定算法。复杂度是另一个问题，本讲不碰。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL §4.5 开头关于可判定与 r.e. 的讨论及定义 4.5.1；命题 3.3 是教材所述「<span class="math">A</span> 可判定 ⟺ <span class="math">A</span> 与补集都 r.e.」的展开证明。</p>
+</section>
+
+<!-- ============ O2 ============ -->
+<section id="thm452">
+  <h2><span class="sn">4</span>定理 4.5.2 的完整展开 <span class="tag log">O2</span><span class="tag alg">代数</span></h2>
+
+  <p class="lead">这一节把教材那句「由推论 3.3.25 直接得出」拆开。要拆它，先得弄清推论 3.3.25 到底给了什么。</p>
+
+  <div class="thm"><div class="bt">推论 <span class="num">3.3.25（UAL；翻译机制）</span></div>
+    <p>设 <span class="math">L</span> 是 nice 逻辑（合成、有滤子性质、有语法替换性质）。按定义 3.3.18 取定翻译项 <span class="math">ε<sub>j</sub>, δ<sub>j</sub></span>（<span class="math">j &lt; m</span>）与 <span class="math">Δ<sub>i</sub></span>（<span class="math">i &lt; n</span>）。则：</p>
+    <ol>
+      <li>对任意公式 <span class="math">φ</span>：<div class="formula">⊨<sub>L</sub> φ　⟺　Alg<sup>m</sup>(L) ⊨ ε<sub>j</sub>(φ) = δ<sub>j</sub>(φ)　对每个 j &lt; m.</div></li>
+      <li>对任意等式 <span class="math">τ = τ′</span>：<div class="formula">Alg<sup>m</sup>(L) ⊨ τ = τ′　⟺　⊨<sub>L</sub> τ Δ<sub>i</sub> τ′　对每个 i &lt; n.</div></li>
+    </ol>
+    <p>而且这两条对 <span class="math">Alg<sub>⊨</sub>(L)</span> 也成立：因为二者有相同的准等式理论。</p>
+  </div>
+
+  <div class="intu"><div class="bt">第 0 步：翻译项是什么，为什么它能搬运「可判定」</div>
+    <p>UAL 的代数化给每台逻辑配了一本双语词典，而且是<strong>有限本</strong>：</p>
+    <ul>
+      <li>公式 <span class="math">φ</span> ⟶ <span class="math">m</span> 个等式 <span class="math">ε<sub>0</sub>(φ)=δ<sub>0</sub>(φ), …, ε<sub>m−1</sub>(φ)=δ<sub>m−1</sub>(φ)</span>；「<span class="math">φ</span> 有效」等于「这 <span class="math">m</span> 个等式都成立」。</li>
+      <li>等式 <span class="math">τ = τ′</span> ⟶ <span class="math">n</span> 个公式 <span class="math">τ Δ<sub>0</sub> τ′, …, τ Δ<sub>n−1</sub> τ′</span>；「等式成立」等于「这 <span class="math">n</span> 个公式都有效」。</li>
+    </ul>
+    <p><strong>关键不在翻译存在，而在翻译可计算</strong>：<span class="math">ε<sub>j</sub>, δ<sub>j</sub>, Δ<sub>i</sub></span> 是由逻辑的连接词表固定的有限个模式，给定 <span class="math">φ</span> 或 <span class="math">τ = τ′</span>，机械地代入就得到结果。<span class="math">m</span> 与 <span class="math">n</span> 都固定且有限，于是「同时检验 <span class="math">m</span> 个条件」总能在有限步内做完。<strong>这两点合起来，才是「可判定性可以从逻辑搬到代数」的全部本钱。</strong></p>
+    <p>举个具体的：命题逻辑里 <span class="math">m = n = 1</span>，<span class="math">ε₁(φ) = φ</span>，<span class="math">δ₁(φ) = 1</span>，<span class="math">τ Δ₁ τ′ = τ ↔ τ′</span>。推论 3.3.25 说的就是「<span class="math">φ</span> 有效 ⟺ 在布尔代数里 <span class="math">φ = 1</span>」，你早就用过，只是没意识到它有个名字。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">4.5.2</span></div>
+    <p>设 <span class="math">L</span> 是 nice 逻辑。则</p>
+    <ol>
+      <li><span class="math">L</span> 可判定 ⟺ <span class="math">Alg<sub>⊨</sub>(L)</span> 的等式理论可判定。</li>
+      <li><span class="math">L</span> 的有效式 r.e. ⟺ <span class="math">Alg<sub>⊨</sub>(L)</span> 的等式理论 r.e.</li>
+    </ol>
+  </div>
+
+  <div class="proof"><span class="pt">证明（四个小步，两个方向各两步；先做 (i)）。</span>
+    <p><strong>第 1 步（假设 <span class="math">L</span> 可判定，证等式理论可判定）。</strong>输入是一个等式 <span class="math">e : τ = τ′</span>，要判断 <span class="math">Alg<sub>⊨</sub>(L) ⊨ e</span> 是否成立。</p>
+    <p>① 用翻译项算出 <span class="math">n</span> 个公式 <span class="math">τ Δ<sub>i</sub> τ′</span>（<span class="math">i &lt; n</span>）——机械操作，有限步。</p>
+    <p>② 对这 <span class="math">n</span> 个公式逐个调用 <span class="math">L</span> 的判定算法，问它们是否有效。</p>
+    <p>③ 由推论 3.3.25(2) 的 <span class="math">Alg<sub>⊨</sub></span> 版，<span class="math">Alg<sub>⊨</sub>(L) ⊨ τ = τ′ ⟺ ⊨<sub>L</sub> τ Δ<sub>i</sub> τ′</span> 对所有 <span class="math">i &lt; n</span>。所以：全部回答「是」就输出「成立」，只要有一个回答「否」就输出「不成立」。</p>
+    <p>④ <span class="math">n</span> 有限，每步算法都停机，故整个过程有限步终止。<span class="qed">∎</span></p>
+    <p><strong>第 2 步（假设等式理论可判定，证 <span class="math">L</span> 可判定）。</strong>输入是公式 <span class="math">φ</span>，要判断 <span class="math">⊨<sub>L</sub> φ</span>。</p>
+    <p>① 用翻译项算出 <span class="math">m</span> 个等式 <span class="math">ε<sub>j</sub>(φ) = δ<sub>j</sub>(φ)</span>（<span class="math">j &lt; m</span>）。</p>
+    <p>② 逐个调用等式理论的判定算法。</p>
+    <p>③ 由推论 3.3.25(1) 的 <span class="math">Alg<sub>⊨</sub></span> 版，<span class="math">⊨<sub>L</sub> φ ⟺ Alg<sub>⊨</sub>(L) ⊨ ε<sub>j</sub>(φ) = δ<sub>j</sub>(φ)</span> 对所有 <span class="math">j &lt; m</span>。全「是」则有效。</p>
+    <p>④ <span class="math">m</span> 有限，有限步终止。<span class="qed">∎</span></p>
+    <p><strong>第 3、4 步（(ii) 的 r.e. 版本）。</strong>把上面的「判定算法」换成「半判定过程」即可：</p>
+    <p>③′ 需要用到一条可计算性的小事实：<strong>有限个 r.e. 集的交仍 r.e.</strong> 做法是并排跑这 <span class="math">m</span>（或 <span class="math">n</span>）个枚举程序，只有当一个对象在<strong>每一条</strong>输出流里都出现过，才把它输出。每个「是」终会各自到达，全部到达在有限步内完成。</p>
+    <p>④′ 于是：有效式 r.e. ⟹ 逐条跑半判定、用上面的并行交得到「等式成立」的半判定 ⟹ 等式理论 r.e.；反向同理。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="warn"><div class="bt">一处必须说清：为什么用 Alg<sub>⊨</sub>，不用 Alg<sup>m</sup></div>
+    <p>L20、L21 反复强调 <span class="math">Alg<sup>m</sup>(L)</span> 不对同构封闭、可定义性非它不可。<strong>这里为什么换成了 <span class="math">Alg<sub>⊨</sub>(L)</span>？</strong>因为本问的是<strong>等式理论</strong>，而定理 3.3.36 给出 <span class="math">Alg<sub>⊨</sub>(L) = SP Alg<sup>m</sup>(L)</span>：抽象类是具体类的子代数与直积的闭包。等式在 <span class="math">S</span> 与 <span class="math">P</span> 下都保持（Birkhoff，L04），所以两个类满足<strong>完全相同的等式</strong>，等式理论是同一个集合。<strong>换成抽象类的好处是它是拟簇、结构整齐；坏处（丢掉模型身份）在这里无关紧要，因为我们不问可定义了。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><strong>命题逻辑。</strong><span class="math">m = n = 1</span>，翻译退化为「有效 ⟺ 等于 1」。命题逻辑有效式可判定（真值表），于是布尔代数的等式理论可判定（在有限多个变元生成的自由布尔代数里检验）。两边其实是同一个算法。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>搬运可判定性的机制不是「有个翻译」而是「翻译可计算 + 只有有限多条」。</strong>若推论 3.3.25 里的 <span class="math">m</span> 或 <span class="math">n</span> 是无穷，第 1 步就要检验无穷多个条件，算法不再保证停机。<strong>定理 4.5.2 真正依赖的是「有限多」这三个字。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p><strong>nice 这个条件不能随便丢。</strong>推论 3.3.25 要求合成、滤子性质、语法替换性质。逻辑若不 nice，双语词典可能不成立，定理 4.5.2 的搬运就会断。做题时先检查逻辑是否 nice。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL 定理 4.5.2 与推论 3.3.25、定理 3.3.36；L16 关于 <span class="math">Alg<sup>m</sup></span> 与 <span class="math">Alg<sub>⊨</sub></span> 的区分；命题 3.3 的「有限个 r.e. 集之交 r.e.」。</p>
+</section>
+
+<!-- ============ O3 ============ -->
+<section id="fmp">
+  <h2><span class="sn">5</span>有限模型 / 有限代数性质 <span class="tag alg">O3</span></h2>
+
+  <p class="lead">定理 4.5.2 把「逻辑可判定」搬到「等式理论可判定」，但没说等式理论凭什么可判定。这一节补上另外半边算法。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.1（fmp；UAL 4.5.3）</span></div>
+    <p>逻辑 <span class="math">L</span> 有<strong>有限模型性质</strong>，若对任意公式 <span class="math">φ</span>：</p>
+    <div class="formula">⊨<sub>L</sub> φ　⟺　对所有有限 M ∈ M<sub>L</sub>，M ⊨<sub>L</sub> φ.</div>
+    <p>说人话：<strong>要否定一个有效式，有限反例就够。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.2（fap；UAL 4.5.5）</span></div>
+    <p>nice 逻辑 <span class="math">L</span> 有<strong>有限代数性质</strong>，若对任意等式 <span class="math">e</span>：</p>
+    <div class="formula">Alg<sub>⊨</sub>(L) ⊨ e　⟺　对所有有限 A ∈ Alg<sup>m</sup>(L)，A ⊨ e.</div>
+    <p>注意教材特意说明：逻辑可以<strong>有 fap 而没有 fmp</strong>——因为模型未必有「底集」这个东西，有限模型性质要求的前提更强。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">5.3（UAL 练习 4.5.4 / 4.5.6，写出完整证明）</span></div>
+    <p>设 <span class="math">L</span> nice 且有效式 r.e.（等价地，由 4.5.2，等式理论 r.e.）。</p>
+    <ol>
+      <li>若 <span class="math">L</span> 有 fmp，则 <span class="math">L</span> 可判定。</li>
+      <li>若 <span class="math">L</span> 有 fap，则 <span class="math">L</span> 可判定。</li>
+    </ol>
+  </div>
+
+  <div class="proof"><span class="pt">证明（只写 (2)，(1) 把「等式 / 有限代数」换成「公式 / 有限模型」，逐字一样）。</span>
+    <p>目标：判定等式 <span class="math">e</span> 是否属于 <span class="math">Eq(Alg<sub>⊨</sub>(L))</span>。按命题 3.3 的判别法，只要造出「是」与「否」两个半判定。</p>
+    <p><strong>第 1 步（「是」的半判定，来自 r.e.）。</strong>等式理论 r.e.，有枚举程序列出所有成立等式。输入 <span class="math">e</span>，跑这个枚举，若 <span class="math">e</span> 出现就答「成立」。<strong>这一步完全不需要 fap。</strong></p>
+    <p><strong>第 2 步（「否」的半判定，来自 fap）。</strong>这里要拆出两个隐含前提，教材把它们写在练习的语境里，我们明说：</p>
+    <p>① 有限代数 <span class="math">A ∈ Alg<sup>m</sup>(L)</span> 可以<strong>有效枚举</strong>（每个有限代数有有限的描述，按描述的长度排）；</p>
+    <p>② 给定有限代数 <span class="math">A</span> 与等式 <span class="math">e</span>，判断 <span class="math">A ⊨ e</span> 是<strong>有限步可检验</strong>的——穷举 <span class="math">A</span> 中所有的赋值（<span class="math">|A|<sup>k</sup></span> 个，<span class="math">k</span> 是变元数），逐个计算等式两端。</p>
+    <p>于是造程序：枚举所有有限代数 <span class="math">A ∈ Alg<sup>m</sup>(L)</span>，对每个用 ② 检验 <span class="math">A ⊨ e</span>；一旦找到某个 <span class="math">A</span> 使 <span class="math">A ⊭ e</span>，就答「不成立」，并把这个 <span class="math">A</span> 作为反例输出。</p>
+    <p><strong>第 3 步（fap 保证这个程序对「否」一定停下）。</strong>若 <span class="math">Alg<sub>⊨</sub>(L) ⊭ e</span>，由 fap 的逆否命题，存在有限 <span class="math">A ∈ Alg<sup>m</sup>(L)</span> 使 <span class="math">A ⊭ e</span>。第 2 步的枚举终会遇到它。<strong>没有 fap，这个反例可能只存在于无穷代数里，程序就永远找下去。</strong></p>
+    <p><strong>第 4 步（并行）。</strong>交错运行第 1 步与第 2 步。<span class="math">e</span> 要么成立（第 1 步终停），要么不成立（第 2 步终停），二者必居其一且不会同时。由命题 3.3，等式理论可判定。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="intu"><div class="bt">这一节的灵魂：fap 是「反例有限化」</div>
+    <p>把证明倒过来看：r.e. 给了「对」的枚举，fap 说<strong>「错」也一定有个有限证人</strong>。一个性质如果对与错都有有限证人，就能被算法两头夹住。<strong>一阶逻辑为什么不可判定？因为它有 r.e.（完全性定理给证明枚举），却没有 fmp——有的理论只有无穷模型。</strong>Church 的不可判定性在这里换了个角度重新出现：不是「证明搜不到」，而是「反例无处落脚」。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><strong>命题逻辑有 fmp。</strong>任一非有效公式 <span class="math">φ</span>，取它出现的有限个变元上的真值表，必有一个指派使它为假——有限反例就在眼前。配合 r.e.（证明搜索）得到可判定，这就是真值表算法的理论版本。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>模态 S5 有 fmp：</strong>非有效的模态公式能在有限 Kripke 框架里被否证。而有些模态逻辑没有 fmp——它们的反例框架必须无穷。于是「有没有 fmp」直接分裂出「可判定 / 不可判定」两大片逻辑。教材 §4.5 的大量练习就是在逐台逻辑验这件事。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>「有限反例存在」还不够，要能<em>找到</em>。</strong>证明第 2 步用了两个可计算性前提（有限代数可枚举、有限检验可计算）。若一个逻辑的有限模型类虽然存在却不可有效枚举，fmp 也换不来算法。</p>
+    <p>② <strong>fmp 与 fap 不互推。</strong>fmp 是关于模型的，fap 是关于代数的；教材明确说 fap 可以在模型没有底集时仍成立。别把两者当同义词。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL 定义 4.5.3、4.5.5 与练习 4.5.4、4.5.6；命题 3.3；L18 紧致性（无穷模型存在的对偶背景）。</p>
+</section>
+
+<!-- ============ O4 ============ -->
+<section id="finitebasis">
+  <h2><span class="sn">6</span>有限基问题与判定性 <span class="tag alg">O4</span><span class="tag log">逻辑</span></h2>
+
+  <p class="lead">大纲要求「从代数簇的有限基问题看逻辑的可判定性」。这一节把这条线拉直，并把最容易混的几件事分开。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">6.1（有限基；Bergman §5.4）</span></div>
+    <p>簇 <span class="math">V</span> 有<strong>有限基</strong>，若存在<strong>有限</strong>等式集 <span class="math">E</span> 使 <span class="math">V = Mod(E)</span>；等价地，<span class="math">V</span> 的等式理论由有限条等式生成。一个代数 <span class="math">A</span> 有限基，指 <span class="math">Var(A)</span> 有限基。</p>
+  </div>
+
+  <div class="intu"><div class="bt">有限基与可判定：既有联系，又不是一回事</div>
+    <table>
+      <tr><th></th><th>有限基</th><th>可判定</th></tr>
+      <tr><td>问的是</td><td>公理/等式写得下吗</td><td>算法存在吗</td></tr>
+      <tr><td>类型</td><td>数据的有限性</td><td>过程的终止性</td></tr>
+      <tr><td>能保证什么</td><td>等式理论 r.e.（有限公理的推演是可枚举的）</td><td>r.e. + 反例可判定</td></tr>
+      <tr><td>不能保证什么</td><td>不能保证算法终止（一阶逻辑是活教材）</td><td>不能保证公理写得下</td></tr>
+    </table>
+    <p><strong>关系是单向的：有限基 ⟹ r.e.，但 r.e. ⟹ 可判定还要再补 fap/fmp（§5）。</strong>所以「有限公理化」是走向「可判定」的第一步，不是最后一步。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 6.2（非有限基的簇；Bergman 定理 5.28）</div>
+    <p>存在一个四元、有限型的群胚 <span class="math">A = ⟨A, ·⟩</span>，使 <span class="math">Var(A)</span> <strong>不是有限基</strong>——无论写多少条等式，总还差一条。<strong>注意 <span class="math">A</span> 本身是有限的</strong>：这又一次说明「有限代数」与「有限基」是两个完全不同的「有限」。这是 Birkhoff 提出的著名问题，答案是否定的。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 6.3（有有限基的充分条件；L07 回指）</div>
+    <p>Bergman 定理 5.35 / 5.40（L07 §4）：若 <span class="math">V</span> 有 DPSC 且 <span class="math">V<sub>si</sub></span> 有限可公理化，则 <span class="math">V</span> 有限基；特别地，每个有限生成、同余分配、有限型的簇有限基。<strong>这里用的还是 Jónsson 引理把 <span class="math">V<sub>si</sub></span> 压进 <span class="math">HS(K)</span> 那一步</strong>——L07 的工具在这里收账。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">6.4（本讲关心的方向）</span></div>
+    <p>对 nice 逻辑 <span class="math">L</span>：</p>
+    <ol>
+      <li><span class="math">L</span> 有限公理化 ⟺ <span class="math">Alg<sub>⊨</sub>(L)</span> 有限基。（靠 Birkhoff 翻译，L19 O5）</li>
+      <li><span class="math">L</span> 有限公理化 ⟹ 有效式 r.e.；再若 <span class="math">L</span> 有 fmp/fap ⟹ <span class="math">L</span> 可判定。</li>
+      <li>反过来不成立：存在<strong>不可有限公理化但仍可判定</strong>的逻辑（UAL §7 案例里的相对化柱面代数 <span class="math">CrS<sub>n</sub></span>（<span class="math">n ≥ 2</span>），等式理论可判定，却非有限公理化）。</li>
+    </ol>
+  </div>
+
+  <div class="proof"><span class="pt">第 2 条的三步推导。</span>
+    <p>① 有限公理化意味着只有有限条公理模式与有限条推理规则。枚举所有有限长的证明序列，逐个检查——这是有效枚举，所以定理集 r.e.。</p>
+    <p>② 有效式 r.e. ⟹（由 4.5.2(ii)）<span class="math">Alg<sub>⊨</sub>(L)</span> 的等式理论 r.e.。</p>
+    <p>③ 若再有 fmp/fap，由命题 5.3，可判定。<strong>注意第二步与第三步分别用掉了推论 3.3.25 与有限反例，缺一不可。</strong><span class="qed">∎</span></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><strong>布尔代数、群、格、环都是有限基且可判定</strong>（在等式理论层面）。对应命题逻辑等有限公理化且可判定的逻辑。<strong>这些是「公理写得下、算法也算得出」两全的样板。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>一阶逻辑：公理写得下，算法算不出。</strong>它是有限公理化的（L19），有效式 r.e.（完全性定理），但没有 fmp，于是第 ③ 步断了。<strong>这件事把「有限公理化 ≠ 可判定」钉死在最核心的例子上。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p><strong>非有限基 ≠ 不可判定。</strong>Bergman 5.28 的四元群胚生成的簇不是有限基，但 <span class="math">Var(A)</span> 的等式理论仍可判定：<span class="math">A</span> 有限，等式在 <span class="math">Var(A)</span> 成立当且仅当在 <span class="math">A</span> 成立，而有限代数上的等式可逐一赋值检验。<strong>「写不下」和「算不出」是两种独立的能力缺陷。</strong></p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>Bergman §5.4（定义、定理 5.28、5.35/5.40）；UAL 4.5.2、L19 O5、L07 §4；UAL §7 关于 <span class="math">CrS<sub>n</sub></span> 的讨论（7.3.5 附近）。</p>
+</section>
+
+<!-- ============ O5 ============ -->
+<section id="gipdef">
+  <h2><span class="sn">7</span>Gödel 不完全性的定义学 <span class="tag log">O5</span></h2>
+
+  <p class="lead">现在进入第 4.6 节。先别急着证，先看定义为什么长这样——这一步跳过去，后面的证明就像变魔术。</p>
+
+  <div class="intu"><div class="bt">为什么不说「Γ 不完全」，要说「Csq(Γ) 不可判定」</div>
+    <p>日常说法是「算术不完全：有真句子既证不出也否不掉」。这话得有「否定」才讲得通。但 UAL 的逻辑 <span class="math">L = ⟨F, M, mng, ⊨⟩</span> <strong>可能压根没有否定连接词</strong>——那样「不完全」三个字就没有定义。</p>
+    <p>教材于是换成一个<strong>不依赖否定</strong>的说法：<span class="math">Γ</span> 的后承集 <span class="math">Csq<sub>L</sub>(Γ)</span> 可不可判定。在一阶逻辑里这两件事对得上：r.e. 且完全的理论必可判定（练习 4.6.4(1)，马上证），所以后承集不可判定 ⟹ 理论不完全。<strong>定义 4.6.1 用不可判定，是把「不完全」这个概念推广到没有否定的逻辑上去的血液。</strong></p>
+    <p>但教材也提醒了反向不成立：代数闭域理论（任意特征）可判定却不完全。<strong>所以「可判定」比「完全」弱，别把两个词混用。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">约定 <span class="num">4.6.2（五条前提）</span></div>
+    <ol>
+      <li><span class="math">L</span> 是结构逻辑（合成 + 两种替换性质）。</li>
+      <li><span class="math">L</span> 含经典命题逻辑作片段，即 <span class="math">Alg<sub>⊨</sub>(L)</span> 有布尔归约，用标准连接词。</li>
+      <li>布尔的 <span class="math">→</span> 是<strong>演绎项</strong>。</li>
+      <li><span class="math">F<sub>L</sub></span> 可判定（公式的语法与字符串可机械识别）。</li>
+      <li>若 <span class="math">Γ ⊆ F<sub>L</sub></span> r.e.，则 <span class="math">Csq<sub>L</sub>(Γ)</span> r.e.。</li>
+      <li>记号 <span class="math">Fr = F / ∼<sub>M</sub></span> 为 <span class="math">M</span> 的 Lindenbaum–Tarski 代数。</li>
+    </ol>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.2.16（演绎项；回指 L19）</span></div>
+    <p>公式模式 <span class="math">Φ₁ ∇ Φ₂</span> 是 <span class="math">L</span> 的演绎项，若对所有 <span class="math">Σ ⊆ F<sub>L</sub></span>、<span class="math">φ, ψ ∈ F<sub>L</sub></span>：</p>
+    <div class="formula">Σ ∪ {φ} ⊨<sub>L</sub> ψ　⟺　Σ ⊨<sub>L</sub> φ ∇ ψ.</div>
+    <p>命题逻辑取 <span class="math">∇ = →</span>，S5 取 <span class="math">Φ₁ → □Φ₂</span>（UAL 4.2.17）。<strong>它就是把「多一条前提」折算成「一条公式」的语法装置，L19 的演绎定理在这里正式命名。</strong>本节的每个证明都会用到它。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.6.3（Gip / wGip）</span>与 <span class="num">4.6.1（Gip⁺ / wGip⁺）</span></div>
+    <ul>
+      <li><strong>Gip：</strong>存在公式 <span class="math">φ</span>，使对所有递归理论 <span class="math">Γ</span>，若 <span class="math">φ ∈ Γ</span> 且 <span class="math">Γ</span> 一致，则 <span class="math">Γ</span> 不完全<strong>且</strong>不可判定。</li>
+      <li><strong>wGip：</strong>同上，但只要求对所有<strong>有限</strong> <span class="math">Γ</span>。</li>
+      <li><strong>Gip⁺ / wGip⁺：</strong>只保留「<span class="math">Csq<sub>L</sub>(Γ)</span> 不可判定」那一半，不提完全性。</li>
+    </ul>
+    <p>显然 Gip ⟹ wGip、Gip ⟹ Gip⁺；反向一般不成立（教材引 [166] 定理 1.6(b) 给出反例）。</p>
+  </div>
+
+  <div class="thm"><div class="bt">练习 <span class="num">4.6.4(1)（写出完整证明）</span></div>
+    <p>设 <span class="math">Γ</span> r.e. 且完全，则 <span class="math">Γ</span> 可判定（即 <span class="math">Csq<sub>L</sub>(Γ)</span> 可判定）。</p>
+  </div>
+
+  <div class="proof"><span class="pt">证明（又是一个「两半判定并行」，这一次的「否」半边靠否定与完全性）。</span>
+    <p><strong>第 1 步（「是」半判定）。</strong>由约定 4.6.2(5)，<span class="math">Γ</span> r.e. ⟹ <span class="math">Csq<sub>L</sub>(Γ)</span> r.e.。枚举它，输入 <span class="math">ψ</span>，一旦出现就答「<span class="math">ψ ∈ Csq</span>」。</p>
+    <p><strong>第 2 步（「否」半判定）。</strong>输入 <span class="math">ψ</span>，在同一个枚举里改等 <span class="math">¬ψ</span>。由完全性，<span class="math">Γ ⊨ ψ</span> 或 <span class="math">Γ ⊨ ¬ψ</span>，必有一个终会出现。若 <span class="math">¬ψ</span> 先出现，则 <span class="math">ψ ∉ Csq<sub>L</sub>(Γ)</span>——这里用到 <span class="math">Γ</span> 一致：否则两者都成立，不能下结论。</p>
+    <p><strong>第 3 步（一致性的处理）。</strong>若 <span class="math">Γ</span> 不一致，则 <span class="math">Csq<sub>L</sub>(Γ) = F<sub>L</sub></span>，而 <span class="math">F<sub>L</sub></span> 可判定（约定 (4)），直接答「全是」。<strong>所以证明要分两支：不一致时平凡；一致时靠上面两步的并行。</strong></p>
+    <p><strong>第 4 步。</strong>两支覆盖所有情形，由命题 3.3 得 <span class="math">Csq<sub>L</sub>(Γ)</span> 可判定。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="intu"><div class="bt">这条练习是 Gip 定义的命脉</div>
+    <p>它说明：<strong>在一阶逻辑里，「完全」几乎等于「可判定」</strong>（r.e. 的前提下）。所以「有一个一致的递归理论，其后承不可判定」就自动推出「它不完全」——这正是 Gip 想抓住的东西。<strong>整节的定义学就靠这一条练习撑住。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">4.6.6（UAL；可判定 ⟹ 无 wGip⁺）</span></div>
+    <p>设 <span class="math">L</span> 有演绎项 <span class="math">∇</span>（不要求满足约定 4.6.2）。若 <span class="math">L</span> 可判定，则 <span class="math">L</span> 没有 wGip⁺。</p>
+  </div>
+
+  <div class="proof"><span class="pt">证明（教材原文很短，这里补上每一步的理由）。</span>
+    <p><strong>第 1 步。</strong><span class="math">L</span> 可判定，即 <span class="math">Csq<sub>L</sub>(∅)</span> 是递归集（定义 4.5.1）。</p>
+    <p><strong>第 2 步（目标转换）。</strong>要否掉 wGip⁺，只需证明：对<strong>任意</strong>一致的 <span class="math">φ</span>，<span class="math">Csq<sub>L</sub>(φ)</span> 可判定——因为 wGip⁺ 要求「所有有限扩张都不可判定」，找到一个可判定的有限扩张（例如 <span class="math">{φ}</span> 本身）就足以否证它。</p>
+    <p><strong>第 3 步（用演绎项改写集合）。</strong>令 <span class="math">Σ = ∅</span>，演绎项定义给出</p>
+    <div class="formula">Csq<sub>L</sub>(φ) = { ψ : φ ⊨<sub>L</sub> ψ } = { ψ : ⊨<sub>L</sub> φ ∇ ψ }.</div>
+    <p><strong>第 4 步（可判定性转移）。</strong>映射 <span class="math">ψ ↦ φ ∇ ψ</span> 是语法代入，可计算；<span class="math">Csq<sub>L</sub>(∅)</span> 可判定；于是它的可计算前像 <span class="math">{ψ : ⊨ φ ∇ ψ}</span> 也可判定：给定 <span class="math">ψ</span>，算出 <span class="math">φ ∇ ψ</span>，问判定器。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><strong>命题逻辑没有 Gip。</strong>它可判定（真值表），由 4.6.6 连最弱的 wGip⁺ 都没有。<strong>「强到能编码算术」才有不完全性，命题逻辑不够强。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>演绎项在这里干什么？</strong>它把「带一条前提的后承」变成「空前提的后承」。可判定性本来只对 <span class="math">Csq(∅)</span> 知道，演绎项把这份知识传递给每个 <span class="math">Csq(φ)</span>。<strong>这是全讲第二次看到「语法折算」给算法帮忙（第一次是 §4 的翻译项）。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p><strong>4.6.6 只否掉 wGip⁺，没否掉 wGip。</strong>因为 wGip 还要谈「不完全」，而这里没有假设约定 4.6.2 的布尔结构。下一节的 4.6.7 在更强前提下才把 Gip 一并否掉。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL 定义 4.6.1/4.6.2/4.6.3、练习 4.6.4(1)、命题 4.6.6；定义 4.2.16 演绎项；L19 演绎定理。</p>
+</section>
+
+<!-- ============ O6 ============ -->
+<section id="gipthm">
+  <h2><span class="sn">8</span>定理 4.6.6 / 4.6.7 / 4.6.8 完整证明 <span class="tag alg">O6</span><span class="tag log">逻辑</span></h2>
+
+  <p class="lead">这一节是全讲的高潮：先证「可判定 ⟹ 无 Gip」，再证「wGip ⟺ 自由代数非原子」。两处都逐步展开，含教材的两个断言。</p>
+
+  <div class="thm"><div class="bt">定理 <span class="num">4.6.7（UAL；可判定 ⟹ 无 Gip）</span></div>
+    <p>设 <span class="math">L</span> 满足约定 4.6.2。若 <span class="math">L</span> 可判定，则 <span class="math">L</span> 没有 Gip。</p>
+  </div>
+
+  <div class="proof"><span class="pt">证明（教材给了一个递归构造，这里把每一步为什么可行写全）。</span>
+    <p><strong>第 1 步（目标）。</strong>要否掉 Gip，就要证明：任意一致公式 <span class="math">φ</span> 都能扩张成一个<strong>递归的、完全的</strong>理论 <span class="math">Γ</span>。由练习 4.6.4(1)，这样的 <span class="math">Γ</span> 自动可判定，于是 <span class="math">φ</span> 不可能见证 Gip。</p>
+    <p><strong>第 2 步（枚举）。</strong><span class="math">F<sub>L</sub></span> 可判定（约定 4.6.2(4)），所以公式可有效枚举成 <span class="math">{φ<sub>i</sub> : i ∈ ω}</span>。</p>
+    <p><strong>第 3 步（逐步扩张）。</strong>令 <span class="math">Γ₀ = {φ}</span>，递归定义</p>
+    <div class="formula">Γ<sub>n+1</sub> = Γ<sub>n</sub> ∪ {φ<sub>n</sub>}　若 Γ<sub>n</sub> ⊭<sub>L</sub> ¬φ<sub>n</sub>;　否则 Γ<sub>n</sub> ∪ {¬φ<sub>n</sub>}.</div>
+    <p><strong>第 4 步（每一步可判定，这是构造的核心）。</strong>判断「<span class="math">Γ<sub>n</sub> ⊨ ¬φ<sub>n</sub></span>」是否可行？<span class="math">Γ<sub>n</sub></span> 有限，把它合取成一个公式 <span class="math">γ<sub>n</sub> = ∧Γ<sub>n</sub></span>，反复用演绎项得 <span class="math">Γ<sub>n</sub> ⊨ ¬φ<sub>n</sub> ⟺ ⊨ γ<sub>n</sub> → ¬φ<sub>n</sub></span>。右侧是 <span class="math">Csq<sub>L</sub>(∅)</span> 的归属判定问题，而 <span class="math">L</span> 可判定。<strong>所以每一步的选择是算法可做的，整个 <span class="math">Γ</span> 是递归构造出来的。</strong></p>
+    <p><strong>第 5 步（完全）。</strong>每个 <span class="math">φ<sub>i</sub></span> 在第 <span class="math">i+1</span> 步被决定：要么它自己被加入，要么 <span class="math">¬φ<sub>i</sub></span> 被加入。故 <span class="math">Γ = ⋃<sub>n</sub> Γ<sub>n</sub></span> 完全。</p>
+    <p><strong>第 6 步（一致与递归）。</strong>每步只加入与已有部分相容的一侧，一致性归纳保持；<span class="math">Γ</span> 作为公式集是递归的（给定 <span class="math">ψ</span>，找到其编号，模拟到第 <span class="math">i+1</span> 步即可判定它是否被加入）。</p>
+    <p><strong>第 7 步（收尾）。</strong><span class="math">Γ</span> r.e. 且完全，由 4.6.4(1) 可判定。所以任意一致 <span class="math">φ</span> 都有完全的可判定扩张，没有公式能见证 Gip。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">4.6.8（UAL；wGip ⟺ Fr 非原子）</span></div>
+    <p>设 <span class="math">L</span> 满足约定 4.6.2，<span class="math">Fr = F / ∼<sub>M</sub></span> 是其 Lindenbaum–Tarski 代数。则</p>
+    <div class="formula">L 有 wGip　⟺　Fr 不是原子代数.</div>
+  </div>
+
+  <div class="intu"><div class="bt">先搭翻译枢纽：四行等价是整个证明的转轴</div>
+    <p>由命题 3.3.38，<span class="math">Fr</span> 是 <span class="math">Alg<sub>⊨</sub>(L)</span> 的自由代数，二者有相同等式理论。布尔序 <span class="math">≤</span> 是等式，于是对任意公式 <span class="math">φ, ψ</span>：</p>
+    <div class="formula">Fr ⊨ φ ≤ ψ　⟺　Alg<sub>⊨</sub>(L) ⊨ φ ≤ ψ　⟺　⊨<sub>L</sub> φ → ψ　⟺　φ ⊨<sub>L</sub> ψ.</div>
+    <p>四行逐一读：① 自由代数的等式理论 = 类的等式理论；② 等式翻译回公式（推论 3.3.25）；③ 演绎项把带前提的后承折成无条件有效式。<strong>「公式 <span class="math">φ</span> 后承 <span class="math">ψ</span>」从此可以读成「代数里 <span class="math">φ/∼ ≤ ψ/∼</span>」——证明就在代数里做。</strong></p>
+    <p>再记一条：<span class="math">τ/∼</span> 是<strong>原子</strong>，指它非零且对任意 <span class="math">ψ</span>，<span class="math">τ/∼ ≤ ψ/∼</span> 或 <span class="math">τ/∼ ≤ ¬ψ/∼</span>。<strong>把 <span class="math">≤</span> 翻译成后承，这条就是说「<span class="math">τ</span> 能决定每个公式的真假」——也就是一个完全理论。</strong>定理 4.6.8 的全部内容，就是把这句话的两个方向走一遍。</p>
+  </div>
+
+  <div class="proof"><span class="pt">方向一（⇒）：wGip ⟹ Fr 非原子（含断言 4.6.9、4.6.10）。</span>
+    <p><strong>第 1 步。</strong>设 <span class="math">φ</span> 见证 wGip：任何含 <span class="math">φ</span> 的有限一致 <span class="math">Γ</span> 都使 <span class="math">Csq<sub>L</sub>(Γ)</span> 不可判定。<span class="math">φ</span> 一致，故 <span class="math">φ/∼ ≠ 0</span>。</p>
+    <p><strong>第 2 步（反设）。</strong>假设 <span class="math">φ/∼</span> 下面有原子 <span class="math">τ/∼</span>：即 <span class="math">τ/∼ ≤ φ/∼</span>（翻译回来是 <span class="math">τ ⊨ φ</span>），且 <span class="math">τ/∼ ≠ 0</span>。令 <span class="math">Γ = {τ, φ}</span>——有限、含 <span class="math">φ</span>、一致（因 <span class="math">τ/∼ ≠ 0</span>）。</p>
+    <p><strong>第 3 步（断言 4.6.9：<span class="math">Γ</span> 完全）。</strong>任取 <span class="math">ψ</span>。因 <span class="math">τ/∼</span> 是原子，<span class="math">τ/∼ ≤ ψ/∼</span> 或 <span class="math">τ/∼ ≤ ¬ψ/∼</span>。用翻译枢纽读作 <span class="math">τ ⊨ ψ</span> 或 <span class="math">τ ⊨ ¬ψ</span>。又 <span class="math">τ ⊨ φ</span>，所以 <span class="math">Γ ⊨ ψ</span> 或 <span class="math">Γ ⊨ ¬ψ</span>。<strong>完全性得证。</strong></p>
+    <p><strong>第 4 步（断言 4.6.10：<span class="math">Csq<sub>L</sub>(Γ)</span> 可判定）。</strong>① 由约定 4.6.2(5)，<span class="math">Γ</span> 有限故 r.e.，所以 <span class="math">Csq<sub>L</sub>(Γ)</span> r.e.。② 由完全性与一致性，教材写下一个干净的等式：</p>
+    <div class="formula">F − Csq<sub>L</sub>(Γ) = { ¬ψ : ψ ∈ Csq<sub>L</sub>(Γ) }.</div>
+    <p>两边互证：若 <span class="math">ψ ∉ Csq</span>，完全性给 <span class="math">Γ ⊨ ¬ψ</span>，故 <span class="math">¬ψ ∈ Csq</span>，于是 <span class="math">ψ</span> 属于右边；若 <span class="math">¬ψ ∈ Csq</span>，一致性保证 <span class="math">ψ ∉ Csq</span>，于是 <span class="math">ψ</span> 属于左边。③ 右边是 r.e.（枚举 <span class="math">Csq</span> 再逐项加否定），故补集 r.e.。④ <span class="math">F<sub>L</sub></span> 可判定，由命题 3.3，<span class="math">Csq<sub>L</sub>(Γ)</span> 可判定。<strong>可判定性得证。</strong></p>
+    <p><strong>第 5 步（矛盾）。</strong><span class="math">Γ = {τ, φ}</span> 是含 <span class="math">φ</span> 的有限一致理论，其后承集却可判定——与 <span class="math">φ</span> 见证 wGip 矛盾。故 <span class="math">φ/∼</span> 下没有原子；而 <span class="math">φ/∼ ≠ 0</span>，所以 <span class="math">Fr</span> 不是原子代数。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="proof"><span class="pt">方向二（⇐）：Fr 非原子 ⟹ wGip（教材只证「不存在有限完全扩张」，这一步要看清）。</span>
+    <p><strong>第 1 步。</strong><span class="math">Fr</span> 非原子，即存在非零元素 <span class="math">φ/∼</span> 其下没有原子。取这个 <span class="math">φ</span>（一致）。</p>
+    <p><strong>第 2 步（目标）。</strong>按 wGip 的定义，要证：<strong>任何含 <span class="math">φ</span> 的有限一致理论都不完全</strong>。教材采用反证：假设存在有限、完全、含 <span class="math">φ</span> 的一致扩张 <span class="math">Γ</span>。</p>
+    <p><strong>第 3 步（造一个原子）。</strong>因 <span class="math">Γ</span> 有限，令 <span class="math">τ = ∧Γ</span>（有限合取）。逐条验证 <span class="math">τ/∼</span> 是原子：</p>
+    <p>① <span class="math">τ/∼ ≤ φ/∼</span>：因 <span class="math">φ ∈ Γ</span>，合取蕴含每一项。</p>
+    <p>② <span class="math">τ/∼ ≠ 0</span>：因 <span class="math">Γ</span> 一致。</p>
+    <p>③ 对任意 <span class="math">ψ</span>，由 <span class="math">Γ</span> 完全，<span class="math">Γ ⊨ ψ</span> 或 <span class="math">Γ ⊨ ¬ψ</span>，即 <span class="math">⊨ τ → ψ</span> 或 <span class="math">⊨ τ → ¬ψ</span>（演绎项），即 <span class="math">τ/∼ ≤ ψ/∼</span> 或 <span class="math">τ/∼ ≤ ¬ψ/∼</span>。<strong>这正是原子的判据。</strong></p>
+    <p><strong>第 4 步（矛盾）。</strong><span class="math">τ/∼</span> 是 <span class="math">φ/∼</span> 下面的原子，与第 1 步「其下无原子」矛盾。所以不存在有限完全扩张，<span class="math">φ</span> 见证 wGip。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="warn"><div class="bt">教材原注 4.6.11</div>
+    <p>方向 (⇒) 用 wGip⁺ 也能过（因为只用到「不可判定」那一半）；只有方向 (⇐) 真正需要「完全」这个概念。记住这个不对称：<strong>从逻辑到代数便宜，从代数回到逻辑贵。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">应用 8.1（教材 §4.6 应用段，逐条读）</div>
+    <ol>
+      <li><strong>LS（经典命题逻辑）</strong>可判定 ⟹ 由 4.6.7 无 Gip。</li>
+      <li><strong>LP<sub>S</sub></strong>（<span class="math">P</span> 为原子公式集）：其重言式代数 <span class="math">Fr</span> 是 <span class="math">|P|</span> 生成的自由布尔代数。<span class="math">P</span> 有限时 <span class="math">Fr</span> 有限、原子；<span class="math">P</span> 无限时 <span class="math">Fr</span> 无原子。由定理 4.6.8，<strong>LP<sub>S</sub> 有 wGip ⟺ P 无限</strong>。<span style="color:#8a93a5">（注：教材原文此处一行印作「P 有限时当且仅当有 wGip」，但与紧随其后的解释及定理 4.6.8 矛盾，是明显的笔误；按「<span class="math">wGip ⟺ Fr</span> 非原子」应为 P 无限。）</span>这说明 wGip 确实严格弱于 Gip：它可判定（无 Gip）却有 wGip。</li>
+      <li><strong>S5</strong> 情形完全类似。</li>
+      <li><strong>L<sup>×</sup></strong>（Tarski 1941 定义的不可判定命题逻辑，即 <span class="math">L(RA)</span>）：Tarski 在其中解释一阶逻辑，解释保持 wGip，故 <span class="math">L<sup>×</sup></span> 有 wGip。<strong>「命题逻辑也可能很强」这件事，在 1941 年是休克式的发现。</strong></li>
+      <li><strong>定理 4.6.13：</strong>若 <span class="math">0 &lt; k &lt; ω</span>、<span class="math">n ≥ 3</span>，则 <span class="math">Fr<sub>k</sub> RA</span>、<span class="math">Fr<sub>k</sub> CA<sub>n</sub></span>、<span class="math">Fr<sub>k</sub> SC<sub>3</sub></span>、<span class="math">Fr<sub>k</sub> Df<sub>3</sub></span> 都不是原子。<strong>这些是非平凡的代数结果，却是拿一阶逻辑的 Gödel 不完全性经桥定理 4.6.8 换来的——本讲标题「代数侧面」落到实处。</strong></li>
+      <li><strong>CrS<sub>n</sub></strong>：等式理论可判定，但 <span class="math">k</span> 生成自由代数非原子（Khaled），于是对应逻辑可判定却有 wGip，且由 4.6.6 知它没有演绎项。<strong>全是代数方法得出的逻辑结论。</strong></li>
+    </ol>
+  </div>
+
+  <p class="src"><b>来源：</b>UAL 定理 4.6.6/4.6.7/4.6.8、断言 4.6.9/4.6.10、注 4.6.11、应用段与定理 4.6.13；命题 3.3.38（<span class="math">Fr</span> 自由性）；L14 原子与孤立点。</p>
+</section>
+
+<!-- ============ 融合 ============ -->
+<section id="fusion2">
+  <h2><span class="sn">9</span>融合接口：第五座三面一体图 + 六座桥小结</h2>
+  <p class="lead">第五座桥与前面不同：拓扑侧不是主角。但 Lindenbaum 代数的原子，正好对应 Stone 空间的点——这是拓扑能说上的一句话。</p>
+
+  <div class="diagram"><pre>
+          「算不算得出」· 第五副面孔
+                       │
+      ┌────────────────┼────────────────┐
+      │                │                │
+    逻辑 L          代数 Alg⊨(L)       拓扑 Spec(Fr)
+      │                │                │
+  Csq(∅) 可判定     等式理论可判定      原子 = 孤立点
+      │                │                │
+  r.e. + fmp       r.e. + fap          点能否稠密
+      │                │                │
+  有限反例可找     有限代数可检验       原子 ⟺ 完全扩张
+      │                │                │
+      └── 推论 3.3.25 ─┴── 演绎项 ∇ ────┘
+                       │
+      ┌────────────────┼────────────────┐
+      │                │                │
+  可判定 ⟹          wGip ⟺         非原子 ⟹ 无孤立点
+  无 Gip(4.6.7)     Fr 非原子(4.6.8)     稠密无处落脚
+      │                │                │
+      └──── 译过去 → 用代数解 → 译回来 ────┘
+  </pre></div>
+  <p class="cap">图：三列逐行对齐；底行是「逻辑结论 ← 代数事实」的两次搬运。</p>
+
+  <div class="thm"><div class="bt">六座桥方法论小结（全篇收尾）</div>
+    <table>
+      <tr><th>桥</th><th>逻辑问题</th><th>代数对应物</th><th>主发动机</th></tr>
+      <tr><td>L18 之一</td><td>紧致性</td><td>对超积封闭</td><td>超积 + Łoś</td></tr>
+      <tr><td>L19 之二</td><td>完全性 / 有限公理化</td><td>簇 / 有限基</td><td>Henkin + Birkhoff</td></tr>
+      <tr><td>L20 之三</td><td>可定义性</td><td>同态满射</td><td>不可区分关系</td></tr>
+      <tr><td>L21 之四</td><td>插值</td><td>超合并</td><td>夹逼条件</td></tr>
+      <tr><td>L22 之五</td><td>可判定性</td><td>等式理论可判定</td><td>翻译项 + 有限反例</td></tr>
+      <tr><td>L22 之六</td><td>Gödel 不完全性</td><td>自由代数非原子</td><td>演绎项 + 原子判据</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">把五座桥压成一句方法论</div>
+    <p><strong>译过去 → 用代数解 → 译回来。</strong></p>
+    <p>「译过去」靠的是代数化那本双语词典（推论 3.3.25）：逻辑性质变成等式理论、同态、合并、原子性。「用代数解」靠的是代数自己的工具：超积、自由代数、同余格、Jónsson 引理、Stone 表示。「译回来」靠反向翻译，把代数结论读回逻辑。</p>
+    <p><strong>这一讲把这个套路用到了极致，也把它用出了边界。</strong>可判定性这一桥需要的最关键燃料是「有限」——有限个翻译条件、有限反例、有限基。一旦逻辑强到能编码算术，有限性守不住，不完全性就出来了，而它在代数上恰好表现为「自由代数没有原子」。<strong>六座桥到这里合龙：逻辑的每一种「好性质」，都能在代数里找到一个对应的结构性质；逻辑的每一种「坏性质」，也是。</strong></p>
+    <p>下一讲 L23 进入第六篇「对偶与表示」，从 Stone 对偶开始——那是把这一路用到的「点 = 超滤子 / 同态」机制集中起来，看它如何同时支撑 Stone 对偶、模态语义与 locale 理论。</p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+
+  <ol>
+    <li><span class="tag log">O1</span>写出可判定与 r.e. 的定义，逐句说明为什么「可判定 ⟹ r.e.」而反向不成立。举一个 r.e. 但不可判定的集合。</li>
+    <li><span class="tag log">O1</span>证明命题 3.3 的 (⇐) 方向。<strong>为什么必须用「交错运行」而不是先跑完一个再跑另一个？</strong></li>
+    <li><span class="tag log">O2</span>写出推论 3.3.25 的两条，并说明「翻译可计算 + 有限多条」各用在哪一步。若 <span class="math">m</span> 变成无穷，定理 4.5.2 的哪个方向先坏掉？</li>
+    <li><span class="tag alg">O2</span>逐步复述定理 4.5.2 的四个小步。<strong>为什么用 <span class="math">Alg<sub>⊨</sub>(L)</span> 而不是 <span class="math">Alg<sup>m</sup>(L)</span>？依据是哪条定理？</strong></li>
+    <li><span class="tag alg">O3</span>把命题 5.3(2) 的证明重做一遍，逐条标出「r.e. 给哪一半」「fap 给哪一半」「两个可计算性前提用在哪」。</li>
+    <li><span class="tag top">O3</span>举例说明一个逻辑有 r.e. 但没有 fmp，因此不可判定。<strong>它的反例为什么必须无穷？</strong></li>
+    <li><span class="tag alg">O4</span>列出本讲的五个「有限」，各写一句话说明它们分别管什么。<strong>哪两个最容易混？</strong></li>
+    <li><span class="tag alg">O4</span>Bergman 5.28 的四元群胚生成的簇不是有限基，但其等式理论可判定。给出理由。<strong>这件事说明有限基与可判定是什么关系？</strong></li>
+    <li><span class="tag log">O5</span>为什么定义 4.6.1 用「<span class="math">Csq<sub>L</sub>(Γ)</span> 不可判定」而不用「<span class="math">Γ</span> 不完全」？在什么样的一阶理论里这两个说法对不上？</li>
+    <li><span class="tag log">O5</span>证明 4.6.4(1)：r.e. 且完全的 <span class="math">Γ</span> 可判定。<strong>一致性假设漏了会出什么错？</strong></li>
+    <li><span class="tag log">O6</span>逐步复现定理 4.6.7 的构造。<strong>第 4 步「每一步可判定」如果换成 <span class="math">L</span> 只是 r.e. 而不是可判定，构造还走得动吗？</strong></li>
+    <li><span class="tag alg">O6</span>把定理 4.6.8 方向一的断言 4.6.9 与 4.6.10 分别重证一遍，并指出各用了约定 4.6.2 的哪一条。</li>
+    <li><span class="tag alg">O6</span>综合题：用定理 4.6.8 解释「LP<sub>S</sub> 有 wGip ⟺ P 无限」。再说明为什么这与「LS 无 Gip」不矛盾。<strong>最后用一句话总结六座桥的方法论。</strong></li>
+  </ol>
+</section>
+
+<div class="footnav">
+  <a href="L21.html">← 上一讲：L21 桥之四：插值 ↔ 合并 / 超合并</a>
+  <a href="L23.html" style="font-size:13.5px">下一讲：L23 Stone 对偶：布尔代数 ↔ Stone 空间</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L22 · 来源：UAL §4.5.1–4.5.6、§4.6.1–4.6.13、推论 3.3.25、定理 3.3.36、定义 4.2.16；Bergman §5.4 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L20 桥之三：可定义性 ↔ 同态满射 ↔ 可区分性 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第五篇 桥定理：全课核心</span><span class="sep">/</span><span>L20</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 20 · 2 学时 · 桥之三</div>
+  <h1>桥之三：可定义性 ↔ 同态满射 ↔ 可区分性</h1>
+  <div class="sub">「能不能用公式说出它」——语法问定义，代数问同态满不满，拓扑问两个点分不分得开</div>
+  <div class="metarow"><span>来源：UAL §4.3.1–4.3.4（Beth 可定义性四版本、定理 4.3 系列、Remark 3.3.4）；拓扑讲义 Ch4（T0 分离、商空间泛性质）；回指 L02 Galois 连接、L11 连续映射的核、L12 分离公理、L14 不可区分、L16 Fact 3.3.20(ii) 与 Alg<sup>m</sup> 不对同构封闭</span>
+    <span class="tag log">逻辑</span><span class="tag alg">代数</span><span class="tag top">拓扑</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：说得出的，和分得开的</a></li>
+  <li><a href="#beth">Beth 可定义性四版本（O1）</a></li>
+  <li><a href="#surj">代数侧：同态的满射性（O2）</a></li>
+  <li><a href="#bridge">定理 4.3 系列：双向刻画（O3）</a></li>
+  <li><a href="#topo">拓扑侧：不可区分、T0 与商空间（O4）</a></li>
+  <li><a href="#app">应用：函数符号与群的例子（O5）</a></li>
+  <li><a href="#compare">三座桥的差别与 Alg<sup>m</sup> 为何不抽象类（O6）</a></li>
+  <li><a href="#fusion2">融合接口：第三座三面一体图</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">前两座桥把「有模型」「可证明」翻成了代数性质。这一问第三件事：<strong>一个关系、一个函数，能不能被公式唯一地「说出」？</strong>听起来纯属语法，答案却藏在同态满不满、两点分不分得开里。<strong>L16 已经埋好了线：模型满足理论 = 同余包含；Alg<sup>m</sup> 故意不对同构封闭——两条都在这里兑现。</strong></p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>它回答的问题</th></tr>
+      <tr><td>Beth 可定义性（四版本）</td><td>L01 一阶语义</td><td>「只有一个公式说得准它」有几种强弱写法？</td></tr>
+      <tr><td>隐含可定义</td><td>上面 + L02 Galois 连接</td><td>不说它，能不能被别的信息逼出来？</td></tr>
+      <tr><td>同态的满射性</td><td>L03 同态、L16 概念代数</td><td>「映满」在代数侧对应什么？</td></tr>
+      <tr><td><span class="math">∼<sub>Mod(Σ)</sub></span> 与 <span class="math">ker(mng)</span></td><td>L16 Fact 3.3.20(ii)</td><td>「模型满足理论」的同余写法是什么？</td></tr>
+      <tr><td>定理 4.3 系列</td><td>上面 + L18/L19 模板</td><td>可定义 ↔ 满射，两个方向各靠什么？</td></tr>
+      <tr><td>不可区分关系</td><td>L11 核、L14 Stone 空间</td><td>两个点在共同语言下「看不出差别」是什么？</td></tr>
+      <tr><td>T0 分离</td><td>L12 分离公理</td><td>「分得开」的拓扑名字是什么？</td></tr>
+      <tr><td>商空间泛性质</td><td>L03 商代数、L12 商</td><td>把不可区分的点黏掉，得到什么？</td></tr>
+      <tr><td>Alg<sup>m</sup> 不对同构封闭</td><td>L16 Remark 3.3.4</td><td>为什么这里非得保留「具体副本」不可？</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>公式 <span class="math">φ(x)</span> 定义关系 <span class="math">R</span> = 在所有模型里「<span class="math">φ</span> 的外延恰是 <span class="math">R</span>」→ 把 L16 的 <span class="math">ker(mng<sub>M</sub>) ⊇ ∼<sub>Mod(Σ)</sub></span> 接进来 → 可定义变成「某个自然同态满射」→ 反过来，满射失效就有两个模型在共同语言下不可区分 → 拓扑侧这叫 T0 失效 → 商掉不可区分关系正是 L12 的分离商。<strong>整讲一台发动机：把「说得出」读成「分得开」。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 目标 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>写出 Beth 可定义性的四种版本，说明显式与隐含、局部与全局的差别</td><td><a href="#beth">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>用 L16 的同余翻译，把「可定义」写成「某同态满射」</td><td><a href="#surj">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>陈述定理 4.3 系列的双向性，说明每方向用哪座桥</td><td><a href="#bridge">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>用不可区分关系与 T0 分离读可定义性，说明商空间的泛性质</td><td><a href="#topo">§6</a></td><td><a href="#ex">E7, E8</a></td></tr>
+    <tr><td><b>O5</b></td><td>应用：判断函数符号是否可定义，解释群、序的例子</td><td><a href="#app">§7</a></td><td><a href="#ex">E9, E10</a></td></tr>
+    <tr><td><b>O6</b></td><td>说清本桥与前两座的差别，解释 Alg<sup>m</sup> 为何在这里必须不抽象类</td><td><a href="#compare">§8</a></td><td><a href="#ex">E11, E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：说得出的，和分得开的</h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>前两座桥问的都是「整体性质」：有没有模型（L18）、能不能证明（L19）。这一问的是一个更细的问题——<strong>具体某样东西，语言能不能把它单独指出来？</strong></p>
+    <p>拿群语言举例。群里有个元素只满足 <span class="math">x · x = x</span>，它是单位元。<strong>一阶句子把单位元唯一地「说」出来了</strong>：任何群、任何满足这句子的元素，都只能是那个单位元。反过来，若给群加一个常元 <span class="math">c</span> 但不加公理约束，<span class="math">c</span> 就没被定义——不同模型里它指不同元素。<strong>可定义性问的就是：这个「说准了」能不能被形式化？</strong></p>
+    <p>形式化之后，真正有意思的是它的<strong>三副面孔</strong>：</p>
+    <ul>
+      <li><strong>语法：</strong>存在一个公式 <span class="math">φ(x)</span>，在所有模型里恰好选出你要的东西（Beth 可定义性）。</li>
+      <li><strong>代数：</strong>某个自然同态是<strong>满射</strong>——语言的影子没有「漏掉」这个元素的像。</li>
+      <li><strong>拓扑：</strong>两个模型在共同语言下<strong>分得开</strong>（T0）；分不开就说明语言看不见它们的差别，自然也说不准。</li>
+    </ul>
+    <p><strong>三句话是同一句：「语言能定义，当且仅当语言能区分。」</strong>这一讲就是把这句翻来覆去证三遍。</p>
+  </div>
+
+  <div class="diagram"><pre>
+               「说得准」的三副面孔
+                      │
+      ┌───────────────┼───────────────┐
+      │               │               │
+    语法            代数             拓扑
+      │               │               │
+  φ(x) 唯一选出 R   同态 h 满射    两点 T0 可分
+      │               │               │
+  显式/隐含定义    ker ⊆ ∼ 且满    不可区分关系 = 恒等
+      │               │               │
+      └── 可定义 ⟺ 满射 ⟺ 分得开 ──┘
+           用 L16 的 ker(mng) 与 ∼<sub>Mod(Σ)</sub> 翻译
+  </pre></div>
+
+  <div class="warn"><div class="bt">先把话说清楚：可定义性不是「能命名」</div>
+    <p>① <strong>能写个常元指它，不等于能定义它。</strong>加一个新常元 <span class="math">c</span> 谁都能做；<strong>可定义性要求用已有语言写出公式，把 <span class="math">c</span> 的取值逼死</strong>（Beth 定理：隐含可定义 ⟺ 显式可定义，§3）。</p>
+    <p>② <strong>「分得开」依赖你选的语言。</strong>同一批模型，语言丰富时分得开，语言贫乏时可能分不开。<strong>可定义性是相对语言的性质，不是绝对性质。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O1 ============ -->
+<section id="beth">
+  <h2><span class="sn">3</span>Beth 可定义性四版本 <span class="tag log">O1</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.1（显式可定义）</span></div>
+    <p>设 <span class="math">Σ</span> 是语言 <span class="math">𝓛</span> 上的理论，<span class="math">R</span> 是一个 <span class="math">n</span> 元关系符号（不在 <span class="math">𝓛</span> 里，或当作要定义的符号）。称 <span class="math">R</span> 在 <span class="math">Σ</span> 中<strong>显式可定义</strong>，若存在 <span class="math">𝓛</span>-公式 <span class="math">φ(x₁,…,x<sub>n</sub>)</span>（不含 <span class="math">R</span>）使</p>
+    <div class="formula">Σ ⊨ ∀x̄&nbsp; (R(x̄) ↔ φ(x̄))。</div>
+    <p>对函数符号 <span class="math">f</span>，显式定义要求公式 <span class="math">ψ(x̄, y)</span> 使 <span class="math">Σ ⊨ ∀x̄∀y&nbsp; (f(x̄) = y ↔ ψ(x̄, y))</span>。<strong>显式 = 有一把现成的尺子，量出来的外延就是它。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.2（隐含可定义）</span></div>
+    <p>称 <span class="math">R</span> 在 <span class="math">Σ</span> 中<strong>隐含可定义</strong>，若把 <span class="math">R</span> 换成两个不同符号 <span class="math">R₁, R₂</span>，则</p>
+    <div class="formula">Σ(R₁) ∪ Σ(R₂) ⊨ ∀x̄&nbsp; (R₁(x̄) ↔ R₂(x̄))。</div>
+    <p>也就是说：<strong>任何两个模型，只要在其他部分一样，它们给 <span class="math">R</span> 的解释就必须一样。</strong>隐含 = 没给尺子，但 <span class="math">Σ</span> 已经把 <span class="math">R</span> 的外延唯一逼出来了。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">3.3（Beth 可定义性定理）</span></div>
+    <div class="formula">R 在 Σ 中隐含可定义  ⟺  R 在 Σ 中显式可定义。</div>
+    <p>在一阶逻辑里，「被逼出来」和「说得出来」等价。<strong>这是本讲的第一根支柱</strong>：它把语义条件（所有模型一致）换成语法条件（存在公式）。证明用紧致性——L18 的桥在这里第一次兑现到可定义性上。</p>
+    <div class="proof"><span class="pt">证明骨架。</span>显式 ⟹ 隐含显然（同一把尺子量两次，结果一样）。反向用紧致性：若 <span class="math">R₁, R₂</span> 的解释在所有模型里一致，可把「<span class="math">R₁(x̄)</span>」与「<span class="math">R₂(x̄)</span>」的偏差用有限片段排除；Craig 插值（L21）给出一个 <span class="math">𝓛</span>-公式夹在中间，就是所求的 <span class="math">φ</span>。<span class="qed">∎</span></div>
+    <p class="src" style="margin-top:6px">注：Beth 定理与 Craig 插值定理等价（见 L21）。此处先给结论，完整证明待插值工具就绪。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.4（局部与弱可定义）</span></div>
+    <ul>
+      <li><strong>在某模型 <span class="math">M</span> 中（局部）可定义</strong>：存在公式 <span class="math">φ</span> 使 <span class="math">R<sup>M</sup> = φ<sup>M</sup></span>——只要求这一个模型里对上。</li>
+      <li><strong>弱可定义</strong>：允许公式带参数（常元或元素），即 <span class="math">φ(x̄, ā)</span>。<strong>局部 + 带参数，是最宽松的版本。</strong></li>
+      <li><strong>全局可定义</strong>：上面的定义 3.1/3.2，要求对 <span class="math">Σ</span> 的<strong>所有</strong>模型成立。</li>
+    </ul>
+    <p><strong>四种版本按强度排：</strong>全局显式 = 全局隐含（Beth）⟹ 局部显式；弱版本最弱（多了参数这个自由度）。<strong>做题先问是哪种，混了就错。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><strong>群的单位元。</strong><span class="math">e(x) : x·x = x</span> 显式定义单位元；隐含地，任何满足「存在唯一的 <span class="math">x</span> 使 <span class="math">∀y (x·y = y)</span>」的解释都只能是真单位元。<strong>两种说法对上，Beth 在此最直观。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>为什么「隐含 ⟹ 显式」不显然。</strong>隐含说的是「任何两个模型给的解释一样」——这是关于<strong>所有模型整体</strong>的全称命题；显式说的是「存在一条公式」——这是关于<strong>语法对象</strong>的存在命题。它们凭什么相等？<strong>本质是紧致性 + 插值：整体一致性能被有限证据捕捉，而有限证据可以写成一条公式。</strong>L18 的发动机在这里第二次点火。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>Beth 定理对一阶逻辑成立，对某些弱逻辑失败。</strong>模态逻辑、直觉主义逻辑里显式与隐含可能分开。<strong>别当成普世真理。</strong></p>
+    <p>② <strong>「唯一」要量对所有模型，不是一个模型。</strong>在某模型里唯一，换个模型可能被别的东西满足——那是局部可定义，不是全局。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL §4.3.1（Beth 可定义性四版本）；L18 紧致性；L21 Craig 插值（预告）。</p>
+</section>
+
+<!-- ============ O2 ============ -->
+<section id="surj">
+  <h2><span class="sn">4</span>代数侧：同态的满射性 <span class="tag alg">O2</span></h2>
+
+  <div class="intu"><div class="bt">从公式翻译到同余</div>
+    <p>把 L16 的 Fact 3.3.20(ii) 请出来。它说（在组合 + 条件 (ii) 下）：</p>
+    <div class="formula">M ⊨<sub>L</sub> Σ &nbsp;⟺&nbsp; ker(mng<sub>M</sub>) ⊇ ∼<sub>Mod(Σ)</sub>。</div>
+    <p>左边是语义（模型满足理论），右边是代数（模型的同余比理论的同余更粗）。<strong>L16 说这是「L20 可定义性定理的雏形」，现在兑现。</strong></p>
+    <p>关键在 <span class="math">∼<sub>Mod(Σ)</sub></span>：它是<strong>所有满足 <span class="math">Σ</span> 的模型共同认可的那些公式对</strong>——也就是「在共同语言里分不开的公式」。如果 <span class="math">Σ</span> 已经把某个东西说死，那么在任何模型里，它的像不该随着模型乱跑。<strong>把这句翻成代数，就是某个自然同态必须满射。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.1（伴随同态）</span></div>
+    <p>设 <span class="math">F</span> 是公式代数，<span class="math">∼<sub>Mod(Σ)</sub></span> 是理论同余，商 <span class="math">F/∼<sub>Mod(Σ)</sub></span> 是 L16 的概念代数。对模型 <span class="math">M</span>，<span class="math">mng<sub>M</sub></span> 诱导出同态</p>
+    <div class="formula">h<sub>M</sub> : F/∼<sub>Mod(Σ)</sub> → mng<sub>M</sub>(F), &nbsp;&nbsp; h<sub>M</sub>(φ/∼) = mng<sub>M</sub>(φ)。</div>
+    <p>由 <span class="math">ker(mng<sub>M</sub>) ⊇ ∼<sub>Mod(Σ)</sub></span>，这个同态良定义。<strong>它把「公式在理论下的类」送到「公式在这个模型里的值」。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">4.2（可定义的代数写法）</span></div>
+    <p>关系 <span class="math">R</span> 在 <span class="math">Σ</span> 中可定义，当且仅当对 <span class="math">Alg<sup>m</sup>(Σ)</span> 中每个模型，<span class="math">R</span> 的外延落在伴随同态 <span class="math">h<sub>M</sub></span> 的像里——<strong>即 <span class="math">h<sub>M</sub></span> 对 <span class="math">R</span> 那一部分是满射</strong>。</p>
+    <div class="proof"><span class="pt">证明骨架。</span>若 <span class="math">φ</span> 显式定义 <span class="math">R</span>，则 <span class="math">R = φ<sup>M</sup> = h<sub>M</sub>(φ/∼)</span> 在像里。反向：若每个模型里 <span class="math">R</span> 的外延都在像里，取 <span class="math">φ/∼</span> 作其原像；Beth 定理保证这个原像与模型选择无关，于是 <span class="math">φ</span> 全局定义 <span class="math">R</span>。<span class="qed">∎</span></div>
+  </div>
+
+  <div class="intu"><div class="bt">「满射」为什么是这里的关键词</div>
+    <p>回想 L11：连续映射的核是「不可区分关系」，商映射把不可区分的点黏成一点。<strong>这里同理：</strong><span class="math">h<sub>M</sub></span> 不满射，意味着模型的概念代数里有元素不是任何公式的值——<strong>语言里有「说不出」的东西</strong>。满射，意味着每个可见元素都有公式名字。<strong>所以「可定义 = 满射」不是比喻，是同一句话的两种写法。</strong></p>
+  </div>
+
+  <p class="src"><b>来源：</b>UAL §4.3.2–4.3.3；L16 Fact 3.3.20(ii)、Remark 3.3.4；L11 连续映射的核；L03 商代数。</p>
+</section>
+
+<!-- ============ O3 ============ -->
+<section id="bridge">
+  <h2><span class="sn">5</span>定理 4.3 系列：双向刻画 <span class="tag alg">O3</span><span class="tag log">逻辑</span></h2>
+
+  <div class="thm"><div class="bt">定理 <span class="num">5.1（UAL 定理 4.3 系列，第三座桥）</span></div>
+    <div class="formula">R 在 Σ 中可定义  ⟺  伴随同态 h<sub>M</sub> 满射（对 Alg<sup>m</sup>(Σ) 中每个模型 M）  ⟺  模型在共同语言下 T0 可分。</div>
+    <p><strong>这是本讲的高潮</strong>：语法（可定义）、代数（满射）、拓扑（可分）三者被钉成同一个命题。前两座桥是两端，这一座是三端。</p>
+  </div>
+
+  <div class="intu"><div class="bt">两方向各用哪座桥</div>
+    <table>
+      <tr><th>方向</th><th>用的工具</th><th>关键一步</th></tr>
+      <tr><td>可定义 ⟹ 满射</td><td>L16 Fact 3.3.20(ii)</td><td>公式的定义句把外延认成某个像点</td></tr>
+      <tr><td>满射 ⟹ 可定义</td><td>Beth 定理（§3）+ 紧致性（L18）</td><td>像点的原像给出公式，Beth 保证全局一致</td></tr>
+      <tr><td>满射 ⟺ T0 可分</td><td>L11 核 = 不可区分关系、L12 商</td><td>不满射 ⇔ 有两点的像重合 ⇔ 分不开</td></tr>
+    </table>
+    <p><strong>和前两座的模板仍然一样</strong>：一边逻辑性质，一边代数性质，靠 L16 的翻译 + L04 的构造兑现。<strong>你已经见过第三遍了。</strong></p>
+  </div>
+
+  <div class="box def"><div class="bt">技术注解（可跳过）</div>
+    <p>上面在「一阶、有 Beth 性质」的熟悉情形写得干净。UAL 一般设定下，满射条件要对 <span class="math">Alg<sup>m</sup>(L)</span> 而<strong>不是</strong> <span class="math">Alg<sub>⊨</sub>(L)</span> 陈述——因为前者的元素是具体概念代数，保留了区分模型的信息（§8）。<strong>这一条正是本桥与前两座最不一样的地方。</strong></p>
+  </div>
+
+  <p class="src"><b>来源：</b>UAL §4.3.3–4.3.4（定理 4.3 系列）；L16 Fact 3.3.20(ii)、Remark 3.3.4；L11 核、L12 T0。</p>
+</section>
+
+<!-- ============ O4 ============ -->
+<section id="topo">
+  <h2><span class="sn">6</span>拓扑侧：不可区分、T0 与商空间 <span class="tag top">O4</span></h2>
+
+  <div class="intu"><div class="bt">从「核」到「不可区分关系」</div>
+    <p>L11 讲连续映射时说过：映射 <span class="math">f : X → Y</span> 的核 <span class="math">∼<sub>f</sub></span>（<span class="math">x ∼ y ⟺ f(x) = f(y)</span>）是一个等价关系，把核相同的点黏起来得到商空间。<strong>这里把这个装置原样搬到模型上。</strong></p>
+    <p>对模型类 <span class="math">K</span>，定义<strong>不可区分关系</strong>：</p>
+    <div class="formula">M ≈ N &nbsp;⟺&nbsp; 对所有 <span class="math">𝓛</span>-句子 <span class="math">σ</span>，M ⊨ σ ⟺ N ⊨ σ。</div>
+    <p>也就是说：<strong>共同语言里的每句话，在 <span class="math">M</span> 和 <span class="math">N</span> 里真假一样——语言看不出它们有任何差别。</strong>这正是 L11 的核、L14 Stone 空间里「同一个点」的另一种说法。</p>
+  </div>
+
+  <div class="def"><div class="bt">命题 <span class="num">6.1（可分 = T0）</span></div>
+    <p>模型类 <span class="math">K</span> 配 Spec 型拓扑后是 <strong>T0 的</strong>，当且仅当不可区分关系 <span class="math">≈</span> 是恒等关系：<span class="math">M ≈ N ⟹ M = N</span>。</p>
+    <p>L12 已经把 T0 讲透：<strong>不许有两个点对所有命题真值完全一致</strong>。现在读回来：<strong>语言能区分所有模型 ⟺ 语言能定义它们的差别 ⟺ 没有两个模型在共同语言里「长得一样」。</strong></p>
+    <table>
+      <tr><th>逻辑</th><th>代数</th><th>拓扑</th></tr>
+      <tr><td>隐含可定义</td><td><span class="math">h<sub>M</sub></span> 满射</td><td><span class="math">≈</span> 是恒等</td></tr>
+      <tr><td>有两个模型给 <span class="math">R</span> 不同解释</td><td><span class="math">h<sub>M</sub></span> 不满射（像重合）</td><td>存在 <span class="math">M ≈ N</span> 但 <span class="math">M ≠ N</span></td></tr>
+      <tr><td>Beth 定理修好定义</td><td>补上缺失的像点</td><td>商掉不可区分关系，取 T0 化</td></tr>
+    </table>
+  </div>
+
+  <div class="fusion"><div class="bt">商空间的泛性质：把分不开的点黏掉</div>
+    <p>L12/L03 的商构造在这里兑现。设 <span class="math">q : K → K/≈</span> 是商映射。泛性质说：<strong>任何从 <span class="math">K</span> 出发、把 <span class="math">≈</span>-等价的点送到同一点的映射，都唯一地穿过 <span class="math">q</span>。</strong></p>
+    <p>翻成逻辑：任何「只依赖语言能看见的信息」的映射，都必须穿过商——<strong>因为 ≈-等价的模型在语言里本就无从分辨</strong>。<span class="math">K/≈</span> 就是语言的「可见世界」：把肉眼看不出差别的模型黏成一个点。<strong>T0 化 = 让语言把该分的都分开。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>命题逻辑的理论空间 <span class="math">2<sup>ω</sup></span>：两个指派若在每个公式上真值相同，它们就是同一个指派。<strong>≈ 是恒等，空间 T0</strong>（实际还是 Hausdorff、全不连通）。这就是语言把点分得最开的情形。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>取一个只有 <span class="math">∀</span> 没有 <span class="math">=</span> 的语言，或取 S5 模态语言：从任一世界出发能看到的都一样，于是所有世界 ≈-等价，<strong>商空间塌成一点</strong>。<strong>本质在于：不可区分不是模型的缺陷，是语言的分辨率问题</strong>——语言的分辨率越粗，商塌得越狠，能定义的东西越少。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>≈ 是等价关系，不是偏序。</strong>「互相分不开」显然对称传递。别和 L12 的 Alexandroff 序 <span class="math">x ≤ y</span>（知识包含）混——那个是预序，<strong>取它的反对称商才得到 T0</strong>。</p>
+    <p>② <strong>「T0 可分」不等于「有公式区分」。</strong>T0 只保证拓扑开集能分开；要公式区分，还得开集是公式定义的（L18 §6 的 <span class="math">[φ]</span>）。<strong>在 Stone 空间里两者恰好一致，因为开闭集基就是公式。</strong>换个空间就不一定。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL §4.3.4；拓扑讲义 Ch4（T0、商空间泛性质）；L11 连续映射的核、L12 分离公理与 Alexandroff、L14 Stone 空间。</p>
+</section>
+
+<!-- ============ O5 ============ -->
+<section id="app">
+  <h2><span class="sn">7</span>应用：函数符号与群的例子 <span class="tag alg">O5</span><span class="tag log">逻辑</span></h2>
+
+  <div class="ex"><div class="bt">例 7.1：群的单位元与逆元</div>
+    <p>在语言 <span class="math">{·}</span> 里，群公理隐含定义了单位元 <span class="math">e</span>：任何两个满足群公理、且各自指定了一个单位的模型，单位必须相同（<span class="math">e·e = e</span> 且 <span class="math">e·x = x</span> 唯一）。Beth 定理给出显式定义 <span class="math">e(x) : x·x = x</span>。<strong>逆元同理可定义，但只依赖 <span class="math">·</span>——所以把 <span class="math">e</span>、<span class="math">⁻¹</span> 当常元/函数符号放进语言是「冗余」的，它们能被定义。</strong></p>
+    <p><strong>代数读法：</strong>把 <span class="math">{·}</span>-概念代数映到 <span class="math">{·, e, ⁻¹}</span>-概念代数，这个同态是满射——因为 <span class="math">e, ⁻¹</span> 的外延都已在 <span class="math">{·}</span> 的像里。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 7.2：加法群里的零（局部 vs 全局）</div>
+    <p>在阿贝尔群语言 <span class="math">{+, 0}</span> 里，<span class="math">0</span> 由常元直接给出，当然可定义。若把 <span class="math">0</span> 从语言里删掉，剩下的 <span class="math">{+}</span> 仍隐含定义零（<span class="math">x + x = x</span>）。<strong>但在某些模型里，一个元素可能只在局部被带参数的公式定义，换个模型就失效</strong>——这正是局部/全局、弱/强四个版本要分开的原因（§3）。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 7.3：序的「极小元」不可全局定义</div>
+    <p>在偏序语言 <span class="math">{≤}</span> 里，「极小元」不是全局可定义的：<span class="math">ℕ</span> 有极小元 0，<span class="math">ℤ</span> 没有极小元。<strong>不同模型对「有没有极小元」表态不同 → 语言没把它逼死 → 隐含可定义失败 → 自然也没有统一公式。</strong>代数侧：<span class="math">h<sub>M</sub></span> 在极小元那一部分不满射；拓扑侧：两个模型在 <span class="math">≈</span> 下仍可分（因为 ≤ 本身可区分），但「极小元」这个概念不在语言的可见范围里。</p>
+  </div>
+
+  <div class="fusion"><div class="bt">使用说明书：判断可定义的三步</div>
+    <ol>
+      <li><strong>语法：</strong>试着写公式 <span class="math">φ</span> 把外延逼死；写不出，先查隐含可定义（两个副本是否总一致）。</li>
+      <li><strong>代数：</strong>看伴随同态 <span class="math">h<sub>M</sub></span> 在目标外延上是否满射。</li>
+      <li><strong>拓扑：</strong>看两个候选模型能否被语言分开（<span class="math">≈</span> 是否恒等）。</li>
+    </ol>
+    <p><strong>三步结论总是一致——这就是桥的意思。</strong></p>
+  </div>
+
+  <p class="src"><b>来源：</b>UAL §4.3 应用例；群与偏序的标准可定义性事实；L16 概念代数。</p>
+</section>
+
+<!-- ============ O6 ============ -->
+<section id="compare">
+  <h2><span class="sn">8</span>三座桥的差别与 Alg<sup>m</sup> 为何不抽象类 <span class="tag alg">O6</span></h2>
+
+  <div class="intu"><div class="bt">这一座为什么不一样</div>
+    <p>L18、L19 两座桥的代数侧都只用到 <span class="math">Alg<sub>⊨</sub>(L)</span>——<strong>抽象类，对同构封闭，用类的封闭性质（超积、有限基）说话</strong>。L20 却改用 <span class="math">Alg<sup>m</sup>(L)</span>——<strong>具体代数类，不对同构封闭</strong>。L16 的 Remark 3.3.4 当时就预告：「尤其在可定义性理论里，Beth 性质正需要这一点」。现在说清为什么。</p>
+  </div>
+
+  <div class="def"><div class="bt">命题 <span class="num">8.1（为什么必须是具体代数）</span></div>
+    <p>可定义性问的是「<strong>这个</strong>模型里的<strong>这个</strong>外延能不能被公式说出」。同构副本虽然代数结构一样，但<strong>元素的身份变了</strong>。若把 <span class="math">Alg<sup>m</sup>(L)</span> 换成它的同构闭包，「哪个元素被定义」的信息就被抹掉了——<strong>而那正是问题本身。</strong></p>
+    <table>
+      <tr><th></th><th>Alg<sub>⊨</sub>(L)</th><th>Alg<sup>m</sup>(L)</th></tr>
+      <tr><td>成员</td><td>抽象代数类型</td><td>具体概念代数（模型给出的）</td></tr>
+      <tr><td>同构封闭</td><td>是（按定义带 <span class="math">I</span>）</td><td><strong>否（刻意）</strong></td></tr>
+      <tr><td>用在哪座桥</td><td>L18 紧致、L19 完全</td><td>L20 可定义</td></tr>
+      <tr><td>关心的性质</td><td>类的封闭性</td><td>元素的身份、满射</td></tr>
+    </table>
+    <p><strong>一句话：类的性质看「形状」，可定义性看「身份」。形状可以对同构封闭，身份不行。</strong></p>
+  </div>
+
+  <div class="fusion"><div class="bt">三座桥横向对照</div>
+    <table>
+      <tr><th></th><th>L18 紧致</th><th>L19 完全</th><th>L20 可定义</th></tr>
+      <tr><td>逻辑性质</td><td>有限可满足 ⟹ 可满足</td><td>有效 = 可证</td><td>隐含 = 显式</td></tr>
+      <tr><td>代数性质</td><td>对超积封闭</td><td>有限等式基</td><td>伴随同态满射</td></tr>
+      <tr><td>拓扑性质</td><td>超滤子收敛</td><td>极大一致集 = Stone 点</td><td>T0 可分 / 商</td></tr>
+      <tr><td>代数对象</td><td colspan="2"><span class="math">Alg<sub>⊨</sub>(L)</span>（抽象类）</td><td><span class="math">Alg<sup>m</sup>(L)</span>（具体代数）</td></tr>
+      <tr><td>共同发动机</td><td colspan="3">L16 翻译 + L04 构造 + 有限性</td></tr>
+    </table>
+  </div>
+
+  <p class="src"><b>来源：</b>L16 Remark 3.3.4、定理 3.3.5；UAL §4.3；L18/L19 桥对照。</p>
+</section>
+
+<!-- ============ 融合接口 ============ -->
+<section id="fusion2">
+  <h2><span class="sn">9</span>融合接口：第三座三面一体图</h2>
+  <p class="lead">前两座的图讲的是「两端 + 一台发动机」；这一座是三端并立，语法、代数、拓扑各占一角。</p>
+
+  <div class="diagram"><pre>
+                「说得准 = 分得开」· 三副面孔
+                         │
+      ┌──────────────────┼──────────────────┐
+      │                  │                  │
+    语法 L             代数 Algᵐ(L)        拓扑 Spec(L)
+      │                  │                  │
+   φ(x) 定义 R       h_M 满射            不可区分 ≈ 恒等
+      │                  │                  │
+  隐含 ⟺ 显式        ker(mng) ⊇ ∼        T0 分离
+      │                  │                  │
+      └──── L16 翻译 ────┴──── L11 核 ──────┘
+                         │
+            可定义 ⟺ 满射 ⟺ 可分
+            注意：用具体代数，不用同构闭包
+  </pre></div>
+  <p class="cap">图：三列逐行对齐；底部注明本桥特有的「具体代数」要求。</p>
+
+  <div class="intu"><div class="bt">把这座桥记成一句话</div>
+    <p><strong>「语言能定义」在代数里叫「同态满射」，在拓扑里叫「T0 分得开」，而把它们焊在一起的是「不可区分」这一个关系。</strong></p>
+    <p>三座桥走完，你已经手里有三副词典：紧致、完全、可定义，各自在逻辑 / 代数 / 拓扑三侧的名字都能对上。<strong>下一讲 L21 走第四座桥——插值 ↔ 合并 / 超合并</strong>，那里会把 L18 用的紧致性、L19 用的有限证明、本讲用的可定义性同时请回来，是全书技术含量最高的一讲。</p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+
+  <div class="ex"><div class="bt">O1 · Beth 四版本</div>
+  <ol start="1">
+    <li><span class="tag log">O1</span>写出显式与隐含可定义的定义，再逐句验证「显式 ⟹ 隐含」。<strong>反向为什么要用紧致性？缺了紧致性，证明卡在哪？</strong></li>
+    <li><span class="tag log">O1</span>把全局/局部、带参数/不带参数四种版本排成强度阶梯，各举一例。<strong>为什么「在某模型里唯一」不是全局可定义？</strong></li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O2 · 同态满射</div>
+  <ol start="3">
+    <li><span class="tag alg">O2</span>用 L16 的 <span class="math">ker(mng<sub>M</sub>) ⊇ ∼<sub>Mod(Σ)</sub></span> 推出伴随同态 <span class="math">h<sub>M</sub></span> 良定义，再说明「<span class="math">h<sub>M</sub></span> 不满射」在语义上意味着什么。</li>
+    <li><span class="tag alg">O2</span>命题 4.2 证明里用了 Beth 定理。<strong>若换到一个 Beth 定理失败的弱逻辑，这个证明在哪一步断掉？</strong>相应的「可定义 ⟺ 满射」还成立吗？</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O3 · 定理 4.3 系列</div>
+  <ol start="5">
+    <li><span class="tag log">O3</span>写出定理 5.1 的三端陈述，并各标注一条证明路线（Fact 3.3.20(ii) / Beth + 紧致 / 核 = 不可区分）。</li>
+    <li><span class="tag alg">O3</span>思考题：三座桥里只有这一座用 <span class="math">Alg<sup>m</sup>(L)</span> 而非 <span class="math">Alg<sub>⊨</sub>(L)</span>。<strong>若强行用抽象类陈述可定义性，会丢掉什么？</strong>举一个「同构但不同」的概念代数的例子。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O4 · 拓扑侧</div>
+  <ol start="7">
+    <li><span class="tag top">O4</span>验证 <span class="math">≈</span> 是等价关系，并证明「<span class="math">K</span> T0 ⟺ <span class="math">≈</span> 是恒等」。<strong>把它和 L12 的 Alexandroff 序的反对称商对起来。</strong></li>
+    <li><span class="tag top">O4</span>写出商映射 <span class="math">q : K → K/≈</span> 的泛性质，并解释「只依赖语言可见信息的映射必须穿过 <span class="math">q</span>」这句话。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O5 · 应用</div>
+  <ol start="9">
+    <li><span class="tag alg">O5</span>在群语言 <span class="math">{·}</span> 里写出单位元的显式定义，并说明为什么把 <span class="math">e</span> 加进语言是冗余的。<strong>代数侧哪个同态因此满射？</strong></li>
+    <li><span class="tag log">O5</span>举一个「局部可定义但非全局可定义」的例子，或说明为什么偏序里的「极小元」不是全局可定义的。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O6 · 三桥比较</div>
+  <ol start="11">
+    <li><span class="tag alg">O6</span>填完整 §8 的三桥对照表，并说出每一座桥的「共同发动机」分别是什么。<strong>哪一座最依赖「具体代数」？为什么？</strong></li>
+    <li><span class="tag top">O6</span>用一句话把 Beth 定理、T0 分离、同态满射串起来，要求三处都不出现对方领域的术语。</li>
+    <li><span class="tag log">O6</span>综合题：回看 L16 Remark 3.3.4「Alg<sup>m</sup> 故意不对同构封闭」。现在用自己的话解释：为什么这条「刻意的缺陷」在可定义性里反而是关键信息？</li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L19.html">← 上一讲：L19 桥之二：完全性 ↔ 有限公理化 ↔ Hilbert 系统</a>
+  <a href="L21.html" style="font-size:13.5px">下一讲：L21 桥之四：插值 ↔ 合并 / 超合并</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L20 · 来源：UAL §4.3.1–4.3.4（Beth 可定义性、定理 4.3 系列、Remark 3.3.4）、拓扑讲义 Ch4 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

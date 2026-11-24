@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L14 连通性、全不连通与 Stone 空间 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第三篇 拓扑：用逻辑的眼光看空间</span><span class="sep">/</span><span>L14</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 14 · 2 学时 · 拓扑篇（收束）</div>
+  <h1>连通性、全不连通与 Stone 空间</h1>
+  <div class="sub">L12 用开集分离点；这一讲换一把刀——只允许用「开且闭」的集合，看看还能分开多少</div>
+  <div class="metarow"><span>来源：拓扑讲义 Ch6 §6.1–6.3（定义 6.1.1/6.1.7、命题 6.1.2/6.1.4/6.1.5/6.1.8、例 6.1.3/6.1.9、定义 6.2.1/6.2.2/6.2.4、命题 6.2.5、例 6.2.3/6.2.6/6.2.9/6.2.10、定义 6.2.7、引理 6.2.8、定义 6.3.1/6.3.3/6.3.6/6.3.7、命题 6.3.2/6.3.4/6.3.5/6.3.8/6.3.9/6.3.10）；Ch7「空间的模态逻辑」；L06 Stone 表示、L13 紧致化</span>
+    <span class="tag top">拓扑</span><span class="tag log">逻辑</span><span class="tag alg">代数</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：换一把刀切空间</a></li>
+  <li><a href="#conn">连通与道路连通（O1）</a></li>
+  <li><a href="#sep">全不连通与全分离（O2）</a></li>
+  <li><a href="#stone">Stone 空间与零维（O3）</a></li>
+  <li><a href="#iso">孤立点、导集与散布（O4）</a></li>
+  <li><a href="#exdisc">极端不连通（O5）</a></li>
+  <li><a href="#belief">逻辑接口：□、τ 与强信念（O6）</a></li>
+  <li><a href="#fusion">融合接口：布尔代数的几何形态</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">L13 问「该有的点在不在」，L14 问「点之间能不能被切开」。两问用的是同一批开集，答案却几乎相反：几何学家要连通，逻辑学家要全分离。分岔点只有一个——<strong>你手上那把刀是「开集」还是「开闭集」</strong>。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>它回答的问题</th></tr>
+      <tr><td>连通 / clopen</td><td>L08 开闭集词典</td><td>有没有一个命题能被正反判定，把世界切成两半？</td></tr>
+      <tr><td>道路连通</td><td>L11 连续映射</td><td>两点之间能不能实际走过去？</td></tr>
+      <tr><td>连通分支 / 拟分支 ≡<sub>QC</sub></td><td>连通、clopen</td><td>哪些点在「判定能力」下绑在一起？</td></tr>
+      <tr><td>全不连通 / 全分离</td><td>上面两个分支</td><td>任意两个世界能不能被某个命题分开？</td></tr>
+      <tr><td>Stone 空间（紧 + T2 + 零维）</td><td>L13 紧致、L12 T2</td><td>布尔代数的「点空间」长什么样？</td></tr>
+      <tr><td>孤立点 / 导集 d / 散布</td><td>L10 闭包</td><td>一个点能不能被单独识别出来？</td></tr>
+      <tr><td>极端不连通</td><td>cl 与 int（L10）</td><td>「强烈相信且知道自己相信」在什么空间里成立？</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>开闭集 = 可正反判定的命题 → <strong>连通</strong> = 没有非平凡可判定命题；<strong>全分离</strong> = 任意两点都有可判定命题分开 → 紧 Hausdorff 把「全不连通」和「全分离」焊成同一件事（命题 6.2.5）→ 加上零维基就是 <strong>Stone 空间</strong>，正是 L06 布尔代数的点空间 → 再看更细的<strong>孤立性</strong>（单点能不能被认出来）→ 最后把「开集的闭包仍开」提出来，得到<strong>极端不连通</strong>，它在模态侧就是强信念的自反思。<strong>整讲只有一把刀：clopen。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 目标 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>用 clopen 判据和连续到 {0,1} 的判据证明连通，区分连通与道路连通</td><td><a href="#conn">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>分清连通分支与拟分支，证明全分离 ⟹ 全不连通，以及紧 Hausdorff 下二者等价</td><td><a href="#sep">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>证明 Stone 空间 ⟺ 紧 Hausdorff + 开闭基；解释它为什么是布尔代数的几何形态</td><td><a href="#stone">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>用导集判据识别孤立点，解释散布、无孤立点与余导集算子 τ 的区别</td><td><a href="#iso">§6</a></td><td><a href="#ex">E7, E8, E9</a></td></tr>
+    <tr><td><b>O5</b></td><td>证明 Hausdorff 极端不连通 ⟹ 全不连通，证明 βX 极端不连通，并解释余有限拓扑这个反例</td><td><a href="#exdisc">§7</a></td><td><a href="#ex">E10, E11</a></td></tr>
+    <tr><td><b>O6</b></td><td>把 int、d、τ 读成 □、◇、信念算子，说清 ◇□p → □◇□p 与 S4.2 的关系</td><td><a href="#belief">§8</a></td><td><a href="#ex">E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：换一把刀切空间</h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>L12 的分离公理阶梯用的是<strong>开集</strong>：T0 是「有一个开集只含这两点中的一个」，T2 是「有两个不交开集分别包住它们」。开集只保证<strong>可验证</strong>——你等到某件事发生，就能确认自己在其中一边。</p>
+    <p>现在把刀换掉：只允许用<strong>开且闭</strong>的集合。根据 L08 的词典，开闭集是<strong>可正反判定</strong>的命题：既能在有限时间内确认，也能在有限时间内推翻。这是认识论上强得多的能力。</p>
+    <p>换刀之后，问题变了：<strong>两个不同的世界，能不能被某个命题彻底分开？</strong>这个问题的答案谱系，就是本讲的全部内容。</p>
+  </div>
+
+  <div class="box def"><div class="bt">两端的极端</div>
+    <p>① <strong>连通（connected）</strong>：没有任何非平凡的可判定命题。开闭集只有 <span class="math">∅</span> 和 <span class="math">X</span>。你没法用一句话把世界分成两半。</p>
+    <p>② <strong>全分离（totally separated）</strong>：任意两个不同世界，都有某个可判定命题把它们分开。每个世界都能被一句话精确指认。</p>
+    <p>讲义开头那句话很准：几何学家多半希望空间连通，<strong>哲学家（做认识论的）多半希望空间高度不连通</strong>。同一个东西，两拨人要相反的性质。「天空是紫色的」若可验证，在连通空间里就不能同时可证伪——因为那样它就是一个非平凡开闭集了。</p>
+  </div>
+
+  <div class="ex"><div class="bt">接住 L13：同一批世界，两种拓扑</div>
+    <p>L13 的闹钟例子最后补上了一点 <span class="math">x<sub>∞</sub></span>，得到 <span class="math">α(ω) = ω ∪ {∞}</span>。这个空间里每个 <span class="math">{n}</span>（<span class="math">n ∈ ω</span>）都是开且闭的——它是<strong>全分离</strong>的 Stone 空间。</p>
+    <p>而 <span class="math">ℝ</span> 是<strong>连通</strong>的，一点都不全分离。可 <span class="math">ℝ</span> 和 <span class="math">ω</span> 作为集合的基数相同吗？不同，但 <span class="math">ℝ</span> 和 <span class="math">ω</span> 的 Stone–Čech 紧致化都落在同一套理论里。<strong>关键不在有多少点，而在开集怎么给。</strong>把 <span class="math">ℝ</span> 换成离散拓扑，它立刻全分离；把 <span class="math">ω</span> 换成余有限拓扑，它立刻连通。<strong>本讲要学的，就是这种「换拓扑就像换认识能力」的精确刻度。</strong></p>
+  </div>
+
+  <div class="warn"><div class="bt">先拆一个必踩的坑</div>
+    <p><strong>连通 ≠ T0 失败。</strong>Sierpiński 空间 <span class="math">S = ({0,1}, {∅, {1}, {0,1}})</span> 是 T0：开集 <span class="math">{1}</span> 把两点分开了。但它<strong>连通</strong>，因为 <span class="math">{1}</span> 不是闭的——它只能验证，不能证伪。</p>
+    <p>所以「能被开集分开」和「能被开闭集分开」是两件事。<strong>T0 说的是信息不对称，全分离说的是信息完备。</strong>看到「连通」就说「两点分不开」，是把 L12 的分离公理和本讲的概念搞混了。</p>
+  </div>
+</section>
+
+<!-- ============ O1 连通 ============ -->
+<section id="conn">
+  <h2><span class="sn">3</span>连通与道路连通 <span class="tag top">O1</span></h2>
+
+  <div class="def"><div class="bt">定义 6.1.1 <span class="num">连通</span></div>
+    <p>空间 <span class="math">(X, τ)</span> 若开闭子集只有 <span class="math">X</span> 和 <span class="math">∅</span>，称为<strong>连通</strong>的。</p>
+    <p>这个定义看起来消极——只是说「没有什么」。但它积极的一面由下面这个判据给出，而这一步是整个拓扑与逻辑对话的入口。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 6.1.2 <span class="num">连续到两点空间</span></div>
+    <p><span class="math">X</span> 连通 ⟺ 每个连续映射 <span class="math">f : X → {0,1}</span>（值域取离散拓扑）都是常值。</p>
+    <div class="proof"><div class="bt">证明</div>
+      <p><strong>(⟹)</strong> <span class="math">{0}</span> 在离散空间里既开又闭，所以 <span class="math">f<sup>−1</sup>({0})</span> 在 <span class="math">X</span> 里既开又闭。由连通性它只能是 <span class="math">∅</span> 或 <span class="math">X</span>，于是 <span class="math">f</span> 恒为 1 或恒为 0。</p>
+      <p><strong>(⟸)</strong> 若 <span class="math">U</span> 是非平凡开闭集，取特征函数 <span class="math">χ<sub>U</sub> : X → {0,1}</span>。对值域中任意开集 <span class="math">V</span>，<span class="math">χ<sub>U</sub><sup>−1</sup>(V)</span> 是 <span class="math">∅</span>、<span class="math">U</span>、<span class="math">X − U</span> 或 <span class="math">X</span> 之一，都开，故 <span class="math">χ<sub>U</sub></span> 连续而非常值。<span class="qed">∎</span></p>
+    </div>
+    <p class="src"><b>注意：</b>这个命题把「空间的连通性」翻译成了「映射的刚性」。L11 讲的连续映射在这里第一次充当<strong>探测器</strong>：到离散二点空间的连续映射就是「可正反判定的命题」，连通就是说这种命题只有常值的。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 6.1.3 与命题 6.1.4</div>
+    <p><span class="math">ℝ</span> 和 <span class="math">[0,1]</span> 连通。理由就是中间值定理：若连续实函数 <span class="math">f</span> 满足 <span class="math">f(a) &lt; c &lt; f(b)</span>，则中间有点取到 <span class="math">c</span>。于是到 <span class="math">{0,1}</span> 的连续映射不可能既取 0 又取 1。</p>
+    <p>含多于一点的离散空间不连通（每个单点都是开闭集）；任意<strong>不可分</strong>空间（开集只有 <span class="math">∅, X</span>）连通，而且是最容易的连通。</p>
+    <p>命题 6.1.4 给了一条反向约束：<strong>含至少两点的正规连通空间，基数至少 <span class="math">2<sup>ℵ<sub>0</sub></sup></span></strong>。<strong>这句话值得记住</strong>：在分离性良好的空间里，连通是很「贵」的，最小例子就已经和实数一样大。有限连通空间只能靠不可分拓扑撑着。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 6.1.5 与推论 6.1.6 <span class="num">稠密子集判定</span></div>
+    <p>若 <span class="math">A ⊆ X</span> 稠密且在子空间拓扑下连通，则 <span class="math">X</span> 连通。</p>
+    <div class="proof"><div class="bt">证明</div>
+      <p>设 <span class="math">U ⊆ X</span> 开闭。则 <span class="math">A ∩ U</span> 和 <span class="math">A ∩ (X − U)</span> 在 <span class="math">A</span> 中开闭。由 <span class="math">A</span> 连通，<span class="math">A ⊆ U</span> 或 <span class="math">A ⊆ X − U</span>。这两个集合在 <span class="math">X</span> 中都是闭的，而 <span class="math">A</span> 稠密，故对应的那个等于 <span class="math">X</span>。<span class="qed">∎</span></p>
+    </div>
+    <p><strong>推论 6.1.6：</strong>连通空间的任意紧致化仍连通。因为 <span class="math">X</span> 在紧致化 <span class="math">cX</span> 中稠密（L13 定义 5.3.2），且连通性被连续满射保持。<strong>这里用的是「稠密」，不是「闭」</strong>——补点不会把一块布撕开，只会给它封边。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 6.1.7 / 命题 6.1.8 <span class="num">道路连通</span></div>
+    <p>从 <span class="math">x</span> 到 <span class="math">y</span> 的<strong>道路</strong>是连续映射 <span class="math">p : [0,1] → X</span>，<span class="math">p(0)=x, p(1)=y</span>。任意两点间有道路则称 <span class="math">X</span> 道路连通。</p>
+    <p><strong>道路连通 ⟹ 连通。</strong>若 <span class="math">X = A ∪ B</span>，<span class="math">A,B</span> 非空不交开闭，取 <span class="math">x ∈ A, y ∈ B</span> 和道路 <span class="math">p</span>。则 <span class="math">p<sup>−1</sup>[A]</span> 是 <span class="math">[0,1]</span> 中既开又闭的子集，含 0 不含 1，与 <span class="math">[0,1]</span> 连通矛盾。<span class="qed">∎</span></p>
+    <p class="src"><b>译注：</b>讲义指出，对<strong>实直线的子集</strong>和<strong>有限拓扑空间</strong>，这两个概念一致。一般空间不一致，见下面边界例。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 6.1.9 穿孔平面</div>
+    <p><span class="math">ℝ<sup>2</sup> − {(0,0)}</span> 道路连通。两点之间的线段若不经过原点，直接走；若经过，取第三点，使两段折线都避开原点，再拼起来。</p>
+    <p><strong>这个例子的意义在于反差。</strong>实直线去掉一点断成两截，平面去掉一点只留下一个洞，还是一整块织物。但两者显然该有不同的几何性质——精确说出这个差别，就是代数拓扑的起点（同伦、同调）。<strong>连通性看不见这个洞，它需要更精细的工具。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">ℝ</span> 与 <span class="math">[0,1]</span>：中间值定理直接给出连通，且它们也是道路连通。<strong>这是你要拿来对照所有反例的基准</strong>：在 <span class="math">ℝ</span> 里，「不能切开」和「能走过去」恰好重合，所以直觉不会报警。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>拓扑学家的正弦曲线</strong>：<span class="math">S = {(0,0)} ∪ {(x, sin(1/x)) : 0 &lt; x ≤ 1}</span>，取 <span class="math">ℝ<sup>2</sup></span> 子空间拓扑。它连通（曲线部分的闭包把它和原点粘住，无法用开闭集切开），但<strong>不道路连通</strong>：从原点出发的任何连续道路，其横坐标必须从 0 连续走到正数，而正弦在 <span class="math">x → 0</span> 时无限振荡，迫使纵坐标没有极限。</p>
+    <p><strong>为什么这是本质的：</strong>它证明「不能切开」比「能走过去」<strong>弱</strong>。用命题 6.1.2 的探测器语言说：<span class="math">S</span> 上没有任何非平凡的可判定命题，但存在两个点之间没有连续路径。<strong>认识论的「分不开」不等于几何的「走不到」。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>Sierpiński 空间连通，但 T0。</strong>前面说过：<span class="math">{1}</span> 开却不闭。所以它只能验证、不能证伪，构不成开闭集。<strong>连通不阻止「信息不对称」，只阻止「双向判定」。</strong></p>
+    <p>② <strong>无限集上的余有限拓扑连通，且是 T1。</strong>它的开集是 <span class="math">∅</span> 与余有限集，闭集是有限集与 <span class="math">X</span>。取一个非全体的余有限开集 <span class="math">U</span>：<span class="math">X</span> 无限，故 <span class="math">U</span> 也无限，不可能有限，所以 <span class="math">U</span> 不闭。<strong>开闭集只有 <span class="math">∅, X</span>，空间连通。</strong>这也说明「T1 + 连通」并不矛盾。</p>
+    <p>③ <strong>连通空间的紧致化仍连通，但紧致空间的子空间不必连通。</strong><span class="math">[0,1]</span> 紧致连通，挖掉中点 <span class="math">{1/2}</span> 后分成两截。<strong>连通不是遗传性质。</strong></p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 §6.1：定义 6.1.1、命题 6.1.2、例 6.1.3、命题 6.1.4/6.1.5、推论 6.1.6、定义 6.1.7、命题 6.1.8、例 6.1.9；习题 6.1–6.2。正弦曲线为例 6.1.9 之后的标准补充，用于兑现讲义「两种概念一般而言不同」那句话。</p>
+</section>
+
+<!-- ============ O2 全不连通与全分离 ============ -->
+<section id="sep">
+  <h2><span class="sn">4</span>全不连通与全分离 <span class="tag top">O2</span></h2>
+
+  <div class="def"><div class="bt">定义 6.2.1 / 6.2.2 <span class="num">两种「碎」</span></div>
+    <p>非空子集 <span class="math">A ⊆ X</span> 若连通，且<strong>没有严格包含它的连通子集</strong>，称为<strong>连通分支</strong>。全体记作 <span class="math">Con(X)</span>。</p>
+    <p>若每个<strong>非空</strong>连通子集都是单点集，称 <span class="math">X</span> <strong>全不连通</strong>（totally disconnected）。</p>
+    <p class="src"><b>译注：</b>原稿两处都漏了限定。第一处写成「只要 <span class="math">A ⊆ B</span> 则 <span class="math">B</span> 不连通」，没有排除 <span class="math">B = A</span>，那样任何连通集都不可能成为分支；第二处没排除空集，按其字面没有任何空间能满足定义。<strong>这两处不是文字问题，是把定义改成了不可能满足的东西。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">例 6.2.3</div>
+    <p>离散空间全不连通（每个单点既是开集也是其余点的补，连通子集只能是单点）。含多于一点的不可分空间<strong>不</strong>全不连通：它整体连通，所以有含两个点的连通子集。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 6.2.4 <span class="num">拟连通与全分离</span></div>
+    <p>规定</p>
+    <div class="formula"><span class="math">x ≡<sub>QC</sub> y &nbsp;⟺&nbsp; 对每个开闭集 <span class="math">U ⊆ X</span>，<span class="math">x ∈ U ⟺ y ∈ U</span></span></div>
+    <p>若 <span class="math">A</span> 内任意两点都满足这个关系，称 <span class="math">A</span> <strong>拟连通</strong>；极大的非空拟连通子集称为<strong>拟分支</strong>，全体记作 <span class="math">QCon(X)</span>。若每个拟分支都是单点集，称 <span class="math">X</span> <strong>全分离</strong>（totally separated）。</p>
+    <p>记含 <span class="math">x</span> 的连通分支、拟分支为 <span class="math">[x]<sub>con</sub></span>、<span class="math">[x]<sub>qcon</sub></span>，则</p>
+    <div class="formula"><span class="math">[x]<sub>con</sub> ⊆ [x]<sub>qcon</sub></span></div>
+    <p>理由很直接：能被开闭集分开的两点，不可能落在同一个连通分支里——否则那个分支就会被开闭集切成两半。</p>
+    <p class="src"><b>译注：</b>原稿在拟分支的极大性表述里同样漏了「严格包含」和「拟连通本身」，已补明。<strong>这个包含关系是本节的发动机</strong>：它让「全分离 ⟹ 全不连通」几乎白送，而反方向需要额外条件。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 6.2.5 <span class="num">紧 Hausdorff 下的合流</span></div>
+    <p>(1) 全分离蕴含全不连通。<br>
+       (2) 若 <span class="math">X</span> 紧致 Hausdorff，则 <span class="math">[x]<sub>con</sub> = [x]<sub>qcon</sub></span>。<br>
+       (3) 因此在紧致 Hausdorff 空间中，全不连通与全分离等价。</p>
+    <div class="proof"><div class="bt">证明</div>
+      <p><strong>(1)</strong> 由 <span class="math">[x]<sub>con</sub> ⊆ [x]<sub>qcon</sub></span>，若 <span class="math">X</span> 全分离，则 <span class="math">[x]<sub>qcon</sub> = {x}</span>，于是 <span class="math">[x]<sub>con</sub></span> 也是单点。<span class="qed">∎</span></p>
+      <p><strong>(2)</strong> 设 <span class="math">A = [x]<sub>qcon</sub></span>。它可写成</p>
+      <div class="formula"><span class="math">A = ⋂{S ⊆ X : S 开闭且 x ∈ S}</span></div>
+      <p>故 <span class="math">A</span> 闭。设 <span class="math">A = B ∪ C</span>，<span class="math">B, C</span> 是 <span class="math">A</span> 中不交开闭集且 <span class="math">x ∈ B</span>。要证 <span class="math">C = ∅</span>。</p>
+      <p>因 <span class="math">A</span> 在 <span class="math">X</span> 中闭，<span class="math">B, C</span> 在 <span class="math">X</span> 中也闭。紧致 Hausdorff 空间正规（L13 定理 5.3.1 / L12 §8），取不交开集 <span class="math">U ⊇ B</span>、<span class="math">V ⊇ C</span>，有 <span class="math">A ⊆ U ∪ V</span>。</p>
+      <p>现在<strong>第一次用紧致性</strong>：由定义 6.2.4 的构造，<span class="math">A</span> 是那族含 <span class="math">x</span> 的开闭集之交，且 <span class="math">A ⊆ U ∪ V</span>。把 <span class="math">X − (U ∪ V)</span> 看成被交掉的闭集，它紧致且与那族开闭集的交为空，故有有限多个 <span class="math">S<sub>0</sub>, …, S<sub>n</sub></span> 使</p>
+      <div class="formula"><span class="math">S′ = S<sub>0</sub> ∩ ⋯ ∩ S<sub>n</sub> ⊆ U ∪ V</span></div>
+      <p>令 <span class="math">D = S′ ∩ U</span>。它开；又因为 <span class="math">U, V</span> 不交且 <span class="math">S′ ⊆ U ∪ V</span>，有 <span class="math">D = S′ − V</span>，所以它<strong>也闭</strong>。<span class="math">x ∈ D</span>，而 <span class="math">D ⊆ S′</span> 且 <span class="math">D</span> 开闭，由拟分支定义得 <span class="math">A ⊆ D</span>。但 <span class="math">D ∩ C = ∅</span>，于是 <span class="math">C = A ∩ C = ∅</span>。<strong>所以 <span class="math">A</span> 连通</strong>，由连通分支的极大性 <span class="math">A ⊆ [x]<sub>con</sub></span>，合上之前的包含即得相等。</p>
+      <p><strong>(3)</strong> 直接由 (2)：两种分支处处相同，单点性互为充要。<span class="qed">∎</span></p>
+    </div>
+    <p class="src"><b>这一步在做什么：</b>「全不连通」是按<strong>连通性</strong>定义的，「全分离」是按<strong>可判定性</strong>定义的。命题 6.2.5 说：<strong>在紧 Hausdorff 这个常见环境里，「走不出一块」和「分不开两点」是同一件事。</strong>缺了紧致性，证明里那次「有限化」就做不了；缺了 Hausdorff，连不交开邻域都拿不到。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 6.2.6 Cantor 空间全分离</div>
+    <p>若 <span class="math">x ≠ y</span>，可取一个有限初段 <span class="math">s</span>，使 <span class="math">x ∈ C(s)</span> 而 <span class="math">y ∉ C(s)</span>。柱集 <span class="math">C(s)</span> 的补是<strong>有限个</strong>同长度柱集之并，故 <span class="math">C(s)</span> 开闭。于是任意两点被一个 clopen 分开，空间全分离，从而全不连通。</p>
+    <p><strong>注意「有限」两个字。</strong>如果初段长度跑向无穷，补集是无穷并，开闭性就没了。这和 L10 的 Kuratowski 公理是同一个坑：<strong>拓扑只对有限运算封闭。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>离散空间：每个单点开闭，两种「碎」都达到最强。<strong>这是逻辑最舒服的地形</strong>——每个世界都能被一句话单独指认，代价是没有任何有趣的连续性。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>Cantor 空间 <span class="math">2<sup>ω</sup></span></strong>：全分离、无孤立点、紧致、可度量。它证明「碎成单点」和「一堆孤立点」是两回事——这里每个单点<strong>不是</strong>开集，但任意两点仍能被某个柱集分开。<strong>这是 Stone 空间的原型</strong>，也是 L06 布尔代数表示定理里那个「无穷但紧」的点空间。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>全不连通不一定全分离。</strong>两者对一般空间不等价，命题 6.2.5 的紧致 Hausdorff 假设不能删。讲义举的候选是 Knaster–Kuratowski 扇去掉顶点 <span class="math">p</span>。<strong>但译注如实指出：原稿那段论证没有写完，这里不冒充已有完整证明。</strong>可靠的一般事实只有包含关系 <span class="math">[x]<sub>con</sub> ⊆ [x]<sub>qcon</sub></span>。</p>
+    <p>② <strong>全不连通不是「没有连通子集」。</strong>单点集总是连通的（定义 6.2.2 特意说「非空连通子集」）。若按字面排除空集之外的一切，就没有空间能满足定义了。</p>
+    <p>③ <strong>别把 Cantor 集当成「离散的」。</strong>它是全分离的，但作为 <span class="math">[0,1]</span> 的子空间没有任何孤立点。<strong>「能用柱集分开」≠「单点本身是开集」。</strong></p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 §6.2：定义 6.2.1/6.2.2/6.2.4（含三条译注修订）、例 6.2.3/6.2.6、命题 6.2.5 及完整证明、例 6.2.10；L12 §8 正规性、L13 §7 定理 5.3.1。</p>
+</section>
+
+<!-- ============ O3 Stone 空间 ============ -->
+<section id="stone">
+  <h2><span class="sn">5</span>Stone 空间与零维 <span class="tag top">O3</span><span class="tag alg">代数</span></h2>
+
+  <div class="def"><div class="bt">定义 6.2.7 <span class="num">Stone 空间</span></div>
+    <p>紧致、Hausdorff 且全不连通的空间称为 <strong>Stone 空间</strong>。</p>
+    <p>讲义特别说明： Stone 空间在逻辑里几乎无处不在，涉及模型论的数理逻辑领域都会遇到。<strong>原因现在可以说了</strong>：L06 的 Stone 表示定理把任意布尔代数 <span class="math">B</span> 变成它的超滤子空间 <span class="math">Ult(B)</span>，而这个空间恰好是 Stone 空间。<strong>本讲给它补上了拓扑这一侧的定义。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">引理 6.2.8 <span class="num">零维刻画</span></div>
+    <p><span class="math">X</span> 是 Stone 空间 ⟺ <span class="math">X</span> 紧致 Hausdorff，且有一个<strong>由开闭集组成的基</strong>（这一条常叫<strong>零维性</strong>）。</p>
+    <div class="proof"><div class="bt">证明</div>
+      <p><strong>(⟹)</strong> 设有开闭基。取 <span class="math">x ≠ y</span>，由 Hausdorff 性有不交开邻域 <span class="math">U ∋ x</span>、<span class="math">V ∋ y</span>。在 <span class="math">U</span> 中取含 <span class="math">x</span> 的基本开闭集 <span class="math">W</span>。它不含 <span class="math">y</span>，于是 <span class="math">W</span> 把两点分开，空间全分离，从而是 Stone 空间。</p>
+      <p><strong>(⟸)</strong> 设 <span class="math">X</span> 是 Stone 空间。取开集 <span class="math">U</span> 和 <span class="math">x ∈ U</span>。对每个 <span class="math">y ∉ U</span>，由全分离性（命题 6.2.5(3)）取开闭集 <span class="math">V<sub>x,y</sub></span> 含 <span class="math">x</span> 不含 <span class="math">y</span>。于是</p>
+      <div class="formula"><span class="math">X − U ⊆ ⋃<sub>y ∉ U</sub> (X − V<sub>x,y</sub>)</span></div>
+      <p><span class="math">X − U</span> 是紧致空间的闭子集，故紧致（L13 引理 5.2.11）。由开覆盖定义取<strong>有限多个</strong>覆盖，设对应的开闭集是 <span class="math">V<sub>x,y<sub>1</sub></sub>, …, V<sub>x,y<sub>k</sub></sub></span>。令它们的交为 <span class="math">V<sub>x</sub></span>。有限交仍是开闭，且 <span class="math">x ∈ V<sub>x</sub> ⊆ U</span>。于是</p>
+      <div class="formula"><span class="math">U = ⋃<sub>x ∈ U</sub> V<sub>x</sub></span></div>
+      <p>开闭集构成基。<span class="qed">∎</span></p>
+    </div>
+    <p class="src"><b>译注（必须看）：</b>原稿写「开闭集的并开闭」，<strong>一般只有有限并才保持开闭</strong>。上面的证明通过紧致性先取有限子覆盖，把无穷并换成有限交，才把漏洞补上。<strong>这就是 L13 的紧致性在本讲第二次出手</strong>：第一次是命题 6.2.5 的有限化，这里是第二次。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 6.2.9 <span class="math">βX</span> 是 Stone 空间</div>
+    <p>对离散空间 <span class="math">X</span>，L13 构造的 <span class="math">βX</span> 是 Stone 空间。只需检查基本开集 <span class="math">φ(U) = {𝔘 ∈ βX : U ∈ 𝔘}</span> 开闭。由素性，</p>
+    <div class="formula"><span class="math">βX − φ(U) = φ(X − U)</span></div>
+    <p>所以 <span class="math">φ(U)</span> 的补仍是基本开集，开闭。</p>
+    <p><strong>把 L06 接上：</strong><span class="math">βX</span> 的点就是 <span class="math">X</span> 上的素滤子，也就是幂集布尔代数 <span class="math">𝓟(X)</span> 的超滤子。<strong>于是 <span class="math">βX = Ult(𝓟(X))</span></strong>——L13 用「补点」造出来的对象，和 L06 用「取超滤子」造出来的对象，是同一个东西。这不是巧合，是本课程第三条融合线的样板。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 6.2.10 Cantor 集与 Kuratowski 扇</div>
+    <p>Cantor 空间 <span class="math">2<sup>ω</sup></span> 嵌入 <span class="math">[0,1]</span> 的像叫 Cantor 集 <span class="math">C</span>，也可由「反复删去中间三分之一」得到。</p>
+    <p>在 <span class="math">I<sup>2</sup> = [0,1] × [0,1]</span> 中取 <span class="math">p = ⟨1/2, 1/2⟩</span>，对每个 <span class="math">c ∈ C</span> 令 <span class="math">L(c)</span> 为从 <span class="math">(c,0)</span> 到 <span class="math">p</span> 的线段；若 <span class="math">c</span> 是被删区间的端点，令 <span class="math">X<sub>c</sub> = {(x,y) ∈ L(c) : y ∈ ℚ}</span>，否则取 <span class="math">y ∉ ℚ</span> 的部分。所有 <span class="math">X<sub>c</sub></span> 之并配子空间拓扑，就是 <strong>Knaster–Kuratowski 扇</strong> <span class="math">K</span>。</p>
+    <p>可以证明（<strong>并不容易</strong>）<span class="math">K</span> 连通；但 <span class="math">K − {p}</span> 全不连通：任一连通子集必落在单条射线 <span class="math">L(c)</span> 内，而每条射线留下的点其高度坐标全在 <span class="math">ℚ</span> 或全在 <span class="math">ℝ − ℚ</span>，这两者都全不连通。</p>
+    <p class="src"><b>译注：</b>原稿用「没有连续道路」论证不连通，<strong>这在一般空间里不成立</strong>。可改用从 <span class="math">K − {p}</span> 到 Cantor 集的连续射影 <span class="math">(x,y) ↦ (x−y)/(1−2y)</span>：连通像只能是单点，从而把连通子集限制在单条射线上。<strong>原稿接着说「这个空间也不全分离」但那段没有写完，这里如实保留未完成状态。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>有限离散空间：它是有限布尔代数的 Stone 空间。<span class="math">n</span> 个点的离散空间对 <span class="math">𝓟(n)</span>。<strong>有限情形一切显然，用来校准直觉</strong>：每个点既是开闭基成员，也是超滤子。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong><span class="math">2<sup>ω</sup></span></strong>：紧、无孤立点、零维。它的开闭柱集恰好对应「只提到有限多个坐标的命题」——<strong>这正是一阶逻辑语言有限性的拓扑影子</strong>。你只能检测有限初段，但紧致性保证有限检测足以决定整体。</p>
+    <p><strong><span class="math">βω</span></strong> 是另一个本质例子：它的点是非主超滤子，开闭基是 <span class="math">φ(U)</span>。<strong>非主超滤子写不出具体例子，但它们在 <span class="math">βω − ω</span> 里密密麻麻。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong><span class="math">ℚ</span> 零维但不是 Stone 空间。</strong>它有开闭基（有理区间端点取无理数即可），但不紧致。<strong>零维只管基，不管紧致。</strong></p>
+    <p>② <strong>Sierpiński 空间有开闭基吗？</strong>开集是 <span class="math">∅, {1}, X</span>，闭集是 <span class="math">∅, {0}, X</span>，开闭的只有 <span class="math">∅, X</span>。<strong>所以它不零维</strong>：点 <span class="math">1</span> 的开邻域 <span class="math">{1}</span> 里找不到含它的开闭集。这也从另一面说明它不是 Stone 空间。</p>
+    <p>③ <strong>「全不连通」不等于「零维」。</strong>前者是关于连通子集的，后者是关于基的。紧 Hausdorff 下由引理 6.2.8 两者都等价于 Stone 空间；<strong>一般空间里两者不等价</strong>，别把定义换来换去。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 §6.2：定义 6.2.7、引理 6.2.8 及译注、例 6.2.9/6.2.10；L06 Stone 表示定理；L13 定义 5.3.8、引理 5.2.11、定理 5.3.1。</p>
+</section>
+
+<!-- ============ O4 孤立与散布 ============ -->
+<section id="iso">
+  <h2><span class="sn">6</span>孤立点、导集与散布 <span class="tag top">O4</span></h2>
+
+  <div class="def"><div class="bt">定义 6.3.1 <span class="num">聚点与孤立点</span></div>
+    <p>设 <span class="math">A ⊆ X</span>。若 <span class="math">x ∈ cl(A − {x})</span>，称 <span class="math">x</span> 为 <span class="math">A</span> 的<strong>聚点</strong>。全体聚点组成<strong>导集</strong> <span class="math">d(A)</span>。若 <span class="math">x ∈ A − d(A)</span>，称 <span class="math">x</span> 为 <span class="math">A</span> 的<strong>孤立点</strong>，全体记作 <span class="math">iso(A)</span>。</p>
+    <p><strong>这个定义在问什么：</strong>把 <span class="math">x</span> 自己拿掉之后，<span class="math">x</span> 还被 <span class="math">A</span> 的其余部分逼近吗？如果还被逼近，它就是「簇里的一个点」；如果不被逼近，它就能被单独挑出来。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 6.3.2 <span class="num">两个判据</span></div>
+    <p>设 <span class="math">𝔅</span> 是 <span class="math">X</span> 的基。则：</p>
+    <p>(1) <span class="math">x</span> 是 <span class="math">X</span> 的孤立点 ⟺ <span class="math">{x}</span> 开。<br>
+       (2) <span class="math">x ∈ d(A)</span> ⟺ 对每个基本开邻域 <span class="math">U ∋ x</span>，<span class="math">(U − {x}) ∩ A ≠ ∅</span>。</p>
+    <div class="proof"><div class="bt">证明</div>
+      <p><strong>(1)</strong> 若 <span class="math">x</span> 孤立，则 <span class="math">x ∉ cl(X − {x})</span>，故 <span class="math">cl(X − {x}) = X − {x}</span>，这说明 <span class="math">X − {x}</span> 闭，即 <span class="math">{x}</span> 开。反向类似。</p>
+      <p><strong>(2)</strong> 由 <span class="math">x ∈ cl(A − {x})</span> 及 L10 命题 2.4.6（闭包判据），任意基本邻域都与 <span class="math">A − {x}</span> 相交；反向同样由该判据得到。<span class="qed">∎</span></p>
+    </div>
+    <p><strong>注意 (2) 里那个 <span class="math">− {x}</span>。</strong>它把「自己撑自己」的情况排除了。这正是定义 6.3.1 的全部难点，其他都是常规的闭包翻译。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 6.3.3 <span class="num">散布与无孤立点</span></div>
+    <p>若每个非空子集 <span class="math">A ⊆ X</span> 都含有在 <span class="math">A</span> 中孤立的点，称 <span class="math">X</span> <strong>散布</strong>（scattered）。若 <span class="math">X</span> 没有孤立点，称为 <strong>crowded</strong>（无孤立点）。</p>
+    <p>讲义列了三个用途：为 GL、GLP 等<strong>可证明性逻辑</strong>提供模型；与序数结构的序论性质紧密相连；为复杂序结构与拓扑结构提供骨架。<strong>「散布」和「无孤立点」是一对反义，不是一回事</strong>：<span class="math">ℝ</span> 无孤立点但不散布（取 <span class="math">A = (0,1)</span>，其中没有孤立点）。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 6.3.4（Brouwer 刻画）与译注 <span class="num">原稿有错，已修</span></div>
+    <p>原稿表述：Cantor 空间 <span class="math">2<sup>ω</sup></span> 是满足以下三条的唯一空间（相差同胚）：(1) Stone 空间；(2) 无孤立点；(3) 开闭基具有「任意两个非空开闭集同胚」的性质。</p>
+    <div class="warn"><div class="bt">译注：这个刻画一般不成立</div>
+      <p>原稿缺了<strong>可数性</strong>限制。例如不可数的 Cantor 立方体 <span class="math">2<sup>κ</sup></span>（<span class="math">κ &gt; ω</span>）也满足那三条，却不同胚于 <span class="math">2<sup>ω</sup></span>；原稿连空开闭集也没有排除。</p>
+      <p><strong>标准表述：</strong>非空、紧致、可度量、零维且无孤立点的空间，恰为 Cantor 空间（在同胚意义下）。<strong>这里的「可度量」把基数卡住了</strong>——度量 + 紧致 + 零维 + 无孤立点，强迫它的开闭基可数。</p>
+      <p class="src"><b>为什么要专门写这条：</b>它是本讲少数几处「教材原文不能直接照抄」的地方。看到漂亮的唯一性刻画，先问基数限制在哪。<strong>这件事在 L18 讲「有限公理化」时还会重演</strong>：一个性质刻画得好不好，取决于你允许多大的语言。</p>
+    </div>
+  </div>
+
+  <div class="def"><div class="bt">余导集算子 <span class="num">信念的候补语义</span></div>
+    <p>与导集对偶，定义</p>
+    <div class="formula"><span class="math">τ(A) = X − d(X − A)</span></div>
+    <p>这里 <span class="math">τ</span> 是算子记号，要和拓扑本身的记号按上下文区分。</p>
+    <p><strong>命题 6.3.5：</strong><span class="math">x ∈ τ(A)</span> ⟺ 存在开集 <span class="math">U ∋ x</span>，使 <span class="math">U − {x} ⊆ A</span>。</p>
+    <div class="proof"><div class="bt">证明</div>
+      <p>若有这样的 <span class="math">U</span>，则 <span class="math">(U − {x}) ∩ (X − A) = ∅</span>，由命题 6.3.2(2)，<span class="math">x ∉ d(X − A)</span>，即 <span class="math">x ∈ τ(A)</span>。反过来若 <span class="math">x ∉ d(X − A)</span>，存在开邻域 <span class="math">U ∋ x</span> 使这个交为空，即 <span class="math">U − {x} ⊆ A</span>。<span class="qed">∎</span></p>
+    </div>
+  </div>
+
+  <div class="def"><div class="bt">定义 6.3.6 <span class="num">DSO 空间</span></div>
+    <p>若 <span class="math">X</span> 自密（dense-in-itself，即无孤立点），且对每个 <span class="math">A ⊆ X</span>，<span class="math">d(A)</span> 都开，称为 <strong>DSO 空间</strong>。</p>
+    <p>无限集上的余有限拓扑是一个例子：若 <span class="math">A</span> 有限，<span class="math">d(A) = ∅</span>（可选避开 <span class="math">A</span> 中除所考察点外所有点的邻域）；若 <span class="math">A</span> 无限，任意开邻域余有限，去掉一点后仍与 <span class="math">A</span> 相交，所以 <span class="math">d(A) = X</span>。导集都开，且无孤立点，故是 DSO 空间。</p>
+    <p class="src"><b>译注：</b>这个动机不能理解成「DSO 条件消除了 T1 空间里的那公式」。上面的无限余有限空间本身就是 T1 的 DSO 空间，下一节要说的那条公式在其中<strong>照样成立</strong>。<strong>条件加强了，结论并不会自动消失。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">α(ω) = ω ∪ {∞}</span>（L13 的闹钟空间）：每个 <span class="math">n ∈ ω</span> 都是孤立点（<span class="math">{n}</span> 开），<span class="math">∞</span> 不是。它是<strong>散布但不离散</strong>的：<span class="math">d(α(ω)) = {∞}</span>，再导一次为空。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><span class="math">ℚ</span>：没有孤立点，导集 <span class="math">d(ℚ) = ℝ</span>。<strong>导集可以比原集合大</strong>——这是初学者最容易懵的地方。因为闭包是在环境空间 <span class="math">ℝ</span> 里取的。<strong>做导集运算时永远先问：在哪个空间里取闭包？</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>孤立点是相对概念。</strong><span class="math">{1/2}</span> 在 <span class="math">[0,1]</span> 中不是孤立点，在 <span class="math">{0, 1/2, 1}</span> 的子空间拓扑里是。<strong>说「孤立」必须带上所在空间。</strong></p>
+    <p>② <strong>散布 ⟹ 存在孤立点，但反向不成立。</strong><span class="math">ℝ ∪ {额外一个孤立点}</span> 有孤立点，却仍不散布（取 <span class="math">A = (0,1)</span> 就没有孤立点）。</p>
+    <p>③ <strong>超限导集不会一步到顶。</strong>习题 6.5 要求给出 <span class="math">d<sup>2</sup>(A) ≠ d(A)</span> 和 <span class="math">d<sup>ω+1</sup>(A) ≠ d<sup>ω</sup>(A)</span> 的例子。<strong>「导一次就没有新点」是很强的条件</strong>，序数结构正是用来铺陈出这个过程的关键工具。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 §6.3：定义 6.3.1/6.3.3/6.3.6、命题 6.3.2/6.3.4（含译注修正）/6.3.5、习题 6.5/6.6/6.7（T<sub>D</sub> 公理）；L10 命题 2.4.6（闭包判据）。</p>
+</section>
+
+<!-- ============ O5 极端不连通 ============ -->
+<section id="exdisc">
+  <h2><span class="sn">7</span>极端不连通 <span class="tag top">O5</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>讲义在这里把内部算子读成模态算子：</p>
+    <div class="formula"><span class="math">x ⊩ □U &nbsp;⟺&nbsp; x ∈ int(U)</span></div>
+    <p>「不仅 <span class="math">U</span> 为真，而且能被验证」。再把 <span class="math">◇U</span> 读成 <span class="math">cl(U)</span>：「所有知识都与 <span class="math">U</span> 相容」。于是复合算子 <span class="math">cl(int(U))</span> 有了一个很具体的读法——<strong>强烈相信 <span class="math">U</span></strong>（Stalnaker 引入）：你相信 <span class="math">U</span>，而且你的全部知识与「知道 <span class="math">U</span>」相容。</p>
+    <p>现在问：<strong>「强烈相信」这件事本身能不能被知道？</strong>也就是要公式 <span class="math">◇□p → □◇□p</span> 成立。它在拓扑侧恰好是一个纯空间条件。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 6.3.7 <span class="num">极端不连通</span></div>
+    <p>若每个开集 <span class="math">U</span> 的闭包 <span class="math">cl(U)</span> 都开，称 <span class="math">X</span> <strong>极端不连通</strong>（extremally disconnected）。</p>
+    <p class="src"><b>译注：</b>英文词根是 extremal 而不是 extreme，虽然这种不连通性确实相当「极端」。<strong>不要写成 Extremely disconnected。</strong></p>
+    <p><strong>等价写法：</strong>因为 <span class="math">U</span> 开当且仅当 <span class="math">U = int(V)</span> 对某个 <span class="math">V</span>（取 <span class="math">V = U</span> 即可），所以条件等价于</p>
+    <div class="formula"><span class="math">cl(int(V)) = int(cl(int(V))) &nbsp; 对所有 <span class="math">V ⊆ X</span></span></div>
+    <p>而这正是 <span class="math">◇□p → □◇□p</span> 的拓扑翻译。<strong>定义和信念公理是同一句话，只是换了语言。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 6.3.8 <span class="num">Hausdorff ⟹ 全不连通</span></div>
+    <p>Hausdorff 的极端不连通空间全不连通。</p>
+    <div class="proof"><div class="bt">证明</div>
+      <p>若 <span class="math">x ≠ y</span>，取不交开邻域 <span class="math">U ∋ x</span>、<span class="math">V ∋ y</span>。有 <span class="math">x ∈ cl(U)</span>，但 <span class="math">y ∉ cl(U)</span>——否则 <span class="math">V</span> 作为 <span class="math">y</span> 的邻域必与 <span class="math">U</span> 相交，与不交矛盾。</p>
+      <p>由极端不连通性，<span class="math">cl(U)</span> 开；它按定义又是闭的。于是 <span class="math">cl(U)</span> 是开闭集，含 <span class="math">x</span> 不含 <span class="math">y</span>，空间全分离，进而全不连通。<span class="qed">∎</span></p>
+    </div>
+    <p><strong>Hausdorff 假设用在哪里：</strong>用来造不交开邻域，从而保证 <span class="math">y ∉ cl(U)</span>。去掉它，结论会实质失败——见下面的余有限拓扑。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 6.3.9 <span class="num"><span class="math">βX</span> 极端不连通</span></div>
+    <p>若 <span class="math">X</span> 离散，则 <span class="math">βX</span> 极端不连通。</p>
+    <div class="proof"><div class="bt">证明</div>
+      <p>回顾其拓扑基 <span class="math">φ(U) = {𝔘 ∈ βX : U ∈ 𝔘}</span>（<span class="math">U ⊆ X</span>）。任意开集可写作 <span class="math">V = ⋃<sub>i ∈ I</sub> φ(U<sub>i</sub>)</span>。我们证明更强的等式：</p>
+      <div class="formula"><span class="math">⋃<sub>i ∈ I</sub> φ(U<sub>i</sub>) = φ(⋃<sub>i ∈ I</sub> U<sub>i</sub>)</span></div>
+      <p><strong>左边 ⊆ 右边：</strong>由例 6.2.9，<span class="math">φ(U<sub>i</sub>) ⊆ φ(⋃U<sub>i</sub>)</span>，且右边是闭集，故并仍在其中。</p>
+      <p><strong>右边 ⊆ 左边：</strong>若 <span class="math">𝔘</span> 不在左边，则存在基本邻域 <span class="math">φ(W) ∋ 𝔘</span> 与每个 <span class="math">φ(U<sub>i</sub>)</span> 不交。这蕴含 <span class="math">W ∩ U<sub>i</sub> = ∅</span>：否则含 <span class="math">W ∩ U<sub>i</sub></span> 的主滤子（或由素滤子定理得到的素滤子）会同时属于 <span class="math">φ(W)</span> 与 <span class="math">φ(U<sub>i</sub>)</span>，矛盾。</p>
+      <p>若 <span class="math">𝔘 ∈ φ(⋃U<sub>i</sub>)</span>，则 <span class="math">W ∈ 𝔘</span> 且 <span class="math">⋃U<sub>i</sub> ∈ 𝔘</span>，由滤子对交封闭</p>
+      <div class="formula"><span class="math">W ∩ ⋃<sub>i</sub> U<sub>i</sub> = ⋃<sub>i</sub> (W ∩ U<sub>i</sub>) ∈ 𝔘</span></div>
+      <p>但这个集合为空，与滤子真性矛盾。所以 <span class="math">𝔘</span> 也不在右边，等式成立。<strong>右边是基本开集，故任意开集的闭包（即右边）是开集。</strong><span class="qed">∎</span></p>
+    </div>
+    <p class="src"><b>这一手很漂亮：</b>无穷并一般不保持闭性，但素滤子的「表态」性质让 <span class="math">βX</span> 里的无穷并<strong>恰好</strong>等于一个基本开集。<strong>又一次：困难的部分不是计算，是找到正确的表示。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">例 6.3.10 余有限拓扑：连通 + 极端不连通</div>
+    <p>无限集合 <span class="math">X</span> 上的余有限拓扑<strong>连通</strong>：开闭集只能是 <span class="math">X, ∅</span>（前面算过：余有限集无限，而闭集只能是有限集或全体）。它也<strong>极端不连通</strong>：每个非空开集的闭包都是 <span class="math">X</span>，空集的闭包为空，都开。</p>
+    <p><strong>这不与命题 6.3.8 矛盾</strong>，因为它不是 Hausdorff（任意两个非空开集必相交）。<strong>一个空间可以同时「连通」和「极端不连通」</strong>——只要分离性不够，这些词就会退化到失去直觉。这正是 §2 那条警告的极端版本。</p>
+    <p>讲义最后提到 Gleason 的定理：在紧致 Hausdorff 空间范畴中，<strong>投射对象恰为极端不连通的紧致 Hausdorff 空间</strong>。<strong>翻译成代数侧：它们对应完备布尔代数。</strong>L06 的 Stone 对偶在这里第二次出手。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>离散空间：每个开集 <span class="math">U</span> 的闭包就是 <span class="math">U</span> 自己，当然开。<strong>一切性质在离散空间里都平凡成立</strong>，所以离散空间只能校准定义，不能用来区分概念。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong><span class="math">βX</span></strong>：命题 6.3.9 说明它极端不连通，例 6.2.9 说明它是 Stone 空间。<strong>两个性质叠加，给出「完备布尔代数的 Stone 空间」</strong>——这是泛代数与拓扑交叉处最重要的对象之一（Gleason 定理的代数侧面）。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>极端不连通 ⟹ 零维，但反之不成立。</strong>在 Hausdorff 情形下，命题 6.3.8 给全不连通，引理 6.2.8 给开闭基。<strong>清楚的反例是 <span class="math">ℚ</span></strong>：取有理数 <span class="math">q</span>，令 <span class="math">U = ℚ ∩ ((q−1, q+1) − {q})</span>。它在 <span class="math">ℚ</span> 中开，而 <span class="math">cl<sub>ℚ</sub>(U) = ℚ ∩ [q−1, q+1]</span>——端点 <span class="math">q+1</span> 处任何邻域都跑出这个集合，所以它<strong>不开</strong>。<span class="math">ℚ</span> 有开闭基却不极端不连通。<strong>顺带：<span class="math">2<sup>ω</sup></span> 也不是极端不连通（无穷可度量的紧极端不连通空间不存在），但反例没这么好写，别硬凑。</strong></p>
+    <p>② <strong>「极端」这个词不表示「比全不连通更强」在任意空间都成立。</strong>余有限拓扑就是反例：它极端不连通且连通。<strong>所有这类蕴含定理都要检查 Hausdorff 假设。</strong></p>
+    <p>③ <strong>闭包的闭包没有新东西，但开集的闭包可以很不一样。</strong><span class="math">cl(cl(U)) = cl(U)</span> 是 Kuratowski 公理（L10），而 <span class="math">cl(U)</span> 开不开是<strong>额外性质</strong>，两者不要混。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 §6.3：定义 6.3.7 及译注、命题 6.3.8/6.3.9/6.3.10、Gleason 定理的预告；L10 Kuratowski 公理、L13 定义 5.3.8、L06 Stone 对偶。</p>
+</section>
+
+<!-- ============ O6 逻辑接口 ============ -->
+<section id="belief">
+  <h2><span class="sn">8</span>逻辑接口：□、τ 与强信念 <span class="tag log">O6</span></h2>
+
+  <div class="box def"><div class="bt">翻译词典（本讲新增三行）</div>
+    <table>
+      <tr><th>拓扑</th><th>模态/认识论读法</th><th>一句话</th></tr>
+      <tr><td><span class="math">int(U)</span></td><td><span class="math">□U</span></td><td>被蕴含的最一般的可验证命题</td></tr>
+      <tr><td><span class="math">cl(U)</span></td><td><span class="math">◇U</span></td><td>所有知识与 <span class="math">U</span> 相容</td></tr>
+      <tr><td><span class="math">d(A)</span></td><td>「所有可验证事实都与 <span class="math">A</span> 相容」</td><td>导集=无法排除 <span class="math">A</span></td></tr>
+      <tr><td><span class="math">τ(A) = X − d(X−A)</span></td><td>「相信 <span class="math">¬A</span> 与这些信息不相容」</td><td>余导集=排除了 <span class="math">¬A</span></td></tr>
+      <tr><td><span class="math">cl(int(U))</span></td><td>强信念（Stalnaker）</td><td>知识与「知道 <span class="math">U</span>」相容</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">T1 空间的麻烦</div>
+    <p>讲义在这里给了一个很不客气的观察。在 T1 空间中，对任意点 <span class="math">x</span>，<span class="math">X − {x}</span> 是开集，而且</p>
+    <div class="formula"><span class="math">d({x}) = ∅, &nbsp; τ(X − {x}) = X</span></div>
+    <p>按上面的读法：<strong>在每个世界都必须相信「实际世界并非如此」</strong>。这很不理想——认知主体不该被迫否认现实。</p>
+    <p>由此引出 DSO 空间（定义 6.3.6）等更精细的条件。<strong>但译注提醒：不要以为 DSO 消掉了这条公式</strong>：无限集上的余有限拓扑本身就是 T1 的 DSO 空间，公式照样成立。<strong>修条件不等于修结论。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">信念公理与 S4.2 <span class="num">两个公式，一个空间条件</span></div>
+    <p>讲义用 <span class="math">◇□p → □◇□p</span> 来引出极端不连通。它和 S4.2 的那条新公理关系很近——<strong>近到在此语义下其实是同一条</strong>。这里把账算清。</p>
+    <div class="box def"><div class="bt">Geach 公理 .2</div>
+      <p><span class="math">◇□p → □◇p</span>，拓扑翻译为</p>
+      <div class="formula"><span class="math">cl(int(A)) ⊆ int(cl(A))</span></div>
+      <p>这是 <strong>S4.2 = S4 + .2</strong> 的那条新公理。Kripke 语义里它对应框架的<strong>有向性</strong>（两条从同一点出发的路最终能汇合）。</p>
+    </div>
+    <div class="box def"><div class="bt">讲义的强信念自反思</div>
+      <p><span class="math">◇□p → □◇□p</span>，拓扑翻译为</p>
+      <div class="formula"><span class="math">cl(int(A)) ⊆ int(cl(int(A)))</span></div>
+      <p>也就是 <strong><span class="math">cl(int(A))</span> 是开集</strong>——定义 6.3.7。</p>
+    </div>
+    <p><strong>关键事实：在拓扑语义下两者等价。</strong></p>
+    <p><strong>(.2 ⟹ 极端不连通)</strong> 取任意开集 <span class="math">U</span>，令 <span class="math">p</span> 的解释就是 <span class="math">U</span>。此时 <span class="math">int(U) = U</span>，.2 读作 <span class="math">cl(U) ⊆ int(cl(U))</span>，即 <span class="math">cl(U)</span> 开。<span class="math">U</span> 任意，所以空间极端不连通。</p>
+    <p><strong>(极端不连通 ⟹ .2)</strong> 对任意 <span class="math">A</span>，<span class="math">int(A)</span> 开，故 <span class="math">cl(int(A))</span> 开；又 <span class="math">cl(int(A)) ⊆ cl(A)</span>，而一个<strong>开</strong>集包含于 <span class="math">cl(A)</span> 就必然包含于 <span class="math">int(cl(A))</span>。于是 <span class="math">cl(int(A)) ⊆ int(cl(A))</span>。</p>
+    <p>讲义那条公式在<strong>模态证明层面</strong>也是 .2 的推论：由 4 公理 <span class="math">□p → □□p</span> 与 <span class="math">◇</span> 的单调性得 <span class="math">◇□p → ◇□□p</span>；再把 .2 用于 <span class="math">q = □p</span> 得 <span class="math">◇□□p → □◇□p</span>。串起来就是它。<strong>所以在 S4.2 里两条可互证。</strong></p>
+    <p>因此讲义 Ch7「极端不连通空间与 S4.2 密切相关」说得准：<strong>在这个语义下，极端不连通正是 S4.2 的空间对应物</strong>；Kripke 那边的「有向性」是同一件事长在另一种框架上的形状。<strong>完整的框架对应与完全性证明留给 L25。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>在 <span class="math">α(ω)</span> 上取 <span class="math">A = ω</span>：<span class="math">int(A) = ω</span>，<span class="math">cl(ω) = α(ω)</span>，所以 <span class="math">◇□A = α(ω)</span>，<span class="math">□◇□A = int(α(ω)) = α(ω)</span>。<strong>公式成立，而且两边都是全体</strong>——主超滤子式的平凡情形。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><span class="math">βω</span>：由命题 6.3.9 极端不连通，所以对所有 <span class="math">A</span> 都有 <span class="math">◇□A → □◇□A</span>。<strong>而且这里有无穷多个非主超滤子，「强烈相信」不是空话</strong>：不同超滤子对同一个 <span class="math">A</span> 可以给出不同的信念状态。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>两条公式写法不同，但在拓扑语义下等价</strong>——上面刚证过。真正的坑是换个语义就拆开：Kripke 框架里 .2 对应有向性，强信念公式要靠 4 公理搭桥；<strong>「等价」是在特定语义下的结论，不是符号层面的同一</strong>。</p>
+    <p>② <strong>「信念」在这里不是主观心理。</strong>它是空间点 <span class="math">x</span> 与开集族之间的一种关系。<strong>把拓扑语义和心理状态直接画等号，是这个领域最常见的过度解读。</strong></p>
+    <p>③ <strong>讲义第 7 章只有短预告，没有定理。</strong>本讲借它收束，不冒充已经证明 S4.2 的完全性——那是 L25 的工作。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 §6.3 末段（<span class="math">□, τ, ◇</span> 的认识论读法）、Ch7「空间的模态逻辑」；L10 内部算子与 S4 语义、L06 BAO、L25 完整展开。</p>
+</section>
+
+<!-- ============ 融合接口 ============ -->
+<section id="fusion">
+  <h2><span class="sn">9</span>融合接口：布尔代数的几何形态</h2>
+
+  <div class="fusion"><div class="bt">表一：拓扑 ⟷ 逻辑——「判定能力」的刻度</div>
+    <table>
+      <tr><th>拓扑说法</th><th>逻辑读法</th><th>认识论含义</th></tr>
+      <tr><td>开闭集 clopen</td><td>可正反判定的命题</td><td>有限时间内能确认，也能推翻</td></tr>
+      <tr><td>连通</td><td>没有非平凡可判定命题</td><td>「天空是紫色的」不能既验证又证伪</td></tr>
+      <tr><td>全分离</td><td>任意两点有命题正反区分</td><td>每个世界可被一句话精确指认</td></tr>
+      <tr><td>零维（开闭基）</td><td>判定命题生成全部知识</td><td>任何可验证事实由有限判定逼近</td></tr>
+      <tr><td>Stone 空间</td><td>完备理论的模型空间</td><td>L06 的 <span class="math">Ult(B)</span></td></tr>
+      <tr><td>孤立点</td><td>可被单一公式指出的点</td><td>「这个点」本身可验证</td></tr>
+      <tr><td>极端不连通</td><td>强信念自反思 <span class="math">◇□p → □◇□p</span></td><td>知道自己在强烈相信</td></tr>
+    </table>
+  </div>
+
+  <div class="fusion"><div class="bt">表二：拓扑 ⟷ 代数——同一对象的两种造法</div>
+    <table>
+      <tr><th>代数侧（L06）</th><th>拓扑侧（L13 + 本讲）</th><th>接缝</th></tr>
+      <tr><td>布尔代数 <span class="math">B</span> 的超滤子 <span class="math">Ult(B)</span></td><td>Stone 空间</td><td>Stone 表示定理</td></tr>
+      <tr><td><span class="math">𝓟(X)</span> 的超滤子</td><td><span class="math">βX</span>（<span class="math">X</span> 离散）</td><td><span class="math">βX = Ult(𝓟(X))</span></td></tr>
+      <tr><td>完备布尔代数</td><td>极端不连通紧 Hausdorff 空间</td><td>Gleason 投射对象</td></tr>
+      <tr><td>代数的同态</td><td>连续映射</td><td>对偶反转箭头</td></tr>
+    </table>
+    <p><strong>最值得盯住的一行是第二行。</strong>L13 从「空间缺点就补点」出发造出 <span class="math">βX</span>，L06 从「代数取超滤子」出发造出 <span class="math">Ult(𝓟(X))</span>。两条路毫无交集，结果一模一样。<strong>这不是巧合：紧致化的泛性质（L13 定义 5.3.8）和 Stone 表示的泛性质，说的是同一个「泛」。</strong></p>
+  </div>
+
+  <div class="fusion"><div class="bt">表三：模态阶梯——空间类越特殊，逻辑越强</div>
+    <table>
+      <tr><th>逻辑</th><th>新公理</th><th>拓扑条件</th><th>讲次</th></tr>
+      <tr><td>S4</td><td><span class="math">□p → p, □p → □□p</span></td><td><span class="math">int</span> 是内部算子（任意拓扑空间）</td><td>L10 / L25</td></tr>
+      <tr><td>S4.2</td><td><span class="math">◇□p → □◇p</span></td><td><span class="math">cl(int(A)) ⊆ int(cl(A))</span>，等价于极端不连通</td><td>本讲预告 / L25</td></tr>
+      <tr><td>强信念（S4.2 内）</td><td><span class="math">◇□p → □◇□p</span></td><td>同一空间类；由 .2 加 4 公理推出</td><td>本讲预告 / L25</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">收束：拓扑篇的最后一处反讽</div>
+    <p>几何学家想要连通，逻辑学家想要全分离。<strong>但两者用的是同一套开集，差别只在「你允不允许正反判定」。</strong>这正是全课反复出现的那个母题：<strong>数学结构不是被「发现」的，是被你的可观察能力切出来的。</strong></p>
+    <p>从这里往后，拓扑退出主线，代数化正式开始（L15）。但 L06 的 Stone 表示、L13 的紧致化、本讲的谱系会在 L18、L23、L25 三次回来。<strong>你现在看懂了「开闭集」，后面才看得懂「同态」。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+
+  <div class="ex"><div class="bt">O1 · 连通与道路连通</div>
+  <ol start="1">
+    <li><span class="tag top">O1</span>完整证明命题 6.1.2 的两个方向，并说明为什么「到 <span class="math">{0,1}</span> 的连续映射」恰好就是可正反判定的命题。再用这个判据重证：不可分空间连通。</li>
+    <li><span class="tag top">O1</span>证明拓扑学家的正弦曲线 <span class="math">S = {(0,0)} ∪ {(x, sin(1/x)) : 0 &lt; x ≤ 1}</span> 连通但不道路连通。<br><span style="color:#8a93a5">提示：曲线部分 <span class="math">S<sub>+</sub></span> 连通且 <span class="math">S = cl(S<sub>+</sub>)</span>，用命题 6.1.5；道路部分考虑横坐标 <span class="math">π<sub>1</sub> ∘ p</span> 与 <span class="math">sin(1/x)</span> 的极限。</span></li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O2 · 两种分支</div>
+  <ol start="3">
+    <li><span class="tag top">O2</span>证明 <span class="math">[x]<sub>con</sub> ⊆ [x]<sub>qcon</sub></span>，并说明为什么命题 6.2.5(2) 的证明不能去掉紧致性。<strong>不要试图用 Kuratowski 扇填空</strong>——讲义那段没有写完。</li>
+    <li><span class="tag top">O2</span>把命题 6.2.5(2) 的证明完整重写一遍，逐处标注：哪里用了 Hausdorff、哪里用了正规性、哪里用了紧致性。然后回答：若只知道 <span class="math">X</span> 局部紧 Hausdorff，证明在哪一步崩？</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O3 · Stone 空间</div>
+  <ol start="5">
+    <li><span class="tag top">O3</span>完整证明引理 6.2.8 两向，并把译注指出的错误写成一个明确的「错误证明」，说明它在哪一步把无穷并当成了有限并。</li>
+    <li><span class="tag alg">O3</span>证明 <span class="math">βX − φ(U) = φ(X − U)</span>，并由此推出 <span class="math">βX</span> 有开闭基。再说明 <span class="math">ℚ</span> 零维但非 Stone 空间，指出缺的是哪一条。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O4 · 孤立与导集</div>
+  <ol start="7">
+    <li><span class="tag top">O4</span>证明命题 6.3.2 两条，并在 <span class="math">ℝ</span> 里计算 <span class="math">d(ℚ)</span>、<span class="math">d(ℤ)</span>、<span class="math">iso(ℚ)</span>。<strong>说明为什么 <span class="math">d(ℚ)</span> 不是 <span class="math">ℚ</span> 的子集。</strong></li>
+    <li><span class="tag top">O4</span>给出三个空间：散布的、无孤立点的、有孤立点但不散布的。再证明：<span class="math">X</span> 散布 ⟹ 存在序数 <span class="math">β</span> 使 <span class="math">d<sup>β</sup>(X) = ∅</span>（习题 6.5 的第二问）。</li>
+    <li><span class="tag log">O4</span>证明命题 6.3.5，并验证：无限集余有限拓扑是 T1 的 DSO 空间，同时仍有 <span class="math">τ(X − {x}) = X</span>。<strong>解释为什么这不构成对译注的反驳。</strong></li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O5 · 极端不连通</div>
+  <ol start="10">
+    <li><span class="tag top">O5</span>完整证明命题 6.3.8，指出 Hausdorff 用在哪一步。再用余有限拓扑说明该假设不可删。</li>
+    <li><span class="tag alg">O5</span>完整证明命题 6.3.9 的等式 <span class="math">⋃φ(U<sub>i</sub>) = φ(⋃U<sub>i</sub>)</span>，逐处标出素滤子性质在何处起作用。再说明这个等式为什么等价于「任意开集的闭包是开集」。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O6 · 逻辑接口</div>
+  <ol start="12">
+    <li><span class="tag log">O6</span>把 <span class="math">◇□p → □◇p</span> 与 <span class="math">◇□p → □◇□p</span> 分别翻译成拓扑条件，证明它们在拓扑语义下<strong>等价</strong>，并分别给出「在 S4 内后者由前者推出」和「在拓扑内前者由后者推出」的论证。<br><span style="color:#8a93a5">再给一个两条都不成立的空间：<span class="math">ℚ</span> 有开闭基却非极端不连通，用 <span class="math">U = ℚ ∩ ((q−1, q+1) − {q})</span> 验证。</span></li>
+    <li><span class="tag log">O6</span>用自己的话写清：为什么 <span class="math">x ⊩ τU</span> 可读作「相信 <span class="math">¬U</span> 与 x 处的信息不相容」。然后说明本讲为什么只对 S4.2 做预告而不给完全性证明——缺的那一块是什么？</li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L13.html">← 上一讲：L13 素滤子、紧致性与紧致化</a>
+  <a href="L15.html">下一讲：L15 研究逻辑的统一框架</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L14 · 来源：拓扑讲义 Ch6 §6.1–6.3、Ch7「空间的模态逻辑」；L06 Stone 表示、L13 紧致化 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L13 素滤子、紧致性与紧致化 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第三篇 拓扑：用逻辑的眼光看空间</span><span class="sep">/</span><span>L13</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 13 · 2 学时 · 拓扑篇（高潮）</div>
+  <h1>素滤子、紧致性与紧致化</h1>
+  <div class="sub">「闹钟坏了、永远不响」这个世界如果不存在，你就得把它造出来——紧致性就是「该有的点一个都不缺」</div>
+  <div class="metarow"><span>来源：拓扑讲义 Ch5 §5.1–5.3（定义 5.1.1、引理 5.1.2、定理 5.1.3、定义 5.2.1/5.2.2、命题 5.2.4、定理 5.2.5、例 5.2.3/5.2.6、定义 5.2.7、引理 5.2.8、命题 5.2.9、引理 5.2.11、命题 5.2.12、定理 5.2.13、定理 5.3.1、定义 5.3.2/5.3.4/5.3.6、命题 5.3.3/5.3.5/5.3.7、定义 5.3.8、例 5.3.9、引理 5.3.10–5.3.14、命题 5.3.15/5.3.16）；Bergman 定理 2.41、定理 5.21、定义 5.1/5.3、命题 5.2；UAL 定义 2.2.60、命题 2.2.65/2.2.66/2.2.67、定义 2.6.2、引理 2.6.3、定义 4.1.1/4.1.4、定理 4.1.5/4.1.6</span>
+    <span class="tag top">拓扑</span><span class="tag log">逻辑</span><span class="tag alg">代数</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：一个不该缺失的世界</a></li>
+  <li><a href="#prime">素滤子与素滤子定理（O1）</a></li>
+  <li><a href="#cover">紧致性：开覆盖、基、子基（O2）</a></li>
+  <li><a href="#fip">有限交性质与闭集版（O3）</a></li>
+  <li><a href="#conv">紧致 ⟺ 每个素滤子收敛（O4）</a></li>
+  <li><a href="#ch">紧致 Hausdorff、局部紧与 Alexandroff（O5）</a></li>
+  <li><a href="#sc">Stone–Čech 紧致化（O6）</a></li>
+  <li><a href="#fusion">融合接口：三条线的同一个定理</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">L12 用滤子把「逼近一个点」形式化了，但没说这个逼近一定会到达。本讲补上这件事：<strong>紧致性 = 每个「相容的知识状态」都有落点</strong>。工具是素滤子，副产品是紧致化——给缺了点的空间补点。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>它回答的问题</th></tr>
+      <tr><td>素滤子 / 超滤子</td><td>L12 滤子</td><td>一个知识状态「已经确定到不能再确定」是什么样？</td></tr>
+      <tr><td>素滤子定理</td><td>Zorn；Bergman 定理 2.41</td><td>相容的知识状态总能被补成完全确定的吗？</td></tr>
+      <tr><td>紧致性（开覆盖版）</td><td>L08–L09 开集、基、子基</td><td>验证一件全局的事，需要检查多少个局部？</td></tr>
+      <tr><td>有限交性质（f.i.p.）</td><td>L12 命题 4.3</td><td>「每一小批都相容」怎么写成集合条件？</td></tr>
+      <tr><td>紧致 ⟺ 素滤子收敛</td><td>素滤子 + L12 收敛</td><td>相容的知识状态一定有落点吗？</td></tr>
+      <tr><td>紧致 Hausdorff / 局部紧</td><td>L12 T2</td><td>极限存在（紧致）+ 唯一（T2）能一起拿到吗？</td></tr>
+      <tr><td>Alexandroff / Stone–Čech 紧致化</td><td>紧致化定义、Tychonoff</td><td>空间缺点，怎么补？补几个点？</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>滤子 → 极大真滤子 = <strong>素滤子</strong>（知识状态饱和）→ 素滤子定理（饱和总可以实现）→ 紧致性两种写法：<strong>开覆盖有限化</strong>（拓扑侧）与 <strong>f.i.p. 族交非空</strong>（集合侧）→ 二者与「<strong>每个素滤子都收敛</strong>」等价（命题 5.2.9）→ 加 T2 得「极限存在且唯一」→ 缺点的空间用 <strong>Alexandroff</strong>（补一点，最小）或 <strong>Stone–Čech</strong>（补到最大）修好。<strong>整讲的发动机只有一台：素滤子把「局部相容」升级成「整体有解」。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 目标 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>证明素滤子的三个等价刻画，说清它为什么是「饱和理论」；陈述并会用素滤子定理</td><td><a href="#prime">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>判定紧致性，用基判据与 Alexander 子基定理简化验证，举出不紧致的例子</td><td><a href="#cover">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>把开覆盖语言与 f.i.p. 语言互相翻译，用闭集版刻画紧致性</td><td><a href="#fip">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>完整证明命题 5.2.9 两个方向，并用它判定紧致性</td><td><a href="#conv">§6</a></td><td><a href="#ex">E7, E8</a></td></tr>
+    <tr><td><b>O5</b></td><td>用紧致 + Hausdorff 推出正规、闭 = 紧致、连续双射即同胚；构造 Alexandroff 紧致化并判断是否 Hausdorff</td><td><a href="#ch">§7</a></td><td><a href="#ex">E9, E10, E11</a></td></tr>
+    <tr><td><b>O6</b></td><td>陈述 Stone–Čech 紧致化的泛性质，说明它为什么是「最大的紧致化」</td><td><a href="#sc">§8</a></td><td><a href="#ex">E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：一个不该缺失的世界</h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>L12 结束时留下一个悬案：<strong>收敛是「逼近」，但逼不逼得到，不知道。</strong>滤子 <span class="math">𝔉</span> 收敛到 <span class="math">x</span>，要求 <span class="math">x</span> 这个点在空间里已经存在。可如果这个空间本身缺了点呢？那么一个完美相容、越来越精确的知识状态，可能根本没有落点——<strong>不是我们没找到，而是那里什么都没有。</strong></p>
+    <p>讲义用的例子极其朴素，但杀伤力很强。<strong>闹钟。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">闹钟例子（讲义 §5.2 开头）</div>
+    <p>设想认识论图景由可数多个世界构成，第 <span class="math">n</span> 个世界里闹钟在 <span class="math">n</span> 秒后响。记这些世界为 <span class="math">x<sub>0</sub>, x<sub>1</sub>, x<sub>2</sub>, …</span>。</p>
+    <p>考虑命题</p>
+    <div class="formula"><span class="math">P<sub>n</sub></span> ：「闹钟将在<strong>超过</strong> <span class="math">n</span> 秒之后才响。」</div>
+    <p>世界集里 <span class="math">P<sub>n</sub></span> 恰好是 <span class="math">{x<sub>m</sub> : m &gt; n}</span>。它是<strong>可证伪</strong>的：想推翻它，只需等到第 <span class="math">n</span> 秒——如果那时响了，<span class="math">P<sub>n</sub></span> 就假。所以 <span class="math">P<sub>n</sub></span> 是闭集，它的补 <span class="math">{x<sub>0</sub>, …, x<sub>n</sub>}</span> 是开集（可验证：「不超过 <span class="math">n</span> 秒就响」在有限时间内就能确认）。</p>
+    <p><strong>关键的一步：每一个 <span class="math">P<sub>n</sub></span> 都是一致的。</strong>任取有限多个 <span class="math">P<sub>n<sub>1</sub></sub>, …, P<sub>n<sub>k</sub></sub></span>，取 <span class="math">N = max(n<sub>1</sub>,…,n<sub>k</sub>)</span>，那么世界 <span class="math">x<sub>N+1</sub></span>（闹钟 <span class="math">N+1</span> 秒后响）同时满足它们全部。所以</p>
+    <div class="formula"><span class="math">P<sub>0</sub> ∩ P<sub>1</sub> ∩ ⋯ ∩ P<sub>N</sub> ⊇ {x<sub>m</sub> : m &gt; N} ≠ ∅</span></div>
+    <p>但<strong>整体不一致</strong>：</p>
+    <div class="formula"><span class="math">⋂<sub>n∈ω</sub> P<sub>n</sub> = ∅</span></div>
+    <p>因为每个 <span class="math">x<sub>m</sub></span> 都有确定的响铃时间，都会在某一秒响，于是都被某个 <span class="math">P<sub>n</sub></span> 排除掉（取 <span class="math">n ≥ m</span>）。</p>
+    <p><strong>「每一小批都相容，整体却不相容」——这就是紧致性失效的形状。</strong>而它失效的根源不是逻辑,而是<strong>空间里少了一个世界</strong>：那个闹钟坏了、永远不响的世界。</p>
+  </div>
+
+  <div class="intu"><div class="bt">补上那一点</div>
+    <p>加一个世界 <span class="math">x<sub>∞</sub></span>：「闹钟永远不响。」<strong>一切立刻恢复正常。</strong>在新的世界集 <span class="math">X = {x<sub>0</sub>, x<sub>1</sub>, …} ∪ {x<sub>∞</sub>}</span> 里，</p>
+    <div class="formula"><span class="math">⋂<sub>n∈ω</sub> P<sub>n</sub> = {x<sub>∞</sub>}</span></div>
+    <p>非空。这个理论现在有模型了，而且模型唯一。<strong>而且那个「每一小批都相容」的族，正是以 <span class="math">x<sub>∞</sub></span> 为唯一极限的那个素滤子的生成元。</strong></p>
+    <p>后面 §7 会看到：这个「加一点」的操作有个正式名字——<strong>Alexandroff 一点紧致化</strong>。而它恰好是把 <span class="math">ω</span> 补成 <span class="math">ω + 1</span>。<strong>本讲剩下的所有技术内容，都是把这一件事说严谨、说完整、说到能算。</strong></p>
+  </div>
+
+  <div class="warn"><div class="bt">先把话说清楚：紧致性不是什么</div>
+    <p>刚接触时最容易走偏的两条：</p>
+    <p>① <strong>紧致 ≠ 有界。</strong>在 <span class="math">ℝ<sup>n</sup></span> 里「紧致 ⟺ 有界闭」是 Heine–Borel 定理的内容，它依赖 <span class="math">ℝ<sup>n</sup></span> 的特殊结构。<strong>在一般拓扑空间里，有界这个概念甚至没有定义</strong>（没有度量就没有「界」）。所以不要拿有界性去理解紧致性。</p>
+    <p>② <strong>紧致 ≠ 序列紧致。</strong>紧致说的是「每个开覆盖有有限子覆盖」，序列紧致说的是「每个序列有收敛子列」。在度量空间里两者等价（这是极有用的定理），<strong>但一般空间里都不等价</strong>。反例有 <span class="math">[0,1]<sup>[0,1]</sup></span>（紧致但存在没有收敛子列的序列）和 <span class="math">ω<sub>1</sub></span>（序列紧致但不紧致）。<strong>把它们混为一谈，后面所有关于超滤子的讨论都看不懂——因为紧致性的正确定义用的是开覆盖，而不是序列。</strong>这也解释了为什么本讲要用滤子：<strong>滤子是序列的正确推广，它不需要可数性。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O1 素滤子 ============ -->
+<section id="prime">
+  <h2><span class="sn">3</span>素滤子与素滤子定理 <span class="tag top">O1</span><span class="tag alg">O1</span><span class="tag log">O1</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>L12 的滤子刻画「相容的知识」：知识越多，集合越小，但绝不缩到空。可是「知识越多」到哪儿为止？<strong>一个滤子可能还能再加强——加进一条新事实而仍然相容。素滤子的要求是：加不动了。</strong></p>
+    <p>换个说法：给定任何一条命题 <span class="math">U</span>，一个饱和的知识状态必须对它表态——<strong>要么确定 <span class="math">U</span>，要么确定 <span class="math">¬U</span>，不能悬着</strong>。这正是「理论完全」的集合版本。<strong>所以素滤子 = 饱和理论 = 完全理论。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.1（定义 5.1.1）</span></div>
+    <p>设 <span class="math">X</span> 为集合，<span class="math">𝔉</span> 为 <span class="math">X</span> 上的滤子。若对任意 <span class="math">U, V ⊆ X</span>，</p>
+    <div class="formula"><span class="math">U ∪ V ∈ 𝔉 &nbsp;⟺&nbsp; U ∈ 𝔉 或 V ∈ 𝔉</span></div>
+    <p>称 <span class="math">𝔉</span> 为<strong>素滤子</strong>（prime filter）。这里是在整个幂集上讨论，因而也就是通常说的<strong>超滤子</strong>（ultrafilter）。</p>
+    <p><strong>注意这个定义用的是并，不是交。</strong>这一点值得停一下。滤子本身对交封闭（<span class="math">U, V ∈ 𝔉 ⟹ U ∩ V ∈ 𝔉</span>），那是「知识可以叠加」。素性说的是<strong>反方向的对偶</strong>：如果一条<em>弱</em>命题（并）被确定了，那么它的某一支必须已经被确定。</p>
+    <p>为什么这和对交封闭对偶？因为在布尔代数里 <span class="math">¬(A ∪ B) = ¬A ∩ ¬B</span>，并通过补运算互换。<strong>讲义把它放在幂集上，是因为在幂集布尔代数里「对并素」和「极大」恰好等价</strong>——但这句话<em>不能</em>推广到任何格，下面 §3 末尾会专门说这个坑。</p>
+  </div>
+
+  <div class="thm"><div class="bt">引理 <span class="num">3.2（引理 5.1.2）</span></div>
+    <p>设 <span class="math">X</span> 为集合。</p>
+    <ol>
+      <li>若 <span class="math">(𝔊<sub>i</sub>)<sub>i∈I</sub></span> 是按包含关系全序排列的非空滤子链，则 <span class="math">⋃<sub>i∈I</sub> 𝔊<sub>i</sub></span> 是滤子。</li>
+      <li>若 <span class="math">𝔉</span> 为滤子，<span class="math">A ⊆ X</span> 与每个 <span class="math">B ∈ 𝔉</span> 相交，则
+        <div class="formula"><span class="math">𝔉 ⊕ A = { C ⊆ X : ∃B ∈ 𝔉, A ∩ B ⊆ C }</span></div>
+        是包含 <span class="math">𝔉</span> 且含有 <span class="math">A</span> 的最小滤子。</li>
+      <li>对任意 <span class="math">x ∈ X</span>，<span class="math">{U ⊆ X : x ∈ U}</span> 是素滤子。</li>
+      <li>对滤子 <span class="math">𝔉</span>，下列条件等价：<br>
+        <span class="math">(a)</span> <span class="math">𝔉</span> 素；<br>
+        <span class="math">(b)</span> <span class="math">𝔉</span> 是极大的真滤子——任何严格包含它的 <span class="math">𝔉′ ⊆ 𝓟(X) − {∅}</span> 都不再为滤子；<br>
+        <span class="math">(c)</span> 对任意 <span class="math">U ⊆ X</span>，<span class="math">U ∈ 𝔉</span> 或 <span class="math">X − U ∈ 𝔉</span>。</li>
+    </ol>
+  </div>
+
+  <div class="proof"><div class="bt">第 4 条为什么成立（这是本讲最要紧的等价）</div>
+    <p><strong>(a) ⟹ (c)：</strong>取 <span class="math">U ∪ (X − U) = X ∈ 𝔉</span>，由素性立刻得到 <span class="math">U ∈ 𝔉</span> 或 <span class="math">X − U ∈ 𝔉</span>。<strong>一步而已。</strong></p>
+    <p><strong>(c) ⟹ (b)：</strong>先注意要假设 <span class="math">𝔉</span> 真，否则陈述无意义（<span class="math">𝓟(X)</span> 满足 (c) 但不极大）。在真滤子前提下设 <span class="math">𝔉′ ⊋ 𝔉</span> 为滤子，取 <span class="math">A ∈ 𝔉′ − 𝔉</span>。由 (c)，<span class="math">X − A ∈ 𝔉 ⊆ 𝔉′</span>，于是 <span class="math">∅ = A ∩ (X − A) ∈ 𝔉′</span>，<span class="math">𝔉′</span> 非真。<strong>故 <span class="math">𝔉</span> 极大。</strong></p>
+    <p><strong>(b) ⟹ (a)：</strong>设 <span class="math">𝔉</span> 极大真，<span class="math">U ∪ V ∈ 𝔉</span> 而 <span class="math">U ∉ 𝔉</span>，要证 <span class="math">V ∈ 𝔉</span>。<strong>反设 <span class="math">U</span> 与每个 <span class="math">B ∈ 𝔉</span> 都相交</strong>，则由第 2 条 <span class="math">𝔉 ⊕ U</span> 是滤子，它包含 <span class="math">𝔉</span> 且含 <span class="math">U</span>，故<strong>严格</strong>包含 <span class="math">𝔉</span>；又因 <span class="math">U</span> 与每个 <span class="math">B</span> 相交，<span class="math">𝔉 ⊕ U</span> 不含 <span class="math">∅</span>，是真滤子——<strong>与极大性矛盾。</strong>所以存在 <span class="math">B ∈ 𝔉</span> 使 <span class="math">B ∩ U = ∅</span>，即 <span class="math">B ⊆ X − U</span>，向上封闭给出 <span class="math">X − U ∈ 𝔉</span>。再由 <span class="math">U ∪ V ∈ 𝔉</span> 与交封闭，</p>
+    <div class="formula"><span class="math">(U ∪ V) ∩ (X − U) = V − U ∈ 𝔉</span></div>
+    <p>而 <span class="math">V ⊇ V − U</span>，故 <span class="math">V ∈ 𝔉</span>。<strong>两路都通。</strong> <span class="qed">∎</span></p>
+    <p><strong>这个证明的结构值得留意：</strong>关键工具是第 2 条的「<span class="math">𝔉 ⊕ A</span>」——<strong>给滤子强塞进一个集合 <span class="math">A</span> 的最小方式</strong>。极大性论证的标准套路是「塞进去而仍然相容 ⟹ 不极大」。<strong>同一个套路在下面定理 3.3 的证明里再出现一次。</strong></p>
+  </div>
+
+  <div class="intu"><div class="bt">三副面孔的翻译表</div>
+    <table>
+      <tr><th>数学说法</th><th>认识论说法</th><th>逻辑说法</th></tr>
+      <tr><td>滤子 <span class="math">𝔉</span></td><td>相容的知识状态</td><td>一致的理论</td></tr>
+      <tr><td><span class="math">A ∈ 𝔉</span></td><td>已确定 <span class="math">A</span> 成立</td><td><span class="math">A</span> 被理论推出</td></tr>
+      <tr><td><span class="math">A ∉ 𝔉</span></td><td>尚未确定 <span class="math">A</span></td><td><span class="math">A</span> 不被推出</td></tr>
+      <tr><td><span class="math">𝔉</span> 素 / 极大</td><td>知识已饱和</td><td>理论完全（对每条命题表态）</td></tr>
+      <tr><td><span class="math">X − A ∈ 𝔉</span></td><td>已确定 <span class="math">¬A</span></td><td><span class="math">¬A</span> 被推出</td></tr>
+    </table>
+    <p><strong>「<span class="math">A ∉ 𝔉</span>」与「<span class="math">¬A ∈ 𝔉</span>」不是一回事</strong>——前者是「没说」，后者是「说了反话」。<strong>素性正是把「没说」升级成「说了反话」的那条公理。</strong>所以素滤子才配叫「饱和」。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">3.3（定理 5.1.3，Tarski 素滤子定理）</span></div>
+    <p>设 <span class="math">𝔉</span> 是集合 <span class="math">X</span> 上的滤子基，则存在素滤子 <span class="math">𝔊 ⊇ 𝔉</span>。</p>
+  </div>
+
+  <div class="proof"><div class="bt">证明（Zorn）</div>
+    <p>取向上闭包即可把滤子基扩成滤子，故只需从滤子 <span class="math">𝔉</span> 出发。考虑偏序集</p>
+    <div class="formula"><span class="math">𝒫 = { 𝔊 : 𝔊 是滤子且 𝔊 ⊇ 𝔉 }</span></div>
+    <p>以包含关系排序。任意非空链的并由引理 3.2 第 1 条仍为滤子且包含 <span class="math">𝔉</span>；空链有上界 <span class="math">𝔉</span>。<strong>于是 Zorn 引理给出极大元 <span class="math">𝔊</span>。</strong></p>
+    <p>下证 <span class="math">𝔊</span> 素。设 <span class="math">U ∉ 𝔊</span> 且 <span class="math">X − U ∉ 𝔊</span>。<strong>目标是导出矛盾。</strong></p>
+    <p>由 <span class="math">U ∉ 𝔊</span> 及向上封闭，<span class="math">𝔊</span> 中不可能有成员包含于 <span class="math">X − U</span>。于是对每个 <span class="math">C ∈ 𝔊</span> 都有 <span class="math">C ∩ U ≠ ∅</span>，因为</p>
+    <div class="formula"><span class="math">C ∩ U = ∅ &nbsp;⟹&nbsp; C ⊆ X − U</span></div>
+    <p>由引理 3.2 第 2 条，<span class="math">𝔊 ⊕ U</span> 是严格扩张 <span class="math">𝔊</span> 的滤子，与 <span class="math">𝔊</span> 的极大性矛盾。<strong>因此 <span class="math">U</span> 与 <span class="math">X − U</span> 必有一个在 <span class="math">𝔊</span> 里，即 <span class="math">𝔊</span> 素。</strong> <span class="qed">∎</span></p>
+  </div>
+
+  <div class="intu"><div class="bt">这条定理的地位</div>
+    <p>它<strong>等价于选择公理的一种弱形式</strong>（布尔素理想定理，BPI）。讲义在 Alexander 子基定理的脚注里明确说了这一点：「这个定理实质地使用了选择公理的一种弱形式，恰为上面的素滤子定理。」</p>
+    <p><strong>所以本讲后面所有关于紧致性的结论，背后都站着同一个假设。</strong>这不是技术瑕疵，而是必然：紧致性定理（逻辑侧）、Tychonoff 定理（拓扑侧）、素理想定理（代数侧）三者都被证明与 BPI 等价。<strong>换句话说，下面 §9 要讲的那个「同一个定理」，连它对选择公理的依赖都是同一份。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>主超滤子：固定 <span class="math">x ∈ X</span>，<span class="math">𝔘<sub>x</sub> = {U ⊆ X : x ∈ U}</span>。它对每条命题表态：含 <span class="math">x</span> 的都确定，不含 <span class="math">x</span> 的都否定。<strong>这是「一个具体模型 <span class="math">x</span> 所确定的全部事实」</strong>，也是引理 3.2 第 3 条说的那种。所有有限集上的超滤子都是主超滤子（练习 E1 会让你证明）。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>非主超滤子：在 <span class="math">ω</span> 上，把余有限集族（Fréchet 滤子）扩成超滤子 <span class="math">𝔘</span>。它<strong>不含任何有限集</strong>（因为补是余有限，在 <span class="math">𝔘</span> 里，而 <span class="math">𝔘</span> 真），所以不是任何 <span class="math">𝔘<sub>x</sub></span>。<strong>这类超滤子的存在性只能靠选择公理，写不出具体例子</strong>——这是它的本质特征。</p>
+    <p><strong>为什么它是本质的：</strong>紧致性定理、Tychonoff 定理、非标准分析的超幂构造，全都需要非主超滤子。<strong>主超滤子什么都做不了</strong>——用它做超积只是取回某一个因子。所以「素滤子定理」的全部力量都在非主那一侧。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>「素」和「极大」在一般格上不等价！</strong>这是最容易犯的错。在幂集布尔代数上它们碰巧等价（引理 3.2 第 4 条），在一般分配格里则「极大 ⟹ 素」成立而<strong>反之不一定</strong>。Bergman 的素理想定理（定理 2.41）说的是分配格上「分离理想与滤子」的素理想存在性，这是比超滤子更弱、更一般的结论。<strong>所以看到「素滤子」时先问：在哪个格上？</strong></p>
+    <p>② <strong>别把素性读成「对交封闭」。</strong>那是滤子公理。<strong>素性是反方向</strong>：<span class="math">U ∪ V ∈ 𝔉 ⟹ U ∈ 𝔉</span> 或 <span class="math">V ∈ 𝔉</span>。写成「对交封闭」是错的，写成「<span class="math">U ∪ V ∈ 𝔉 ⟹ U ∩ V ∈ 𝔉</span>」也是错的（更弱，且几乎是废话，因为 <span class="math">U ∩ V ⊆ U ∪ V</span>，由向上封闭自动成立）。</p>
+    <p>③ <strong>素滤子定理不给出唯一性。</strong>一个真滤子通常能扩成<strong>很多</strong>个不同的素滤子。<span class="math">{𝔘 : 𝔘 ⊇ 𝔉}</span> 这个集合本身的大小，正是 Stone 空间 <span class="math">βX</span> 的「纤维」——<strong>§8 会用它构造 Stone–Čech 紧致化，L06 已经用它构造过 Stone 表示。</strong>这两处是同一件事。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 §5.1（定义 5.1.1、引理 5.1.2、定理 5.1.3 及原注「熟悉格的读者会发现，相应的素滤子扩张结果也适用于分配格」）；UAL 定义 2.2.60（滤子/超滤子/主滤子/Fréchet 滤子）、命题 2.2.65（超滤子 ⟺ 极大真滤子）、命题 2.2.66、推论 2.2.67；Bergman 定理 2.41（素理想定理）。</p>
+</section>
+
+<!-- ============ O2 开覆盖 ============ -->
+<section id="cover">
+  <h2><span class="sn">4</span>紧致性：开覆盖、基、子基 <span class="tag top">O2</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>「空间缺了点」这个话说得很有感觉，但没法直接算。<strong>要变成定理，必须翻译成只谈集合和开集的语言。</strong>翻译的产物就是开覆盖定义——它看起来跟「缺点」毫无关系，这是初学者最大的困惑来源。</p>
+    <p>先给一个桥梁式的说法，先记住它，§6 会证明：<strong>缺了点 ⟺ 有一个开集族覆盖了整个空间，但任取有限多个都盖不住。</strong>想一想闹钟例子：开集 <span class="math">V<sub>n</sub> = {x<sub>0</sub>,…,x<sub>n</sub>}</span>（「不超过 <span class="math">n</span> 秒就响」）。这个族覆盖了所有 <span class="math">x<sub>m</sub></span>——每个 <span class="math">x<sub>m</sub></span> 都在 <span class="math">V<sub>m</sub></span> 里。<strong>但它盖不住那个缺失的世界 <span class="math">x<sub>∞</sub></span></strong>；而<strong>任何有限多个 <span class="math">V<sub>n</sub></span> 的并还是某个 <span class="math">V<sub>N</sub></span>，也盖不住 <span class="math">x<sub>∞</sub></span></strong>。<strong>「有限子覆盖盖不满」正是「缺的那个点」的指纹。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.1（定义 5.2.1、5.2.2）</span></div>
+    <p>设 <span class="math">A ⊆ X</span>。若开集族 <span class="math">(U<sub>i</sub>)<sub>i∈I</sub></span> 满足 <span class="math">A ⊆ ⋃<sub>i∈I</sub> U<sub>i</sub></span>，称它为 <span class="math">A</span> 的<strong>开覆盖</strong>。其中一个仍覆盖 <span class="math">A</span> 的子族 <span class="math">(U<sub>j</sub>)<sub>j∈J</sub></span>（<span class="math">J ⊆ I</span>）称为<strong>子覆盖</strong>；若指标集 <span class="math">J</span> 有限，称<strong>有限</strong>覆盖。</p>
+    <p>若 <span class="math">X</span> 的每个开覆盖都有有限子覆盖，称 <span class="math">X</span> <strong>紧致</strong>（compact）。称 <span class="math">A ⊆ X</span> 为<strong>紧致子集</strong>，若它配备子空间拓扑后紧致（定义 5.2.10）。</p>
+    <p><strong>注意「每个」这个词的位置。</strong>紧致性是<strong>全称命题</strong>：要对<em>所有</em>开覆盖都成立。所以证明紧致要靠论证（对所有覆盖统一处理），否证紧致只要<strong>举一个</strong>反例覆盖。这个不对称决定了下面所有例子的写法。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 <span class="num">4.2（例 5.2.3）</span></div>
+    <p><strong><span class="math">ℝ</span> 不紧致。</strong>取开覆盖</p>
+    <div class="formula"><span class="math">{(k, k + 2) : k ∈ ℤ}</span></div>
+    <p>它覆盖 <span class="math">ℝ</span>（每个 <span class="math">x</span> 落在某个长 2 的开区间里）。<strong>但没有有限子覆盖。</strong>理由：设取了有限多个 <span class="math">k<sub>1</sub> &lt; ⋯ &lt; k<sub>n</sub></span>，则它们的并是 <span class="math">(k<sub>1</sub>, k<sub>n</sub> + 2)</span>——一个有界区间，不可能等于 <span class="math">ℝ</span>。<strong>一句话：有限多个有界区间还是只有界那么多。</strong></p>
+    <p><strong>Baire 空间 <span class="math">ω<sup>ω</sup></span> 不紧致。</strong>取 <span class="math">{C(⟨n⟩) : n ∈ ω}</span>，即「第 0 位等于 <span class="math">n</span>」这些柱集。它们覆盖 <span class="math">ω<sup>ω</sup></span>（每个序列有第 0 位）。但<strong>移去任何一个成员都会留下无穷多个未被覆盖的点</strong>：去掉 <span class="math">C(⟨n⟩)</span> 之后，所有第 0 位为 <span class="math">n</span> 的序列全没了覆盖。所以任何真子族都不覆盖，当然更没有有限子覆盖。</p>
+  </div>
+
+  <div class="intu"><div class="bt">这两个例子的对比很有教益</div>
+    <p><span class="math">ℝ</span> 的失败是<strong>「无界」型</strong>：覆盖成员各有各的位置，散得太开。Baire 空间的失败是<strong>「分支太多」型</strong>：一个无穷多的分叉，任何有限选择都漏掉无穷多支。</p>
+    <p><strong>两种失败对应两种紧致化的补法。</strong>无界型补「无穷远」一点（<span class="math">ℝ → S<sup>1</sup></span>，Alexandroff）；而 <span class="math">ω<sup>ω</sup></span> 这种 Cantor 型空间本身就有紧致版本（<span class="math">2<sup>ω</sup></span> 紧致，例 5.2.6），把 <span class="math">ω</span> 换成 <span class="math">2</span> 就把「无穷分支」压成「两个分支」——<strong>这提示紧致性和「分支宽度有界」有关</strong>。§8 的 Stone–Čech 紧致化会把这个直觉做成一般构造。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">4.3（命题 5.2.4，基判据）</span></div>
+    <p>设 <span class="math">ℬ</span> 为 <span class="math">(X, τ)</span> 的基。<span class="math">X</span> 紧致，当且仅当每个由<strong>基本开集</strong>组成的覆盖都有有限子覆盖。</p>
+  </div>
+
+  <div class="proof"><div class="bt">证明</div>
+    <p><strong>正向显然</strong>：基本开集都是开集，基本开覆盖就是一个开覆盖，紧致性直接给有限子覆盖。</p>
+    <p><strong>反向：</strong>设 <span class="math">X = ⋃<sub>i∈I</sub> U<sub>i</sub></span> 为任意开覆盖。把每个 <span class="math">U<sub>i</sub></span> 写成基本开集的并（基的定义），得</p>
+    <div class="formula"><span class="math">X = ⋃<sub>i∈I</sub> ⋃<sub>j∈J<sub>i</sub></sub> V<sub>j</sub></span></div>
+    <p>这整个族 <span class="math">{V<sub>j</sub>}</span> 是基本开覆盖，由假设可选出有限子覆盖 <span class="math">X = V<sub>j<sub>0</sub></sub> ∪ ⋯ ∪ V<sub>j<sub>k</sub></sub></span>。<strong>为每个 <span class="math">V<sub>j<sub>r</sub></sub></span> 选一个包含它的原覆盖成员 <span class="math">U<sub>i(r)</sub></span></strong>（这要用选择公理，但只对有限多个，不需要 AC），即得原覆盖的有限子覆盖。<span class="qed">∎</span></p>
+    <p><strong>这条命题的价值是省事，不是深刻。</strong>它把「对所有开集」降级成「对所有基本开集」。因为基通常小得多，检查起来容易得多。<strong>下面 Cantor 空间的紧致性证明就是它的直接应用。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">4.4（定理 5.2.5，Alexander 子基定理）</span></div>
+    <p>设 <span class="math">𝒮</span> 为 <span class="math">X</span> 的子基。<span class="math">X</span> 紧致，当且仅当每个由<strong>子基本开集</strong>组成的覆盖都有有限子覆盖。</p>
+    <p><strong>注意差别：</strong>基判据几乎是平凡的（正向显然，反向一步展开）；<strong>子基版本则完全不平凡</strong>，因为子基成员是「粗糙的原料」，它们的有限交才构成基。这一步跳跃需要 Zorn 引理。</p>
+  </div>
+
+  <div class="proof"><div class="bt">证明（讲义原证）</div>
+    <p>一向显然。反向<strong>反证</strong>：设每个子基本开覆盖都有有限子覆盖，但<strong>存在</strong>没有有限子覆盖的开覆盖 <span class="math">ℬ</span>。</p>
+    <p><strong>第一步：把 <span class="math">ℬ</span> 撑到极大。</strong>用 Zorn 引理把它扩成具有「无有限子覆盖」这一性质的极大开覆盖 <span class="math">ℬ′</span>：包含 <span class="math">ℬ</span> 的这类开覆盖按包含排序，链的并仍覆盖 <span class="math">X</span>；若并中有有限子覆盖，由链性这有限多个成员都属于链上某一个覆盖，矛盾。<strong>所以极大元存在。</strong></p>
+    <p><strong>第二步：<span class="math">ℬ′ ∩ 𝒮</span> 不可能覆盖 <span class="math">X</span></strong>，否则依假设它有有限子覆盖，与 <span class="math">ℬ′</span> 的选择矛盾。于是可选取</p>
+    <div class="formula"><span class="math">x ∈ X − ⋃(ℬ′ ∩ 𝒮)</span></div>
+    <p>因为 <span class="math">ℬ′</span> 覆盖 <span class="math">X</span>，存在 <span class="math">U ∈ ℬ′</span> 含 <span class="math">x</span>。由子基定义，可选 <span class="math">V<sub>0</sub>,…,V<sub>l</sub> ∈ 𝒮</span> 使</p>
+    <div class="formula"><span class="math">x ∈ V<sub>0</sub> ∩ ⋯ ∩ V<sub>l</sub> ⊆ U</span></div>
+    <p><strong>第三步：每个 <span class="math">V<sub>i</sub></span> 都不在 <span class="math">ℬ′</span> 里。</strong>因为 <span class="math">x ∈ V<sub>i</sub> ∈ 𝒮</span>，而 <span class="math">x</span> 的选法保证它不在任何 <span class="math">ℬ′ ∩ 𝒮</span> 的成员里。<strong>由 <span class="math">ℬ′</span> 的极大性，<span class="math">ℬ′ ∪ {V<sub>i</sub>}</span> 必有有限子覆盖</strong>（否则它更大且无有限子覆盖，违反极大性），即对每个 <span class="math">i ≤ l</span>，</p>
+    <div class="formula"><span class="math">X = C<sub>0</sub><sup>i</sup> ∪ ⋯ ∪ C<sub>n<sub>i</sub></sub><sup>i</sup> ∪ V<sub>i</sub>,&nbsp;&nbsp; C<sub>j</sub><sup>i</sup> ∈ ℬ′</span></div>
+    <p><strong>第四步：把这些并起来。</strong></p>
+    <div class="formula">X = ⋂<sub>i=0</sub><sup>l</sup> (C<sub>0</sub><sup>i</sup> ∪ ⋯ ∪ C<sub>n<sub>i</sub></sub><sup>i</sup> ∪ V<sub>i</sub>)</div>
+    <p>展开这个交（分配律），每一项形如「从每个括号里挑一个」，得到</p>
+    <div class="formula">X ⊆ ⋃<sub>i=0</sub><sup>l</sup> (C<sub>0</sub><sup>i</sup> ∪ ⋯ ∪ C<sub>n<sub>i</sub></sub><sup>i</sup>) ∪ (V<sub>0</sub> ∩ ⋯ ∩ V<sub>l</sub>) ⊆ ⋃<sub>i=0</sub><sup>l</sup> (C<sub>0</sub><sup>i</sup> ∪ ⋯ ∪ C<sub>n<sub>i</sub></sub><sup>i</sup>) ∪ U</div>
+    <p>最后一步用了 <span class="math">V<sub>0</sub> ∩ ⋯ ∩ V<sub>l</sub> ⊆ U</span>。<strong>而右边全是 <span class="math">ℬ′</span> 的成员——这就给出了 <span class="math">ℬ′</span> 的一个有限子覆盖，矛盾。</strong> <span class="qed">∎</span></p>
+    <p><strong>这个证明值得反复看。</strong>它是「极大性 + 有限交分配」这台机器的标准运转：<strong>先靠 Zorn 拿到一个「已经撑到底」的对象，再从「再加一个就崩」反推出它必然含有某些东西，最后用分配律把那些东西组合成有限覆盖。</strong>同样的结构在命题 5.2.9、在布尔代数的素理想定理、在逻辑的极大一致集构造里都会重复出现。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 <span class="num">4.5（例 5.2.6，Cantor 空间紧致）</span></div>
+    <p>用<strong>基判据</strong>。设 <span class="math">2<sup>ω</sup> = ⋃<sub>s∈T</sub> C(s)</span>，<span class="math">T ⊆ 2<sup>&lt;ω</sup></span>。</p>
+    <p><strong>反证：设没有有限子覆盖。</strong>则 <span class="math">C(∅) = 2<sup>ω</sup></span> 不能被有限多个覆盖成员盖住。<strong>关键的一步：</strong>因为 <span class="math">C(∅) = C(⟨0⟩) ∪ C(⟨1⟩)</span>，这两个柱集中<strong>至少一个</strong>也不能被有限覆盖——否则两个都能，并起来就能。选它为 <span class="math">C(s<sub>0</sub>)</span>。</p>
+    <p>归纳地：若 <span class="math">C(s<sub>n</sub>)</span> 不能有限覆盖，则 <span class="math">C(s<sub>n</sub>⌢0)</span> 或 <span class="math">C(s<sub>n</sub>⌢1)</span> 中至少一个不能有限覆盖，据此选 <span class="math">s<sub>n+1</sub></span>。</p>
+    <p>得到无穷二进制序列 <span class="math">x = ⋃<sub>n</sub> s<sub>n</sub></span>，<strong>它的每个有限初段对应的柱集都不能被有限多个原覆盖成员覆盖</strong>。但原覆盖包含 <span class="math">x</span>，所以 <span class="math">x ∈ C(s)</span> 对某个 <span class="math">s ∈ T</span> 成立。<strong>注意 <span class="math">C(s)</span> 只要 <span class="math">x</span> 的初段够长就在里面</strong>，所以 <span class="math">s</span> 必是某个 <span class="math">s<sub>n</sub></span> 的延长——于是 <span class="math">C(s<sub>n</sub>) ⊆ C(s)</span>，而 <span class="math">C(s)</span> 本身就是<strong>一个</strong>覆盖成员，矛盾。<span class="qed">∎</span></p>
+    <p><strong>这个证明的形状极重要：</strong>「不能有限覆盖」这个<strong>否定性质</strong>沿着二分树往下传，一路传出一条无穷路径。<strong>无穷路径的存在（König 引理）就是紧致性的实质内容</strong>——反过来，紧致性的失败就等于「存在一棵无穷高的有限分支树没有无穷路径」。<strong>这是紧致性在组合层面的真身。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>有限空间都紧致。设 <span class="math">|X| = n</span>，取任一开覆盖。对每个点 <span class="math">x</span> 选一个含它的成员 <span class="math">U<sub>x</sub></span>，那么 <span class="math">{U<sub>x</sub> : x ∈ X}</span> 至多 <span class="math">n</span> 个，覆盖 <span class="math">X</span>。<strong>故有限空间恒紧致。</strong>推论：<strong>紧致性与「大小」无关</strong>——有限空间可以很不紧致的样子（比如离散的两点空间），而 <span class="math">[0,1]</span> 不可数却紧致。<strong>找紧致的反例不能靠数点数。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><span class="math">[0,1]</span> 紧致（Heine–Borel，习题 5.1 要求仿 Cantor 空间证明）。它的紧致性来自<strong>完备性 + 全有界</strong>，而完备性正是「缺的点都补上了」——<span class="math">ℝ</span> 不紧致是因为两端缺点但不补，<span class="math">(0,1)</span> 不紧致是因为两端都缺点，<span class="math">[0,1]</span> 补上了。<strong>这就是为什么「紧致 = 完备性」这个直觉在最熟悉的空间里完全正确。</strong></p>
+    <p>更本质的例子是 <span class="math">2<sup>ω</sup></span>（Cantor 空间）：<strong>它是所有紧致度量空间的原型</strong>——每个紧致度量空间都是它的连续像。而它的紧致性完全来自「二分树的无穷路径总存在」。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>「紧致子集」不等于「紧致的空间里的子集」。</strong>定义 5.2.10 说的是<strong>配备子空间拓扑后</strong>本身紧致。<span class="math">(0,1) ⊆ [0,1]</span> 是紧致空间里的子集，但<strong>不是紧致子集</strong>（它不紧致）——它的开覆盖 <span class="math">{(1/n, 1) : n ≥ 2}</span> 在子空间拓扑下没有有限子覆盖。<strong>这正是 L09 子空间拓扑的重要性：紧致性是相对于拓扑说的，换个拓扑就换个答案。</strong></p>
+    <p>② <strong>紧致性不被子空间继承，也不被拓扑和保持。</strong>讲义明确说了「拓扑和一般不保持紧致性」。<strong>但闭子集继承（引理 5.2.11），连续像继承（命题 5.2.12），积继承（Tychonoff）。</strong>这三条构成了紧致性的「运算封闭性」清单，值得背下来：<strong>闭、连续像、积——都保；开子集、和、商？商保（命题 5.2.12 的推论），开子集绝不保。</strong></p>
+    <p>③ <strong>把「紧致」当成「闭 + 有界」是只对 <span class="math">ℝ<sup>n</sup></span> 有效的记忆。</strong>在一般空间里，紧致<strong>蕴含</strong>闭（若空间 Hausdorff，定理 5.3.1 第 2 条），但「有界」无从谈起。<strong>反过来，闭 + 有界在非 <span class="math">ℝ<sup>n</sup></span> 的空间里不蕴含紧致</strong>——比如在 <span class="math">ℓ<sup>2</sup></span> 的单位球是闭有界但不紧致。<strong>Heine–Borel 是 <span class="math">ℝ<sup>n</sup></span> 的定理，不是紧致性的定义。</strong></p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 §5.2（定义 5.2.1、定义 5.2.2、例 5.2.3 及脚注「但 [0,1] 紧致……这是 Heine–Borel 定理的一种形式」、命题 5.2.4、定理 5.2.5 及脚注「这个定理实质地使用了选择公理的一种弱形式，恰为上面的素滤子定理」、例 5.2.6、定义 5.2.10）。</p>
+</section>
+
+<!-- ============ O3 f.i.p. ============ -->
+<section id="fip">
+  <h2><span class="sn">5</span>有限交性质与闭集版紧致性 <span class="tag top">O3</span><span class="tag log">O3</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>开覆盖版本好用，但<strong>每次都要「取补」才能连到逻辑</strong>——因为逻辑里说的是「一族命题相容」，不是「一族开集覆盖」。<strong>把它们直接对上，需要一个中间的翻译。</strong>翻译工具就是有限交性质。</p>
+    <p>而且这个翻译是<strong>纯机械的</strong>：开覆盖取补就是闭集族，有限子覆盖取补就是有限交非空。<strong>但它把「紧致性」从一个看起来像「覆盖」的条件，变成了一个看起来像「相容性」的条件。</strong>这才是它通向逻辑的那扇门。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.1（定义 5.2.7）</span></div>
+    <p>集合族 <span class="math">𝒮 ⊆ 𝓟(X)</span> 具有<strong>有限交性质</strong>（finite intersection property，f.i.p.），若任意有限子族的交非空。</p>
+    <p><strong>这就是 L12 命题 4.3 里的那个条件。</strong>同一个东西在三个地方出现：L12 用它判真滤子，这里用它判紧致性，Bergman 用它（FIP，定义 5.1）造超滤子。<strong>三处是同一个条件的三次使用。</strong></p>
+    <p><strong>补一句重要的边界：</strong>f.i.p. 是<strong>有限</strong>交非空，<strong>不是</strong>全体交非空。这两者的区别正是本讲的全部内容。<span class="math">{P<sub>n</sub> : n ∈ ω}</span> 在闹钟例子里有 f.i.p.（每有限交非空）但全体交为空。<strong>紧致性说的是「f.i.p. 升级成全体交非空」——它就是升级许可证。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">引理 <span class="num">5.2（引理 5.2.8）</span></div>
+    <p><span class="math">X</span> 紧致，当且仅当每个具有有限交性质的<strong>闭集</strong>族 <span class="math">ℱ</span> 都满足 <span class="math">⋂ℱ ≠ ∅</span>。</p>
+  </div>
+
+  <div class="proof"><div class="bt">证明（并看清那个「取补」）</div>
+    <p><strong>⟹：</strong>设 <span class="math">X</span> 紧致，<span class="math">ℱ</span> 为具 f.i.p. 的闭集族。<strong>反证</strong>设 <span class="math">⋂ℱ = ∅</span>。则由 De Morgan，</p>
+    <div class="formula"><span class="math">X = ⋃<sub>U∈ℱ</sub> (X − U)</span></div>
+    <p><strong>注意每个 <span class="math">X − U</span> 都开</strong>（因为 <span class="math">U</span> 闭）——<strong>这就是为什么必须要求闭集族，而不是随便什么族。</strong>由紧致性取有限子覆盖 <span class="math">X = (X − U<sub>0</sub>) ∪ ⋯ ∪ (X − U<sub>n</sub>)</span>，再取补得</p>
+    <div class="formula"><span class="math">∅ = U<sub>0</sub> ∩ ⋯ ∩ U<sub>n</sub></span></div>
+    <p>与 f.i.p. 矛盾。</p>
+    <p><strong>⟸：</strong>设开覆盖 <span class="math">X = ⋃<sub>i∈I</sub> U<sub>i</sub></span> 无有限子覆盖。令 <span class="math">ℱ = {X − U<sub>i</sub>}</span>，这是闭集族。任何有限交 <span class="math">(X − U<sub>i<sub>0</sub></sub>) ∩ ⋯ ∩ (X − U<sub>i<sub>n</sub></sub>) = X − (U<sub>i<sub>0</sub></sub> ∪ ⋯ ∪ U<sub>i<sub>n</sub></sub>) ≠ ∅</span>（因为有限并没覆盖 <span class="math">X</span>），故 <span class="math">ℱ</span> 有 f.i.p.。由假设 <span class="math">⋂ℱ ≠ ∅</span>，即存在 <span class="math">x</span> 不属于任何 <span class="math">U<sub>i</sub></span>，与覆盖矛盾。<span class="qed">∎</span></p>
+    <p><strong>整个证明就是两次 De Morgan。</strong>但请注意：<strong>开覆盖版和闭集版是同一个命题的两种写法，谁也不比谁深。</strong>那为什么两个都要？因为<strong>闭集版可以直接对上「相容」</strong>：闭集族 <span class="math">ℱ</span> 有 f.i.p. = 「这族条件局部相容」，<span class="math">⋂ℱ ≠ ∅</span> = 「整体有解」。<strong>一句话，紧致性 = 局部相容 ⟹ 整体有解。</strong></p>
+  </div>
+
+  <div class="intu"><div class="bt">这句话的重要性，以及它的精确形状</div>
+    <p><strong>「局部相容 ⟹ 整体有解」——这就是一阶逻辑紧致性定理。</strong>把闭集族换成公式集、把「交非空」换成「有模型」，命题一字不改。这个对应不是比喻，L18 会给正式的桥：<strong>理论的模型集是闭集（Mod(Γ) 在 Stone 空间里闭），f.i.p. 就是有限可满足性，</strong>于是引理 5.2 与紧致性定理是同一句话。</p>
+    <p><strong>但要说清一个限定。</strong>这个等价要求「闭集族」这一环境：<strong>不能把「每个 f.i.p. 的开集族交非空」当紧致性</strong>，那是错的。比如 <span class="math">[0,1]</span> 里 <span class="math">{(0, 1/n) : n}</span> 是开集族，有 f.i.p.，但全体交是 <span class="math">∅</span>。<strong>开集族天然可以「逃向边界」，闭集族不能——所以紧致性才能止住这个逃逸。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">[0,1]</span> 中取闭区间族 <span class="math">{[0, 1/n] : n ≥ 1}</span>。任取有限个 <span class="math">n<sub>1</sub>,…,n<sub>k</sub></span>，交是 <span class="math">[0, 1/max]</span>，非空。全体交是 <span class="math">{0} ≠ ∅</span>。<strong>f.i.p. 成立，整体交非空，符合引理 5.2。</strong></p>
+    <p><strong>把它和开集版对照：</strong>把 <span class="math">[0, 1/n]</span> 换成 <span class="math">(0, 1/n)</span>，f.i.p. 照样成立（有限交是 <span class="math">(0, 1/max) ≠ ∅</span>），但全体交是 <span class="math">∅</span>。<strong>差别只在端点 0 在不在里面——而这个端点正是闭区间「补」回来的那个点。</strong>这就是 §2 那句「缺了个点」的最简实例。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>闹钟例子，用闭集语言重写：<span class="math">P<sub>n</sub></span> 是闭集（可证伪），f.i.p. 成立（有限交非空），全体交是空。<strong>所以「世界集 <span class="math">{x<sub>0</sub>,x<sub>1</sub>,…}</span> 不紧致」这件事，在闭集语言里就一句话：有一个 f.i.p. 闭集族交空。</strong></p>
+    <p><strong>为什么这是本质例子：</strong>因为它同时说了三件事。① 紧致性的失败有具体内容（少了那个世界）；② 失败是<strong>可以修的</strong>（加上 <span class="math">x<sub>∞</sub></span> 就好）；③ 修法有一般形式（§7、§8）。<strong>一个定义若能同时给出反例、修法、和一般理论，它就算讲透了。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>「有 f.i.p.」不等于「两两相交」。</strong>f.i.p. 要求<strong>任意有限多个</strong>交非空，不是只有两个。教科书里的经典反例：三个集合 <span class="math">{1,2}, {2,3}, {1,3}</span> 两两相交，三者交为空。<strong>所以两两相交推不出 f.i.p.，更强的要求才够。</strong></p>
+    <p>② <strong>f.i.p. 是「存在」还是「全体」？</strong>定义说的是「任意有限子族的交非空」——这等价于「每个有限子族交非空」，而<strong>不等于</strong>「存在一个有限子族交非空」（后者是废话，只要族非空且成员非空就成立）。<strong>「任意」这两个字是本定义的全部力量。</strong></p>
+    <p>③ <strong>紧致性不能降级成「每两个闭集相交」。</strong>在 <span class="math">ℝ</span> 里取三个<strong>闭</strong>集 <span class="math">{1,2}</span>、<span class="math">{2,3}</span>、<span class="math">{1,3}</span>（有限集在 <span class="math">ℝ</span> 中闭）。<strong>任取两个都相交，但三者交为空。</strong>这个族有「两两交」而没有 f.i.p.，所以它<strong>不被引理 5.2 管</strong>——<span class="math">ℝ</span> 不紧致，正好允许这种事。<strong>要点：<span class="math">n</span> 元族的相容性要检查到 <span class="math">n</span> 元为止，「两两」只在 <span class="math">n = 2</span> 时才够。</strong></p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 §5.2（定义 5.2.7、引理 5.2.8 及证明）；Bergman 定义 5.1（FIP）；L12 命题 4.3。</p>
+</section>
+
+<!-- ============ O4 紧致 ⟺ 素滤子收敛 ============ -->
+<section id="conv">
+  <h2><span class="sn">6</span>紧致 ⟺ 每个素滤子收敛 <span class="tag top">O4</span><span class="tag log">O4</span><span class="tag alg">O4</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>现在到了本讲的核心。<strong>引理 5.2 说「紧致 = f.i.p. 闭集族交非空」，但这个说法还是不涉及逻辑。</strong>素滤子会是那个缺失的环节——因为素滤子同时是「知识状态的饱和」和「闭集族的相容」，它把两边焊在一起。</p>
+    <p><strong>要证的定理一句话：「一个空间是紧致的，当且仅当每个素滤子都收敛。」</strong>注意这句话有多强：它<strong>不给具体极限</strong>，只保证存在。<strong>这正是紧致性的作用——它是一个存在性原理，不是构造性方法。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">6.1（命题 5.2.9）</span></div>
+    <p><span class="math">X</span> 紧致，当且仅当每个素滤子 <span class="math">𝔘</span> 都在 <span class="math">X</span> 中收敛。</p>
+  </div>
+
+  <div class="proof"><div class="bt">证明（⟹，紧致 ⟹ 收敛）</div>
+    <p>设 <span class="math">X</span> 紧致，<span class="math">𝔘</span> 为素滤子。<strong>要造一个极限点 <span class="math">x</span>。</strong>思路：把 <span class="math">𝔘</span> 里所有<strong>闭</strong>成员拿出来，它们的交非空（f.i.p. + 紧致），交点就是答案。</p>
+    <p>令</p>
+    <div class="formula"><span class="math">𝔘<sub>cl</sub> = { C ∈ 𝔘 : C 闭 }</span></div>
+    <p><strong><span class="math">𝔘<sub>cl</sub></span> 有 f.i.p.</strong>：任取 <span class="math">C<sub>1</sub>,…,C<sub>n</sub> ∈ 𝔘<sub>cl</sub></span>，它们的交仍在 <span class="math">𝔘</span>（滤子对交封闭），而 <span class="math">𝔘</span> 真（不含 <span class="math">∅</span>），故交非空。<strong>由紧致性与引理 5.2，<span class="math">⋂𝔘<sub>cl</sub> ≠ ∅</span>。取其中一点 <span class="math">x</span>。</strong></p>
+    <p><strong>下证 <span class="math">𝔘</span> 收敛到 <span class="math">x</span>。</strong>设 <span class="math">U</span> 是 <span class="math">x</span> 的任一开邻域。<strong>声称 <span class="math">U ∈ 𝔘</span>。</strong>反设 <span class="math">U ∉ 𝔘</span>。<strong>由素性（引理 3.2 第 4 条 (c)），<span class="math">X − U ∈ 𝔘</span>。</strong>而 <span class="math">X − U</span> 是闭集（<span class="math">U</span> 开），所以 <span class="math">X − U ∈ 𝔘<sub>cl</sub></span>，从而 <span class="math">x ∈ X − U</span>，即 <span class="math">x ∉ U</span>——与 <span class="math">U</span> 是 <span class="math">x</span> 的邻域矛盾。</p>
+    <p>因此<strong>每个开邻域都在 <span class="math">𝔘</span> 里</strong>，由 L12 §5 定义 5.2（收敛），<span class="math">𝔘</span> 收敛到 <span class="math">x</span>。 <span class="qed">∎</span></p>
+    <p><strong>这一步的结构值得单独记下来：</strong></p>
+    <div class="formula">素性 → 「不在 <span class="math">𝔘</span> 里就在补里」→ 补集是闭的 → 补集属于 <span class="math">𝔘<sub>cl</sub></span> → <span class="math">x</span> 在补集里 → 矛盾</div>
+    <p><strong>素性在这里的作用精确到位：它把「<span class="math">U</span> 不在 <span class="math">𝔘</span> 里」这句<em>没有办法用</em>的话，变成了「<span class="math">X − U</span> 在 <span class="math">𝔘</span> 里」这句<em>可以直接用</em>的话。</strong>没有素性，<span class="math">𝔘<sub>cl</sub></span> 那一步就没有任何信息可用。</p>
+  </div>
+
+  <div class="proof"><div class="bt">证明（⟸，收敛 ⟹ 紧致）</div>
+    <p><strong>反证。</strong>设所有素滤子都收敛，但存在开覆盖 <span class="math">X = ⋃<sub>i∈I</sub> U<sub>i</sub></span> 无有限子覆盖。</p>
+    <p><strong>第一步：造一个 f.i.p. 的族。</strong>考虑</p>
+    <div class="formula"><span class="math">E = { (X − U<sub>i<sub>0</sub></sub>) ∩ ⋯ ∩ (X − U<sub>i<sub>n</sub></sub>) : {i<sub>0</sub>,…,i<sub>n</sub>} ⊆ I 有限 }</span></div>
+    <p>即<strong>有限多个覆盖成员的补之交</strong>。因为有限并没覆盖 <span class="math">X</span>，每个这样的集合<strong>非空</strong>；它包含空交（取 <span class="math">n = −1</span> 时约定为 <span class="math">X</span>）；且<strong>对交封闭</strong>。<strong>所以 <span class="math">E</span> 是滤子基。</strong></p>
+    <p><strong>第二步：扩成素滤子。</strong>由素滤子定理（定理 3.3），存在素滤子 <span class="math">𝔘 ⊇ E</span>。<strong>由假设，<span class="math">𝔘</span> 收敛到某点 <span class="math">x</span>。</strong></p>
+    <p><strong>第三步：逼出矛盾。</strong>因为 <span class="math">U<sub>i</sub></span> 覆盖 <span class="math">X</span>，选 <span class="math">i</span> 使 <span class="math">x ∈ U<sub>i</sub></span>。<strong>收敛性给出 <span class="math">V ∈ 𝔘</span> 满足 <span class="math">V ⊆ U<sub>i</sub></span></strong>（这是 L12 收敛定义的形式：<span class="math">𝔘</span> 含一个落在邻域内的成员）。但 <span class="math">X − U<sub>i</sub> ∈ E ⊆ 𝔘</span>，于是</p>
+    <div class="formula"><span class="math">∅ = V ∩ (X − U<sub>i</sub>) ∈ 𝔘</span></div>
+    <p>与 <span class="math">𝔘</span> 是真滤子矛盾。<span class="qed">∎</span></p>
+    <p><strong>注意两个方向用了完全不同的工具：</strong></p>
+    <ul>
+      <li><strong>⟹ 用紧致性 + 素性</strong>（素滤子已有的性质，去造极限点）；</li>
+      <li><strong>⟸ 用素滤子定理 + 收敛</strong>（用 AC 造出一个素滤子，再用收敛性打倒反设）。</li>
+    </ul>
+    <p><strong>所以这条定理的证明成本不对称：一个方向是「分析」，另一个方向是「综合 + 选择公理」。</strong>这也解释了为什么它跟 BPI 等价——反方向就是 BPI 的直接应用。</p>
+  </div>
+
+  <div class="intu"><div class="bt">这条定理为什么是本讲的高潮</div>
+    <p>把三副面孔摆在一起：</p>
+    <table>
+      <tr><th>领域</th><th>同一句话的写法</th></tr>
+      <tr><td><strong>拓扑</strong></td><td>紧致：每个开覆盖有有限子覆盖；等价地每个素滤子收敛</td></tr>
+      <tr><td><strong>逻辑</strong></td><td>紧致性定理：每个有限可满足的理论整体可满足</td></tr>
+      <tr><td><strong>代数</strong></td><td>簇对超积封闭（UAL 定理 4.1.5）；每个真滤子可扩成超滤子</td></tr>
+    </table>
+    <p><strong>它们不是「类似」，是同一个定理在不同范畴里的像。</strong>§9 的融合接口会把这张表做实。此处先指出一个具体接口：</p>
+    <p><strong>「每个素滤子收敛」 ⟷ 「每个理论有模型」。</strong>给定理论 <span class="math">Γ</span>，把它的<strong>证明闭包</strong> <span class="math">Cn(Γ)</span> 取出来——它是一个滤子（L02 讲过 <span class="math">Cn</span> 是闭包算子，其对偶就是滤子）。若 <span class="math">Γ</span> 有限可满足，则 <span class="math">Cn(Γ)</span> 是真滤子；扩成素滤子 <span class="math">𝔘</span>（= 完全理论，对每条公式表态）；<strong>命题 6.1 说 <span class="math">𝔘</span> 收敛到某个模型 <span class="math">x</span></strong>；而「<span class="math">𝔘</span> 收敛到 <span class="math">x</span>」正是「<span class="math">x</span> 满足 <span class="math">𝔘</span> 里所有公式」，于是 <span class="math">x ⊨ Γ</span>。<strong>整条链：有限可满足 → 真滤子 → 素滤子 → 收敛 → 有模型。中间那一步「素滤子 → 收敛」就是紧致性，就是命题 6.1。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">[0,1]</span> 紧致，故每个素滤子收敛。取滤子基 <span class="math">{[0, 1/n] : n ≥ 1}</span>（有 f.i.p.，因为有限交是 <span class="math">[0, 1/max]</span>），扩成素滤子 <span class="math">𝔘</span>。</p>
+    <p><strong>它的极限是几？</strong>看 <span class="math">𝔘<sub>cl</sub></span>：含所有 <span class="math">[0,1/n]</span>，交为 <span class="math">{0}</span>，由命题 6.1 的证明，极限就是 <span class="math">0</span>。<strong>所以极限点被 <span class="math">𝔘<sub>cl</sub></span> 完全钉死了。</strong></p>
+    <p><strong>但 <span class="math">𝔘</span> 本身未必是主超滤子。</strong>若 <span class="math">𝔘</span> 是主超滤子 <span class="math">𝔘<sub>x</sub></span>，则 <span class="math">{x} ∈ 𝔘</span>，而 <span class="math">[0,1/n] ∈ 𝔘</span> 迫使 <span class="math">x ∈ [0,1/n]</span> 对一切 <span class="math">n</span> 成立，即 <span class="math">x = 0</span>。所以要造非主的，只需让 <span class="math">A = {1/n : n ≥ 1}</span> 也进 <span class="math">𝔘</span>——它满足 <span class="math">0 ∉ A</span>，且与每个 <span class="math">[0,1/n]</span> 相交（交含 <span class="math">1/n</span>），故相容，可以扩。<strong>此时 <span class="math">{0} ∉ 𝔘</span>，<span class="math">𝔘 ≠ 𝔘<sub>0</sub></span>，于是 <span class="math">𝔘</span> 非主。</strong></p>
+    <p><strong>这个例子的教益：极限唯一（在 <span class="math">[0,1]</span> 这种 Hausdorff 空间里）并不要求滤子唯一。</strong>无穷多个不同的素滤子可以收敛到同一个点——<strong>它们是同一个点的不同「逼近方式」。</strong>这正是 §8 里 <span class="math">βX</span> 的「纤维」概念，也是 L06 Stone 表示里同一个素滤子既当点又当理论的原因。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><span class="math">βω</span>：<span class="math">ω</span> 上所有素滤子构成的空间（拓扑见 §8）。<strong><span class="math">βω</span> 紧致，且每个素滤子都收敛——收敛到「它自己」。</strong>这句话听起来循环，实际上提示了 Stone–Čech 紧致化的本质：<strong>紧致化就是把「素滤子」本身当点，让每个素滤子收敛到自己。</strong></p>
+    <p><strong>为什么这是本质例子：</strong>它展示了命题 6.1 的<strong>构造性反面</strong>。一般情形下命题 6.1 只给存在性，不给构造。但 <span class="math">βω</span> 里极限<strong>恰好就是那个素滤子</strong>——空间的点与素滤子一一对应。<strong>这是「紧致化」这件事的最干净形态：把缺的点直接定义为「缺的那个极限」。</strong>§7 的 Alexandroff 是另一个极端（只补一点），§8 是最大补法。<strong>三者对照，才看得清「补多少点」这件事的真正自由度。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>把「每个素滤子收敛」误读成「每个滤子收敛」。</strong>错得很厉害。<span class="math">[0,1]</span> 紧致，但<strong>平凡滤子 <span class="math">{X}</span></strong>（只用 <span class="math">X</span> 一个集合生成的滤子……严格说是 <span class="math">{X}</span> 的向上闭包，也就是 <span class="math">{X}</span> 本身）<strong>不收敛</strong>：它要收敛到 <span class="math">x</span>，就得让 <span class="math">x</span> 的每个邻域都在 <span class="math">{X}</span> 里——也就是 <span class="math">x</span> 唯一的邻域是 <span class="math">X</span> 本身，即 <span class="math">x</span> 属于<strong>每个</strong>非空开集。<span class="math">[0,1]</span> 里没有这样的点（Sierpiński 空间里那个开点倒是符合）。</p>
+    <p><strong>根源在于「不收敛」的两个原因被混起来了。</strong>平凡滤子不收敛，是因为<strong>它的成员太粗</strong>（<span class="math">X</span> 太肥，塞不进任何真邻域）；而命题 6.1 关心的是<strong>「成员够细但落点不存在」</strong>。素滤子保证了对每条命题表态，所以「粗」的问题不存在了，剩下的只是「有没有落点」——这才是紧致性管的事。<strong>所以命题 6.1 必须限定「素」。</strong></p>
+    <p>② <strong>把「每个素滤子至多收敛一点」和命题 6.1 混起来。</strong>「至多一点」是 <strong>T2</strong>（L12 §6 定理 6.2）；「至少一点」才是<strong>紧致</strong>。两者独立、可以分别失败。<strong>合起来才是分析里那句「极限存在且唯一」。</strong>这是本讲与 L12 的分工，必须分清。</p>
+    <p>③ <strong>以为命题 6.1 能用来「算」极限。</strong>它不能。它只保证存在。<strong>真要算极限得用 <span class="math">𝔘<sub>cl</sub></span> 的交</strong>（如上面典型例子），而那需要知道 <span class="math">𝔘</span> 里有哪些闭集——通常很难。<strong>命题 6.1 的正确用法是判紧致性（用它证不紧致最容易：造一个不收敛的素滤子）和做存在性论证。</strong></p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 §5.2（命题 5.2.9 及完整证明、引理 5.2.8）；素滤子定理见定理 5.1.3；L12 §5 定义 5.2（收敛）、§6 定理 6.2（Hausdorff ⟺ 极限唯一）。</p>
+</section>
+
+<!-- ============ O5 紧致 Hausdorff 与 Alexandroff ============ -->
+<section id="ch">
+  <h2><span class="sn">7</span>紧致 Hausdorff、局部紧与 Alexandroff 紧致化 <span class="tag top">O5</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>命题 6.1 只给了「极限存在」。L12 给了「极限至多一个」。<strong>两个条件分开看都不够用，合起来才是分析的做法。</strong>问题是：紧致和 T2 能不能同时满足？会不会互相排斥？</p>
+    <p><strong>不但不排斥，而且配合得极好。</strong>定理 5.3.1 说：紧致 + Hausdorff 会<strong>额外赠送</strong>三个性质——正规性、闭 = 紧致、连续双射即同胚。<strong>这三个都是「免费」得到的，代价只是同时假设紧致和 T2。</strong>所以这两个条件在数学里几乎总是成对出现，简称「紧 Hausdorff」。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">7.1（定理 5.3.1）</span></div>
+    <p>若 <span class="math">X</span> 紧致且 Hausdorff，则：</p>
+    <ol>
+      <li><span class="math">X</span> 正规；</li>
+      <li>紧致子集恰为闭子集；</li>
+      <li>紧致 Hausdorff 空间之间的连续双射是同胚。</li>
+    </ol>
+  </div>
+
+  <div class="proof"><div class="bt">三个证明的骨架，以及它们共同的招法</div>
+    <p><strong>(1) 正规性。</strong>设 <span class="math">E, F</span> 不交闭集。<strong>在紧致空间里闭集紧致</strong>（这正是 (2) 的一个方向，引理 5.2.11），故 <span class="math">E, F</span> 都紧致。<strong>固定 <span class="math">x ∈ E</span>，对每个 <span class="math">y ∈ F</span> 取不交开邻域 <span class="math">U<sub>x,y</sub> ∋ x</span>、<span class="math">V<sub>x,y</sub> ∋ y</span></strong>（这里用了 T2）。<span class="math">F</span> 紧致，故 <span class="math">{V<sub>x,y</sub>}</span> 有有限子覆盖 <span class="math">V<sub>x,y<sub>0</sub></sub>,…,V<sub>x,y<sub>n</sub></sub></span>。令</p>
+    <div class="formula"><span class="math">V<sub>x</sub> = V<sub>x,y<sub>0</sub></sub> ∪ ⋯ ∪ V<sub>x,y<sub>n</sub></sub>,&nbsp;&nbsp; U<sub>x</sub> = U<sub>x,y<sub>0</sub></sub> ∩ ⋯ ∩ U<sub>x,y<sub>n</sub></sub></span></div>
+    <p>则 <span class="math">F ⊆ V<sub>x</sub></span>、<span class="math">x ∈ U<sub>x</sub></span>、且 <span class="math">U<sub>x</sub> ∩ V<sub>x</sub> = ∅</span>。<strong>现在让 <span class="math">x</span> 跑遍 <span class="math">E</span>：<span class="math">{U<sub>x</sub>}</span> 覆盖紧致集 <span class="math">E</span></strong>，取有限子覆盖 <span class="math">U<sub>x<sub>0</sub></sub>,…,U<sub>x<sub>m</sub></sub></span>，令</p>
+    <div class="formula"><span class="math">U = U<sub>x<sub>0</sub></sub> ∪ ⋯ ∪ U<sub>x<sub>m</sub></sub>,&nbsp;&nbsp; V = V<sub>x<sub>0</sub></sub> ∩ ⋯ ∩ V<sub>x<sub>m</sub></sub></span></div>
+    <p>则 <span class="math">E ⊆ U</span>、<span class="math">F ⊆ V</span>、<span class="math">U ∩ V = ∅</span>。<strong>正规。</strong></p>
+    <p><strong>注意那个「两次取有限」的结构：</strong>先对 <span class="math">F</span> 取<strong>并</strong>（覆盖它），对 <span class="math">x</span> 取<strong>交</strong>（保住 <span class="math">x</span>）；再对 <span class="math">E</span> 取<strong>并</strong>，对 <span class="math">F</span> 取<strong>交</strong>。<strong>两次都是「覆盖方取并、被保住方取交」，并且两次都靠紧致性把无穷降成有限。</strong>这个双重紧致技巧是紧 Hausdorff 空间里最常用的招法，值得记住形状。</p>
+    <p><strong>(2) 紧致 ⟺ 闭。</strong>一个方向是引理 5.2.11：紧致空间的闭子集紧致（用「<span class="math">⋃V<sub>i</sub> ∪ (X − A)</span>」这个开覆盖）。反方向：设 <span class="math">A</span> 紧致、<span class="math">x ∉ A</span>，对每个 <span class="math">y ∈ A</span> 取不交开集 <span class="math">U<sub>y</sub> ∋ x</span>、<span class="math">V<sub>y</sub> ∋ y</span>。<span class="math">A</span> 紧致，有限多个 <span class="math">V<sub>y<sub>0</sub></sub>,…,V<sub>y<sub>n</sub></sub></span> 覆盖 <span class="math">A</span>，故 <span class="math">U<sub>y<sub>0</sub></sub> ∩ ⋯ ∩ U<sub>y<sub>n</sub></sub></span> 是 <span class="math">x</span> 的开邻域且与 <span class="math">A</span> 不交。<strong>于是 <span class="math">X − A</span> 开，<span class="math">A</span> 闭。</strong></p>
+    <p><strong>讲义在这里加了一句关键的注：「注意这一步只需环境空间 Hausdorff。」</strong>不需要紧致性。<strong>所以精确的陈述是：在 Hausdorff 空间里，紧致子集必闭。</strong>反方向需要紧致：<strong>在紧致空间里，闭子集必紧致。</strong>两句话的前提不同，别混成一句「紧致 = 闭」。</p>
+    <p><strong>(3) 连续双射即同胚。</strong>设 <span class="math">f : X → Y</span> 连续双射，<span class="math">X</span> 紧致、<span class="math">Y</span> Hausdorff。若 <span class="math">U</span> 在 <span class="math">X</span> 中闭，则 <span class="math">U</span> 紧致（(2) 的紧致侧），<span class="math">f[U]</span> 紧致（命题 5.2.12，连续像保紧致），故在 <span class="math">Y</span> 中闭（(2) 的 Hausdorff 侧）。<strong>所以 <span class="math">f</span> 是闭映射；连续双射 + 闭映射 = 同胚。</strong> <span class="qed">∎</span></p>
+    <p><strong>这条的实用价值极高。</strong>L11 讲同胚时，验证同胚要同时验 <span class="math">f</span> 连续<strong>和</strong> <span class="math">f<sup>−1</sup></span> 连续，两件事都很麻烦。<strong>现在只要「<span class="math">X</span> 紧致 + <span class="math">Y</span> Hausdorff + <span class="math">f</span> 连续双射」，逆连续性白送。</strong>这是 L11 §6 那个「四格表」里最值钱的一格，也是「紧致 Hausdorff」几乎总成对出现的原因之一。</p>
+  </div>
+
+  <div class="intu"><div class="bt">存在性 + 唯一性，正式合成</div>
+    <p>把 L12 与 L13 拼起来：</p>
+    <div class="formula">X 紧致 + Hausdorff &nbsp;⟹&nbsp; 每个素滤子<strong>恰收敛到唯一一点</strong></div>
+    <p><strong>存在</strong>由命题 6.1（紧致），<strong>唯一</strong>由 L12 §6 定理 6.2（T2）。<strong>这就是分析里那句「极限存在且唯一」在一般拓扑里的版本。</strong></p>
+    <p><strong>为什么这件事值得大书特书：</strong>在 <span class="math">ℝ</span> 里我们从来不觉得「极限存在」是个问题——因为它紧致化过（<span class="math">ℝ ∪ {±∞}</span> 或 <span class="math">S<sup>1</sup></span>）。<strong>但一般的逼近过程（迭代、逼近序列、模型构造）里，「收敛到哪」常常是核心难点。</strong>紧致性把这件事从「构造」降级成「验证」——<strong>你不需要指出极限是什么，只要证明所在空间紧致。</strong>这是数学里最划算的交易之一。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">7.2（定义 5.3.2、5.3.4、5.3.6）</span></div>
+    <p>设 <span class="math">f : X → Y</span> 连续。若 <span class="math">f[X]</span> 在 <span class="math">Y</span> 中稠密（<span class="math">cl f[X] = Y</span>），称 <span class="math">(Y, f)</span> 为 <span class="math">X</span> 的<strong>拓扑扩张</strong>。进一步：</p>
+    <ul>
+      <li>若 <span class="math">Y</span> 紧致，称为<strong>紧致化</strong>（compactification）；</li>
+      <li>若 <span class="math">f</span> 是到其像的同胚且 <span class="math">X</span> 不紧致，称为<strong>真扩张</strong>（proper extension）；</li>
+      <li>若还满足 <span class="math">Y</span> 紧致、<span class="math">f[X]</span> 在 <span class="math">Y</span> 中<strong>开</strong>，称为<strong>强紧致化</strong>。</li>
+    </ul>
+    <p>Hausdorff 空间 <span class="math">X</span> 称为<strong>局部紧致</strong>，若每个 <span class="math">x ∈ X</span> 都有一个紧致邻域。</p>
+    <p><strong>讲义在这里有一句非常诚实的提醒：「这一组术语并非统一标准，不同作者的约定差异很大。」</strong>（原文定义 5.3.2 的脚注。）而中译本的译注还纠正了原稿两处：<strong>「真扩张」处的 <span class="math">f</span> 应是到其像的同胚（否则非紧致 <span class="math">X</span> 无法被紧致化）</strong>；<strong>命题 5.3.3 原稿漏写 Hausdorff</strong>（「嵌入某个紧致空间」本身不蕴含 Tychonoff，例如任何非 T1 的有限空间已紧致）。<strong>读这一节务必以定义为准，别信记忆里的术语。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">7.3（定义 5.3.4 + 命题 5.3.5，Alexandroff 一点紧致化）</span></div>
+    <p>令 <span class="math">X<sup>*</sup> = X ∪ {∞}</span>（<span class="math">∞ ∉ X</span>）。规定 <span class="math">U ⊆ X<sup>*</sup></span> 开，当且仅当</p>
+    <div class="formula"><span class="math">U 在 X 中开，&nbsp;&nbsp;或者&nbsp;&nbsp; U = (X − C) ∪ {∞}，其中 C 是 X 中的紧致闭子集</span></div>
+    <p>若 <span class="math">X</span> 不紧致，则 <span class="math">(X<sup>*</sup>, i)</span> 是 <span class="math">X</span> 的<strong>强紧致化</strong>（<span class="math">i</span> 为包含映射）。常记为 <span class="math">α(X)</span>。</p>
+  </div>
+
+  <div class="proof"><div class="bt">证明</div>
+    <p><strong>拓扑合法性</strong>（讲义略，这里补）：<span class="math">∅</span> 与 <span class="math">X<sup>*</sup></span> 都开（<span class="math">∅</span> 在 <span class="math">X</span> 中开；<span class="math">X<sup>*</sup> = (X − ∅) ∪ {∞}</span>，而 <span class="math">∅</span> 紧致闭）。对有限交：两类开集的交仍是两类（<span class="math">U<sub>1</sub> ∩ ((X−C) ∪ {∞}) = (U<sub>1</sub> − C) ∪ {∞}</span> 若 <span class="math">∞ ∈ U<sub>1</sub></span>，此时 <span class="math">U<sub>1</sub></span> 形如 <span class="math">(X−C<sub>1</sub>)∪{∞}</span>，交为 <span class="math">(X − (C<sub>1</sub> ∪ C)) ∪ {∞}</span>，而两个紧致闭集之并紧致闭）。<strong>细节可以自己补，关键是「紧致闭」这个条件恰好对有限并封闭。</strong></p>
+    <p><strong><span class="math">i</span> 是拓扑嵌入且 <span class="math">X</span> 在 <span class="math">X<sup>*</sup></span> 中开：</strong>按定义，<span class="math">X</span> 中开集在 <span class="math">X<sup>*</sup></span> 中开，故 <span class="math">i</span> 是开嵌入。</p>
+    <p><strong><span class="math">X</span> 稠密：</strong>若 <span class="math">U ∋ ∞</span> 开，则 <span class="math">U ≠ {∞}</span>——否则 <span class="math">X − C = ∅</span>，即 <span class="math">C = X</span>，与「<span class="math">X</span> 不紧致」矛盾。<strong>所以 <span class="math">U ∩ X ≠ ∅</span>。</strong>（<strong>这里就是「不紧致」这个假设唯一的用处，也是最漂亮的一处。</strong>）</p>
+    <p><strong>紧致：</strong>取 <span class="math">X<sup>*</sup></span> 的开覆盖。某个成员含 <span class="math">∞</span>，故为 <span class="math">(X − C) ∪ {∞}</span>，<span class="math">C</span> 紧致。<strong>其余成员在 <span class="math">C</span> 上诱导开覆盖</strong>（每个与 <span class="math">C</span> 相交的部分是 <span class="math">C</span> 的相对开集），由 <span class="math">C</span> 紧致选有限多个覆盖 <span class="math">C</span>，连同该成员便覆盖 <span class="math">X<sup>*</sup></span>。 <span class="qed">∎</span></p>
+  </div>
+
+  <div class="ex"><div class="bt">例 <span class="num">7.4（<span class="math">α(ω)</span>，图 5.1 的构造）</span></div>
+    <p>取离散的 <span class="math">ω = {0,1,2,…}</span>。它 Hausdorff 但不紧致（单点集族是开覆盖，无有限子覆盖）。<strong>加一点 <span class="math">∞</span></strong>，开集是：<span class="math">ω</span> 的任意子集，以及含 <span class="math">∞</span> 的余有限集（因为 <span class="math">ω</span> 离散时「紧致 ⟺ 有限」，故 <span class="math">C</span> 就是有限集）。</p>
+    <p>所得空间 <span class="math">α(ω)</span> 就是图 5.1 那个：<span class="math">0, 1, 2, …, ∞</span>。<strong>它紧致且 Hausdorff。</strong>（讲义说「请验证」——这里给一句话：任意开覆盖中取一个含 <span class="math">∞</span> 的成员，它漏掉有限多个点，逐个补上即可。<strong>Hausdorff 见命题 7.5。</strong>）</p>
+    <p><strong>注意它和序数的关系：</strong><span class="math">α(ω)</span> 正是序数 <span class="math">ω + 1</span> 带序拓扑。<strong>而 <span class="math">α(ℝ) ≅ S<sup>1</sup></span>——这在 §8 结尾会再提，它是「两种紧致化分别是最小与最大」这句话里「最小」的例子。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">7.5（命题 5.3.7）</span></div>
+    <p>若 <span class="math">X</span> Hausdorff 且不紧致，则 <span class="math">α(X)</span> Hausdorff，<strong>当且仅当</strong> <span class="math">X</span> 局部紧致。</p>
+    <p><strong>证明见习题 5.8（讲义原话），思路值得先说：</strong></p>
+    <p><strong>⟸：</strong>要分开 <span class="math">∞</span> 与 <span class="math">x ∈ X</span>。局部紧给 <span class="math">x</span> 一个紧致邻域 <span class="math">K</span>。<strong>在 Hausdorff 空间里可以取 <span class="math">K</span> 闭</strong>（把 <span class="math">K</span> 换成 <span class="math">cl K</span>，紧致空间里紧致集闭…这里需要 <span class="math">K</span> 紧致 + 环境 Hausdorff ⟹ <span class="math">cl K = K</span>，故 <span class="math">K</span> 闭）。于是 <span class="math">(X − K) ∪ {∞}</span> 是 <span class="math">∞</span> 的开邻域，与 <span class="math">int K ∋ x</span> 不交。<strong>关键：局部紧致保证了「<span class="math">x</span> 有一个离开 <span class="math">∞</span> 的余地」。</strong></p>
+    <p><strong>⟹：</strong>若 <span class="math">α(X)</span> Hausdorff，则 <span class="math">∞</span> 与 <span class="math">x</span> 有分离的开邻域 <span class="math">U ∋ ∞</span>、<span class="math">V ∋ x</span>。写 <span class="math">U = (X − C) ∪ {∞}</span>，<span class="math">C</span> 紧致闭。<strong>则 <span class="math">cl<sub>X</sub> V ⊆ C</span></strong>（因为 <span class="math">V ∩ (X − C) = ∅</span>）。而 <span class="math">C</span> 紧致，闭子集 <span class="math">cl V</span> 也紧致，故 <span class="math">cl V</span> 是 <span class="math">x</span> 的紧致邻域。<strong>局部紧。∎</strong></p>
+    <p><strong>这条命题说明了 Alexandroff 的局限：它「补得最少」，但补得少就未必补得好。</strong>讲义紧接着给出反例的伏笔：<strong>即使 <span class="math">X</span> 正规，<span class="math">α(X)</span> 也可能非 Hausdorff</strong>（习题 5.7 的 Arens–Fort 空间）。<strong>所以「补一点」这条最省事的路，只对局部紧空间可靠。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">反例：Arens–Fort 空间（习题 5.7）</div>
+    <p>令 <span class="math">X = ℕ<sup>2</sup></span>（平面第一象限的格点）。规定 <span class="math">U ⊆ X</span> 开，当且仅当满足下列之一：</p>
+    <ul>
+      <li><span class="math">(0,0) ∉ U</span>（<span class="math">U</span> 不碰原点）；</li>
+      <li><span class="math">(0,0) ∈ U</span>，且<strong>除有限多个 <span class="math">m</span> 外，<span class="math">U</span> 包含每行 <span class="math">{(m,n) : n ∈ ω}</span> 中除有限多个外的全部点</strong>。</li>
+    </ul>
+    <p>习题要求证明：<strong>(1) 它正规；(2) <span class="math">α(X)</span> 不 Hausdorff。</strong>提示是「证明紧致闭子集只能包含有限多个不同于 <span class="math">(0,0)</span> 的点」。</p>
+    <p><strong>为什么这个反例值得单独看：</strong>它把「正规」和「局部紧」这两件事<strong>彻底分开了</strong>。L12 的阶梯里正规是比 T2 更强的条件，人的直觉是「正规 + 补一点 ⟹ 还是 Hausdorff」。<strong>Arens–Fort 把这个直觉打碎</strong>：<span class="math">(0,0)</span> 这个点的邻域必须是「几乎所有行的几乎所有点」，<strong>它太肥了，肥到任何紧致集都装不下它的邻域</strong>，于是 <span class="math">(0,0)</span> 没有紧致邻域，不局部紧，而 <span class="math">∞</span> 就无法与它分开。</p>
+    <p><strong>教益：紧致性的「局部版本」（局部紧）与分离性的「全局版本」（正规）互不蕴含。</strong>这是 L12 阶梯图之外的第四种独立性，值得记进反例库。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">α(ℝ) ≅ S<sup>1</sup></span>（圆周）。把 <span class="math">ℝ</span> 的「两端」接到同一个点 <span class="math">∞</span>：<span class="math">t ↦ e<sup>2πit/(1+|t|)</sup></span> 之类。因为 <span class="math">ℝ</span> 局部紧 Hausdorff，<span class="math">α(ℝ)</span> 也 Hausdorff。<strong>这就是 L11-alt 里那个贯穿映射 <span class="math">π : ℝ → S<sup>1</sup></span> 的拓扑背景。</strong></p>
+    <p><span class="math">α((0,1)) ≅ [0,1]</span>：两端各补一点？<strong>不，只补一点。</strong>因为 <span class="math">(0,1) ≅ ℝ</span>，一点紧致化是圆周。要得到 <span class="math">[0,1]</span> 得补两个点——<strong>「补几点」由「空间有几个『逃逸方向』」决定，不是由「差几个端点」决定。</strong><span class="math">ℝ</span> 有两个逃逸方向（<span class="math">±∞</span>），可在一点紧致化里<strong>并成一个</strong>；<span class="math">[0,1]</span> 是「不并」的版本（两点紧致化）。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><span class="math">α(ω) = ω+1</span>。它的本质性在于<strong>它就是 §2 闹钟例子的解</strong>：<span class="math">x<sub>∞</sub></span> 就是 <span class="math">∞</span>，而那个「每一秒都往后推」的理论正好收敛到它。</p>
+    <p><strong>为什么这是本质的：</strong>它展示了紧致化的<strong>认识论含义</strong>——<strong>补上的点 = 相容但没有实现的理论</strong>。这个含义在 §8 的 Stone–Čech 里会被推到极致：那里补的不是一个点，而是<strong>每一个</strong>这样的理论各补一个点。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>以为一点紧致化总能得到 Hausdorff。</strong>错，命题 7.5 说需要局部紧，Arens–Fort 是反例。<strong>更常见的误解是「正规 ⟹ 局部紧」</strong>——两者毫无关系。</p>
+    <p>② <strong>把 <span class="math">α(X)</span> 和 <span class="math">βX</span> 搞混。</strong>讲义最后说得极清楚：对局部紧 Hausdorff 空间，<strong>这两种紧致化分别是最小和最大的</strong>。最小 = <span class="math">α</span>（只补必要的那一点点），最大 = <span class="math">β</span>（把所有可能的极限都补上）。<strong>中间还可能有许多</strong>：讲义给的例子是</p>
+    <div class="formula"><span class="math">S<sup>1</sup> ≤ [0,1] ≤ βℝ</span></div>
+    <p><strong>而这三个的大小关系不是「子空间包含」</strong>——讲义有脚注纠正：「紧致化的标准偏序实际由固定原空间的连续满射（支配关系）定义，不宜理解为一般子空间嵌入。」<strong>这是个非常容易错的地方：<span class="math">S<sup>1</sup></span> 不是 <span class="math">[0,1]</span> 的子空间，但 <span class="math">[0,1]</span> 是 <span class="math">S<sup>1</sup></span> 的商（把两端粘起来）。</strong></p>
+    <p>③ <strong>以为「紧致化」必须保持 T2。</strong>定义 5.3.2 只要求 <span class="math">Y</span> 紧致，<strong>没要求 Hausdorff</strong>。所以 <span class="math">α</span> 在某些空间上给出非 Hausdorff 的结果，仍然符合定义。<strong>要 Hausdorff 得额外要求，那就引出 §8 的 <span class="math">β</span>。</strong></p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 §5.2（引理 5.2.11、命题 5.2.12）、§5.3（定理 5.3.1 及完整证明、定义 5.3.2 及三条脚注译注、命题 5.3.3、定义 5.3.4、命题 5.3.5、定义 5.3.6、命题 5.3.7）、§5.4（习题 5.4、5.7、5.8）；图 5.1（一点紧致化）、图 5.3（Arens–Fort 空间中的典型开集）。</p>
+</section>
+
+<!-- ============ O6 Stone-Čech ============ -->
+<section id="sc">
+  <h2><span class="sn">8</span>Stone–Čech 紧致化 <span class="tag top">O6</span><span class="tag log">O6</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>Alexandroff 只补一个点，省事但不够：<strong>它只对局部紧空间保证 Hausdorff，而且它把所有的「无穷远方向」硬粘成一个点。</strong>如果空间有完全不同的若干种逃逸方式（比如 <span class="math">ω</span> 上有无穷多种本质不同的「趋于无穷」的方式——每个非主超滤子一种），一点紧致化会把它们全糊在一起，<strong>丢掉了信息</strong>。</p>
+    <p><strong>那就不糊：每一种逃逸方式各补一个点。</strong>这就是 Stone–Čech 紧致化 <span class="math">βX</span>。它的定义方式很优雅——<strong>不说「补哪些点」，只说「它必须满足什么」</strong>（泛性质），然后证明这样东西存在且唯一。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">8.1（定义 5.3.8）</span></div>
+    <p>设 <span class="math">X</span> 为拓扑空间。若 <span class="math">Y</span> 紧致 Hausdorff，<span class="math">i : X → Y</span> 连续且像稠密，并满足下述<strong>泛性质</strong>：对任意紧致 Hausdorff 空间 <span class="math">Z</span> 及连续映射 <span class="math">f : X → Z</span>，<strong>存在唯一</strong>连续映射 <span class="math">f̄ : Y → Z</span>，使 <span class="math">f̄ = f ◦ i</span>，</p>
+    <p>则称 <span class="math">(Y, i)</span> 为 <span class="math">X</span> 的 <strong>Stone–Čech 紧致化</strong>，通常记为 <span class="math">βX</span>。</p>
+
+    <div class="diagram">              i
+        X ──────────► Y = βX
+         ╲             │
+          ╲            │  f̄  （存在且唯一）
+        f  ╲           │
+            ╲          ▼
+             ╲──────► Z   紧致 Hausdorff</div>
+
+    <p><strong>把它读成一句话：从 <span class="math">X</span> 出发到任何紧致 Hausdorff 空间的映射，都能唯一地「穿过」<span class="math">βX</span>。</strong>换句话说，<strong><span class="math">βX</span> 是所有紧致 Hausdorff 扩张里「最自由」的那个</strong>——它能模拟任何别的扩张。<strong>「最大」这个词就是这个意思。</strong></p>
+  </div>
+
+  <div class="proof"><div class="bt">为什么「唯一」几乎是白送的</div>
+    <p>设 <span class="math">(Y, i)</span>、<span class="math">(Y′, i′)</span> 都满足定义。则由泛性质有连续映射 <span class="math">a : Y → Y′</span>、<span class="math">b : Y′ → Y</span>，满足</p>
+    <div class="formula"><span class="math">a ◦ i = i′, &nbsp;&nbsp; b ◦ i′ = i</span></div>
+    <p>从而 <span class="math">b ◦ a ◦ i = i = id<sub>Y</sub> ◦ i</span>。<strong><span class="math">b ◦ a</span> 和 <span class="math">id<sub>Y</sub></span> 都是「使 <span class="math">f̄ ◦ i = i</span> 的连续映射」</strong>，由唯一性 <span class="math">b ◦ a = id<sub>Y</sub></span>；同理 <span class="math">a ◦ b = id<sub>Y′</sub></span>。<strong>故两个空间同胚。所以「在同胚意义下唯一」。</strong></p>
+    <p><strong>这个论证是范本。</strong>凡是靠泛性质定义的构造，唯一性都这么证：<strong>造两个方向的映射，证明复合等于恒等，全部靠「唯一性」这一句。</strong>L02 的 Galois 连接、L05 的自由代数、L11 的商拓扑泛性质，都是同一个套路。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 <span class="num">8.2（例 5.3.9，<span class="math">βω</span>）</span></div>
+    <p>对离散空间 <span class="math">ω</span>，<strong><span class="math">βω</span> 可以取为 <span class="math">ω</span> 上所有素滤子的集合</strong>，基本开集为</p>
+    <div class="formula"><span class="math">φ(U) = { 𝔘 ∈ βω : U ∈ 𝔘 }, &nbsp;&nbsp; U ⊆ ω</span></div>
+    <p>（讲义用 <span class="math">φ(U)</span> 记号；等价地，<span class="math">φ(U)</span> 就是「含有 <span class="math">U</span> 的那些素滤子」。）可以证明该空间紧致 Hausdorff，并具有紧致化泛性质。<strong>更一般地，对任意离散空间 <span class="math">X</span>，其 Stone–Čech 紧致化均可取为 <span class="math">X</span> 上素滤子的空间</strong>，拓扑基同上。</p>
+    <p><strong>这个构造极为漂亮，值得停下来看它说了什么。</strong></p>
+    <ul>
+      <li><strong>点 = 素滤子 = 完全理论。</strong>（§3 的翻译表）</li>
+      <li><strong>基本开集 <span class="math">φ(U)</span> = 「确定 <span class="math">U</span> 的那些理论」。</strong>注意这和 L08 的开集认识论读法完全一致：<strong><span class="math">φ(U)</span> 是「可验证 <span class="math">U</span> 成立」这件事</strong>。</li>
+      <li><strong>原空间 <span class="math">ω</span> 嵌进去的方式：<span class="math">n ↦ 𝔘<sub>n</sub></span>（主超滤子）。</strong>这些是「有具体模型的理论」，<strong>稠密</strong>——因为任何 <span class="math">φ(U)</span>（<span class="math">U ≠ ∅</span>）都含某个 <span class="math">𝔘<sub>n</sub></span>（取 <span class="math">n ∈ U</span>）。</li>
+      <li><strong>补上的点 = 非主超滤子 = 相容但没有具体模型的理论。</strong>这就是 §2 闹钟例子里那个「闹钟永远不响」的世界的一般化。</li>
+    </ul>
+    <p><strong>而这正是 L06 的 Stone 表示！</strong>L06 里布尔代数 <span class="math">A</span> 的 Stone 空间是「<span class="math">A</span> 上超滤子的集合」，拓扑由 <span class="math">{𝔘 : a ∈ 𝔘}</span> 生成。<strong>同一个构造，两个名字</strong>：在布尔代数上看叫「Stone 空间」，在离散空间上看叫「Stone–Čech 紧致化」。<strong>更精确地说：<span class="math">βX</span> 就是幂集布尔代数 <span class="math">𝓟(X)</span> 的 Stone 空间。</strong>（见练习 E12。）</p>
+  </div>
+
+  <div class="intu"><div class="bt">一般构造为什么需要 [0,1]</div>
+    <p>上面那个「素滤子空间」的构造只对<strong>离散</strong>（或零维）空间直接可用。一般拓扑空间没有「素滤子 ↔ 点」这种一一对应（因为 <span class="math">𝓟(X)</span> 太大了，素滤子会多到分不清）。<strong>一般构造换了个思路：用连续函数当坐标。</strong></p>
+    <p>核心是<strong>评价映射</strong>：</p>
+    <div class="formula"><span class="math">i<sub>X</sub> : X → [0,1]<sup>C(X)</sup>, &nbsp;&nbsp; i<sub>X</sub>(x)(f) = f(x)</span></div>
+    <p>其中 <span class="math">C(X)</span> 是所有连续映射 <span class="math">X → [0,1]</span> 的集合，右边配积拓扑。<strong>即 <span class="math">x</span> 对应一个函数：把每个 <span class="math">f</span> 送到 <span class="math">f(x)</span>。</strong></p>
+    <p><strong>为什么这样做？</strong>因为 <span class="math">[0,1]<sup>C(X)</sup></span> 由 <strong>Tychonoff 定理</strong>紧致（定理 5.2.13），由命题 4.3.5 Hausdorff。<strong>于是「目标空间」自动是紧 Hausdorff 的，我们只要把 <span class="math">X</span> 塞进去，再取闭包。</strong></p>
+    <p>令</p>
+    <div class="formula"><span class="math">K(X) = cl i<sub>X</sub>[X] ⊆ [0,1]<sup>C(X)</sup></span></div>
+    <p>它是紧致空间的闭子空间，故紧致且 Hausdorff；<span class="math">i<sub>X</sub>[X]</span> 在 <span class="math">K(X)</span> 中稠密（按定义）。<strong>所以 <span class="math">(K(X), i<sub>X</sub>)</span> 是紧致 Hausdorff 扩张。</strong>命题 5.3.15 断言它满足泛性质，从而是 Stone–Čech 紧致化。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">8.3（引理 5.3.10–5.3.14 + 命题 5.3.15）</span></div>
+    <p>对任意拓扑空间 <span class="math">X</span>，<span class="math">(K(X), i<sub>X</sub>)</span> 是 <span class="math">X</span> 的 Stone–Čech 紧致化。</p>
+  </div>
+
+  <div class="proof"><div class="bt">四块拼图（讲义原证，此处给出骨架与每块的作用）</div>
+    <p><strong>① 引理 5.3.10（分离不同映射）：</strong>设 <span class="math">X, Y</span> 紧致 Hausdorff，<span class="math">f, g : X → Y</span> 不同的连续映射，则存在连续 <span class="math">h : Y → [0,1]</span> 使 <span class="math">h ◦ f ≠ h ◦ g</span>。<strong>作用：保证「映射不同」可以被 <span class="math">[0,1]</span> 值的函数看出来</strong>——这是为什么坐标只取 <span class="math">[0,1]</span> 就够。</p>
+    <p><strong>② 引理 5.3.12（<span class="math">i<sub>X</sub></span> 连续）：</strong>只需检查子基本开集的原像。设 <span class="math">f ∈ C(X)</span>，<span class="math">O ⊆ [0,1]</span> 开，<span class="math">U = p<sub>f</sub><sup>−1</sup>[O]</span>，则</p>
+    <div class="formula"><span class="math">i<sub>X</sub><sup>−1</sup>[U] = {x : i<sub>X</sub>(x)(f) ∈ O} = f<sup>−1</sup>[O]</span></div>
+    <p>因 <span class="math">f</span> 连续而开。<strong>作用：评价映射是连续嵌入的候选。</strong></p>
+    <p><strong>③ 引理 5.3.13（紧致 Hausdorff 时 <span class="math">X ≅ i<sub>X</sub>[X]</span>）：</strong>先用 <strong>Urysohn 引理</strong>（L12 §8）证 <span class="math">i<sub>X</sub></span> 单射：若 <span class="math">x ≠ y</span>，有连续 <span class="math">f : X → [0,1]</span> 使 <span class="math">f(x)=0, f(y)=1</span>，故 <span class="math">i<sub>X</sub>(x)(f) ≠ i<sub>X</sub>(y)(f)</span>。再由 <span class="math">X</span> 紧致、<span class="math">i<sub>X</sub>[X]</span> Hausdorff，<strong>定理 7.1 第 3 条</strong>给出 <span class="math">i<sub>X</sub></span> 是同胚到其像。<strong>作用：紧致 Hausdorff 空间不丢东西（<span class="math">βX = X</span>）。</strong></p>
+    <p><strong>④ 引理 5.3.14 + 命题 5.3.15（泛性质）：</strong>设 <span class="math">Z</span> 紧致 Hausdorff，<span class="math">m : X → Z</span> 连续。定义</p>
+    <div class="formula"><span class="math">m̂ : [0,1]<sup>C(X)</sup> → [0,1]<sup>C(Z)</sup>, &nbsp;&nbsp; m̂(g)(f) = g(f ◦ m)</span></div>
+    <p>则 <span class="math">m̂</span> 连续，且 <span class="math">m̂ ◦ i<sub>X</sub> = i<sub>Z</sub> ◦ m</span>，特别地 <span class="math">m̂[i<sub>X</sub>[X]] ⊆ i<sub>Z</sub>[Z]</span>。由连续性与 ③，</p>
+    <div class="formula"><span class="math">m̂[K(X)] = m̂[cl i<sub>X</sub>[X]] ⊆ cl m̂[i<sub>X</sub>[X]] ⊆ cl i<sub>Z</sub>[Z] = i<sub>Z</sub>[Z]</span></div>
+    <p>（最后一步因紧致集 <span class="math">i<sub>Z</sub>[Z]</span> 在 Hausdorff 空间中闭。）<strong>因此可以定义</strong></p>
+    <div class="formula"><span class="math">m̄ = i<sub>Z</sub><sup>−1</sup> ◦ m̂ ↾ K(X) : K(X) → Z</span></div>
+    <p>并有 <span class="math">m̄ ◦ i<sub>X</sub> = m</span>。<strong>唯一性：</strong>若另有连续 <span class="math">l</span> 使 <span class="math">l ◦ i<sub>X</sub> = m</span>，则 <span class="math">l</span> 与 <span class="math">m̄</span> 在稠密子集 <span class="math">i<sub>X</sub>[X]</span> 上一致；<strong>因 <span class="math">Z</span> Hausdorff，由「两个连续映射在稠密集上一致则处处一致」得 <span class="math">l = m̄</span></strong>（讲义指出这就是习题 4.2 的结论）。 <span class="qed">∎</span></p>
+    <p><strong>整条证明的骨架，一句话：把「<span class="math">β</span> 的存在」化归成「<span class="math">[0,1]</span> 的 Tychonoff 紧致性」。</strong>所有麻烦都推给积空间——<strong>而积的紧致性正是 Alexander 子基定理（Zorn + 分配律）撑起来的。</strong>所以整条链的底部还是素滤子定理。<strong>没有一处是免费的。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">8.4（命题 5.3.16）</span></div>
+    <ol>
+      <li><span class="math">βX</span> 与 <span class="math">X</span> 经自然映射相同，<strong>当且仅当</strong> <span class="math">X</span> 紧致 Hausdorff；</li>
+      <li><span class="math">X</span> 是 Tychonoff 空间，<strong>当且仅当</strong>自然映射 <span class="math">i : X → βX</span> 是拓扑嵌入；</li>
+      <li>对非紧致的 Tychonoff 空间 <span class="math">X</span>，<span class="math">i[X]</span> 在 <span class="math">βX</span> 中开，<strong>当且仅当</strong> <span class="math">X</span> 局部紧致。</li>
+    </ol>
+    <p><strong>这三条把 <span class="math">β</span> 与 L12 的整个分离阶梯对上：<span class="math">β</span> 只对 Tychonoff 空间是「好的」嵌入。</strong>原稿两处被译注纠正：<strong>第 2 项原文写「真扩张」但真扩张还要求非紧致，须排除紧致情形；第 3 项原文还要求 <span class="math">X</span> 正规，这个要求并非必要。</strong>读文献时注意这类修订。</p>
+    <p>讲义接着给出一个极有趣的对象：<strong>余部 <span class="math">βX − X</span></strong>。当 <span class="math">X</span> Tychonoff 且局部紧时它是闭集，因而本身紧致，具有丰富的拓扑与集合论结构。<strong>尤其 <span class="math">βω − ω</span> 可识别为 <span class="math">ω</span> 上非主素滤子的集合</strong>，与组合集合论、力迫法、代数乘积的对偶都有特殊联系（超出本课程范围）。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">β(0,1]</span> 与 <span class="math">β(0,1)</span>：注意 <span class="math">(0,1]</span> 局部紧，故 <span class="math">β(0,1] − (0,1]</span> 是闭的、紧的；而 <span class="math">(0,1)</span> 不局部紧。<strong>但最干净的典型例子是 <span class="math">X</span> 紧致时：<span class="math">βX = X</span></strong>（命题 8.4 第 1 条）。此时什么都没补，泛性质退化成「<span class="math">f̄ = f</span>」——<strong>一个平凡的恒等，但它是整个理论的锚点：紧致 Hausdorff 空间不需要紧致化。</strong></p>
+    <p>实践上最有用的典型例子：<span class="math">βω</span>。它 <strong>不可度量</strong>、基数 <span class="math">2<sup>2<sup>ℵ<sub>0</sub></sup></sup></span>、<strong>不含任何非平凡的收敛序列</strong>。<strong>这几个性质合起来说明：<span class="math">βω</span> 是一个「只能靠滤子理解」的空间</strong>——序列在它里面完全失效。<strong>这直接印证了 §4 那条警告：紧致性不能用序列来理解。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p>讲义结尾的那条链：</p>
+    <div class="formula"><span class="math">α(ℝ) = S<sup>1</sup> &nbsp;≤&nbsp; [0,1] &nbsp;≤&nbsp; βℝ</span></div>
+    <p><strong>这是「最小、中间、最大」三种紧致化的完整样本，而且全在同一个空间 <span class="math">ℝ</span> 上。</strong>读法：</p>
+    <ul>
+      <li><span class="math">S<sup>1</sup></span>：<strong>只补一点</strong>，把 <span class="math">+∞</span> 和 <span class="math">−∞</span> 粘成一个。<strong>最少的信息保留。</strong></li>
+      <li><span class="math">[0,1]</span>：<strong>补两点</strong>，两端分开。<strong>保留了「往哪边跑」这个信息。</strong></li>
+      <li><span class="math">βℝ</span>：<strong>补到极致</strong>，每一种「趋于无穷的方式」（= 每个非主素滤子，每个「渐近行为」）各补一点。<strong>基数远大于 <span class="math">2<sup>ℵ<sub>0</sub></sup></span>。</strong></li>
+    </ul>
+    <p><strong>为什么这是本质例子：</strong>它把「紧致化有多少自由度」这件事变成了可数的三个样本。<strong>每一个都对应一种「你认为什么信息重要」的判断</strong>——只要 <span class="math">S<sup>1</sup></span>（够用就好），要方向 <span class="math">[0,1]</span>，要全部渐近行为 <span class="math">βℝ</span>。<strong>这不是数学技巧的差别，是建模需求的差别。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>把「<span class="math">βX</span> 最大」读成「<span class="math">βX</span> 包含所有其它紧致化作为子空间」。</strong>错。讲义脚注明确纠正过：<strong>紧致化的偏序由「固定原空间的连续满射」（支配关系）定义，不是子空间包含。</strong><span class="math">[0,1]</span> 不是 <span class="math">βℝ</span> 的子空间；正确的说法是<strong>存在连续满射 <span class="math">βℝ → [0,1]</span> 固定在 <span class="math">ℝ</span> 上</strong>（由泛性质取 <span class="math">Z = [0,1]</span>、<span class="math">f = </span> 某个嵌入即得）。<strong>「最大」= 「能满射到所有别人」，不是「包含所有别人」。</strong></p>
+    <p>② <strong>以为 <span class="math">βX</span> 总能嵌入 <span class="math">X</span>。</strong>命题 8.4 第 2 条说得很清楚：<strong>只有 Tychonoff 空间才行。</strong>而且讲义脚注还指出原稿的漏洞：<strong>「<span class="math">X</span> 能拓扑嵌入某个紧致空间」本身不蕴含 Tychonoff</strong>——任何非 T1 的有限空间已经紧致，却是自己的紧致化，谈不上「嵌入到 Hausdorff 里去」。<strong>所以命题 5.3.3 的原文漏了 Hausdorff 这个词。</strong></p>
+    <p>③ <strong>以为 <span class="math">βX − X</span> 总是闭的。</strong>讲义脚注特别纠正：<strong>原稿对任意 Tychonoff 空间都声称余部闭，这不成立；闭性需要 <span class="math">X</span> 在 <span class="math">βX</span> 中开，即局部紧致条件。</strong>这是「余部拓扑」讨论里最基本的坑。</p>
+    <p>④ <strong>把「<span class="math">β</span> 存在」当成构造性的。</strong>它的存在性证明用了 Zorn 引理（通过 Tychonoff 定理），<strong>没有任何算法能给出 <span class="math">βℝ</span> 的具体点</strong>。<span class="math">βω − ω</span> 上的很多问题（比如它的齐性）是集合论的独立命题。<strong>所以 <span class="math">β</span> 的正确用法是「存在性论证」，不是计算。</strong></p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>拓扑讲义 §5.3（定义 5.3.8 及译注「原稿在这一句未重申 Y 紧致 Hausdorff」、例 5.3.9、引理 5.3.10、定义 5.3.11、引理 5.3.12 及译注、引理 5.3.13、引理 5.3.14 及脚注、命题 5.3.15 及译注、命题 5.3.16 及三条译注、关于 <span class="math">βω − ω</span> 与 Parovičenko 空间的评论、结尾 <span class="math">S<sup>1</sup> ≤ [0,1] ≤ βℝ</span> 及译注）；图 5.2（Stone–Čech 紧致化的交换图）；定理 5.2.13（Tychonoff）、命题 4.3.5（积空间 Hausdorff）。</p>
+</section>
+
+<!-- ============ 融合接口 ============ -->
+<section id="fusion">
+  <h2><span class="sn">9</span>融合接口：三条线的同一个定理</h2>
+
+  <div class="fusion"><div class="bt">本讲的接口是本课程的总接口</div>
+    <p>大纲把全课的高潮放在这里，理由现在可以说清楚了。<strong>紧致性是全课唯一一个「三本教材用三种语言陈述同一个定理」的地方。</strong>而且它们不是「类似」，是可以逐字翻译的同一个命题。</p>
+  </div>
+
+  <h3>接口一：拓扑 ⟷ 逻辑（主桥）</h3>
+
+  <div class="def"><div class="bt">对应表</div>
+    <table>
+      <tr><th>拓扑侧（本讲）</th><th>逻辑侧（L18 详证）</th><th>桥的零件</th></tr>
+      <tr><td>闭集 = 可证伪命题</td><td>公式的模型集 <span class="math">Mod(φ)</span></td><td>L08 认识论读法</td></tr>
+      <tr><td>闭集族 <span class="math">ℱ</span> 有 f.i.p.</td><td>理论 <span class="math">Γ</span> 有限可满足</td><td>L12 命题 4.3；引理 5.2</td></tr>
+      <tr><td><span class="math">⋂ℱ ≠ ∅</span></td><td><span class="math">Γ</span> 有模型</td><td>「交非空」=「存在满足它的点」</td></tr>
+      <tr><td><strong>紧致性</strong>（引理 5.2）</td><td><strong>紧致性定理</strong></td><td>同一句话</td></tr>
+      <tr><td>素滤子 <span class="math">𝔘</span></td><td>完全理论 / 极大一致集</td><td>§3 的三副面孔表</td></tr>
+      <tr><td><span class="math">𝔘</span> 收敛到 <span class="math">x</span></td><td><span class="math">x ⊨ 𝔘</span></td><td>收敛 = 每个邻域在滤子里</td></tr>
+      <tr><td><strong>命题 6.1</strong></td><td><strong>每个完全理论有模型</strong></td><td>同一句话</td></tr>
+      <tr><td>T2（极限唯一）</td><td>模型由完全理论唯一确定</td><td>L12 §6 定理 6.2</td></tr>
+      <tr><td><span class="math">βX</span> 补的点</td><td>补上的模型</td><td>§8 的 <span class="math">βω</span> 构造</td></tr>
+    </table>
+    <p><strong>整张表只有一句实质内容：把「公式」读成「开集」，把「满足」读成「属于」，紧致性定理就变成紧致性。</strong>而这个翻译之所以可行，是因为 <span class="math">Mod</span> 把 <span class="math">∧</span> 送到 <span class="math">∩</span>、把 <span class="math">∨</span> 送到 <span class="math">∪</span>、把 <span class="math">¬</span> 送到补——<strong>它是布尔代数同态</strong>。这就是为什么 L06（布尔代数）必须放在拓扑篇之前。</p>
+  </div>
+
+  <div class="intu"><div class="bt">闹钟例子在逻辑侧长什么样</div>
+    <p>回到 §2 的 <span class="math">P<sub>n</sub></span>。在逻辑侧写成一阶理论：语言含常元 <span class="math">c</span> 和谓词「<span class="math">t &gt; n</span>」，理论</p>
+    <div class="formula"><span class="math">Γ = { c &gt; 0, c &gt; 1, c &gt; 2, … }</span></div>
+    <p><strong>每个有限子集都有模型</strong>（取 <span class="math">c</span> 足够大）。<strong>但 <span class="math">Γ</span> 在 <span class="math">ℕ</span> 里没有模型</strong>——没有自然数比所有自然数都大。<strong>所以「<span class="math">ℕ</span> 不是紧致的」这件事，就是「<span class="math">Γ</span> 在 <span class="math">ℕ</span> 里没有模型」。</strong></p>
+    <p><strong>但一阶逻辑的紧致性定理说 <span class="math">Γ</span> 有模型。</strong>矛盾吗？不矛盾——<strong>模型不在 <span class="math">ℕ</span> 里，在某个非标准模型里。</strong>那个模型含一个「无穷大元素」<span class="math">c</span>，它正对应拓扑侧补上的 <span class="math">x<sub>∞</sub></span>。<strong>非标准分析就是在这个非标准模型里做微积分。</strong></p>
+    <p><strong>所以「紧致化」在逻辑侧的名字是「添补非标准元素」。</strong>Alexandroff 补一点；Stone–Čech 补全部；一阶逻辑的紧致性定理补「所有需要的」——<strong>三者是同一种操作在不同精度下的版本。</strong></p>
+  </div>
+
+  <h3>接口二：拓扑 ⟷ 代数（超积）</h3>
+
+  <div class="fusion"><div class="bt">Bergman 与 UAL 的同一件事</div>
+    <p>Bergman 第 5 章开头就把滤子接到代数上：<strong>给定一族代数 <span class="math">A<sub>i</sub></span> 和 <span class="math">I</span> 上的滤子 <span class="math">𝔉</span>，定义</strong></p>
+    <div class="formula"><span class="math">η<sub>𝔉</sub> = { (a,b) ∈ A<sup>2</sup> : [[a = b]] ∈ 𝔉 }, &nbsp;&nbsp; [[a=b]] = {i : a<sub>i</sub> = b<sub>i</sub>}</span></div>
+    <p>商结构 <span class="math">A/η<sub>𝔉</sub></span> 称为<strong>约化积</strong>；<span class="math">𝔉</span> 为超滤子时称<strong>超积</strong>（定义 5.3）。<strong>关键定理是 Łoś 定理（定理 5.21）</strong>：</p>
+    <div class="formula"><span class="math">∏<sub>i∈I</sub> A<sub>i</sub>/η<sub>U</sub> ⊨ φ(b̄) &nbsp;⟺&nbsp; { i ∈ I : A<sub>i</sub> ⊨ φ(b̄<sub>i</sub>) } ∈ U</span></div>
+    <p><strong>「公式在超积里成立 ⟺ 它在下标集里『几乎处处』成立」。</strong>这句话和拓扑侧的命题 6.1 是什么关系？</p>
+    <p><strong>它们是同一台机器的两个输出。</strong>看这个对照：</p>
+    <table>
+      <tr><th>拓扑 / 逻辑侧</th><th>代数侧（Bergman / UAL）</th></tr>
+      <tr><td>素滤子 <span class="math">𝔘</span> 在 <span class="math">X</span> 上</td><td>超滤子 <span class="math">U</span> 在指标集 <span class="math">I</span> 上</td></tr>
+      <tr><td><span class="math">𝔘</span> 收敛到 <span class="math">x</span>：每个邻域在 <span class="math">𝔘</span> 里</td><td><span class="math">U</span> 决定「几乎处处」：<span class="math">[[φ]] ∈ U</span></td></tr>
+      <tr><td>「<span class="math">U ∈ 𝔘</span> 或 <span class="math">X−U ∈ 𝔘</span>」</td><td>「<span class="math">[[φ]] ∈ U</span> 或 <span class="math">I−[[φ]] ∈ U</span>」——<strong>Łoś 的 <span class="math">¬</span> 情形</strong></td></tr>
+      <tr><td>命题 6.1：紧致 ⟺ 每个素滤子收敛</td><td>定理 4.1.5：<span class="math">Alg<sub>⊨</sub>(L)</span> 对超积封闭 ⟹ <span class="math">L</span> 可满足紧致</td></tr>
+    </table>
+    <p><strong>注意最后一行：两个定理的前提-结论形状一模一样。</strong>UAL 的定理 4.1.5 证明里用的正是「取非主超滤子 <span class="math">F</span>，做超积 <span class="math">A = ∏A<sub>k</sub>/F</span>，用 Łoś 定理把每个有限片段的满足性传递到 <span class="math">A</span>」——<strong>这是拓扑侧「素滤子收敛 ⟹ 整体有解」的代数翻译。</strong>而 UAL 定理 4.1.6 说这个条件<strong>当且仅当</strong> <span class="math">L</span> 后果紧致，<strong>正好对应命题 6.1 的双向性。</strong></p>
+    <p><strong>还有一处细节完全对上：</strong>Bergman 命题 5.2 用<strong>素理想定理（定理 2.41）</strong>证明「有 FIP 的族可扩成超滤子」，UAL 推论 2.2.67 用 Zorn 证明「真滤子可扩成超滤子」，拓扑讲义定理 5.1.3 用 Zorn 证明素滤子定理——<strong>三个证明，同一个 Zorn 论证，同一个对象。</strong>而讲义在 Alexander 子基定理的脚注里点明了：「这个定理实质地使用了选择公理的一种弱形式，恰为上面的素滤子定理。」<strong>连对 AC 的依赖都是同一份。</strong></p>
+  </div>
+
+  <h3>接口三：认识论收束</h3>
+
+  <div class="intu"><div class="bt">本讲在「可验证性」这条主线上的位置</div>
+    <p>回顾 L08 建立的认识论词典，本讲补上了最后一块：</p>
+    <table>
+      <tr><th>概念</th><th>认识论含义</th><th>出处</th></tr>
+      <tr><td>开集</td><td>可验证命题</td><td>L08</td></tr>
+      <tr><td>闭集</td><td>可证伪命题</td><td>L10</td></tr>
+      <tr><td>内部算子 int</td><td>S4 的 □（「确定」）</td><td>L10</td></tr>
+      <tr><td>滤子 / 收敛</td><td>确定性理论 / 理论在逼近模型</td><td>L12</td></tr>
+      <tr><td>素滤子</td><td><strong>饱和理论（对每条命题表态）</strong></td><td><strong>L13</strong></td></tr>
+      <tr><td>紧致性</td><td><strong>完备性：局部相容 ⟹ 有模型</strong></td><td><strong>L13</strong></td></tr>
+      <tr><td>T2</td><td><strong>可区分到「极限唯一」</strong></td><td>L12</td></tr>
+      <tr><td>紧致 Hausdorff</td><td><strong>极限存在且唯一</strong></td><td><strong>L13</strong></td></tr>
+      <tr><td>紧致化</td><td><strong>给理论补上缺失的模型</strong></td><td><strong>L13</strong></td></tr>
+    </table>
+    <p><strong>整张表读下来是一句话：拓扑空间是「关于某个论域，我们能验证什么」的完整记录；紧致性是这个记录没有漏洞的保证。</strong></p>
+  </div>
+
+  <div class="warn"><div class="bt">但有一个反讽必须说</div>
+    <p>讲义在 §5.2 开头说紧致性是「空间的某种完备性」，因为「它强制某些点存在」。<strong>而 §2 的闹钟例子恰恰说明：一个空间可以不紧致，就是因为缺了点。</strong>那么「完备性」这个词用在这里，跟度量空间的完备性是一回事吗？</p>
+    <p><strong>在最熟悉的情形里是。</strong><span class="math">ℝ</span> 完备 ⟺ <span class="math">ℝ</span> 的每个柯西序列收敛；而 <span class="math">ℝ</span> 不紧致，它的紧致化 <span class="math">[−∞,+∞]</span> 是完备的。<span class="math">(0,1)</span> 不完备，<span class="math">[0,1]</span> 完备。<strong>但一般情形下不是</strong>：度量完备性说的是「柯西序列收敛」（一个<strong>可数</strong>条件），紧致性说的是「每个素滤子收敛」（一个<strong>任意</strong>条件）。<strong>紧致 ⟹ 完备永远成立；反过来需要「全有界」。</strong></p>
+    <p><strong>所以准确的对应是：紧致性 = 完备性 + 全有界。</strong>而「全有界」在逻辑侧对应的是<strong>语言的可数性/有限性条件</strong>——<strong>这就是为什么紧致性定理对任意语言成立，而「完备性 + 全有界 ⟹ 紧致」只在度量空间里成立。</strong>这个区别在 L18、L19 会再出现，先记住：<strong>把紧致当完备性用是可以的，但要知道你多用了什么。</strong></p>
+  </div>
+
+  <div class="intu"><div class="bt">收束与本讲之后</div>
+    <p>一句话总结整讲：<strong>紧致性 = 「局部相容 ⟹ 整体有解」；素滤子是那个把局部升成整体的工具；紧致化是「升级失败时打补丁」。</strong></p>
+    <p>L14 会转向另一个方向：<strong>连通性。</strong>那里问的问题不再关于「缺不缺」，而是关于「断没断」——<strong>能不能把一个空间劈成两块不交的非空开集。</strong>而 Stone 空间（全不连通 + 紧致 Hausdorff）会成为 L14 的主角，把 <strong>S4.2 与信念逻辑</strong>接进来。<strong>紧致性这根接力棒会一路传下去：L14 的 Stone 空间是紧致的，L18 的完备性定理靠紧致性，L23 的关系代数对偶里又是紧致性。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+
+  <div class="ex"><div class="bt">O1 · 素滤子</div>
+  <ol>
+    <li><span class="tag alg">O1</span> 证明引理 3.2 的四条。第 4 条按 (a)⟹(c)⟹(b)⟹(a) 的顺序走，并在 (b)⟹(a) 中明确指出「严格包含」这一步为什么需要 <span class="math">U ∉ 𝔉</span>（提示：<span class="math">𝔉 ⊕ U</span> 含 <span class="math">U</span>，若 <span class="math">U ∈ 𝔉</span> 则不严格）。<br><span style="color:#8a93a5">再证：有限集上的每个超滤子都是主超滤子。</span></li>
+    <li><span class="tag log">O1</span> 证明定理 3.3 的证明只用到「链的并是滤子」这一条（不用「空链有上界」也可行）。然后用一个具体例子说明：一个真滤子可以扩成<strong>两个不同</strong>的素滤子。<br><span style="color:#8a93a5">提示：在 ω 上取 Fréchet 滤子，考虑 A = 偶数集 与 A = 奇数集。</span></li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O2 · 开覆盖与判据</div>
+  <ol start="3">
+    <li><span class="tag top">O2</span> 用定义证明：<span class="math">(0,1)</span> 不紧致；<span class="math">[0,1]</span> 的任意开覆盖若含一个「右端型」成员就可有限化……<strong>这个思路是错的，说明它错在哪。</strong>然后仿照例 4.5（Cantor 空间）的二分法思路，给出 <span class="math">[0,1]</span> 紧致的正确证明（习题 5.1 的提示：仿照例 5.2.6）。</li>
+    <li><span class="tag top">O2</span> 用 Alexander 子基定理证明 Tychonoff 定理（定理 5.2.13）对两个因子的情形：<span class="math">X × Y</span> 紧致。明确指出哪一步用了「子基成员只限制一个坐标」。<br><span style="color:#8a93a5">再说明为什么这个论证不能直接推广为「有限多个因子」以外的情形而不重新组织。</span></li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O3 · f.i.p.</div>
+  <ol start="5">
+    <li><span class="tag top">O3</span> 完整证明引理 5.2 的 (⟸) 方向，并说明：如果把「闭集族」换成「开集族」，命题会变成什么？给出一个反例说明它不成立。</li>
+    <li><span class="tag alg">O3</span> 举出三个集合两两相交但三者交空的例子，说明为什么 f.i.p. 不能弱化成「两两相交」。再证明：若集族对<strong>有限交</strong>封闭（而不只是 f.i.p.），则 f.i.p. 与「每个成员非空」等价。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O4 · 紧致 ⟺ 收敛</div>
+  <ol start="7">
+    <li><span class="tag top">O4</span> 完整写出命题 6.1 的两个方向，并在 (⟹) 中回答：<strong>如果去掉「素」这个条件，证明在哪一步崩塌？</strong>构造一个具体例子说明崩塌是实质的（提示：平凡滤子）。</li>
+    <li><span class="tag log">O4</span> 用命题 6.1 证明 <span class="math">ℚ ∩ [0,1]</span> 不紧致：具体造一个不收敛的素滤子。<br><span style="color:#8a93a5">提示：取一列收敛到无理数的有理数，用它们的邻域造滤子基；扩成素滤子后，若它收敛到 q ∈ ℚ，找出矛盾。</span></li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O5 · 紧 Hausdorff 与 Alexandroff</div>
+  <ol start="9">
+    <li><span class="tag top">O5</span> 完整证明定理 7.1 的三条。第 (1) 条中，指出「两次取有限」各自用的是哪个集合的紧致性；第 (2) 条中，指出为什么反方向需要 Hausdorff 而正方向不需要。</li>
+    <li><span class="tag top">O5</span> 验证 <span class="math">α(ω)</span> 的拓扑满足拓扑公理（尤其：两个「含 ∞ 型」开集之交仍是「含 ∞ 型」），并证明它紧致 Hausdorff。再说明 <span class="math">α(ω) ≅ ω+1</span>（序拓扑）。</li>
+    <li><span class="tag alg">O5</span> 对 Arens–Fort 空间：<strong>(a)</strong> 证明它正规；<strong>(b)</strong> 证明它的紧致闭子集只能含有限多个非原点；<strong>(c)</strong> 由此证明 <span class="math">α(X)</span> 不 Hausdorff，并指出命题 7.5 哪一条失效。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O6 · Stone–Čech</div>
+  <ol start="12">
+    <li><span class="tag top">O6</span> 证明：<span class="math">βX</span> 恰是幂集布尔代数 <span class="math">𝓟(X)</span> 的 Stone 空间（L06 的构造）。具体地：说明 <span class="math">𝓟(X)</span> 的超滤子就是 <span class="math">X</span> 上的素滤子，并验证两边的基本开集一致。<br><span style="color:#8a93a5">再说明：<span class="math">βX</span> 全不连通（每个开集都是闭的）。</span></li>
+    <li><span class="tag log">O6</span> 用泛性质证明 <span class="math">α(ℝ)</span> 不能是 <span class="math">βℝ</span>。<br><span style="color:#8a93a5">提示：取 <span class="math">f(x) = x/(1+|x|)</span>，连续且像在 <span class="math">[−1,1]</span> 里，<span class="math">x → +∞</span> 时趋于 <span class="math">1</span>、<span class="math">x → −∞</span> 时趋于 <span class="math">−1</span>。若 <span class="math">βℝ = S<sup>1</sup></span>，则 <span class="math">f</span> 有连续延拓 <span class="math">f̄ : S<sup>1</sup> → [−1,1]</span>——而在 <span class="math">S<sup>1</sup></span> 里 <span class="math">+∞</span> 与 <span class="math">−∞</span> 是<strong>同一个点</strong>。</span></li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L12.html">← 上一讲：L12 分离公理：可区分性与滤子</a>
+  <a href="L14.html">下一讲：L14 连通性、全不连通与 Stone 空间</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L13 · 来源：拓扑讲义 Ch5 §5.1–5.3、Bergman 定理 2.41/5.21、UAL 命题 2.2.65/定理 4.1.5 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

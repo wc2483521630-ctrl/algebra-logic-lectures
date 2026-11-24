@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L04 子直积、超积、自由代数与 Birkhoff 定理 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第二篇 代数骨架</span><span class="sep">/</span><span>L04</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 04 · 深度讲 · 2–3 学时</div>
+  <h1>子直积、超积、自由代数与 Birkhoff 定理</h1>
+  <div class="sub">把代数拆到不可再拆的零件，再用项把「逻辑可证」变成「代数相等」</div>
+  <div class="metarow"><span>来源：Bergman Ch3 §3.2–3.3, Ch4 §4.1–4.4</span><span>UAL §2.2.5–2.2.7, §2.4–2.5</span>
+    <span class="tag alg">代数</span><span class="tag log">逻辑</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：两个反方向的问题</a></li>
+  <li><a href="#subdirect">子直积与子直既约（O1）</a></li>
+  <li><a href="#representation">子直表示定理（O2）</a></li>
+  <li><a href="#ultra">超滤子与超积、Łoś 定理（O3）</a></li>
+  <li><a href="#terms">项与项代数（O4）</a></li>
+  <li><a href="#free">自由代数与泛性质（O5）</a></li>
+  <li><a href="#birkhoff">Birkhoff 定理 V=HSP 与拟簇（O6）</a></li>
+  <li><a href="#fusion2">融合接口：可证即相等</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单与依赖 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系</h2>
+  <p class="lead">L03 造好了商与积，本讲用它们做两件事：向下拆（分解），向上造（自由）。动笔前先点清概念。</p>
+
+  <div class="def"><div class="bt">概念清单 <span class="num">D01–D14</span></div>
+    <table>
+      <tr><th>编号</th><th>概念</th><th>依赖</th><th>首次出现</th></tr>
+      <tr><td>D01</td><td>子直积</td><td>L03 C14</td><td>§1</td></tr>
+      <tr><td>D02</td><td>完全 meet-不可约元</td><td>L02 完全格</td><td>§1</td></tr>
+      <tr><td>D03</td><td>子直既约 / monolith</td><td>D01, D02, L03 C12</td><td>§1</td></tr>
+      <tr><td>D04</td><td>子直表示定理</td><td>D01, D03, C12</td><td>§2</td></tr>
+      <tr><td>D05</td><td>滤子 / 超滤子</td><td>L02 格；L01</td><td>§3</td></tr>
+      <tr><td>D06</td><td>约化积 / 超积</td><td>L03 C13, D05</td><td>§3</td></tr>
+      <tr><td>D07</td><td>Łoś 定理</td><td>D06, L01 一阶语义</td><td>§3</td></tr>
+      <tr><td>D08</td><td>项 / 项函数</td><td>L01 语法</td><td>§4</td></tr>
+      <tr><td>D09</td><td>项代数 <span class="math">F<sub>t</sub>(X)</span></td><td>D08, C02</td><td>§4</td></tr>
+      <tr><td>D10</td><td>自由代数 <span class="math">Fr(K,X)</span></td><td>D09, L03 C09</td><td>§5</td></tr>
+      <tr><td>D11</td><td>泛性质</td><td>D10</td><td>§5</td></tr>
+      <tr><td>D12</td><td>等式 / 拟等式 / Mod / Eq</td><td>D08, L01</td><td>§6</td></tr>
+      <tr><td>D13</td><td>簇 / 拟簇</td><td>D12, HSP 算子</td><td>§6</td></tr>
+      <tr><td>D14</td><td>Birkhoff <span class="math">V=HSP</span> / <span class="math">SPU<sub>p</sub></span></td><td>D10, D04, D07</td><td>§6</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">依赖链（两条支流，在 Birkhoff 处汇合）</div>
+    <div class="diagram">支流一（拆）：L03 同余格 ──→ 完全 meet-不可约 ──→ 子直既约 ──→ 子直表示定理 ──┐
+                                                                                    │
+支流二（造）：L01 项 ──→ 项代数 ──→ 自由代数 ──→ 泛性质 ─────────────────────────┤
+                                                                                    │
+支流三（极限）：L03 直积 ──→ 滤子/超滤子 ──→ 超积 ──→ Łoś 定理 ──────────────────┤
+                                                                                    ↓
+                                                                     Birkhoff V=HSP · SPUp</div>
+    <p>三条支流看起来无关，最后都汇进 Birkhoff 定理：<strong>自由代数负责「方向一」，子直表示负责「方向二」，超积负责拟簇版本</strong>。这是本讲的结构主线。</p>
+  </div>
+</section>
+
+<!-- ============ 学习目标对照 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>识别子直既约代数，并用同余格刻画它</td><td><a href="#subdirect">§2</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>叙述并运用子直表示定理，把代数分解为子直既约因子</td><td><a href="#representation">§3</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>构造超积，用 Łoś 定理判断一阶句子在超积中的真假</td><td><a href="#ultra">§4</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>构造项代数，说明项如何成为「语法世界」的元素</td><td><a href="#terms">§5</a></td><td><a href="#ex">E7</a></td></tr>
+    <tr><td><b>O5</b></td><td>用泛性质刻画自由代数，并计算简单的自由代数</td><td><a href="#free">§6</a></td><td><a href="#ex">E8, E9</a></td></tr>
+    <tr><td><b>O6</b></td><td>证明并应用 Birkhoff 定理 V=HSP，说明拟簇 SPUP 与紧致性的关系</td><td><a href="#birkhoff">§7</a></td><td><a href="#ex">E10, E11, E12</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：两个反方向的问题</h2>
+  <p class="lead">这一讲由两个方向相反的问题驱动。</p>
+  <div class="intu"><div class="bt">问题一：向下拆</div>
+    <p>给你一个复杂代数，能否把它拆成「不可再拆」的零件？群论里有合成列，有限维空间有直和分解。泛代数的答案是<strong>子直表示定理</strong>：任何代数都是子直既约代数的子直积。拆到最后，零件是「同余格里没有非平凡最小元可再分」的那些。</p>
+  </div>
+  <div class="intu"><div class="bt">问题二：向上造</div>
+    <p>给你一组等式（公理），满足它的所有代数构成一个簇。这个簇里有没有一个「最一般」的代数，其他所有成员都是它的商？有——<strong>自由代数</strong>。它正是逻辑里「证明」的代数替身：自由代数中的元素是项，两个项相等当且仅当等式可证。</p>
+  </div>
+  <div class="fusion"><div class="bt">为什么这两个问题在讲义里并列</div>
+    <p>因为它们合起来就是<strong>完备性定理的代数骨架</strong>。向上一问给出「语法侧最一般的模型」（自由代数），向下一问给出「语义侧的模型能否分解」（子直既约）。L18–L22 的五座桥，本质就是把逻辑的「可证 ⇔ 所有模型成立」翻译成这两问的代数答案。</p>
+  </div>
+</section>
+
+<!-- ============ O1 子直既约 ============ -->
+<section id="subdirect">
+  <h2><span class="sn">3</span>子直积与子直既约 <span class="tag alg">O1</span></h2>
+  <p class="lead">从 L03 的子直积定义出发，问：哪些代数拆不动？</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.1（子直既约；Bergman 3.21 / UAL 2.2.53）</span></div>
+    <p>非平凡代数 <span class="var">A</span> 叫<strong>子直既约</strong>（subdirectly irreducible），若它没有任何非平凡子直分解；等价地，若它的同余格 <span class="math">Con(A)</span> 中恒等关系 <span class="math">0<sub>A</sub></span> 是<strong>完全 meet-不可约</strong>：</p>
+    <div class="formula">0<sub>A</sub> = ⋂<sub>i</sub> ψ<sub>i</sub> ⟹ 存在 i 使 ψ<sub>i</sub> = 0<sub>A</sub></div>
+    <p>再等价地：<span class="math">Con(A)∖{0<sub>A</sub>}</span> 有最小元，称为 <span class="var">A</span> 的 <strong>monolith</strong>（独石），记作 <span class="math">μ</span>。所有非平凡同余都包含 <span class="math">μ</span>。</p>
+  </div>
+
+  <div class="intu"><div class="bt">monolith 是什么意思</div>
+    <p>同余 <span class="math">θ</span> 代表「一种可区分性的丧失」——把某些点粘起来。<span class="math">0<sub>A</sub></span> 表示什么都不粘。说 <span class="math">0<sub>A</sub></span> 完全 meet-不可约，意思是：<strong>你无法用「很多种温和的粘贴」叠加出「完全不粘」</strong>。_total_ 只要真做了任何一点粘贴，就必然粘到那块最小的 <span class="math">μ</span>。所以 <span class="var">A</span> 里存在一对点，它们「最难分开」——任何非平凡同余都得把它们粘住。这就是拆不动的原因。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例子 · 哪些是子直既约的（Bergman §3.3 例）</div>
+    <ol>
+      <li>单代数（同余格只有 <span class="math">0,1</span>）总是子直既约，<span class="math">μ=1</span>。如 <span class="math">A<sub>n</sub></span>（<span class="math">n≥5</span>）、<span class="math">M<sub>3</sub></span>。</li>
+      <li><span class="math">ℤ<sub>p<sup>k</sup></sub></span>：同余格是长 <span class="math">k+1</span> 的链，monolith 是最小的非平凡同余（模 <span class="math">p<sup>k-1</sup></span>）。</li>
+      <li>两元素链 <span class="math">2</span> 是子直既约；但 <span class="math">2×2</span> 不是（投影给出非平凡分解）。</li>
+    </ol>
+  </div>
+  <p class="src"><b>来源：</b>Bergman §3.3 定义 3.21、定理 3.23；UAL §2.2.53–2.2.55。</p>
+</section>
+
+<!-- ============ O2 表示定理 ============ -->
+<section id="representation">
+  <h2><span class="sn">4</span>子直表示定理 <span class="tag alg">O2</span></h2>
+
+  <div class="thm"><div class="bt">定理 <span class="num">4.2（Birkhoff 子直表示定理，1944；Bergman 3.24）</span></div>
+    <p>任何非平凡代数 <span class="var">A</span> 同构于子直既约代数的子直积。</p>
+    <div class="proof"><span class="pt">证明骨架。</span>令 <span class="math">I = {⟨a,b⟩ : a≠b}</span>。对每对 <span class="math">⟨a,b⟩</span>，用 Zorn 引理取同余 <span class="math">θ<sub>a,b</sub></span> 极大但不包含 <span class="math">⟨a,b⟩</span>。由极大性，<span class="math">θ<sub>a,b</sub></span> 完全 meet-不可约，故 <span class="math">A/θ<sub>a,b</sub></span> 子直既约（§3 的刻画）。又每对不同的点都被某个 <span class="math">θ<sub>a,b</sub></span> 分开，故 <span class="math">⋂θ<sub>a,b</sub>=0<sub>A</sub></span>，由 L03 的投影判据得到子直表示。<span class="qed">∎</span></div>
+  </div>
+
+  <div class="intu"><div class="bt">证明的关键招数：用「对点的分离」造分解</div>
+    <p>这是泛代数里反复出现的技巧：<strong>要分开所有点，就为每一对点造一个投影</strong>。<span class="math">θ<sub>a,b</sub></span> 是「恰好不把 <span class="math">a,b</span> 粘住的最大同余」，于是商 <span class="math">A/θ<sub>a,b</sub></span> 保留了两点的区别。把所有这样的商堆起来做积，<span class="math">A</span> 嵌进去，每对点都在某个坐标里被看见——这就是子直积。</p>
+    <p>注意这个证明用了 Zorn 引理（选择公理）。L04 的超滤子延伸也要用 Zorn；L10 的紧致性等价形式也依赖它。<strong>选择公理是这一系列「从局部拼出整体」论证的共同底座。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">推论 <span class="num">4.3（Bergman 3.25 / 3.44）</span></div>
+    <p>每个有限代数是有限多个有限子直既约代数的子直积。更一般地，簇 <span class="var">V</span> 恰是其子直既约成员的子直积类：<span class="math">V = P<sub>s</sub>(V<sub>si</sub>)</span>；两个同型簇 <span class="math">V⊆W</span> 当且仅当 <span class="math">V<sub>si</sub>⊆W<sub>si</sub></span>。</p>
+    <div class="intu" style="margin:8px 0"><p>最后一句极有用：<strong>要检验一个簇包含关系，只需检验它的子直既约成员</strong>。这是 L07 研究同余分配簇时反复用的化简。</p></div>
+  </div>
+  <p class="src"><b>来源：</b>Bergman 定理 3.24、推论 3.25、定理 3.44、推论 3.45；UAL §2.2.6。</p>
+</section>
+
+<!-- ============ O3 超积 ============ -->
+<section id="ultra">
+  <h2><span class="sn">5</span>超滤子、超积与 Łoś 定理 <span class="tag alg">O3</span><span class="tag log">逻辑</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.4（滤子与超滤子；UAL 2.2.60）</span></div>
+    <p>集合 <span class="var">I</span> 上的<strong>滤子</strong> <span class="math">F⊆𝒫(I)</span>：含 <span class="var">I</span>、不含空集、对交封闭、向上封闭。由 Zorn 引理，任何真滤子可延伸为<strong>超滤子</strong> <span class="math">U</span>：对任意 <span class="math">X⊆I</span>，恰有 <span class="math">X∈U</span> 与 <span class="math">I∖X∈U</span> 之一成立。</p>
+    <p>超滤子的两副面孔：<span class="math">U<sub>j</sub>={X⊆I : j∈X}</span>（主超滤子，盯住一点）；非主超滤子（含所有余有限集）则给出「几乎处处」的推广。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.5（约化积与超积；UAL 2.2.69，L03 定义 3.14）</span></div>
+    <p>对滤子 <span class="math">F</span>，<span class="math">a≡<sub>F</sub>b ⟺ {i : a(i)=b(i)}∈F</span> 是 <span class="math">∏A<sub>i</sub></span> 上的同余，商 <span class="math">∏A<sub>i</sub>/F</span> 是约化积；<span class="math">F</span> 为超滤子时是<strong>超积</strong>。运算逐点定义（L03 式）：</p>
+    <div class="formula">f(a₁/F,…,a<sub>n</sub>/F) = ⟨ f<sup>A<sub>i</sub></sup>(a₁(i),…,a<sub>n</sub>(i)) : i∈I ⟩ / F</div>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">4.6（Łoś 超积定理；UAL 2.2.74）</span></div>
+    <p>设 <span class="math">B = ∏<sub>i∈I</sub>A<sub>i</sub>/U</span> 为超积。对任意一阶公式 <span class="math">φ(x₁,…,x<sub>n</sub>)</span> 与元素 <span class="math">a₁/U,…,a<sub>n</sub>/U∈B</span>：</p>
+    <div class="formula">B ⊨ φ[a₁/U,…,a<sub>n</sub>/U] ⟺ { i∈I : A<sub>i</sub> ⊨ φ[a₁(i),…,a<sub>n</sub>(i)] } ∈ U</div>
+    <p>特别地，对句子 <span class="math">φ</span>：<span class="math">B⊨φ ⟺ {i : A<sub>i</sub>⊨φ}∈U</span>。</p>
+    <div class="proof"><span class="pt">证明要点。</span>对公式复杂度归纳。原子式由超积定义即得。布尔连接词用超滤子的二值性（<span class="math">X∈U</span> 或 <span class="math">I∖X∈U</span>）处理：非、且、或分别对应补、交、并。存在量词是关键：若 <span class="math">B⊨∃x φ(x,a)</span>，取见证 <span class="math">b/U</span>，则 <span class="math">{i : A<sub>i</sub>⊨φ[b(i),a(i)]}∈U</span>；反向用选择公理逐坐标选见证拼成 <span class="math">b</span>。<span class="qed">∎</span></div>
+  </div>
+
+  <div class="intu"><div class="bt">Łoś 定理在说什么：一阶性质在超积中「按多数票」决定</div>
+    <p>一个句子在超积里成立，当且仅当它在「超滤子认为足够多」的坐标里成立。超滤子的二值性正是这里的关键：它让「多数」变成一个干净的真假判据，没有模糊地带。<strong>这就是为什么超积而非常规约化积享有这么好的性质。</strong></p>
+    <p>把 <span class="math">U</span> 取主超滤子 <span class="math">U<sub>j</sub></span>，条件退化为「<span class="math">A<sub>j</sub>⊨φ</span>」——超积退化为第 <span class="math">j</span> 个因子。所以超积是「投影」的推广；Łoś 定理是它的配套计算法则。</p>
+  </div>
+
+  <div class="fusion"><div class="bt">超积 = 逻辑紧致性的代数引擎（预告 L18–L22）</div>
+    <p>紧致性定理说：若每个有限子集可满足，则整体可满足。代数版证明就是造超积：取所有有限证据的指标集 <span class="math">I</span>，用非主超滤子 <span class="math">U</span> 造超积 <span class="math">∏A<sub>i</sub>/U</span>。Łoś 定理保证每个句子在这个超积里成立，于是整体可满足。<strong>拓扑侧的对应是 Tychonoff 定理（紧空间的积紧），滤子收敛的代数版本。</strong>这条路 L10 和 L18 会正式走一遍。</p>
+  </div>
+  <p class="src"><b>来源：</b>UAL §2.2.7 定义 2.2.60、2.2.69，定理 2.2.74；Bergman §3.2。</p>
+</section>
+
+<!-- ============ O4 项代数 ============ -->
+<section id="terms">
+  <h2><span class="sn">6</span>项与项代数 <span class="tag alg">O4</span><span class="tag log">逻辑</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.7（项；Bergman 4.1 / UAL 2.4）</span></div>
+    <p>给定变量集 <span class="var">X</span> 与类型 <span class="math">ρ</span>，<strong>项</strong>是有限语法表达式：变量 <span class="math">x∈X</span> 是项；常量符号 <span class="math">c</span>（<span class="math">ρ(c)=0</span>）是项；若 <span class="math">t₁,…,t<sub>n</sub></span> 是项，<span class="math">f</span> 是 <span class="math">n</span> 元符号，则 <span class="math">f(t₁,…,t<sub>n</sub>)</span> 是项。全体项记作 <span class="math">T(X)</span>。</p>
+    <p>项在代数 <span class="var">A</span> 中解释函数：给赋值 <span class="math">v: X→A</span>，项 <span class="math">t</span> 诱导<strong>项函数</strong> <span class="math">t<sup>A</sup>: A<sup>X</sup>→A</span>（递归定义：变量取赋值值，复合项套用 <span class="math">f<sup>A</sup></span>）。</p>
+  </div>
+
+  <div class="intu"><div class="bt">项的世界 vs 代数世界</div>
+    <p>项是<strong>语法</strong>对象：一串符号，还没在任何代数里解释。项函数是<strong>语义</strong>对象：在 <span class="var">A</span> 里的一个运算。这个区分是全部代数逻辑的起点：<span class="math">t₁=t₂</span> 作为一个等式（语法）与 <span class="math">t₁<sup>A</sup>=t₂<sup>A</sup></span> 作为 <span class="var">A</span> 中的事实（语义），不是一回事。L16 的「规范形式」就是问：语法世界能否被有限地描述。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.8（项代数；UAL 2.4 / Bergman 4.19–4.21）</span></div>
+    <p>在 <span class="math">T(X)</span> 上定义运算：<span class="math">f<sup>T(X)</sup>(t₁,…,t<sub>n</sub>) = f(t₁,…,t<sub>n</sub>)</span>（形式地拼成串）。这样得到的代数 <span class="math">F<sub>t</sub>(X)=⟨T(X),F⟩</span> 叫<strong>项代数</strong>（绝对自由代数）。</p>
+    <p>泛性质：对任意同型代数 <span class="var">A</span> 与任意函数 <span class="math">g: X→A</span>，存在唯一同态 <span class="math">h: F<sub>t</sub>(X)→A</span> 延拓 <span class="math">g</span>。这就是「变量随便指派，表达式自动解释」的严格说法。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例子 · 群语言的项</div>
+    <p>类型 <span class="math">{·:2, ⁻¹:1, e:0}</span>，<span class="math">X={x,y}</span>。项包括 <span class="math">e, x, x·y, (x·y)⁻¹, x·x⁻¹, …</span>。在项代数里 <span class="math">x·x⁻¹</span> 与 <span class="math">e</span> 是<strong>不同</strong>的元素（不同语法串）；但在任何群（满足群公理的代数）里它们相等。下一步的自由代数就是要把这种「公理认可的相等」商掉。</p>
+  </div>
+  <p class="src"><b>来源：</b>Bergman §4.1 定义 4.1、§4.4 定义 4.19–4.21；UAL §2.4（项代数部分）。</p>
+</section>
+
+<!-- ============ O5 自由代数 ============ -->
+<section id="free">
+  <h2><span class="sn">7</span>自由代数与泛性质 <span class="tag alg">O5</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.9（自由代数；UAL 2.5.3 / Bergman 4.22）</span></div>
+    <p>设 <span class="math">K</span> 是同型代数类。在项代数 <span class="math">F<sub>t</sub>(X)</span> 上定义同余</p>
+    <div class="formula">θ(K,X) = ⋂ { θ∈Con(F<sub>t</sub>(X)) : F<sub>t</sub>(X)/θ ∈ ISK }</div>
+    <p>（所有让商落入 <span class="math">K</span> 的同余之交。）<strong><span class="math">K</span> 上由 <span class="math">X</span> 自由生成的代数</strong>是</p>
+    <div class="formula">Fr(K,X) = F<sub>t</sub>(X)/θ(K,X)</div>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">4.10（Birkhoff 泛性质；UAL 2.5.5）</span></div>
+    <p><span class="math">Fr(K,X)</span> 具有 <span class="math">K</span> 上关于 <span class="math">X</span> 的泛性质：对任意 <span class="math">A∈K</span> 与 <span class="math">g: X→A</span>，存在唯一同态 <span class="math">k: Fr(K,X)→A</span> 使 <span class="math">k↾X=g</span>。</p>
+    <div class="proof"><span class="pt">证明要点。</span><span class="math">g</span> 由项代数泛性质延拓为 <span class="math">h: F<sub>t</sub>(X)→A</span>。因 <span class="math">A∈K</span> 且 <span class="math">im(h)≤A∈ISK</span>，有 <span class="math">θ(K,X)⊆ker(h)</span>。由 L03 基本同态定理，<span class="math">h</span> 穿过商得到 <span class="math">k</span>。<span class="qed">∎</span></div>
+  </div>
+
+  <div class="intu"><div class="bt">自由代数的哲学：最一般，因此什么都解释</div>
+    <p>泛性质说：<span class="math">Fr(K,X)</span> 里的元素（等价类 <span class="math">t/θ</span>）是一种<strong>「对 <span class="math">K</span> 中所有代数通用的表达式」</strong>。你在 <span class="math">Fr(K,X)</span> 里证明的等式 <span class="math">t/θ = s/θ</span>，通过唯一的 <span class="math">k</span> 自动变成 <span class="math">K</span> 中每个代数里的等式 <span class="math">t<sup>A</sup>=s<sup>A</sup></span>。</p>
+    <p>反过来（关键！）：若 <span class="math">t<sup>A</sup>=s<sup>A</sup></span> 对所有 <span class="math">A∈K</span> 成立，则 <span class="math">⟨t,s⟩</span> 落在所有 <span class="math">θ</span> 里，即落在交 <span class="math">θ(K,X)</span> 里，故 <span class="math">t/θ=s/θ</span>。<strong>于是「在自由代数中相等」⇔「在 K 的所有成员中相等」</strong>。这就是「语法可证 ⇔ 语义成立」的代数原型，L18 五座桥的第一座。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例子 · 自由布尔代数</div>
+    <p>令 <span class="math">K=BA</span>（布尔代数簇），<span class="math">X={p,q}</span>。<span class="math">Fr(BA,{p,q})</span> 有 4 个元素：<span class="math">0, p∧q, p∧¬q∨¬p∧q, 1</span> 等等价类——其实是 <span class="math">2<sup>4</sup></span> 个元素（两个变元的全部真值函数）。一般地 <span class="math">Fr(BA,n)≅2<sup>2<sup>n</sup></sup></span>。它正是命题逻辑 <span class="math">n</span> 个变元的 Lindenbaum–Tarski 代数。</p>
+  </div>
+  <p class="src"><b>来源：</b>UAL §2.5 定义 2.5.1、2.5.3，定理 2.5.5；Bergman §4.4 定义 4.22。</p>
+</section>
+
+<!-- ============ O6 Birkhoff ============ -->
+<section id="birkhoff">
+  <h2><span class="sn">8</span>Birkhoff 定理 <span class="math">V=HSP</span> 与拟簇 <span class="tag alg">O6</span><span class="tag log">逻辑</span></h2>
+  <p class="lead">本讲的高潮。三条支流在这里汇合，给出一个把「公理」和「代数运算」彻底对等的结果。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.11（算子与簇；Bergman 3.42 / UAL 2.4.9）</span></div>
+    <p>对代数类 <span class="math">K</span>，记 <span class="math">H(K), S(K), P(K)</span> 为其同态像、子代数、直积类。<strong>簇</strong>（variety）是可用一组等式定义的类，等价于对 <span class="math">H,S,P</span> 全封闭的类。</p>
+    <p><strong>等式</strong> <span class="math">σ≈τ</span> 指 <span class="math">σ<sup>A</sup>=τ<sup>A</sup></span> 对所有赋值成立；<strong>拟等式</strong> <span class="math">(⋀σ<sub>i</sub>≈τ<sub>i</sub>) → σ≈τ</span> 是有限个等式蕴含一个等式（逻辑里对应 Horn 规则）。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">4.12（Birkhoff 定理；Bergman 3.43 / UAL 2.4.11）</span></div>
+    <div class="formula">V(K) = HSP(K) 　　即　　 V = HSP</div>
+    <p>又：<span class="math">Mod(Eq(K)) = HSP(K)</span>，簇 <span class="math">V</span> 当且仅当 <span class="math">V=HSPV</span>。</p>
+    <div class="proof"><span class="pt">证明骨架。</span>两包含。<strong>⊇</strong>：等式在 <span class="math">H,S,P</span> 下保持，故 <span class="math">HSP(K)⊆Mod(Eq(K))</span>。<strong>⊆</strong>：设 <span class="math">A⊨Eq(K)</span>。取项代数 <span class="math">F<sub>t</sub>(A)</span>（以 <span class="math">A</span> 的元素为变量），有满同态 <span class="math">f: F<sub>t</sub>(A)↠A</span>。关键是构造 <span class="math">F<sub>t</sub>(A)→∏B<sub>i</sub></span>（<span class="math">B<sub>i</sub>∈K</span>）的同态 <span class="math">g</span> 使 <span class="math">ker(g)⊆ker(f)</span>，这样 <span class="math">A∈HSP(K)</span>。<span class="qed">∎</span></div>
+  </div>
+
+  <div class="intu"><div class="bt">V=HSP 为什么是「完备性的原型」</div>
+    <p>把 <span class="math">K</span> 想成某个逻辑的模型类，<span class="math">Eq(K)</span> 是它的定理（等式）。定理说：满足所有定理的代数，恰好是从 <span class="math">K</span> 出发用 <span class="math">H,S,P</span> 能造出来的代数。<strong>「满足所有定理」是语义条件，「用 HSP 造」是语法/构造条件——两者相等就是完备性。</strong></p>
+    <p>更精确地说：自由代数 <span class="math">Fr(V,X)</span> 是「语法侧」，<span class="math">HSP</span> 类的成员是「语义侧」，泛性质把两者接起来（§7）。L18 的桥定理之一就是说：一个逻辑可代数化，当且仅当它的等价关系能被某个簇的同余捕捉。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">4.13（拟簇刻画；UAL 2.4.12）</span></div>
+    <div class="formula">ModQeq(K) = SPU<sub>p</sub>(K)</div>
+    <p>拟簇（quasi-variety，可用拟等式定义的类）恰是对 <span class="math">S,P,U<sub>p</sub></span>（子代数、直积、超积）封闭的类。</p>
+    <div class="intu" style="margin:8px 0"><p><span class="math">U<sub>p</sub></span> 的出现是全文的关节点：它把 Łoś 定理（§5）接了进来。拟等式在超积下保持，正因 Łoś 定理对一阶公式成立。<strong>这条定理是「紧致性 ⇒ 拟簇可刻画」的代数版本</strong>，L10、L18 会反复回到它。</p></div>
+  </div>
+
+  <div class="fusion"><div class="bt">三条支流在此汇合</div>
+    <table>
+      <tr><th>支流</th><th>贡献</th><th>在 Birkhoff 中的角色</th></tr>
+      <tr><td>子直表示（O2）</td><td><span class="math">V = P<sub>s</sub>(V<sub>si</sub>)</span></td><td>把簇化简到子直既约成员</td></tr>
+      <tr><td>自由代数（O5）</td><td><span class="math">Fr(V,X)</span> 的泛性质</td><td>提供「最一般模型」，语法侧</td></tr>
+      <tr><td>超积（O3）</td><td><span class="math">U<sub>p</sub></span> 保持一阶性质</td><td>拟簇刻画 <span class="math">SPU<sub>p</sub></span> 的关键</td></tr>
+    </table>
+    <p>三条看似无关的路，最后都在回答同一个问题：<strong>「哪些代数类能被一组公理精确描述？」</strong> 这正是代数逻辑的根本问题。</p>
+  </div>
+  <p class="src"><b>来源：</b>Bergman 定理 3.43、3.44；UAL 定理 2.4.11、2.4.12；L03 基本同态定理。</p>
+</section>
+
+<!-- ============ 融合 ============ -->
+<section id="fusion2">
+  <h2><span class="sn">9</span>融合接口：可证即相等</h2>
+  <div class="fusion"><div class="bt">一句话总结本讲对全课的贡献</div>
+    <p><span class="math">t ≈ s</span> 在自由代数 <span class="math">Fr(V,X)</span> 中成立 <span class="tag alg">代数</span> ⟺ 等式 <span class="math">t≈s</span> 在 <span class="var">V</span> 的所有模型中成立 <span class="tag log">逻辑</span> ⟺ <span class="math">t≈s</span> 可从公理证明。这条链子将在 L18–L22 被推广到任意（不只是等式的）逻辑，那时它叫<strong>桥定理</strong>。</p>
+  </div>
+  <table>
+    <tr><th>本讲概念</th><th>逻辑侧对应</th><th>后续讲次</th></tr>
+    <tr><td>自由代数 <span class="math">Fr</span></td><td>公式代数 / Lindenbaum 代数</td><td>L16 代数化</td></tr>
+    <tr><td>等式成立 <span class="math">t≈s</span></td><td>公式可证 <span class="math">⊢φ</span></td><td>L18 桥定理一</td></tr>
+    <tr><td>超积 <span class="math">U<sub>p</sub></span></td><td>紧致性 / 模型论的超积构造</td><td>L10 紧致性、L18</td></tr>
+    <tr><td>子直既约 <span class="math">V<sub>si</sub></span></td><td>完全理论 / 不可再分的模型</td><td>L20 Stone 对偶</td></tr>
+  </table>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按学习目标编号）</h2>
+  <div class="exercise"><ol>
+    <li><span class="tag alg">O1</span> 验证 <span class="math">ℤ₄</span> 是子直既约的：写出 <span class="math">Con(ℤ₄)</span>，指出 monolith，并说明它为何完全 meet-不可约。</li>
+    <li><span class="tag alg">O1</span> 证明：<span class="math">2×2</span>（两元素格的直积）不是子直既约的（提示：用投影同余 <span class="math">ker(π₁), ker(π₂)</span> 的交）。</li>
+    <li><span class="tag alg">O2</span> 用子直表示定理分解 <span class="math">ℤ₆ ≅ ℤ₂×ℤ₃</span>：写出对应的一族同余 <span class="math">θ<sub>a,b</sub></span>，验证它们交为 <span class="math">0</span>，商为子直既约。</li>
+    <li><span class="tag alg">O2</span> 证明推论：有限代数是有限多个有限子直既约代数的子直积（提示：有限代数只有有限多对点）。</li>
+    <li><span class="tag alg">O3</span> 设 <span class="math">I=ℕ</span>，<span class="math">U</span> 为非主超滤子，<span class="math">A<sub>i</sub>=ℤ₂</span>。用 Łoś 定理判断句子「<span class="math">∀x (x+x=0)</span>」在 <span class="math">∏ℤ₂/U</span> 中的真假，并说明理由。</li>
+    <li><span class="tag alg">O3</span><span class="tag log">逻辑</span> 设 <span class="math">A<sub>i</sub></span> 中一半满足句子 <span class="math">φ</span>、一半不满足，<span class="math">U</span> 是超滤子。问 <span class="math">∏A<sub>i</sub>/U ⊨ φ</span> 是否取决于 <span class="math">U</span>？举例说明超滤子的「选择」如何决定答案。</li>
+    <li><span class="tag alg">O4</span> 在群语言、<span class="math">X={x}</span> 下列出 5 个不同的项，并说明为什么 <span class="math">x·x⁻¹</span> 与 <span class="math">e</span> 在项代数中不同、在群中相同。</li>
+    <li><span class="tag alg">O5</span> 验证自由布尔代数 <span class="math">Fr(BA,{p})</span> 有 4 个元素，并写出其泛性质在 <span class="math">g: {p}→2</span>（<span class="math">g(p)=1</span>）时的唯一同态 <span class="math">k</span>。</li>
+    <li><span class="tag alg">O5</span> 证明：若 <span class="math">|X|=|Y|</span>，则 <span class="math">Fr(K,X)≅Fr(K,Y)</span>（提示：用两次泛性质）。</li>
+    <li><span class="tag alg">O6</span> 用 <span class="math">V=HSP</span> 证明：<span class="math">V(ℤ₂)</span>（由两元素群生成的簇）恰是阿贝尔群中满足 <span class="math">2x=0</span> 的那些。写出所需的 <span class="math">H,S,P</span> 各步。</li>
+    <li><span class="tag alg">O6</span> 证明等式在 <span class="math">H,S,P</span> 下保持（Birkhoff 定理的「⊇」方向），逐条验证三个算子。</li>
+    <li><span class="tag alg">O6</span><span class="tag log">逻辑</span> 说明拟簇刻画 <span class="math">SPU<sub>p</sub></span> 中超积 <span class="math">U<sub>p</sub></span> 的作用：为什么拟等式在超积下保持要调用 Łoś 定理？把这一步和逻辑的紧致性证明对照。</li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L03.html">← 上一讲：L03 代数、子代数、同态、同余与商代数</a>
+  <a href="L05.html">下一讲：L05 Clone、不变关系与 Maltsev 条件 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L04 · 来源 Bergman Ch3/Ch4 / UAL §2.2.5–2.5 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L27 案例 1–2：经典命题逻辑 L<sub>C</sub> 与箭头逻辑 L<sub>REL</sub> · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第七篇 案例工坊</span><span class="sep">/</span><span>L27</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 27 · 2 学时 · 案例工坊开张 · 同一台机器，两种命运</div>
+  <h1>案例 1–2：经典命题逻辑 L<sub>C</sub> 与箭头逻辑 L<sub>REL</sub></h1>
+  <div class="sub">前二十六讲造机器，从这一讲起开动它。两个案例选得极狠：一个是「全都对」的样板，一个是「几乎全错」的反样板，桥定理跑一遍就知道你真懂还是假懂</div>
+  <div class="metarow"><span>来源：UAL §5.1（定义 5.1.1、命题 5.1.2/5.1.3）、§5.2（定义 5.2.1、命题 5.2.2）、§4.6 末尾讨论；回指 L02 闭包算子、L04 超积、L05 Birkhoff、L07 有限基、L16 代数对应、L18 紧致桥、L19 完全性桥、L20 可定义桥、L21 插值桥、L22 判定桥、L23 Stone 对偶、L24 关系代数与 RRA</span>
+    <span class="tag log">逻辑</span><span class="tag alg">代数</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">O1　为什么开案例工坊：桥是搬运机，不是答案表</a></li>
+  <li><a href="#workflow">O1　四步流程：规范形式 → 代数对应 → 查性质 → 搬运</a></li>
+  <li><a href="#lc">O2　案例 1：L<sub>C</sub> 的定义与代数对应物</a></li>
+  <li><a href="#ba2lc">O3　BA → L<sub>C</sub>：好性质整条流水线搬过来</a></li>
+  <li><a href="#lc2ba">O4　L<sub>C</sub> → BA：机器倒着开</a></li>
+  <li><a href="#lrel">O5　案例 2：L<sub>REL</sub> 与「方形」这个要害</a></li>
+  <li><a href="#rra2lrel">O6　RRA → L<sub>REL</sub>：坏性质照样搬运</a></li>
+  <li><a href="#examples">三层例：典型 / 本质 / 边界</a></li>
+  <li><a href="#fusion2">融合接口：第九张图（两台输入，一台机器）</a></li>
+  <li><a href="#ex">习题</a></li>
+</ol></div>
+
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系 <span class="tag alg">先摆牌</span></h2>
+  <div class="box"><div class="bt">本讲新概念（六个，按依赖排序）</div>
+    <ol>
+      <li><strong>案例四步流程</strong>：规范形式 → <span class="math">Algᵐ/Alg⊨</span> → 代数性质清单 → 桥定理搬运。这是第七篇每一讲的统一动作。</li>
+      <li><strong>L<sub>C</sub></strong>：经典命题逻辑，语言 <span class="math">⟨∧, ¬, ⊥⟩</span>，模型就是赋值 <span class="math">P → 2</span>。</li>
+      <li><strong>滤子性质三件套</strong>：<span class="math">m = n = 1</span>、<span class="math">∆₀ = (φ ↔ ψ)</span>、<span class="math">ε₀ = φ</span>、<span class="math">δ₀ = ⊤</span>——把 L<sub>C</sub> 送进可代数化门槛的那张门票。</li>
+      <li><strong>演绎项</strong>：把带前提后承压成空前提后承的联结词组；L<sub>C</sub> 的是 <span class="math">¬(φ₀ ∧ ¬φ₁)</span>，L<sub>REL</sub> 的是 <span class="math">⊤ ◦ φ₀ ◦ ⊤ → ⊤ ◦ φ₁ ◦ ⊤</span>。</li>
+      <li><strong>L<sub>REL</sub></strong>：箭头逻辑，语言多出 <span class="math">◦, ⁻¹, Id</span>，模型必须建在方形 <span class="math">U × U</span> 上。</li>
+      <li><strong>setRRA / RRA</strong>：具体关系代数类 / 可表示关系代数类；L<sub>REL</sub> 的两个代数对应物（L24 已铺垫）。</li>
+    </ol>
+  </div>
+  <div class="diagram"><div class="bt">依赖图（箭头 = 「先懂左边才懂右边」）</div>
+<pre>  L16 Algᵐ / Alg⊨ 三分 ──┐
+  L02 滤子性质三件套 ─────┼──四步流程 ──L_C ──Algᵐ={2}, Alg⊨=BA ──┐
+  UAL 3.3.11/3.3.36 ─────┘                                        │
+                                                                    ▼
+  BA 性质清单 ──L18 紧 ──L19 完备/判定 ──L20 Beth ──L21 插值 ──L22 判定
+       ▲                                                            │
+       │                                                            ▼
+       └──────────反向：命题 5.1.3 / 4.4.25 ◄──────────── L_C 逻辑性质清单
+
+  L24 setRRA / RRA ──L_REL ──Algᵐ=setRRA, Alg⊨=RRA ──同一台机器 ──另一种结论</pre>
+  </div>
+  <p class="src"><b>与 L24 的分工先说清：</b>L24 讲的是<strong>关系代数本身</strong>——五层术语迷宫、Tarski 公理、RA 与 RRA 的鸿沟。本讲不讲这些，本讲讲的是<strong>机器怎么用 RRA</strong>：把 L<sub>REL</sub> 塞进规范形式，看看从第 4 章那六座桥能搬出什么。两讲是「零件」与「整车」的关系。</p>
+</section>
+
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习</h2>
+  <div class="box"><div class="bt">六个目标，每个都有对应讲解和练习</div>
+    <table>
+      <tr><th>目标</th><th>要拿到什么</th><th>讲解</th><th>练习</th></tr>
+      <tr><td><span class="tag alg">O1</span></td><td>案例四步流程；桥为何是搬运机而非答案表</td><td><a href="#motive">§2</a>、<a href="#workflow">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+      <tr><td><span class="tag log">O2</span></td><td>L<sub>C</sub> 定义；滤波三件套；Algᵐ={2}、Alg⊨=BA 的推导</td><td><a href="#lc">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+      <tr><td><span class="tag alg">O3</span></td><td>从 BA 清单逐条搬到 L<sub>C</sub>：完备/紧致/可判定/插值/Beth</td><td><a href="#ba2lc">§5</a></td><td><a href="#ex">E5, E6, E7</a></td></tr>
+      <tr><td><span class="tag alg">O4</span></td><td>机器倒开：命题 5.1.3、→插值反推超合并</td><td><a href="#lc2ba">§6</a></td><td><a href="#ex">E8</a></td></tr>
+      <tr><td><span class="tag log">O5</span></td><td>L<sub>REL</sub> 定义；方形 <span class="math">U×U</span> 为什么是要害</td><td><a href="#lrel">§7</a></td><td><a href="#ex">E9, E10</a></td></tr>
+      <tr><td><span class="tag alg">O6</span></td><td>RRA 坏性质的搬运；两案例总对照；wGip 反推自由代数非原子</td><td><a href="#rra2lrel">§8</a></td><td><a href="#ex">E11, E12, E13</a></td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="motive">
+  <h2><span class="sn">2</span>O1　为什么开案例工坊：桥是搬运机，不是答案表 <span class="tag alg">O1</span></h2>
+  <p class="lead">到这里你手里有六座桥、一堆代数定理。但桥定理说的全是「若代数类有性质 P，则逻辑有性质 Q」。它不告诉你任何一个具体逻辑到底有没有 P。要拿结论，你得先知道那个逻辑的代数对应物是什么、那个代数类有什么性质——然后开机器。</p>
+
+  <h3><span class="sn">2.1</span>一个容易养成的坏习惯</h3>
+  <p>学完 L18–L22，很容易把桥定理背成一张答案表：「紧致 = 完备 = 超滤子收敛」「插值 = 超合并」「可定义 = 可分」。这样背，考试能过，遇到新逻辑就傻。因为每一条桥都有<strong>前提</strong>：可代数化、有否定、有常元、有演绎项、拼补性质、理想的拢集形式……前提一松，桥就断。L24 的箭头逻辑就是活教材：它紧致，却没有有限 Hilbert 系统；它有演绎项，却没有插值。同一个「命题逻辑」的名字，表现和一阶逻辑一样野。</p>
+  <p>所以这一篇不给你答案表，给你<strong>操作流程</strong>。流程跑熟了，任何逻辑摆到你面前，你都知道先问什么、后问什么。</p>
+
+  <div class="box intu"><div class="bt">一句话点破</div>
+    <p>桥定理是<strong>性质搬运机</strong>：一头吃代数性质，一头吐逻辑性质，反过来也行。但机器不会自己去查货。案例工坊练的就是「查货 + 开机」这套手艺。</p>
+  </div>
+
+  <h3><span class="sn">2.2</span>为什么偏偏挑这两个案例</h3>
+  <p>UAL 第五章挑了八个案例，头两个是故意摆成对照的：</p>
+  <ul>
+    <li><strong>L<sub>C</sub>（经典命题逻辑）</strong>：代数对应物是布尔代数 BA。这是全课最乖的代数类——有限公理化、等式理论可判定、有超合并、满射满、Stone 表示。桥开过去，逻辑性质一整排全是「有」。</li>
+    <li><strong>L<sub>REL</sub>（箭头逻辑）</strong>：代数对应物是可表示关系代数 RRA。这个代数类几乎把每一条好性质都缺了——不可有限公理化、等式理论不可判定、满射不满、无超合并。桥开过去，一整排全是「没有」。</li>
+  </ul>
+  <p><strong>两个逻辑都是命题逻辑</strong>（都没有量词），语言差别只有三个运算符号。结果一个天上、一个地下。这个反差不是猎奇，是检验：如果你真懂桥定理，你应该能在看完代数性质清单的一秒内，把逻辑性质清单默写出来；如果还要翻书找结论，说明桥没装进脑子。</p>
+  <p class="src"><b>来源：</b>UAL §5.1 开头、§5.2 开头（Tarski 1941 造 L<sub>REL</sub> 就是为了给第一个不可判定的命题逻辑）。</p>
+</section>
+
+<section id="workflow">
+  <h2><span class="sn">3</span>O1　四步流程：规范形式 → 代数对应 → 查性质 → 搬运 <span class="tag alg">O1</span></h2>
+  <p class="lead">这一节把第七篇每一讲都要用的动作固定下来。以后遇到任何逻辑，照这四步走，不跳步。</p>
+
+  <div class="box def"><div class="bt">流程 <span class="num">四步（本讲模板）</span></div>
+    <ol>
+      <li><strong>放进规范形式。</strong>写成 <span class="math">L = ⟨L<sup>P</sup> : P ∈ Sig⟩</span>，逐个验三件事：组合性、语义代入性质、滤子性质（找出 <span class="math">m, n, ∆ᵢ, εᵢ, δᵢ</span>）。过了这三关才叫<strong>可代数化</strong>，六座桥才对你开放。</li>
+      <li><strong>求代数对应物。</strong>算 <span class="math">Algᵐ(L)</span>（所有模型的值域代数，<strong>具体</strong>）和 <span class="math">Alg⊨(L)</span>（所有使公式有效的代数，<strong>抽象</strong>）。前者决定可定义性（L20），后者决定紧致/完备/插值/判定（L18–L22）。<strong>两个都要算，不能只算一个。</strong></li>
+      <li><strong>查代数类的性质清单。</strong>固定六项去查：有限公理化？等式理论可判定？有合并/超合并？满射是否满？自由代数是否原子？是否 Stone 表示（<span class="math">= I set</span>）？这六项正好对应六座桥。</li>
+      <li><strong>搬运，并标注用的哪座桥。</strong>逐条写「代数性质 P —[定理 x.y.z]→ 逻辑性质 Q」。反方向也写一遍：有些逻辑性质有简单证明，能反过来给代数性质（本讲 §6 有两次示范）。</li>
+    </ol>
+  </div>
+
+  <div class="diagram"><div class="bt">四步流程一张图（第七篇通用）</div>
+<pre>  任意逻辑 L
+      │  ① 规范形式：组合性 + 语义代入 + 滤子性质
+      ▼
+  可代数化？──否──► 桥全部失效，只能个案分析
+      │是
+      ▼
+  ② Algᵐ(L)  ─────► 可定义桥（L20）、嵌入对应
+     Alg⊨(L)  ─────► 紧/完备/插值/判定（L18/19/21/22）
+      │
+      ▼
+  ③ 查六项代数性质：有限公理化 | 可判定 | 合并 | 满射 | 原子 | 表示
+      │
+      ▼
+  ④ 逐条搬运 ─────► 逻辑性质清单（并尝试反向）</pre>
+  </div>
+
+  <div class="box warn"><div class="bt">一个真实的坑：Algᵐ 与 Alg⊨ 别混</div>
+    <p>第 2 步最容易偷懒：只算 <span class="math">Alg⊨</span>，因为它是个簇、好算。但 L20 讲过，可定义性必须看 <span class="math">Algᵐ</span>——它是具体的、故意不对同构封闭的。下面的 L<sub>C</sub> 和 L<sub>REL</sub> 都把两个都算出来：<span class="math">Algᵐ(L<sub>C</sub>) = {2}</span> 而 <span class="math">Alg⊨(L<sub>C</sub>) = BA</span>；<span class="math">Algᵐ(L<sub>REL</sub>) = setRRA</span> 而 <span class="math">Alg⊨(L<sub>REL</sub>) = RRA</span>。<strong>左边是「模型真能取到的值」，右边是「使有效式成立的抽象代数」，差一个 SP 闭包。</strong></p>
+  </div>
+</section>
+
+<section id="lc">
+  <h2><span class="sn">4</span>O2　案例 1：L<sub>C</sub> 的定义与代数对应物 <span class="tag log">O2</span></h2>
+  <p class="lead">先照流程走一遍最简单的。定义本身三行就完，难的是第 1 步里那张「门票」——滤子性质三件套，它是后面所有桥的总开关。</p>
+
+  <div class="box def"><div class="bt">定义 <span class="num">5.1.1（经典命题逻辑 L<sub>C</sub>）</span></div>
+    <p>给定命题变元集 <span class="math">P</span>（非空、与联结词集不交）：</p>
+    <ul>
+      <li><strong>语言</strong> <span class="math">Cn = {∧, ¬, ⊥}</span>，<span class="math">∧</span> 二元、<span class="math">¬</span> 一元、<span class="math">⊥</span> 常元；公式集 <span class="math">F<sup>P</sup><sub>C</sub> = F(P, Cn)</span>。</li>
+      <li><strong>模型</strong> <span class="math">M<sup>P</sup><sub>C</sub> = <sup>P</sup>2</span>，即赋值 <span class="math">M : P → 2</span>，给每个原子命题指派 0（假）或 1（真）。</li>
+      <li><strong>意义函数</strong>把赋值按公式结构延拓：
+        <div class="formula">M(⊥) = 0，　M(¬φ) = 1 − M(φ)，　M(φ ∧ ψ) = min{M(φ), M(ψ)}.</div></li>
+      <li><strong>真</strong> <span class="math">mng<sup>P</sup>(φ, M) = M(φ)</span>；<span class="math">M ⊨<sub>C</sub> φ</span> 当且仅当 <span class="math">M(φ) = 1</span>。</li>
+    </ul>
+    <p>于是 <span class="math">L<sup>P</sup><sub>C</sub> = ⟨F<sup>P</sup><sub>C</sub>, M<sup>P</sup><sub>C</sub>, mng, ⊨<sub>C</sub>⟩</span>，而 <span class="math">L<sub>C</sub></span> 是所有这些 <span class="math">L<sup>P</sup><sub>C</sub></span> 组成的族。</p>
+  </div>
+
+  <p><strong>第 1 步，师范形式。</strong>L<sub>C</sub> 的组合性从定义直接看出：公式的意义由子公式的意义按 <span class="math">min</span>、<span class="math">1−</span> 算出，正是 L01 说的「合成」。语义代入性质也不难。真正要动手的是滤子性质三件套，命题 5.1.2 的证明把它明摆着写出来了：</p>
+  <div class="formula">m = n = 1，　∆₀(φ, ψ) = (φ ↔ ψ)，　ε₀(φ) = φ，　δ₀(φ) = ⊤ = ¬⊥.</div>
+  <p>其中 <span class="math">(φ ↔ ψ) = ¬(¬φ ∧ ψ) ∧ ¬(φ ∧ ¬ψ)</span>。<strong>这三件套不是装饰，是把「逻辑后承」翻译成「代数包含」的词典条目</strong>（L16 讲过：<span class="math">Γ ⊨ φ</span> 翻译成 <span class="math">⋀εᵢ(γ) ≤ δⱼ(φ)</span>）。∆₀ 负责「理论等价于哪个代数方程」，ε₀/δ₀ 负责「后承对应哪条不等式」。L<sub>C</sub> 里 ε₀ 取恒等、δ₀ 取真，说明它的翻译最干净：不用绕弯。</p>
+
+  <p><strong>第 2 步，算代数对应物。</strong>这是命题 5.1.2 的内容，我把证明拆成四小步：</p>
+  <div class="box thm"><div class="bt">命题 <span class="num">5.1.2</span>：L<sub>C</sub> 可代数化，且 Algᵐ(L<sub>C</sub>) = {2}、Alg⊨(L<sub>C</sub>) = BA</div>
+    <div class="proof"><span class="pt">第 1 小步：值域只有 2。</span>
+      <p>任何模型 <span class="math">M : P → 2</span> 把公式送进 <span class="math">{0,1}</span>，而 <span class="math">2</span> 就是二元布尔代数。所以每个 <span class="math">mng(M)</span> 的值域是 <span class="math">2</span>，<span class="math">Algᵐ(L<sup>P</sup><sub>C</sub>) = {2}</span>。<strong>注意这里是「每个模型的值域」，不是「所有模型的并」——正因为只取一个固定的 2，Algᵐ 才恰好是单元素类。</strong></p>
+    </div>
+    <div class="proof"><span class="pt">第 2 小步：同态就是意义函数。</span>
+      <p>反过来看，任意代数同态 <span class="math">h : F(P, Cn) → 2</span> 都由它在生成元 <span class="math">P</span> 上的取值决定（自由代数的泛性质，L05）。把 <span class="math">h↾P</span> 当作赋值 <span class="math">M</span>，就有 <span class="math">h = mng(M)</span>。于是 <span class="math">Hom(F(P, Cn), 2) = Mng<sup>P</sup></span>，一个不多一个不少。这一步是「语义 = 同态」的精确版，L16 的命题 3.3.20 在这里落了地。</p>
+    </div>
+    <div class="proof"><span class="pt">第 3 小步：过桥门槛。</span>
+      <p>由命题 3.3.11（同态类满足语义代入性质 ⟹ 逻辑有语义代入性质），加上上面写出的滤子性质三件套，L<sub>C</sub> 满足可代数化的全部条件。<span class="qed">∎</span></p>
+    </div>
+    <div class="proof"><span class="pt">第 4 小步：从 {2} 到 BA。</span>
+      <p>由定理 3.3.36（对「好逻辑」有 <span class="math">Alg⊨ = SP Algᵐ</span>）得 <span class="math">Alg⊨(L<sub>C</sub>) = SP{2}</span>。而定理 2.6.15 说 <span class="math">BA = SP{2}</span>（L23 证过：<span class="math">BA = I setBA</span> 且每个布尔代数嵌入 2 的幂）。两行合起来 <span class="math">Alg⊨(L<sub>C</sub>) = BA</span>。<span class="qed">∎</span></p>
+    </div>
+  </div>
+
+  <div class="box intu"><div class="bt">把这一步记牢</div>
+    <p><strong>「L<sub>C</sub> 的代数对应物是布尔代数」这句话，真正的含量是 <span class="math">Algᵐ = {2}</span>、<span class="math">Alg⊨ = SP{2} = BA</span> 两行加了三步证明。</strong>以后谁跟你说「某某逻辑对应某某代数类」，你就该追问：是 Algᵐ 还是 Alg⊨？差一个 SP 闭包，桥的适用性完全不同。</p>
+  </div>
+</section>
+
+<section id="ba2lc">
+  <h2><span class="sn">5</span>O3　BA → L<sub>C</sub>：好性质整条流水线搬过来 <span class="tag alg">O3</span></h2>
+  <p class="lead">第 3 步查代数性质，第 4 步搬运。我把 UAL 原文那一段「命题 5.1.2 说了什么……」拆成一张逐行对照表，每行都标了用的哪座桥。你读的时候盖住右边一列，自己先填一遍。</p>
+
+  <h3><span class="sn">5.1</span>先摊开 BA 的性质清单</h3>
+  <div class="box"><div class="bt">布尔代数 BA 的六项性质（UAL §5.1 原文列出）</div>
+    <ol>
+      <li><strong>有限公理化的判别簇</strong>，等式理论可判定。</li>
+      <li><strong>表示</strong>：<span class="math">BA = I setBA</span>，即 Stone 表示定理（L23）。</li>
+      <li><strong>有限生成者有限</strong>：每个有限生成布尔代数是有限代数。</li>
+      <li><strong>无限自由代数无原子</strong>：无限生成的自由布尔代数没有原子。</li>
+      <li><strong>超合并</strong>：BA 有超合并性质，因此也有强合并。</li>
+      <li><strong>满射满</strong>：BA 中的满射必是满同态。</li>
+    </ol>
+  </div>
+  <p>这六行看着平淡，其实是六台发动机各自的燃料：<strong>有限公理化</strong>喂完全性桥，<strong>等式理论可判定</strong>喂判定桥，<strong>超合并/满射满</strong>喂插值桥与可定义桥，<strong>自由代数原子性</strong>喂不完全性桥，<strong>表示</strong>决定 L<sub>C</sub> 的语义长什么样。下面逐条搬到逻辑侧。</p>
+
+  <h3><span class="sn">5.2</span>搬运表：代数性质 → 逻辑性质</h3>
+  <table>
+    <tr><th>代数侧（因）</th><th>桥（定理）</th><th>逻辑侧（果）</th></tr>
+    <tr><td>BA 有限公理化簇</td><td>定理 4.2.20（L19）</td><td>L<sub>C</sub> 有<strong>强完备且强可靠</strong>的 Hilbert 系统；特别地<strong>紧致</strong>（习题 4.1.3：有否定与弱假，可满足紧致与后承紧致不分）</td></tr>
+    <tr><td>Eq(BA) 与准等式理论可判定</td><td>定理 4.2.5、推论 4.2.6（L22）</td><td>有效式集、<strong>容许规则集</strong>、有效公式模式集三者全可判定</td></tr>
+    <tr><td>有限 <span class="math">P</span> 时重言式公式代数有原子</td><td>定理 4.6.8（L22）</td><td>有限变元集下 L<sub>C</sub> <strong>无</strong>弱 Gödel 不完全性</td></tr>
+    <tr><td>BA 有合并</td><td>定理 4.4.18（L21）</td><td>L<sub>C</sub> 有 <span class="math">⊨</span>–插值（Czelakowski 定理：可代数化 + 后承紧致 + 通常合取 + 常元 + 演绎项 ⟹ <span class="math">⊨</span>–插值 ⟺ Alg⊨ 有合并）</td></tr>
+    <tr><td>BA 有超合并</td><td>定理 4.4.25（L21）</td><td>L<sub>C</sub> 有 <span class="math">→</span>–插值</td></tr>
+    <tr><td>BA 中满射满</td><td>定理 4.3.19（L20）</td><td>L<sub>C</sub> 有<strong>隐含/显式可定义性</strong>（Beth）；还有拼补性质（定义 4.3.14）</td></tr>
+  </table>
+
+  <div class="box warn"><div class="bt">编号校准：4.4.18 / 4.4.24 / 4.4.25 别记混</div>
+    <p>我在 L21 把「超合并 ⟺ 插值」简写成了定理 4.4.24，这里按 UAL 原文把口径收紧，你记这张表就行：</p>
+    <ul>
+      <li><strong>4.4.18</strong>（Czelakowski）：<span class="math">⊨</span>–插值 ⟺ Alg⊨ 有<strong>合并</strong>。前提：可代数化 + 后承紧致 + 通常合取 + 至少一个常元 + 演绎定理。</li>
+      <li><strong>4.4.24</strong>（Mardasz）：带派生二元联结词与拼补性质的逻辑，(IP) ⟺ 自由代数上的<strong>自由超合并</strong>（Free R SUPAP）。L21 里说的「超合并 ⟺ 插值」是它在常见设定下的简写。</li>
+      <li><strong>4.4.25</strong>（Mardasz）：含经典命题片段、Alg⊨ 成簇、有局部演绎性质时，<span class="math">→</span>–插值 ⟺ <strong>超合并</strong>。这条才直接给 L<sub>C</sub> 的 <span class="math">→</span>–插值。</li>
+    </ul>
+    <p>三条定理前提不同、结论不同，别再用一个「插值=超合并」糊过去。</p>
+  </div>
+
+  <h3><span class="sn">5.3</span>顺手把 Hilbert 系统造出来</h3>
+  <p>定理 4.2.20 不只说「存在」，它的证明<strong>给定</strong> BA 的有限等式公理系统，就<strong>构造</strong>出一套 Hilbert 系统（L19 讲过这个双向）。UAL §5.1 把对某套公理跑出来的系统写了出来，我照抄成中文记号：</p>
+  <div class="box"><div class="bt">L<sub>C</sub> 的一套 Hilbert 系统（<span class="math">↔</span>、<span class="math">⊤</span> 作导出联结词）</div>
+    <p><strong>公理</strong>（<span class="math">φ, ψ, χ, δ</span> 是公式变元）：</p>
+    <div class="formula">φ ∧ ψ ↔ ψ ∧ φ
+φ ∧ (ψ ∧ χ) ↔ (φ ∧ ψ) ∧ χ
+φ ↔ ¬(¬(φ ∧ ψ) ∧ ¬(φ ∧ ¬ψ))</div>
+    <p><strong>规则</strong>：</p>
+    <div class="formula">φ ↔ φ　;　(φ ↔ ψ) ⇒ (ψ ↔ φ)　;　(φ ↔ ψ), (ψ ↔ χ) ⇒ (φ ↔ χ)
+(φ ↔ ψ) ⇒ (¬φ ↔ ¬ψ)　;　(φ ↔ ψ), (χ ↔ δ) ⇒ ((φ ∧ χ) ↔ (ψ ∧ δ))
+(φ ↔ ⊤) ⇒ φ　;　φ ⇒ (φ ↔ ⊤)</div>
+    </div>
+  <p>这套系统长得朴素，但要点在来源：<strong>它不是谁拍脑袋写的，是从布尔代数的三条等式公理经定理 4.2.20 的构造翻译过来的。</strong>这就是桥的「生成性」——L19 问的那台有限证明发动机，在这里真的点着了。</p>
+
+  <h3><span class="sn">5.4</span>演绎项：一行公式顶一座桥</h3>
+  <p>上面搬运表里反复用到一个东西：<strong>演绎项</strong>。L22 讲不完全性时遇见过它，这里给个干净定义和它的「本职工作」。</p>
+  <div class="box def"><div class="bt">定义 <span class="num">演绎项</span></div>
+    <p>若有一族公式映射 <span class="math">φ₀ ⊸ φ₁</span>（二元导出联结词），满足</p>
+    <div class="formula">φ₀ ⊨ φ₁　⟺　⊨ (φ₀ ⊸ φ₁),</div>
+    <p>就称 <span class="math">⊸</span> 是逻辑 L 的一个<strong>演绎项</strong>。它的本职是<strong>降元</strong>：把带一条前提的后承问题，改成空前提的有效式问题。</p>
+  </div>
+  <p>L<sub>C</sub> 的演绎项就是 <span class="math">φ₀ ⊸ φ₁ = ¬(φ₀ ∧ ¬φ₁)</span>，也就是惯常的 <span class="math">φ₀ → φ₁</span>。验证一行就够：<span class="math">φ₀ ⊨ φ₁</span> 说「任何使 <span class="math">φ₀</span> 真的赋值也使 <span class="math">φ₁</span> 真」，等价于「没有赋值使 <span class="math">φ₀</span> 真而 <span class="math">φ₁</span> 假」，等价于 <span class="math">¬(φ₀ ∧ ¬φ₁)</span> 永真。</p>
+  <div class="box intu"><div class="bt">为什么演绎项在判定性里是硬通货</div>
+    <p>逻辑的可判定性通常只对<strong>空前提</strong>的有效式集 <span class="math">Csq(∅)</span> 知道。有了演绎项，<span class="math">φ₀ ⊨ φ₁</span> 就折成 <span class="math">⊨ φ₀ → φ₁</span>，于是「带前提的后承也可判定」。L22 里这条叫「语法折算给算法帮忙」，当时是第二次出现，这里是第三次。<strong>后面 L<sub>REL</sub> 也有演绎项，可判定性却还是没有——因为它的空前提有效式集本身就不可判定。</strong>演绎项能搬运可判定性，但造不出可判定性。</p>
+  </div>
+  <p class="src"><b>来源：</b>UAL 命题 5.1.2 及其后讨论、§5.1 的公理与规则清单、定理 3.3.36/2.6.15、定理 4.2.20/4.2.5、推论 4.2.6、定理 4.4.18/4.4.25、定理 4.3.19、定理 4.6.8。</p>
+</section>
+
+<section id="lc2ba">
+  <h2><span class="sn">6</span>O4　L<sub>C</sub> → BA：机器倒着开 <span class="tag alg">O4</span></h2>
+  <p class="lead">第 4 步还有个反向玩法：有些逻辑性质有简单证明，就把它当因，倒推代数性质。UAL 给了两次示范，我把它拆开看——这两次倒推是全课「逻辑帮代数干活」最干净的例子。</p>
+
+  <div class="box thm"><div class="bt">命题 <span class="num">5.1.3</span>：任何非平凡布尔代数都能由范畴极限生成 BA</div>
+    <p>说人话：只要布尔代数 <span class="math">B</span> 至少有两个元素，那么只用 <span class="math">B</span> 一块砖，靠取子代数、积、极限这些范畴操作，就能造出<strong>所有</strong>布尔代数。这是一个「一块石头长出一座山」的结论，而且证明走的是逻辑桥。</p>
+    <div class="proof"><span class="pt">第 1 步：把 B 缩出 2。</span>
+      <p>设 <span class="math">B</span> 至少两元素。取 <span class="math">B</span> 中一个非平凡二元子代数，它必同构于 <span class="math">2</span>（布尔代数里只有两个元素的子代数就是 <span class="math">2</span>）。所以 <span class="math">2 ∈ S{B}</span>。</p>
+    </div>
+    <div class="proof"><span class="pt">第 2 步：SP 闭包铺满 BA。</span>
+      <p>令 <span class="math">K = {B}</span>。于是 <span class="math">SPK ⊇ SP{2} = BA</span>；反向 <span class="math">SPK ⊆ BA</span> 显然（<span class="math">B</span> 是布尔代数，子代数是布尔代数）。所以 <span class="math">SPK = BA</span>。这一步纯代数，还没有逻辑。</p>
+    </div>
+    <div class="proof"><span class="pt">第 3 步：造一台逻辑机器，让 Algᵐ 恰好等于 SK。</span>
+      <p>对每个变元集 <span class="math">P</span> 定义 <span class="math">L(P) = ⟨F(P, Cn), Hom(F(P, Cn), K), mng, ⊨⟩</span>，其中 <span class="math">mng(φ, h) = h(φ)</span>、<span class="math">h ⊨ φ</span> 当且仅当 <span class="math">h(φ) = 1</span>。这正是「把模型换成所有到 <span class="math">B</span> 的同态」——所以这台逻辑的 <span class="math">Algᵐ = SK</span>（所有 <span class="math">B</span> 的子代数），而 <span class="math">Alg⊨ = SPK = BA</span>。UAL 说它是一般逻辑，可代数化。</p>
+    </div>
+    <div class="proof"><span class="pt">第 4 步：用 Beth 桥把 K 认出来。</span>
+      <p>因为 <span class="math">Alg⊨ = BA</span> 中满射满，定理 4.3.19 给这台逻辑<strong>强 Beth 性质</strong>（进而弱 Beth）。而 <span class="math">max Algᵐ(L) = K = {B}</span>——因为 <span class="math">Algᵐ = SK</span> 只含 <span class="math">B</span> 的子代数，且 <span class="math">B ∈ SK</span>。最后定理 4.3.44 说：对可代数化逻辑，<span class="math">max Algᵐ</span> 生成 <span class="math">Alg⊨</span>（在适当极限下）。合起来 <span class="math">K</span> 生成 <span class="math">BA</span>。<span class="qed">∎</span></p>
+    </div>
+  </div>
+  <p><strong>这证明妙在哪：</strong>「一块非平凡布尔代数生成整个 BA」是纯代数命题，直接证要用 Stone 表示加一堆极限构造。这里绕道逻辑：造一台自定义逻辑 → 它的 <span class="math">Algᵐ</span> 恰好把 <span class="math">K</span> 圈出来 → 用 Beth 桥读出「<span class="math">max Algᵐ</span> 生成 <span class="math">Alg⊨</span>」。<strong>逻辑在这里当探测器，探出了代数类的生成结构。</strong>这就是 L20 讲的「类的性质看形状」的威力。</p>
+
+  <div class="box thm"><div class="bt">第二次倒推：L<sub>C</sub> 的 →插值 ⟹ BA 的超合并</div>
+    <p>UAL §5.1 末尾还给了一次更短的倒推：L<sub>C</sub> 有 <span class="math">→</span>–插值，而定理 4.4.2 给这条一个<strong>纯逻辑的、很容易的证明</strong>（不像代数侧的 Mardasz 定理那么重）。于是把定理 4.4.25 倒过来用：L<sub>C</sub> 含经典命题片段、<span class="math">Alg⊨ = BA</span> 成簇、有局部演绎性质，<span class="math">→</span>–插值成立 ⟹ BA 有超合并。</p>
+    <p><strong>这是一个「轻证逻辑性质 → 重证代数性质」的交易。</strong>你不用去代数里硬造超合并的夹逼元，只要给插值式一个逻辑证明，桥替你把代数性质搬回来。L21 里我们是从超合并推插值；这里反向走了一遍。<strong>桥是双向的，这才是「桥」而不是「单行道」的意思。</strong></p>
+  </div>
+  <p class="src"><b>来源：</b>UAL 命题 5.1.3 及其证明、§5.1 末段、定理 4.3.19/4.3.44、定理 4.4.2/4.4.25。</p>
+</section>
+
+<section id="lrel">
+  <h2><span class="sn">7</span>O5　案例 2：L<sub>REL</sub> 与「方形」这个要害 <span class="tag log">O5</span></h2>
+  <p class="lead">现在把机器开到反样板。L<sub>REL</sub> 也是命题逻辑：没有量词，只有联结词。但它多出三个运算，而这三个运算把模型逼到方形 <span class="math">U × U</span> 上——就是这一个改动，让整个集合论住了进来。</p>
+
+  <div class="box def"><div class="bt">定义 <span class="num">5.2.1（箭头逻辑 L<sub>REL</sub>）</span></div>
+    <ul>
+      <li><strong>语言</strong> <span class="math">Cn = {∧, ¬, ⊥, ◦, ⁻¹, Id}</span>，其中 <span class="math">∧, ◦</span> 二元、<span class="math">¬, ⁻¹</span> 一元、<span class="math">⊥, Id</span> 常元。</li>
+      <li><strong>模型</strong> <span class="math">M<sup>P</sup><sub>REL</sub> = {⟨W, v⟩ : W = U × U，v : P → 𝒫(W)}</span>。<strong>这里 <span class="math">W</span> 必须是某个集合 <span class="math">U</span> 的方形</strong>，不是任意集合。</li>
+      <li><strong>语义</strong>：布尔部分同 L<sub>C</sub>，三个新联结词按下式解释（<span class="math">u, z, x ∈ U</span>）：
+        <div class="formula">M, ⟨u, z⟩ ⊨ φ ◦ ψ　⟺　存在 x 使 M, ⟨u, x⟩ ⊨ φ 且 M, ⟨x, z⟩ ⊨ ψ
+M, ⟨u, z⟩ ⊨ φ⁻¹　⟺　M, ⟨z, u⟩ ⊨ φ
+M, ⟨u, z⟩ ⊨ Id　⟺　z = u</div>
+      </li>
+      <li>等价地，在意义函数上：<span class="math">mng(φ ◦ ψ) = mng(φ) ◦ mng(ψ)</span>（关系复合）、<span class="math">mng(φ⁻¹) = mng(φ)⁻¹</span>（关系逆）、<span class="math">mng(Id) = {⟨u, u⟩ : u ∈ U}</span>（恒等关系）。</li>
+      <li><strong>真</strong>不同：<span class="math">M ⊨ φ</span> 当且仅当 <span class="math">mng<sub>M</sub>(φ) = W</span>——公式在<strong>所有</strong>点上都成立（全局满足），而不是「某点成立」。</li>
+    </ul>
+  </div>
+
+  <div class="box intu"><div class="bt">为什么「方形」是要害，我讲慢一点</div>
+    <p>你第一次见会觉得「<span class="math">W = U × U</span> 不过是个技术设定」。不是的，它是整个逻辑的分水岭：</p>
+    <ul>
+      <li><strong>复合要成立，必须能「接尾」。</strong>
+        <span class="math">φ ◦ ψ</span> 的意思是「先走 <span class="math">φ</span> 再走 <span class="math">ψ</span>」。要走得通，第一箭头的目标必须是第二箭头的起点。若 <span class="math">W</span> 是任意集合，点之间没有「起点/终点」结构，<span class="math">◦</span> 无从定义。<strong>方形给每个点一副坐标 <span class="math">⟨u,z⟩</span>，于是「u 到 x 再 x 到 z」这句话才有意义。</strong></li>
+      <li><strong>逆与恒等也靠方形。</strong><span class="math">φ⁻¹</span> 是掉头（交换两坐标），<span class="math">Id</span> 是原地不动（对角线）。两者都预设了坐标结构。</li>
+      <li><strong>方形 = 关系，所以代数对应物是关系代数。</strong>一旦 <span class="math">mng_M(φ) ⊆ U × U</span> 是二元关系，三个运算就是关系代数的基本运算，模型的值域代数自然落在 setRRA 里（L24 §5 手算过同样的运算）。</li>
+    </ul>
+    <p><strong>«命题逻辑 + 方形模型» 这个组合，是 Tarski 1941 年的精心选择：它看起来还是命题逻辑（无变量、无量词），却已经强到能解释一阶逻辑。</strong>这是本讲最该记住的反差。UAL §5.2 原文开头特意点出这一点：Tarski 造 L<sub>REL</sub> 就是为了给出「第一个不可判定的命题逻辑」，「它是命题逻辑，却几乎和一阶逻辑一样复杂」。</p>
+  </div>
+
+  <div class="box thm"><div class="bt">命题 <span class="num">5.2.2</span>：L<sub>REL</sub> 可代数化，且 Algᵐ(L<sub>REL</sub>) = setRRA、Alg⊨(L<sub>REL</sub>) = RRA</div>
+    <p>UAL 原文的证明只有一句：「与命题 5.1.2 完全类似。」我把它落到实处，你看清「类似」在哪：</p>
+    <ul>
+      <li><strong>组合性</strong>同样从定义直接读出：三个新运算在意义函数上逐点定义。</li>
+      <li><strong>Algᵐ = setRRA</strong>：每个模型 <span class="math">M = ⟨U×U, v⟩</span> 把公式送到一个具体的二元关系 <span class="math">mng_M(φ) ⊆ U×U</span>，这些关系对 <span class="math">∧, ¬, ⊥, ◦, ⁻¹, Id</span> 封闭，正是 L24 定义的<strong>集合关系代数</strong> setRRA 的成员。同态反向也成立：任意从公式代数到某个 setRRA 代数的同态，由其在变元上的取值（一批关系）给出，故也是某模型的意义函数。</li>
+      <li><strong>滤子性质三件套</strong>与 L<sub>C</sub> 同形：<span class="math">m = n = 1</span>、<span class="math">∆₀ = (φ ↔ ψ)</span>、<span class="math">ε₀ = φ</span>、<span class="math">δ₀ = ⊤</span>。布尔部分没变，门票照用。</li>
+      <li><strong>Alg⊨ = SPsetRRA = RRA</strong>：最后一步用 L24 的定义——可表示关系代数类 RRA 就是 setRRA 的 SP 闭包。<strong>这里 SP 闭包不是白取的：它正是 RA 与 RRA 鸿沟的来源</strong>（L24 讲过 RA ⊋ RRA，最小反例 16 元）。</li>
+    </ul>
+    <p class="src"><b>来源：</b>UAL 定义 5.2.1、命题 5.2.2、§7.1（setRRA/RRA 定义）、L24 关系代数五层术语表。</p>
+  </div>
+</section>
+
+<section id="rra2lrel">
+  <h2><span class="sn">8</span>O6　RRA → L<sub>REL</sub>：坏性质照样搬运 <span class="tag alg">O6</span></h2>
+  <p class="lead">同一台机器，这次喂 RRA。第 3 步查出来的性质清单几乎全是「否」，于是第 4 步搬过去的结论也几乎全是「没有」。但你要注意：有一个「有」——紧致照样成立。这说明紧致桥的门槛很低，低到连这么野的逻辑都过得了。</p>
+
+  <h3><span class="sn">8.1</span>先摊开 RRA 的性质清单</h3>
+  <div class="box"><div class="bt">可表示关系代数 RRA 的六项性质（UAL §5.2 原文列出）</div>
+    <ol>
+      <li><strong>判别簇</strong>：<span class="math">RRA = SP setRRA</span> 是判别簇。</li>
+      <li><strong>不可有限公理化</strong>，<strong>等式理论不可判定</strong>——且集合论可以解释进 RRA 的等式理论。</li>
+      <li><strong>满射不满</strong>：存在非满的满射。</li>
+      <li>由 3 得：<strong>无超合并</strong>（L21 方向：超合并 ⟹ 满射满）。</li>
+      <li>（由不可有限公理化间接）有限生成自由 RRA 的情况见下。</li>
+      <li>与 BA 的对照：BA 六项全「好」，RRA 四项核心全「坏」。<strong>唯一还保留的是判别簇身份与 SP 形式。</strong></li>
+    </ol>
+  </div>
+
+  <h3><span class="sn">8.2</span>搬运表：RRA → L<sub>REL</sub></h3>
+  <table>
+    <tr><th>代数侧（因）</th><th>桥（定理）</th><th>逻辑侧（果）</th></tr>
+    <tr><td>RRA 是簇（虽不可有限公理化）</td><td>紧致桥（L18）</td><td>L<sub>REL</sub> <strong>紧致</strong>——注意紧致桥只要求簇 + 代数化，不要求有限公理化</td></tr>
+    <tr><td>RRA 不可有限公理化</td><td>定理 4.2.20 反向（L19）</td><td><strong>没有</strong>有限完备且强可靠的 Hilbert 系统（若有，定理 4.2.20 反向会给 RRA 有限公理化）</td></tr>
+    <tr><td>Eq(RRA) 不可判定；集合论可解释</td><td>判定桥（L22）</td><td>L<sub>REL</sub> 的<strong>有效性问题不可判定</strong>，且有弱 Gödel 不完全性</td></tr>
+    <tr><td>RRA 满射不满</td><td>定理 4.3.19 反向（L20）</td><td>L<sub>REL</sub> <strong>无 Beth 可定义性</strong></td></tr>
+    <tr><td>RRA 无超合并（亦无合并）</td><td>定理 4.4.18 / 4.4.25（L21）</td><td>L<sub>REL</sub> <strong>无插值</strong>，也无拼补性质</td></tr>
+  </table>
+
+  <div class="box intu"><div class="bt">这里最值得停一下：紧致「有」，完全性「无」</div>
+    <p>初学最容易把「紧致」和「有 Hilbert 系统」捆在一起，因为经典命题逻辑里两者同时成立。L<sub>REL</sub> 把它们拆开了：<strong>紧致只保证「有限片段都行则整体行」（存在性），Hilbert 系统要求「有效式能被有限规则列出来」（生成性）。</strong>RRA 是簇，所以存在性有；RRA 不可有限公理化，所以生成性没有。L18 与 L19 的分工在这里第一次显出必要性——如果当初把两座桥合成一座，这里就会出错。</p>
+  </div>
+
+  <div class="box def"><div class="bt">L<sub>REL</sub> 的演绎项 <span class="num">UAL §5.2 原文</span></div>
+    <div class="formula">φ₀ ⊸ φ₁　=　(⊤ ◦ φ₀ ◦ ⊤) → (⊤ ◦ φ₁ ◦ ⊤),</div>
+    <p>其中 <span class="math">→</span> 是布尔意义下的 <span class="math">¬(α ∧ ¬β)</span>。<strong>外层两个 <span class="math">⊤ ◦ … ◦ ⊤</span> 干什么？</strong>它把公式「抬升」到所有起点、所有终点：<span class="math">⊤ ◦ φ ◦ ⊤</span> 表示「存在某条路经过 <span class="math">φ</span>」。这样 <span class="math">φ₀ ⊨ φ₁</span> 才能折成空前提有效式 <span class="math">⊨ ⊤◦φ₀◦⊤ → ⊤◦φ₁◦⊤</span>。<strong>L<sub>C</sub> 的演绎项不用抬升，因为赋值没有「位置」；箭头逻辑的公式在具体的边上取值，必须先抹掉位置。</strong>这个差别本身就是两种语义的写照。</p>
+    <p>但如前所述：有演绎项不等于可判定——它的空前提有效式集本身已经不可判定了。</p>
+  </div>
+
+  <h3><span class="sn">8.3</span>第三次倒推：wGip ⟹ 自由 RRA 非原子</h3>
+  <p>UAL 在这里又倒开一次机器，而且这次倒推的是 L22 的<b>不完全性桥</b>：</p>
+  <ol>
+    <li>集合论可以解释进 L<sub>REL</sub>（通过解释进 RRA 的等式理论，L22 的定理 4.6.8 语境）。</li>
+    <li>所以 L<sub>REL</sub> 有<strong>弱 Gödel 不完全性</strong>（wGip）：存在真但不可证的句子。</li>
+    <li>定理 4.6.8 说：对「好逻辑」，wGip ⟺ 重言式公式代数（即相应自由代数）非原子。</li>
+    <li>由推论 3.3.12，L<sub>REL</sub>(P) 的重言式公式代数正是 <span class="math">|P|</span>-生成的自由 RRA。</li>
+    <li>结论：<strong>有限生成自由 RRA 不是原子代数。</strong></li>
+  </ol>
+  <p><strong>这是一个纯代数结论，证明却借了 Gödel 不完全性定理。</strong>你不用去关系代数里构造「没有最小非零元素」的自由代数，只要承认集合论可解释、wGip 成立，桥就替你搬回来。UAL 在 §4.6 末尾（定理 4.6.13）把同一招用到 CA<sub>n</sub>、SC<sub>3</sub>、Df<sub>3</sub> 上，一次拿到一整排自由代数非原子的结论——本讲的 L<sub>REL</sub> 是最简单的那一个。</p>
+
+  <h3><span class="sn">8.4</span>两案例总对照：同一台机器，两种命运</h3>
+  <table>
+    <tr><th>桥 / 性质</th><th>案例 1：L<sub>C</sub> ← BA</th><th>案例 2：L<sub>REL</sub> ← RRA</th></tr>
+    <tr><td>Algᵐ</td><td><span class="math">{2}</span></td><td>setRRA</td></tr>
+    <tr><td>Alg⊨</td><td>BA（有限公理化、可判定）</td><td>RRA（不可有限公理化、不可判定）</td></tr>
+    <tr><td>紧致（L18）</td><td>有</td><td><strong>有</strong>（反差一）</td></tr>
+    <tr><td>有限 Hilbert 系统（L19）</td><td>有（强完备强可靠）</td><td><strong>没有</strong>（反差二）</td></tr>
+    <tr><td>有效性可判定（L22）</td><td>可判定</td><td><strong>不可判定</strong>（反差三）</td></tr>
+    <tr><td>Beth 可定义（L20）</td><td>有（满射满）</td><td><strong>没有</strong>（满射不满，反差四）</td></tr>
+    <tr><td>插值（L21）</td><td>有（超合并）</td><td><strong>没有</strong>（无超合并，反差五）</td></tr>
+    <tr><td>wGip（L22）</td><td>无（自由代数原子）</td><td><strong>有</strong>（自由代数非原子，反差六）</td></tr>
+    <tr><td>演绎项</td><td><span class="math">¬(φ₀ ∧ ¬φ₁)</span></td><td><span class="math">⊤◦φ₀◦⊤ → ⊤◦φ₁◦⊤</span></td></tr>
+  </table>
+  <p><strong>八行里六行是反的，一行相同（紧致），一行是两项各有形式。这就是第 4 章六座桥的全部差别来源：代数侧的性质清单不同。</strong>把这张表抄进笔记，第七篇后面六个案例都可以照这个格式填。</p>
+  <p class="src"><b>来源：</b>UAL 命题 5.2.2 及其后讨论、§4.6 定理 4.6.13 与相关讨论、定理 3.3.12。</p>
+</section>
+
+<section id="examples">
+  <h2><span class="sn">9</span>三层例：典型 / 本质 / 边界 <span class="tag alg">三层例</span></h2>
+  <div class="tri">
+    <div class="bt">典型 · 一个赋值就是一座最小的模型</div>
+    <div class="ex"><div class="bt">L<sub>C</sub> 的单变元模型 <span class="num">P = {p}</span></div>
+      <p>只有四个公式类（<span class="math">⊥, p, ¬p, ⊤</span>），模型只有两个：<span class="math">p ↦ 0</span> 与 <span class="math">p ↦ 1</span>。<strong>值域代数就是 <span class="math">2</span>，这就是 Algᵐ(L<sub>C</sub>) = {2} 的最小标本。</strong>你可以在纸上把四种赋值全列出来，逐条验证 <span class="math">(p ↔ p)</span> 恒等于 <span class="math">⊤</span>——滤子性质三件套在这里看得见摸得着。</p>
+    </div>
+  </div>
+  <div class="tri">
+    <div class="bt">本质 · 方形一换，逻辑从天上掉到地下</div>
+    <div class="ex"><div class="bt">同样是命题逻辑，三种模型取法 <span class="num">L<sub>C</sub> vs L<sub>REL</sub> vs L<sub>ARW</sub></span></div>
+      <p>模型取 <span class="math">P → 2</span>（L<sub>C</sub>），得到判定、插值、Beth 全有的乖逻辑；模型取 <span class="math">U × U</span> 上的关系（L<sub>REL</sub>），得到集合论可解释的野逻辑。UAL §3.2 还造了中间版本 L<sub>ARW0</sub>（把 <span class="math">W</span> 放宽成任意箭头集、只要求有复合的偏函数），它落在两者之间。<strong>三个逻辑共用同一套联结词语法，差别只在「模型长什么样」——这正是 L01 四元组里 <span class="math">M</span> 与 <span class="math">mng</span> 两项的威力。</strong>学逻辑只看语法，会漏掉一半世界。</p>
+    </div>
+  </div>
+  <div class="tri">
+    <div class="bt">边界 · 把方形拆了会怎样</div>
+    <div class="ex"><div class="bt">两个不能偷懒的地方 <span class="num">W 非方形；P 无限</span></div>
+      <ul>
+        <li><strong>若把 <span class="math">W = U × U</span> 放宽成任意 <span class="math">W ⊆ U × U</span></strong>（关系族不必铺满整个方形），复合不再总封闭（两箭头能接上，复合却可能不在 <span class="math">W</span> 里）。这对应 L24 的 RA 与 RRA 鸿沟：抽象 RA 满足 Tarski 公理，却未必可表示成方形上的关系族。<strong>方形不是可有可无的装饰，是「可表示」三个字的全部内容。</strong></li>
+        <li><strong>L<sub>C</sub> 的无 wGip 只对有限 <span class="math">P</span> 成立。</strong>UAL §4.6 特意提醒：<span class="math">P</span> 无限时重言式公式代数无原子，wGip 的启发式论证失效。L22 讲过这个边界，这里再看一次——「有限变元」四个字在代数逻辑里几乎总是要害，L28 讲有限变元片段时会正式碰它。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="fusion2">
+  <h2><span class="sn">10</span>融合接口：第九张图（两台输入，一台机器） <span class="tag alg">第九张图</span></h2>
+  <p class="lead">前八张图都是「翻译图」或「恒等图」，这张是<strong>流水线图</strong>：中间是同一台四步机器，上下两条轨道是两种输入。左右对照着看，桥定理的条件就不再是背的条文，而是看得见的闸门。</p>
+  <div class="diagram"><div class="bt">第九张图：案例工坊流水线</div>
+<pre>   轨道 A：L_C                          轨道 B：L_REL
+   ─────────────────                   ──────────────────────
+   ① 规范形式 ✓                       ① 规范形式 ✓（同一套滤波三件套）
+   ② Algᵐ={2}   Alg⊨=SP{2}=BA          ② Algᵐ=setRRA  Alg⊨=SP setRRA=RRA
+             │                                   │
+             └──────────┬────────────────────────┘
+                        ▼
+        ┌─────────── ③ 查六项性质 ───────────┐
+        │ 有限公理化 | 可判定 | 合并 | 满射 | 原子 | 表示 │
+        └──────────────────┬─────────────────┘
+                           ▼
+        ┌─────────── ④ 六座桥搬运 ───────────┐
+        │ L18 紧 ──L19 完备 ──L20 可定义 ──L21 插值 ──L22 判定 │
+        └──────────────────┬─────────────────┘
+                           ▼
+   逻辑性质全「有」                    逻辑性质几乎全「无」
+   完备✓ 判定✓ Beth✓ 插值✓             完备✗ 判定✗ Beth✗ 插值✗
+   紧致✓ 无 wGip✓                      紧致✓  wGip✓（唯一相同/反转）
+
+   反向也开：定理 4.3.44 / 4.4.25 / 4.6.8 ──► 代数性质被逻辑反推出来</pre>
+  </div>
+  <p><strong>这张图的用处：</strong>第七篇后面每个案例，你都可以照着填两遍。填不出来的格子，要么是你没算出 <span class="math">Algᵐ/Alg⊨</span>，要么是你没查清代数性质——<strong>机器本身不会出错，出错总在进料。</strong></p>
+
+  <div class="box fuse"><div class="bt">三处回指，恰好连成一线</div>
+    <ul>
+      <li><strong>L23 Stone 对偶</strong>给了 <span class="math">BA = I setBA</span>，这是第 5.1 节「L<sub>C</sub> 有表示」的来源。</li>
+      <li><strong>L24 关系代数</strong>给了 setRRA / RRA 的定义与鸿沟，这是 L<sub>REL</sub> 那半张表的进料。</li>
+      <li><strong>L19 完全性桥的双向性</strong>给了「有限公理化 ⟺ 有限 Hilbert 系统」，这是两案例在完备性上一有一无的唯一原因。</li>
+    </ul>
+    <p>三条线在这一讲合拢：<strong>代数结构是因，逻辑表现是果，桥是因果之间的通道。</strong></p>
+  </div>
+</section>
+
+<section id="ex">
+  <h2><span class="sn">11</span>习题 <span class="tag log">按目标编号</span></h2>
+  <div class="box"><div class="bt">O1　流程</div>
+    <ol>
+      <li>把四步流程写成你自己的话，每一步各举一个「做错会怎样」的例子。特别说明：为什么第 2 步必须同时算 <span class="math">Algᵐ</span> 与 <span class="math">Alg⊨</span>。</li>
+      <li>桥定理「是搬运机不是答案表」体现在哪？举一个「前提一松桥就断」的例子（提示：定理 4.4.18 的五个前提）。</li>
+    </ol>
+  </div>
+  <div class="box"><div class="bt">O2　L<sub>C</sub> 的代数对应</div>
+    <ol start="3">
+      <li>验证 L<sub>C</sub> 的滤子性质三件套：对 <span class="math">m = n = 1</span>，把 <span class="math">Γ ⊨ φ</span> 用 <span class="math">∆₀, ε₀, δ₀</span> 写成代数不等式，并用 <span class="math">P = {p, q}</span> 手算一例。</li>
+      <li>补全命题 5.1.2 第 2 小步：证明任意同态 <span class="math">h : F(P, Cn) → 2</span> 由 <span class="math">h↾P</span> 唯一决定，从而 <span class="math">Hom(F(P,Cn), 2) = Mng<sup>P</sup></span>。（用自由代数的泛性质。）</li>
+    </ol>
+  </div>
+  <div class="box"><div class="bt">O3　BA → L<sub>C</sub> 搬运</div>
+    <ol start="5">
+      <li>盖住 §5.2 的搬运表右列，自己从 BA 六项性质填出 L<sub>C</sub> 的六项逻辑性质，并写出每行用的定理号。</li>
+      <li>验证演绎项：<span class="math">φ₀ ⊨ φ₁ ⟺ ⊨ ¬(φ₀ ∧ ¬φ₁)</span>。再用它说明「带前提的后承可判定」如何从「空前提有效式可判定」推出。</li>
+      <li>查 4.4.18 / 4.4.24 / 4.4.25 三条定理的前提，做成三行对照表；说明为什么 L<sub>C</sub> 的 <span class="math">⊨</span>–插值用 4.4.18、<span class="math">→</span>–插值用 4.4.25，而不是一条定理包办。</li>
+    </ol>
+  </div>
+  <div class="box"><div class="bt">O4　机器倒开</div>
+    <ol start="8">
+      <li>命题 5.1.3 的第 1 步「非平凡布尔代数含 <span class="math">2</span> 作子代数」看似显然，写出来要小心：取 <span class="math">a ∉ {0,1}</span>，<span class="math">{0, a, ¬a, 1}</span> 是否一定是四元子代数？何时退化成 <span class="math">2</span>？据此补全证明。</li>
+    </ol>
+  </div>
+  <div class="box"><div class="bt">O5　L<sub>REL</sub> 与方形</div>
+    <ol start="9">
+      <li>取 <span class="math">U = {1,2,3}</span>，<span class="math">R = {(1,2),(2,3)}</span>，<span class="math">S = {(2,1),(3,2)}</span>。手算 <span class="math">mng(φ◦ψ)</span>、<span class="math">mng(φ⁻¹)</span>、<span class="math">mng(Id)</span>（复用 L24 §3 的手算），再验证 <span class="math">M ⊨ φ</span> 要求 <span class="math">mng(φ) = U×U</span>——你手算的 <span class="math">R</span> 满足吗？</li>
+      <li>说明「若 <span class="math">W ⊆ U×U</span> 不是整个方形，复合可能不封闭」。给一个具体的 <span class="math">W</span> 与两条箭头，使它们各自在 <span class="math">W</span> 里、能首尾相接，但复合不在 <span class="math">W</span> 里。</li>
+    </ol>
+  </div>
+  <div class="box"><div class="bt">O6　RRA → L<sub>REL</sub> 搬运</div>
+    <ol start="11">
+      <li>盖住 §8.2 表右列，从 RRA 四项坏性质填出 L<sub>REL</sub> 的四项逻辑性质，并写出用的定理号。</li>
+      <li>L<sub>REL</sub> 紧致却没有有限 Hilbert 系统。用定理 4.2.20 的双向性解释为什么这两件事不矛盾，并说明若强行加一套有限系统会导致什么代数结论。</li>
+      <li>复述 §8.3 的三次倒推（集合论可解释 → wGip → 自由 RRA 非原子），每一步标明用的定理；再解释为什么这叫「逻辑帮代数干活」。</li>
+    </ol>
+  </div>
+  <p class="src"><b>对应讲解：</b><a href="#workflow">§3</a> → E1–E2；<a href="#lc">§4</a> → E3–E4；<a href="#ba2lc">§5</a> → E5–E7；<a href="#lc2ba">§6</a> → E8；<a href="#lrel">§7</a> → E9–E10；<a href="#rra2lrel">§8</a> → E11–E13。</p>
+</section>
+
+<div class="footnav">
+  <a href="L26.html">← 上一讲：L26 无点拓扑、locale 与 Heyting 代数</a>
+  <a href="L28.html" style="font-size:13.5px;color:#5b7fb5">下一讲：L28 案例 3–4：一阶逻辑的有限变元片段 L<sub>n</sub> →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L27 · 来源：UAL §5.1–5.2（定义 5.1.1/5.2.1、命题 5.1.2/5.1.3/5.2.2）、§4.6；回指 L18–L24 六座桥与 Stone 对偶、L23/L24 代数背景 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

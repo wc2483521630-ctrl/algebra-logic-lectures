@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L06 布尔代数、BAO、判别式簇 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第二篇 代数骨架</span><span class="sep">/</span><span>L06</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 06 · 3 学时</div>
+  <h1>布尔代数、BAO 与判别式簇</h1>
+  <div class="sub">抽象不是把东西变复杂，而是把「真值表」里真正管用的那点结构单独拎出来</div>
+  <div class="metarow"><span>来源：UAL §2.6–2.8</span><span>Bergman Ch2 §2.5–2.6</span>
+    <span>拓扑讲义 Ch7「空间的模态逻辑」</span>
+    <span class="tag alg">代数</span><span class="tag log">逻辑</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：为什么要抽象出布尔代数</a></li>
+  <li><a href="#ba">布尔代数：真值表的蒸馏（O1）</a></li>
+  <li><a href="#filters">滤子、理想、超滤子（O2）</a></li>
+  <li><a href="#stone">Stone 表示：抽象代数变回集合（O3）</a></li>
+  <li><a href="#discrimin">判别式簇：一个能作 if-then-else 的项（O4）</a></li>
+  <li><a href="#bao">BAO：给布尔代数装上「必然」（O5）</a></li>
+  <li><a href="#jt">Jónsson–Tarski 表示与 S4 接口（O6）</a></li>
+  <li><a href="#fusion">融合接口</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单（简） ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">先点清本讲的新概念。依赖只列最直接的几条，够安排讲序即可。每个新概念背后都有一个它要解决的麻烦，见正文各节的「它解决什么问题」。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>概念</th><th>依赖</th></tr>
+      <tr><td>布尔代数 BA</td><td>L02 格 / 补</td><td>判别式项 / 簇</td><td>L04 项与簇</td></tr>
+      <tr><td>滤子 / 理想 / 超滤子</td><td>BA 的序</td><td>Boa / BAO</td><td>BA + L05 算子</td></tr>
+      <tr><td>Stone 表示</td><td>超滤子</td><td>Jónsson–Tarski 表示</td><td>BAO + Stone</td></tr>
+    </table>
+  </div>
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>布尔代数 → <strong>滤子/超滤子</strong> → <strong>Stone 表示</strong>（把抽象代数的点找回来）；布尔代数 → <strong>判别式簇</strong>（把准等式压成等式）；布尔代数 + 算子 → <strong>BAO</strong> → <strong>Jónsson–Tarski 表示</strong>（把模态逻辑的完备性问题变成代数嵌入问题）。三支在 §9 合流：拓扑空间的开集代数正是 S4 的 BAO。</p>
+  </div>
+</section>
+
+<!-- ============ 学习目标对照 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>说清布尔代数抽象掉了什么，辨认 BA 的典型与非平凡例子</td><td><a href="#ba">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>用滤子/理想/超滤子表达「哪些命题被接受」，知道素与极大的分界</td><td><a href="#filters">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>叙述并运用 Stone 表示，指出表示定理的适用边界</td><td><a href="#stone">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>用判别式项把准等式化为等式，判断一个簇是不是判别式簇</td><td><a href="#discrimin">§6</a></td><td><a href="#ex">E7, E8, E9</a></td></tr>
+    <tr><td><b>O5</b></td><td>区分 Boa 与 BAO、正规与不正规，给出模态与关系代数的例子</td><td><a href="#bao">§7</a></td><td><a href="#ex">E10, E11</a></td></tr>
+    <tr><td><b>O6</b></td><td>用 Jónsson–Tarski 表示解释模态完备性，并接上拓扑 S4 语义</td><td><a href="#jt">§8</a></td><td><a href="#ex">E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：为什么要抽象出布尔代数</h2>
+  <p class="lead">你在中学就见过真值表：<span class="math">∧, ∨, ¬</span> 三个运算，<span class="math">0,1</span> 两个值，五条规则。问题是——这套规则里，哪些是「真的和真假有关」，哪些只是「恰好在两元素上成立」？把它剥干净，剩下的就是布尔代数。</p>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>命题逻辑有无穷多个公式，直接跟公式打交道，每个证明都得重写一遍语法。布尔代数的做法是：<strong>把逻辑等价的公式看成同一个元素</strong>，于是「推理」变成了「代数里的序关系」，「证明等式」变成了「代数计算」。这一步一旦走完，前面五讲攒下的全部工具——同态、商、子直积、自由代数、Birkhoff 定理——就都能用到逻辑上。</p>
+    <p>本讲要回答三个层层递进的问题：① 命题逻辑的代数骨架长什么样（§3–§5）；② 怎么让一个项承担「如果…那么…否则…」，从而把逻辑规则压成等式（§6）；③ 模态逻辑多出来的那个「必然」，在代数上是个什么玩意儿（§7–§8）。</p>
+  </div>
+  <p class="src"><b>来源：</b>UAL §2.6 开头、Bergman Ch2 格与布尔代数段。</p>
+</section>
+
+<!-- ============ O1 布尔代数 ============ -->
+<section id="ba">
+  <h2><span class="sn">3</span>布尔代数：真值表的蒸馏 <span class="tag alg">O1</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>两元素代数 <span class="math">2=⟨{0,1}, ∧, ∨, −, 0⟩</span> 太小，装不下「一个命题的真值集合」「一个空间的开集族」这些东西。但这些东西满足的规律跟 <span class="math">2</span> 一模一样。布尔代数就是把这套规律写成公理：<strong>凡是满足公理的都算布尔代数，于是对 <span class="math">2</span> 证明的等式规律，对所有模型自动成立。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">6.1（UAL §2.6；Bergman）</span></div>
+    <p>布尔代数（BA）是代数 <span class="math">B=⟨B, ∨, −, 0⟩</span>，其中 <span class="math">∨</span> 是二元、<span class="math">−</span> 是一元、<span class="math">0</span> 是常量，满足 UAL 公理集 <span class="math">Bax</span>（定义 2.6.4，式 2.21–2.25）。等价的常用写法是 <span class="math">⟨B, ∧, ∨, ′, 0, 1⟩</span> 满足：交换律、结合律、分配律、互补律、<span class="math">x∧x=x</span> 等。</p>
+    <p>派生运算与序：</p>
+    <div class="formula left">x ∧ y = −(−x ∨ −y)　　x − y = x ∧ −y　　x ⊕ y = (x−y) ∨ (y−x)　　1 = −0<br>x ≤ y　⟺　x ∨ y = y.</div>
+    <p>其中 <span class="math">⊕</span> 是对称差。注意 UAL 里 <span class="math">−</span> 既当一元补、又出现在二元差 <span class="math">x−y</span> 里，靠元数区分——这是个记号习惯，不是新运算。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子 <span class="num">先看这两个就够了</span></div>
+    <ol>
+      <li><span class="math">2=𝓟({0})</span>：两元素 BA，整个课程的最小非退化样本。UAL 练习 2.6.1 证明它没有真子代数、没有非平凡同态像。</li>
+      <li>幂集代数 <span class="math">𝓟(U)=⟨𝓟(U), ∪, −, ∅⟩</span>：元素是子集，<span class="math">∨=∪</span>、补是集合补、<span class="math">0=∅</span>、序 <span class="math">≤</span> 就是包含。布尔代数的原型就是它。</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">本质例子 <span class="num">真正暴露「抽象」威力的</span></div>
+    <ol>
+      <li><strong>Lindenbaum 代数</strong>：取命题逻辑全部公式，按「逻辑等价」<span class="math">φ≡ψ</span> 商掉，元素 <span class="math">[φ]</span>，运算 <span class="math">[φ]∨[ψ]=[φ∨ψ]</span>。它是 BA，而且 <span class="math">[φ]≤[ψ]</span> 恰好意味着 <span class="math">φ⊨ψ</span>。这一条把「推理」翻译成「序」，是整门课逻辑侧的立足点。</li>
+      <li>有限 BA 全是 <span class="math">2<sup>n</sup></span>：由 <span class="math">n</span> 个原子分割出来的所有子集并。Bergman 推论 2.44、引理 4.50(2) 都指向这个结论。所以幂集代数虽「只是例子」，有限情形下它已经穷尽了一切。</li>
+    </ol>
+  </div>
+
+  <div class="warn"><div class="bt">边界与误解 <span class="num">这些坑很常见</span></div>
+    <ul>
+      <li><strong>没有三元素 BA</strong>（UAL 练习 2.6.1(5)）：有限 BA 的元素数必是 2 的幂。看到「三个真值」的多值逻辑别急着叫它布尔代数。</li>
+      <li><strong>单元素 BA 存在</strong>（同练习 (4)）：此时 <span class="math">0=1</span>，退化但合法。很多定理要显式排除它，否则「极大滤子」等概念会塌掉。</li>
+      <li><strong>序是定义出来的，不是外加的</strong>：<span class="math">x≤y ⇔ x∨y=y</span>。别把 BA 当成「带序的格」再多要一个关系——它由代数运算唯一确定，这正是代数化的意义。</li>
+      <li><strong>无限幂集代数不是唯一的无限 BA</strong>：<span class="math">𝓟(ℕ)</span> 有原子，而无原子 BA（如实数区间生成的自由 BA 的商）也存在。Stone 表示 §5 会告诉我们差别在哪。</li>
+    </ul>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL 定义 2.2.14、§2.6 式 2.21–2.25、定义 2.6.4、练习 2.6.1；Bergman 引理 4.50。</p>
+</section>
+
+<!-- ============ O2 滤子 ============ -->
+<section id="filters">
+  <h2><span class="sn">4</span>滤子、理想、超滤子 <span class="tag alg">O2</span><span class="tag log">逻辑</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>给定一个逻辑理论 <span class="math">T</span>，我们想问「哪些命题被 <span class="math">T</span> 接受」。答案该满足：恒真命题在内；接受的命题加强后仍在内；两个都接受则合取也在内。这三条正是滤子的定义。<strong>滤子是「理论」的代数化身；对偶的理想是「被否定的命题集」。</strong>再要求「每个命题和它的否定恰好一个在内」，就得到超滤子——也就是一个完全的、不模棱两可的立场（一个可能世界）。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">6.2（UAL 2.6.2/2.6.3；Bergman 2.40）</span></div>
+    <p><span class="math">A</span> 是 BA。滤子 <span class="math">F</span> 是 <span class="math">1<sub>A</sub></span> 所在的同余类，等价于满足：</p>
+    <div class="formula left">1 ∈ F；　a ∈ F 且 a ≤ b ⇒ b ∈ F；　a, b ∈ F ⇒ a ∧ b ∈ F.</div>
+    <p>超滤子是极大滤子，等价于对一切 <span class="math">a</span>：<span class="math">a ∈ F ⇔ −a ∉ F</span>（UAL 引理 2.6.3(ii)）。理想 <span class="math">I</span> 是对偶概念：下闭且对有限并封闭；理想 <span class="math">I</span> 素，指 <span class="math">a∧b ∈ I ⇒ a ∈ I 或 b ∈ I</span>。</p>
+    <p>关键对应（Bergman 定理 2.40 前后的讨论）：<strong>同态 <span class="math">h:B→2</span> ↔ 素理想 <span class="math">h<sup>-1</sup>(0)</span> ↔ 超滤子 <span class="math">h<sup>-1</sup>(1)</span></strong>。于是「给每个公式指派真假」这件事，和「找一个超滤子」是一回事。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <ol>
+      <li>主滤子 <span class="math">↑a = {b ∈ B : a ≤ b}</span>：令 <span class="math">F=↑a</span>，三条性质一眼可验。在幂集代数里它就是「所有包含 <span class="math">S</span> 的集合」。</li>
+      <li>主超滤子 <span class="math">↑{x}</span>（<span class="math">x∈U</span>）：对应「世界 <span class="math">x</span>」，即所有含 <span class="math">x</span> 的子集。这是 Kripke 语义里「一个点」的代数版本。</li>
+      <li>极大理想 <span class="math">h<sup>-1</sup>(0)</span>：由某个赋值 <span class="math">h</span> 决定，含所有被判为假的命题。</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">本质例子 <span class="num">非平凡，体现概念本质</span></div>
+    <p>在 Lindenbaum 代数里，取 <span class="math">T</span> 为一阶 Peano 算术的定理集，<span class="math">F=[T]</span> 是一个滤子。任何超滤子 <span class="math">U ⊇ F</span> 就是 <span class="math">T</span> 的一个<strong>完备扩张</strong>（每个语句或其否定都被决定）。超滤子引理（UAL 推论 2.2.67）保证这种扩张存在——这正是紧致性定理的代数形态：<strong>有穷可满足 ⇒ 有超滤子扩张 ⇒ 整体可满足</strong>。L18 会把这条线完整兑现。</p>
+  </div>
+
+  <div class="warn"><div class="bt">边界与误解</div>
+    <ul>
+      <li><strong>在 BA 中素滤子 = 极大滤子</strong>（Bergman 练习 2.47.5）：但在一般分配格中「素」比「极大」弱，不要把 BA 的结论到处搬。</li>
+      <li><strong>超滤子未必是主的</strong>：<span class="math">𝓟(ℕ)</span> 上由余有限集生成的滤子可扩张为非主超滤子（UAL 练习 2.2.68(3)），它不对应任何自然数点——这正是 §5 Stone 表示必须引入「额外点」的原因。</li>
+      <li><strong>滤子非空且不含 0</strong>：若含 <span class="math">0</span>，则 <span class="math">0≤a</span> 对一切 <span class="math">a</span> 成立，滤子撑满整个 <span class="math">B</span>，失去区分能力。谈「真滤子」时要排除它。</li>
+    </ul>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL 定义 2.6.2、引理 2.6.3、推论 2.2.67；Bergman 定义 2.40、定理 2.41、练习 2.47.5。</p>
+</section>
+
+<!-- ============ O3 Stone ============ -->
+<section id="stone">
+  <h2><span class="sn">5</span>Stone 表示：抽象代数变回集合 <span class="tag alg">O3</span><span class="tag top">拓扑</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>抽象 BA 的元素没有「点」可言，可我们本能地想把它看成「某些子集的族」。Stone 表示给出的答案是：<strong>把超滤子当作点</strong>。元素 <span class="math">a</span> 对应「含 <span class="math">a</span> 的所有超滤子」组成的集合。于是任何 BA 都同构于一个集合代数——抽象对象重新有了可见的形状，而且这个形状自带拓扑（L23 的 Stone 对偶从这里起步）。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">6.3（Stone；UAL 2.6.12/2.6.15；Bergman 2.43/2.44）</span></div>
+    <ol>
+      <li>对任意 BA <span class="math">A</span>，令 <span class="math">X<sub>A</sub></span> 为 <span class="math">A</span> 的超滤子全体，映射
+        <div class="formula">rep(a) = { U ∈ X<sub>A</sub> : a ∈ U }</div>
+        是 <span class="math">A → 𝓟(X<sub>A</sub>)</span> 的 BA 嵌入。</li>
+      <li><span class="math">BA = SP{2}</span>：所有布尔代数构成由 <span class="math">2</span> 生成的簇（UAL 定理 2.6.15）。</li>
+      <li>于是 <span class="math">2</span> 是唯一的直接不可分解、也是唯一的子直既约布尔代数（UAL 推论 2.6.12；Bergman 引理 4.50(1)）。</li>
+    </ol>
+    <p>证明的骨头：要证 <span class="math">rep</span> 单射，即 <span class="math">a≠b</span> 时存在超滤子分开它们。取 <span class="math">a<b</span>，令 <span class="math">I=(b]</span>、<span class="math">F=[a)</span>，用素理想定理（Bergman 2.41）得到素理想 <span class="math">P</span> 分离二者，取补滤子即超滤子。L04 的「<span class="math">2</span> 子直表示一切」在这里有了具体形状。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><span class="math">B=𝓟({1,2,3})</span>：超滤子恰是三个主超滤子 <span class="math">↑{1}, ↑{2}, ↑{3}</span>，于是 <span class="math">X<sub>B</sub></span> 有三点，<span class="math">rep</span> 就是恒等嵌入——本来就是幂集代数，表示什么也没改变。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子 <span class="num">表示定理真正干活的场合</span></div>
+    <p><span class="math">B=𝓟(ℕ)/fin</span>（把「相差有限集」的子集视为相等）。它有可数多个原子，超滤子却远不止自然数那些：<strong>非主超滤子给出新的点</strong>。这些点正是 Stone–Čech 紧致化 <span class="math">βℕ</span> 中 <span class="math">ℕ</span> 之外的部分（L13 详讲）。表示的威力就在于：它把「商掉有限误差」这个纯代数操作，翻译成「添上新的理想点」这个拓扑操作。</p>
+  </div>
+  <div class="warn"><div class="bt">边界与误解</div>
+    <ul>
+      <li><strong>超滤子空间一般不是幂集代数那样「点标签全given」</strong>：<span class="math">rep</span> 只保证嵌入，不保证满射到整个 <span class="math">𝓟(X<sub>A</sub>)</span>；只有原子 BA 且 <span class="math">A=𝓟(At)</span> 时才是同构。</li>
+      <li><strong>有限表示 vs 无限表示</strong>：有限 BA 的表示有限、可计算；无限 BA 的表示要用到选择公理（超滤子引理）。别把有限情形的直觉直接外推。</li>
+      <li><strong>「唯一的子直既约 BA 是 2」不等于「BA 只有 2 这一个成员」</strong>：前者说的是构造砖块，后者说的是整座楼；<span class="math">BA=SP{2}</span> 正是在说楼由这块砖搭成。</li>
+    </ul>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL 定理 2.6.5、2.6.15、推论 2.6.12；Bergman 定理 2.41、2.43，推论 2.44，引理 4.50。</p>
+</section>
+
+<!-- ============ O4 判别式簇 ============ -->
+<section id="discrimin">
+  <h2><span class="sn">6</span>判别式簇：一个能作 if-then-else 的项 <span class="tag alg">O4</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>逻辑里到处是「若 <span class="math">p</span> 成立则 <span class="math">q</span>，否则 <span class="math">r</span>」这样的条件句，形式是<strong>准等式</strong>：<span class="math">s<sub>1</sub>=t<sub>1</sub> ∧ … ∧ s<sub>n</sub>=t<sub>n</sub> → s=t</span>。准等式不好处理，因为它不是簇语言里的等式。判别式项就是代数里的条件跳转开关：<strong>有了它，每个准等式都能改写成等式</strong>，于是 Birkhoff 的全套工具又能上场。这是判别式簇在代数逻辑里核心地位的全部理由。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">6.4（UAL 2.7.1/2.7.2）</span></div>
+    <p>集合 <span class="math">A</span> 上的<strong>判别式函数</strong>是</p>
+    <div class="formula">t(x,y,z,u) = z 若 x=y；否则 u.</div>
+    <p>若代数 <span class="math">A</span> 的语言中有项 <span class="math">τ(x,y,z,u)</span> 其值恰为此函数，称 <span class="math">τ</span> 为 <span class="math">A</span> 的判别式项。三元形式 <span class="math">t(x,y,z)=τ(x,y,z,x)</span> 与之可互定义：<span class="math">τ(x,y,z,u)=t(t(x,y,z), t(x,y,u), z)</span>。</p>
+    <p>若一族代数 <span class="math">K</span> 有<strong>公共</strong>判别式项 <span class="math">τ</span>，则 <span class="math">HSPK</span> 称为<strong>判别式簇</strong>（定义 2.7.2）。有布尔代数缩并（Boolean reduct）时，判别式项等价于<strong>开关项</strong>：</p>
+    <div class="formula left">c(x) = 1 若 x ≠ 0，否则 0；　τ(x,y,z,u) = [−c(x⊕y) ∧ z] ∨ [c(x⊕y) ∧ u].</div>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">6.5（UAL 2.7.3/2.7.5/2.7.6）</span></div>
+    <ol>
+      <li><span class="math">BA</span> 是判别式簇：两元素 <span class="math">2</span> 有判别式项，且 <span class="math">BA=HSP{2}</span>。</li>
+      <li>若 <span class="math">K</span> 有判别式项，则 <span class="math">HSPK = SPUpK</span>。即判别式簇由 <span class="math">K</span> 的超积的子代数给出——这是「模型论式、更直观」的表示（UAL 原书特意注明此证明思路来自 van Benthem）。</li>
+      <li>对任意准等式 <span class="math">q</span>，存在等式 <span class="math">e(q)</span> 使 <span class="math">K ⊨ e(q) ↔ q</span> 且 <span class="math">HSPK ⊨ e(q) → q</span>（命题 2.7.6，对前提个数归纳）。这就是「准等式压成等式」的技术兑现。</li>
+      <li>推论：有判别式项的代数是单的（练习 2.7.4(1)）；判别式簇中每个子直既约成员都有公共判别式项（定理 2.7.8）。</li>
+    </ol>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <ol>
+      <li><span class="math">2</span> 上的判别式项：直接用布尔项 <span class="math">τ(x,y,z,u)=(x∧z)∨(−x∧u)</span> 的变体即可；<span class="math">BA=HSP{2}</span> 于是整个布尔代数簇是判别式簇。</li>
+      <li>开关项 <span class="math">c(x)</span>：在集合代数里 <span class="math">c(S)=∅</span> 若 <span class="math">S=∅</span>，否则 <span class="math">U</span>。它是「非零即全」的归一化操作。</li>
+    </ol>
+  </div>
+  <div class="ex"><div class="bt">本质例子 <span class="num">非布尔的判别式簇</span></div>
+    <ol>
+      <li><strong>域</strong>：三元判别式 <span class="math">t(x,y,z)</span> 可由 <span class="math">z·(1−(x−y)<sup>q−1</sup>)</span> 之类的项表达（有限域上）；Bergman §6 的准本原（quasiprimal）代数概念正在此处。</li>
+      <li><strong>CA<sub>1</sub>（一维柱面代数）</strong>：UAL 推论 2.8.4 证明 <span class="math">CA<sub>1</sub></span> 是判别式簇——它的子直既约成员 <span class="math">Cs<sub>1</sub></span>（练习 2.8.3）带判别式项。这是「布尔代数 + 一个柱化算子」仍然可判别式的非平凡实例，直接给 §7 的 BAO 铺路。</li>
+    </ol>
+  </div>
+  <div class="warn"><div class="bt">边界与误解</div>
+    <ul>
+      <li><strong>必须是「公共」判别式项</strong>：每个成员各有各的判别式项、但不是同一个项，不足以构成判别式簇。</li>
+      <li><strong>群簇不是判别式簇</strong>：群的同余可换（有 Maltsev 项 <span class="math">xy⁻¹z</span>，L05），但不存在判别式项——判别式项会逼出单性（练习 2.7.4(1)），而 <span class="math">ℤ</span> 显然不单。别把「Maltsev」和「判别式」混为一谈。</li>
+      <li><strong>三元与四元可互定义，但开关项要有布尔缩并</strong>：<span class="math">c(x)</span> 的构造用了 <span class="math">⊕</span> 与补，没有布尔结构时只能回到三元 <span class="math">t</span>。</li>
+    </ul>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL 定义 2.7.1/2.7.2、定理 2.7.3/2.7.5/2.7.8、命题 2.7.6、练习 2.7.4；Bergman §6 准本原代数段。</p>
+</section>
+
+<!-- ============ O5 BAO ============ -->
+<section id="bao">
+  <h2><span class="sn">7</span>BAO：给布尔代数装上「必然」 <span class="tag alg">O5</span><span class="tag log">模态</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>模态逻辑在命题逻辑上加了一个算子 <span class="math">□</span>（必然）。代数上该怎么办？最省事的答案是：给 BA 再加一个运算 <span class="math">f</span>。但随便加不行——合法的模态算子必须和布尔结构「合得来」：可能性算子 <span class="math">◇</span> 满足 <span class="math">◇(p∨q) ↔ (◇p ∨ ◇q)</span>（对析取分配）且 <span class="math">◇⊥=⊥</span>；必然算子是它的对偶 <span class="math">□p = −◇−p</span>，满足 <span class="math">□(p∧q) ↔ □p∧□q</span> 且 <span class="math">□⊤=⊤</span>。有了这两条，算子才对应 Kripke 框架里的「存在／所有可达世界」，完备性与判定性才有落脚处。UAL 固定用 <span class="math">∨, −, 0</span> 作布尔代数的基本运算，所以它的 BAO 定义取「对 <span class="math">∨</span> 分配、保持 0」的版本——也就是 <span class="math">◇</span> 那一侧。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">6.6（UAL 2.8.6）</span></div>
+    <ul>
+      <li><strong>Boa</strong>（Boolean ordered algebra）：代数 <span class="math">A=⟨B, f<sub>i</sub>⟩<sub>i∈I</sub></span>，其中 <span class="math">B∈BA</span>，<span class="math">f<sub>i</sub></span> 是 <span class="math">t(i)</span> 元运算。即「布尔代数 + 任意额外运算」。</li>
+      <li><strong>BAO</strong>（Boolean Algebra with Operators）：Boa 且满足分配等式集 (Dst)：每个 <span class="math">f<sub>i</sub></span> 对每个变元都分配过 <span class="math">∨</span>，
+        <div class="formula left">f<sub>i</sub>(…, x<sub>n</sub>∨y<sub>n</sub>, …) = f<sub>i</sub>(…,x<sub>n</sub>,…) ∨ f<sub>i</sub>(…,y<sub>n</sub>,…).</div>
+      </li>
+      <li><strong>正规 BAO</strong>：还满足 (Nrm)：<span class="math">f<sub>i</sub>(…,0,…)=0</span>。布尔缩并记作 <span class="math">A<sup>°</sup>=B</span>。</li>
+    </ul>
+    <p><span class="math">BAO<sub>t</sub></span> 与正规 <span class="math">BAO<sub>t</sub></span> 都是簇（练习 2.8.7(3)）——Birkhoff 定理的直接应用。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <ol>
+      <li>从 Kripke 框架 <span class="math">⟨W,R⟩</span> 造 BAO：在 <span class="math">𝓟(W)</span> 上定义 <span class="math">◇(X)={w : ∃v (wRv 且 v∈X)}</span>。它分配 <span class="math">∪</span> 且 <span class="math">◇(∅)=∅</span>，正是 UAL 意义下的正规 BAO。这个代数叫框架的<strong>复代数</strong>（complex algebra）。</li>
+      <li>对偶算子 <span class="math">□(X)={w : ∀v (wRv ⇒ v∈X)}</span>，由 <span class="math">□x = −◇−x</span> 定义，满足 <span class="math">□(X∩Y)=□X∩□Y</span> 且 <span class="math">□W=W</span>——即对 <span class="math">∧</span> 分配、保持顶元。<span class="math">□</span> 与 <span class="math">◇</span> 是同一结构的两面，取哪个作基本算子只是记号约定。</li>
+    </ol>
+  </div>
+  <div class="ex"><div class="bt">本质例子 <span class="num">两个大方向在 BAO 处汇合</span></div>
+    <ol>
+      <li><strong>模态代数</strong>：<span class="math">S4</span> 的代数是满足 <span class="math">□x≤x</span>（T）、<span class="math">□x≤□□x</span>（4）的正规 BAO（以 <span class="math">□</span> 或其对偶 <span class="math">◇</span> 为算子都行）；拓扑里取 <span class="math">□=int</span>（内部算子），L02 的内部算子公理正好给它，这是拓扑讲义 Ch7「空间的模态逻辑」的核心。要小心 <span class="math">int</span> 分配的是交不是并：<span class="math">int(X∩Y)=int X ∩ int Y</span>，对 <span class="math">∪</span> 只有单调包含 <span class="math">int X ∪ int Y ⊆ int(X∪Y)</span>。所以 <span class="math">□=int</span> 用的是「对 <span class="math">∧</span> 分配、保持顶元」，而 <span class="math">◇=cl</span>（闭包）才对 <span class="math">∪</span> 分配、保持底元、正是 UAL 的正规 BAO 形态。二者由补运算互相翻译，不矛盾。</li>
+      <li><strong>关系代数</strong>：Tarski 的关系代数 <span class="math">⟨𝓟(U×U), ∪, ∩, −, ; , ⌣, Id⟩</span> 是 BAO 的另一支（L24 详讲）；复合 <span class="math">;</span> 对 <span class="math">∪</span> 分配、逆 <span class="math">⌣</span> 保 <span class="math">∪</span>，都是 (Dst) 的实例。</li>
+      <li><strong>Cs<sub>1</sub> / CA<sub>1</sub></strong>：UAL §2.8 的一维柱面代数，<span class="math">c</span> 是「加性带补闭包算子」（L02 闭包算子的实例），<span class="math">CA<sub>1</sub>⊆BAO</span> 且是判别式簇（推论 2.8.4）——§6 与 §7 在此接头。</li>
+    </ol>
+  </div>
+  <div class="warn"><div class="bt">边界与误解</div>
+    <ul>
+      <li><strong>Boa 不一定是 BAO</strong>（练习 2.8.7(2)）：给 BA 加一个不分配 <span class="math">∨</span> 的运算（例如三元「若 <span class="math">x=y</span> 则 <span class="math">z</span> 否则 <span class="math">u</span>」的判别式函数本身，除非语言里另有布尔结构保证），仍是 Boa，但模态语义会失效。</li>
+      <li><strong>正规性是额外的</strong>：<span class="math">f(0)=0</span> 不自动从分配性推出。<span class="math">□</span> 若允许「空析取」的必然，可以非正规；UAL 明确把两个类分开成两个簇。</li>
+      <li><strong>「分配 <span class="math">∨</span>」和「分配 <span class="math">∧</span>」别搞混</strong>：模态算子的标准公理是 <span class="math">□(p∧q)↔□p∧□q</span>，UAL 用补运算把它写成对 <span class="math">∨</span> 分配；若直接说「BAO 分配 <span class="math">∨</span>」而不补一句「对偶地也能写 <span class="math">∧</span>」，读者容易以为和拓扑 <span class="math">int</span> 的定义打架。</li>
+    </ul>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL 定义 2.8.6、练习 2.8.7、推论 2.8.4、§2.8 例 Cs<sub>1</sub>/CA<sub>1</sub>；拓扑讲义 Ch7；Bergman 关系代数段。</p>
+</section>
+
+<!-- ============ O6 JT ============ -->
+<section id="jt">
+  <h2><span class="sn">8</span>Jónsson–Tarski 表示与 S4 接口 <span class="tag alg">O6</span><span class="tag top">拓扑</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>一个模态逻辑的完备性问题，问的是「非定理必有反模型」。代数化之后，它变成「代数 <span class="math">A</span> 中不等于 1 的元素，能否在某个来自关系框架的复代数里被区分开」。Jónsson–Tarski 定理说：<strong>任何 BAO 都能嵌入一个完全原子的 BAO <span class="math">A<sup>+</sup></span></strong>——也就是「任何模态代数都能放进一个足够像Kripke框架的载体里」。完备性问题于是化归为嵌入问题。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">6.7（Jónsson–Tarski；UAL 2.8.9 / 2.8.15）</span></div>
+    <ol>
+      <li>每个 BAO <span class="math">A</span> 作为子代数嵌入完全且原子的 BAO <span class="math">A<sup>+</sup></span>；若 <span class="math">A</span> 正规，<span class="math">A<sup>+</sup></span> 也正规；<span class="math">A<sup>+</sup></span> 中每个 <span class="math">f<sub>i</sub><sup>+</sup></span> 与任意上确界可交换（完全分配）。</li>
+      <li>构造的骨头（定义 2.8.11）：对原子 <span class="math">b</span> 令 <span class="math">f<sup>+</sup>(b)=inf<sub>B</sub>{ f(x) : b ≤ x ∈ A }</span>，再对一般 <span class="math">y</span> 令 <span class="math">f<sup>+</sup>(y)=sup<sub>B</sub>{f<sup>+</sup>(b) : b 原子且 b≤y}</span>。直观：<strong>先看算子在一个「可能世界」原子上该取什么值，再按原子拼装</strong>。</li>
+      <li><strong>正等式保持</strong>（定理 2.8.15）：若 <span class="math">A ⊨ e</span>，则 <span class="math">A<sup>+</sup> ⊨ e</span>，只要 <span class="math">e</span> 是<strong>正等式</strong>——否定号 <span class="math">−</span> 只允许出现在常量符号前（定义 2.8.14）。这是模型论里 Los 定理式的保持结论，也是完备性证明的关键。</li>
+    </ol>
+    <p>为何要「正」？<span class="math">f<sup>+</sup></span> 是按上确界逐点定义的，它保持的是「正」信息；<span class="math">−</span> 会把上确界翻成下确界，保持性失效。这正是定理陈述里那句限制的原因，不是技术性疏忽。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>从任意 Kripke 框架 <span class="math">⟨W,R⟩</span> 的复代数 <span class="math">𝓟(W)</span> 出发，它已经完全且原子，此时 <span class="math">A<sup>+</sup>=A</span>，JT 构造什么也没做。JT 定理的价值在下面这类场合。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子 <span class="num">S4 的拓扑语义</span></div>
+    <p>取拓扑空间 <span class="math">X</span>，把 <span class="math">◇=cl</span>（闭包算子，对 <span class="math">∪</span> 分配、<span class="math">cl(∅)=∅</span>）当 UAL 意义的正规 BAO 算子，得 <span class="math">A=⟨𝓟(X), cl⟩</span>；其 <span class="math">□=int</span> 由补运算对偶给出。它一般既不完全也非原子（闭集／开集格未必是幂集）。JT 定理把 <span class="math">A</span> 嵌入一个完全原子的 <span class="math">A<sup>+</sup></span>，其原子就是「足够细的可能世界」；<span class="math">cl</span> 被扩张成 <span class="math">cl<sup>+</sup></span>。这就是拓扑讲义 §7 说的「拓扑空间与 S4 模态逻辑的联系源于 McKinsey–Tarski」的代数学说法：S4 的完备性 = 每个 S4-代数可嵌入一个拓扑空间（或 Kripke 框架）的复代数。极端不连通空间给完全信念逻辑、与 S4.2 相关，也是同一条线上。</p>
+  </div>
+  <div class="warn"><div class="bt">边界与误解</div>
+    <ul>
+      <li><strong>「正等式保持」不是「所有等式保持」</strong>：含 <span class="math">−</span> 的等式在 <span class="math">A<sup>+</sup></span> 里可能失效。用 JT 定理做完备性时必须核对公式翻译后是不是正等式。</li>
+      <li><strong>嵌入不是同构</strong>：<span class="math">A<sup>+</sup></span> 比 <span class="math">A</span> 大得多；JT 给的是「可扩张」，不是「原来就是框架」。</li>
+      <li><strong>模态可定义性 ≠ 一阶可定义性</strong>：Goldblatt–Thomason 型的框架可定义性定理需要额外的「模态公式的一阶翻译」条件；JT 定理本身不提供这个，别把两者混为一谈。</li>
+    </ul>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL 定理 2.8.9、2.8.15，定义 2.8.11、2.8.14；拓扑讲义 §7「空间的模态逻辑」。</p>
+</section>
+
+<!-- ============ 融合接口 ============ -->
+<section id="fusion">
+  <h2><span class="sn">9</span>融合接口</h2>
+  <div class="fusion"><div class="bt">三线在本讲第一次真正合流</div>
+    <table>
+      <tr><th>对象</th><th>代数侧</th><th>逻辑侧</th><th>拓扑侧 / 后续</th></tr>
+      <tr><td>布尔代数</td><td><span class="math">BA=SP{2}</span></td><td>命题逻辑的 Lindenbaum 代数</td><td>开集族的有限布尔运算，L08</td></tr>
+      <tr><td>超滤子</td><td>极大滤子 = 到 <span class="math">2</span> 的同态</td><td>完备理论 / 可能世界</td><td>Stone 空间的点；紧致化 L13</td></tr>
+      <tr><td>判别式项</td><td>准等式压成等式</td><td>if-then-else、函数完全</td><td>L23 无点拓扑的代数工具</td></tr>
+      <tr><td>BAO</td><td><span class="math">⟨𝓟(W), □<sub>R</sub>⟩</span></td><td>模态逻辑 S4/S5</td><td><span class="math">□=int, ◇=cl</span>，L25 空间的模态逻辑</td></tr>
+      <tr><td>JT 表示</td><td>嵌入完全原子 BAO</td><td>完备性 = 有反模型</td><td>紧致 = 每超滤子收敛，L18</td></tr>
+    </table>
+  </div>
+  <p class="lead">一句话记忆：<strong>布尔代数管「真假」，滤子管「接受哪些」，判别式管「条件跳转」，BAO 管「必然与可能」；拓扑把这四个词分别翻译成开集、邻域、特征函数、内部与闭包。</strong></p>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按学习目标编号）</h2>
+  <div class="exercise"><ol>
+    <li><span class="tag alg">O1</span> 验证 <span class="math">𝓟({1,2})</span> 是 BA，列出全部原子，并验证 <span class="math">x⊕y=(x−y)∨(y−x)</span> 确为对称差。</li>
+    <li><span class="tag alg">O1</span> 证明不存在三元素 BA（提示：取最小非零元，利用分配律说明元素个数必为 2 的幂）。</li>
+    <li><span class="tag alg">O2</span> 设 <span class="math">F</span> 是 BA <span class="math">B</span> 的滤子。证明：<span class="math">F</span> 是超滤子当且仅当它是极大真滤子，当且仅当 <span class="math">∀a (a∈F ⇔ −a∉F)</span>。</li>
+    <li><span class="tag log">O2</span> 在 Lindenbaum 代数中，说明「理论 <span class="math">T</span> 的定理集」是滤子，且「<span class="math">T</span> 的完备扩张」对应包含它的超滤子；用超滤子引理说明完备扩张总存在。</li>
+    <li><span class="tag alg">O3</span> 对 <span class="math">B=𝓟({1,2,3})</span>，写出 <span class="math">X<sub>B</sub></span> 的全部元素，验证 <span class="math">rep</span> 是同构。</li>
+    <li><span class="tag top">O3</span> 对 <span class="math">𝓟(ℕ)/fin</span>，说明为什么主超滤子给出的点不够（提示：考虑余有限滤子的扩张），并解释这与 Stone–Čech 紧致化的关系。</li>
+    <li><span class="tag alg">O4</span> 在 <span class="math">2</span> 上验证 <span class="math">τ(x,y,z,u)</span> 实现判别式函数；再用 <span class="math">c(x)</span> 的公式还原 <span class="math">τ</span>。</li>
+    <li><span class="tag alg">O4</span> 证明有判别式项的代数是单的（练习 2.7.4(1)），并由此说明为什么群簇没有判别式项。</li>
+    <li><span class="tag alg">O4</span> 用命题 2.7.6 的方法，把准等式 <span class="math">(s=t ∧ p=q) → r=w</span> 改写成一个等式。</li>
+    <li><span class="tag alg">O5</span> 对框架 <span class="math">⟨W,R⟩</span>，验证 <span class="math">□(X)={w : ∀v(wRv ⇒ v∈X)}</span> 满足 (Dst) 与 (Nrm)。</li>
+    <li><span class="tag log">O5</span> 给一个 Boa 但不是 BAO 的例子；再给一个 BAO 但不正规的例子（提示：考虑允许 <span class="math">□∅≠∅</span> 的算子）。</li>
+    <li><span class="tag top">O6</span> 说明为什么拓扑内部算子 <span class="math">int</span> 满足 S4 的两条等式 <span class="math">int(X)⊆X</span> 与 <span class="math">int(X)⊆int(int(X))</span>，并指出 <span class="math">◇=cl</span> 的对应公理。</li>
+    <li><span class="tag log">O6</span> 用定理 2.8.15 说明：若某个 Modal 公式的代数翻译是正等式且在 <span class="math">A</span> 中成立，为什么它在 <span class="math">A<sup>+</sup></span> 中仍成立；并指出含 <span class="math">−</span> 的公式为什么不能直接搬。</li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L05.html">← 上一讲：L05 Clone、不变关系与 Maltsev 条件</a>
+  <a href="L07.html">下一讲：L07 同余分配、算术、Maltsev 与有限代数 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L06 · 来源 UAL §2.6–2.8 / Bergman Ch2 / 拓扑讲义 Ch7 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

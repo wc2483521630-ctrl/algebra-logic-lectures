@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L31 逻辑的推广与新种类 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第八篇 推广与前沿</span><span class="sep">/</span><span>L31</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 31 · 2 学时 · 推广与前沿第一站 · 拆掉脚手架之后还剩什么</div>
+  <h1>逻辑的推广与新种类</h1>
+  <div class="sub">前面三十讲一直在问「这个逻辑能不能代数化」。这一讲改问：把可代数化的条件一条条拆掉，框架会不会塌？答案是它比想象中结实——主题变元可以不要（换成部分运算），滤子性质可以不要（换成相继式），连真值都可以不是「最大意义」。最后老实交代这套框架真正的缺口：多排序</div>
+  <div class="metarow"><span>来源：UAL Ch6 §6.1（定义 6.1.1/6.1.2、注 6.1.3、练习 6.1.4）、§6.2（定义 6.2.1/6.2.4/6.2.6、注 6.2.2、练习 6.2.3/6.2.5/6.2.7）、Preface（多排序缺口、与 AAL/机构论的比较）；回指 L15 四元组与旋钮一、L16 语义代入与可代数化、L17 多排序初见、L18 紧致、L19 桥之二、L22 判定桥、L28–L30 案例工坊</span>
+    <span class="tag log">逻辑</span><span class="tag alg">代数</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">O1　动机：拆脚手架，看框架还剩什么</a></li>
+  <li><a href="#relax">O2　半 nice 逻辑：主题变元退场（定义 6.1.1）</a></li>
+  <li><a href="#partial">O3　部分运算 c 与矩阵语义（定义 6.1.2 / 注 6.1.3）</a></li>
+  <li><a href="#newlogics">O4　三种新风味的逻辑：L∞、L<sub>r</sub>、L<sub>P</sub></a></li>
+  <li><a href="#many">O5　真正的缺口：多排序逻辑</a></li>
+  <li><a href="#frontier">O6　前沿地图与下一讲</a></li>
+  <li><a href="#examples">三层例：典型 / 本质 / 边界</a></li>
+  <li><a href="#fusion2">融合接口：第十三张图</a></li>
+  <li><a href="#ex">习题</a></li>
+</ol></div>
+
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系 <span class="tag alg">先摆牌</span></h2>
+  <div class="box"><div class="bt">本讲新概念（九个，按依赖排序）</div>
+    <ol>
+      <li><strong>半 nice 逻辑</strong>：组合性 + 滤子性质 (i) + 句法代入性，删掉「主题变元 <span class="math">ε<sub>j</sub>, δ<sub>j</sub></span>」那条（定义 6.1.1(i)）。</li>
+      <li><strong>半可代数化</strong>：半 nice 再加语义代入性（定义 6.1.1(ii)）；对应的一般逻辑版本见 (iii)。</li>
+      <li><strong>部分运算 <span class="math">c<sub>K</sub></span></strong>：<span class="math">K ⊨ φ</span> 时 <span class="math">c<sub>K</sub>(φ)=φ</span>，否则<strong>无定义</strong>；用它编码「有效」这个二元判断。</li>
+      <li><strong><span class="math">Alg<sup>+</sup><sub>⊨</sub></span> / <span class="math">Alg<sup>+</sup><sub>m</sub></span></strong>：带上部分运算 <span class="math">c</span> 之后的代数对应物；<span class="math">∼<sub>K</sub></span> 仍是同余。</li>
+      <li><strong>部分代数等式</strong>：项 <span class="math">τ, σ</span> 在赋值处都有定义且值相等才算满足；准簇刻画 <span class="math">K = SPUp K = SPr K</span> 照旧成立。</li>
+      <li><strong>替换括号：真值谓词 <span class="math">T(x)</span></strong>：<span class="math">M ⊨ φ ⇔ mng<sub>M</sub>(φ) ∈ T</span>；与 Blok–Pigozzi 的<strong>矩阵语义</strong>一脉相承（注 6.1.3）。</li>
+      <li><strong>相继式版本</strong>：把有效性限制到 <span class="math">(φ ⇒ ψ)</span>，<span class="math">M ⊨ (φ ⇒ ψ) ⇔ mng<sub>M</sub>(φ) ⊆ mng<sub>M</sub>(ψ)</span>；滤子性质可整个丢掉，代价是代数上要加偏序 <span class="math">⩽</span>。</li>
+      <li><strong>三种新逻辑</strong>：<span class="math">L<sub>∞</sub></span>（无限值，[0,1]）、<span class="math">L<sub>r</sub></span>（相关逻辑 / R-Mingle，<span class="math">ℚ</span>）、<span class="math">L<sub>P</sub></span>（部分逻辑，Prior 引入，三值 0/1/2）。</li>
+      <li><strong>多排序缺口</strong>：UAL 自认「最重要的缺失方向」；它恰是把逻辑用到其他科学时最需要的那一块。</li>
+    </ol>
+  </div>
+  <div class="diagram"><div class="bt">依赖图（本讲是「拆条件」图：箭头 = 拆掉左边，得到右边）</div>
+<pre>  L16 nice / 可代数化定义（四元组 + 主题变元 ε,δ）
+          │
+          ├─ 拆「主题变元条件 (ii)」──► 定义 6.1.1 半 nice / 半可代数化
+          │                                   │
+          │                    代数侧要编码「有效」这个判断
+          │                                   ▼
+          │                     部分运算 c（定义 6.1.2）
+          │                     Alg⁺_⊨ , Alg⁺_m
+          │                                   │
+          │              ┌────────────────────┴────────────────┐
+          │              ▼                                     ▼
+          │     部分代数泛代数照旧                  注 6.1.3 真值谓词 T
+          │     K = SPUp K = SPr K                  = 矩阵语义（Blok–Pigozzi）
+          │              │
+          └─ 拆「滤子性质」────────────► 相继式 (φ ⇒ ψ) + 代数偏序 ⩽
+                     └─ 再限制到 (φ⇔ψ) ──► 连 ⩽ 都不用（[35]）
+
+  横向：§6.2 三种新风味（同一框架，换意义函数
+        L∞：mnf∈[0,1]，意义 = 下集 [0, mnf(φ)]  ← 关键：真 ≠ 最大意义
+        Lr ：mnf∈ℚ，¬ 取负，→ 分段取 max/min ──► 相关逻辑 RM
+        LP ：三值 {0,1,2}，新强否定 N ──► 无意义 statements
+                     │
+                     ▼
+        Preface 缺口：many-sorted logics ──► Halvorson / 统一科学
+                     │
+                     ▼
+                 L32 空间的逻辑、描述集合论、统一科学</pre>
+  </div>
+  <p class="src"><b>本讲在全书的位置：</b>UAL 第 6 章原文开头两句就说得很清楚——「我们推广可代数化逻辑的概念。§6.1 放宽定义中的若干条件，得到被证明有用的推广；§6.2 回顾若干逻辑，以显示这些新概念有用。」它不产生新的定理型高峰，但它告诉我们：<strong>前三十讲搭的框架不是为某一类「乖」逻辑定制的，它的适用面比看上去宽得多；同时它诚实地标出自己的边界。</strong></p>
+</section>
+
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习</h2>
+  <div class="box"><div class="bt">六个目标，每个都有对应讲解和练习</div>
+    <table>
+      <tr><th>目标</th><th>要拿到什么</th><th>讲解</th><th>练习</th></tr>
+      <tr><td><span class="tag log">O1</span></td><td>说清「拆条件」这个动机与三条被拆的线</td><td><a href="#motive">§2</a></td><td><a href="#ex">E1, E2</a></td></tr>
+      <tr><td><span class="tag log">O2</span></td><td>半 nice / 半可代数化的定义，与 nice 版逐条比对</td><td><a href="#relax">§3</a></td><td><a href="#ex">E3, E4</a></td></tr>
+      <tr><td><span class="tag alg">O3</span></td><td>部分运算 c 的编码；矩阵语义为何等价</td><td><a href="#partial">§4</a></td><td><a href="#ex">E5, E6, E7</a></td></tr>
+      <tr><td><span class="tag log">O4</span></td><td>三种新逻辑的语义构造与它们教的东西</td><td><a href="#newlogics">§5</a></td><td><a href="#ex">E8, E9, E10</a></td></tr>
+      <tr><td><span class="tag log">O5</span></td><td>多排序缺口：缺在哪、为何重要</td><td><a href="#many">§6</a></td><td><a href="#ex">E11, E12</a></td></tr>
+      <tr><td><span class="tag log">O6</span></td><td>前沿地图；为 L32 的问题做好准备</td><td><a href="#frontier">§7</a></td><td><a href="#ex">E13</a></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============ O1 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：拆脚手架，看框架还剩什么 <span class="tag log">O1</span></h2>
+  <p class="lead">L16 定义「可代数化逻辑」时立了几根柱子：组合性、滤子性质、句法代入、语义代入、还有一组把「有效」翻译成等式的主题变元 <span class="math">ε<sub>j</sub>, δ<sub>j</sub></span>。前三十讲一直在这套条件下工作。第 6 章换了个实验方法：<strong>一次拆掉一根柱子，看哪根是真的承重墙。</strong></p>
+
+  <div class="intu"><div class="bt">直觉 · 三条拆法，三种回报</div>
+    <ol>
+      <li><strong>拆主题变元。</strong>原来靠 <span class="math">ε<sub>j</sub>(φ)=δ<sub>j</sub>(φ)</span> 编码「<span class="math">φ</span> 有效」。拆掉后用什么？答案是给代数加一个<strong>部分运算</strong> <span class="math">c</span>：<span class="math">c(φ)=φ</span> 当且仅当 <span class="math">φ</span> 有效，否则不定义。有效性被编进了「有没有定义」这件事里。这一拆得到 <strong>半 nice / 半可代数化</strong>（§6.1）。</li>
+      <li><strong>拆滤子性质。</strong>有效性不再对所有公式定义，只放到<strong>相继式</strong> <span class="math">(φ ⇒ ψ)</span> 上，读成「<span class="math">φ</span> 的意义含于 <span class="math">ψ</span> 的意义」。代数侧要补一个偏序 <span class="math">⩽</span>；若再把有效性限到成对的 <span class="math">(φ⇒ψ), (ψ⇒φ)</span>，连偏序都不必加。</li>
+      <li><strong>不拆，而是换 paradigm。</strong>§6.2 的三个逻辑来自完全不同的研究传统：模糊/多值语义、相关逻辑、量子力学里的「无意义陈述」。它们要检验的是：<strong>这套框架是不是只配处理「乖」的经典逻辑？</strong>结果是三个都能装进来。</li>
+    </ol>
+  </div>
+
+  <div class="warn"><div class="bt">别把「推广」读成「前三十讲白学了」</div>
+    <p>第 6 章的推广是<strong>保守的</strong>：nice 逻辑仍是半 nice 逻辑的特例，<span class="math">ε<sub>j</sub>(φ)=δ<sub>j</sub>(φ)</span> 的位置换成了 <span class="math">c(φ)=φ</span>，定理 3.3.23、4.1.5 的形式只需自然修改就搬得过去（教材练习 6.1.4(2)(4)(5) 就是让你逐个验证）。<strong>真正搬不过去的地方，教材也明说了——我们到 O5 会看见。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O2 半 nice ============ -->
+<section id="relax">
+  <h2><span class="sn">3</span>半 nice 逻辑：主题变元退场 <span class="tag log">O2</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">6.1.1（UAL 原编号）</span></div>
+    <p>设 <span class="math">L = ⟨F, M, mng, ⊨⟩</span> 是定义 3.1.3 意义下的逻辑（即 L15 的四元组）。则：</p>
+    <ol>
+      <li><span class="math">L</span> <strong>半 nice</strong>（semi-nice / semi-algebraizable 的弱版）当且仅当：<strong>组合性</strong> + <strong>滤子性质 (i)</strong> + <strong>句法代入性</strong>。</li>
+      <li><span class="math">L</span> <strong>半可代数化</strong>当且仅当它半 nice 且还有<strong>语义代入性</strong>（定义 3.3.10）。</li>
+      <li>把定义 3.3.27(1) 里的「nice 逻辑」换成「半 nice 逻辑」，得到<strong>半 nice 一般逻辑</strong>；「可代数化」同样换，得半可代数化一般逻辑。</li>
+    </ol>
+    <p class="pt">被拆掉的是定义 3.3.18 里的条件 (ii)：<strong>存在导出联结词 <span class="math">ε<sub>j</sub>, δ<sub>j</sub></span>（<span class="math">j &lt; m</span>）把有效性翻成等式</strong>。其余原封不动。</p>
+  </div>
+
+  <div class="ex"><div class="bt">典型 · 差一条是什么感觉</div>
+    <p>把 L16 的定义表抄成两栏看更清楚：</p>
+    <table>
+      <tr><th>条件</th><th>nice / 可代数化</th><th>半 nice / 半可代数化</th></tr>
+      <tr><td>组合性</td><td>要</td><td>要</td></tr>
+      <tr><td>滤子性质 (i)</td><td>要</td><td>要</td></tr>
+      <tr><td>句法代入性</td><td>要</td><td>要</td></tr>
+      <tr><td>语义代入性</td><td>要（可代数化）</td><td>要（半可代数化）</td></tr>
+      <tr><td><span class="math">ε<sub>j</sub>, δ<sub>j</sub></span> 存在（条件 ii）</td><td><strong>要</strong></td><td><strong>不要</strong>（改用 <span class="math">c</span>）</td></tr>
+    </table>
+    <p>差别就这么一行。但这一行牵动全局：整个 <span class="math">Alg<sub>⊨</sub></span> / <span class="math">Alg<sub>m</sub></span> 的定义都要重写成带 <span class="math">c</span> 的版本，等式对应的公式也从 <span class="math">ε<sub>j</sub>(φ)=δ<sub>j</sub>(φ)</span> 变成 <span class="math">c(φ)=φ</span>。<strong>架构没变，接口换了。</strong></p>
+  </div>
+
+  <p class="src"><b>来源与背景：</b>教材指出，即便不要求句法代入性，半 nice 逻辑也已有人研究（文献 [35]），但那里把 <span class="math">⊨</span> 限制在只有一个 <span class="math">Δ<sub>i</sub></span>、公式形如 <span class="math">(φ Δ<sub>0</sub> ψ)</span> 的窄范围内。第 6 章做的是把它推广到<strong>所有公式</strong>——这就是 L16 那套理论向半 nice 逻辑的平移。</p>
+</section>
+
+<!-- ============ O3 部分运算 ============ -->
+<section id="partial">
+  <h2><span class="sn">4</span>部分运算 c 与矩阵语义 <span class="tag alg">O3</span></h2>
+  <p class="lead">这一节是全讲技术核心：怎么在没有主题变元的情况下，把「有效」这件事编码进代数。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">6.1.2 · Alg<sup>+</sup><sub>⊨</sub>(L) 与 Alg<sup>+</sup><sub>m</sub>(L)</span></div>
+    <p>设 <span class="math">L = ⟨F, M, mng, ⊨⟩</span> 组合，<span class="math">K ⊆ M</span>。定义部分函数 <span class="math">c<sub>K</sub> : F → F</span>：</p>
+    <div class="formula">若 K ⊨ φ，则 c<sub>K</sub>(φ) 有定义且 c<sub>K</sub>(φ) = φ；　若 K ⊭ φ，则 c<sub>K</sub>(φ) 无定义.</div>
+    <p>于是 <span class="math">⟨F, c<sub>K</sub>⟩</span> 是部分代数；定义 3.3.3 的 <span class="math">∼<sub>K</sub></span> 不只是 <span class="math">F</span> 上的同余，也是 <span class="math">⟨F, c<sub>K</sub>⟩</span> 上的同余（<span class="math">c<sub>K</sub></span> 就是这么定义的，为的就是这件事）。于是</p>
+    <div class="formula">Alg<sup>+</sup><sub>⊨</sub>(L) = I{ ⟨F, c<sub>K</sub>⟩/∼<sub>K</sub> : K ⊆ M }.</div>
+    <p>模型侧对称地做：在 <span class="math">A(M) = mng<sub>M</sub>(F)</span> 上定义部分运算 <span class="math">c</span>——若 <span class="math">M ⊨ φ</span> 则 <span class="math">c(mng<sub>M</sub>(φ)) = mng<sub>M</sub>(φ)</span>，否则无定义；记 <span class="math">A<sup>+</sup>(M) = ⟨A(M), c⟩</span>，再令</p>
+    <div class="formula">Alg<sup>+</sup><sub>m</sub>(L) = { A<sup>+</sup>(M) : M ∈ M }.</div>
+  </div>
+
+  <div class="intu"><div class="bt">直觉 · 为什么用「无定义」而不是「取 0」</div>
+    <p>「<span class="math">φ</span> 有效」是个元语言判断，不是公式的真值函数。硬要用全运算编码，就得给无效的 <span class="math">φ</span> 指派某个值（练习 6.1.4(6) 试着令 <span class="math">c<sub>K</sub>(φ) = φ Δ<sub>0</sub> φ</span>），但教材明确警告：那样定理 3.3.5 会失效、定理 4.2.9 连改都改不过去。<strong>部分性的作用就是把「有效 / 无效」这一区分保留为「有定义 / 无定义」，不让它在代数运算里被抹平。</strong>教材举的现成例子：实数域里的逆 <span class="math">x ↦ x<sup>−1</sup></span>，0 处无定义。</p>
+  </div>
+
+  <div class="box"><div class="bt">部分代数：需要重新交代的几件事</div>
+    <ul>
+      <li>部分代数也是模型论意义下的模型（把 <span class="math">c</span> 看成二元关系），所以 <span class="math">P</span>、<span class="math">Up</span>、<span class="math">Pr</span> 都不必另定义；<strong>子代数</strong>要对 <span class="math">c</span> 封闭：若 <span class="math">c</span> 在 <span class="math">x</span> 有定义，则 <span class="math">c(x)</span> 也在子代数里。</li>
+      <li>项 <span class="math">τ</span> 在赋值 <span class="math">k</span> 处<strong>有定义</strong>当且仅当每个子项都有定义；<span class="math">A ⊨ (τ = σ)[k]</span> 当且仅当 <span class="math">τ, σ</span> 都有定义且值相等。<strong>「两边都没定义」不算相等。</strong></li>
+      <li>准等式照常解释，准簇刻画照常成立：<span class="math">K</span> 是准簇当且仅当 <span class="math">K = SPUp K = SPr K</span>；簇则由等式定义。</li>
+    </ul>
+  </div>
+
+  <div class="ex"><div class="bt">本质 · 真值谓词 T：不用部分运算的等价写法（注 6.1.3）</div>
+    <p>若不想碰部分代数，加一个一元谓词 <span class="math">T(x)</span>（T for truth）即可。仿照 <span class="math">c<sub>K</sub></span> 令 <span class="math">T<sub>K</sub> = {φ ∈ F : K ⊨ φ}</span>；模型的代数对应物长成 <span class="math">⟨A, T⟩</span>，其中 <span class="math">A ∈ Alg<sub>m</sub>(L)</span>、<span class="math">T ⊆ A</span> 满足</p>
+    <div class="formula">(∀φ ∈ F)　M ⊨ φ　⇔　mng<sub>M</sub>(φ) ∈ T.</div>
+    <p>教材说这条路与 <span class="math">c</span> 那条「practically equivalent」，而且<strong>非常接近 Blok–Pigozzi、Czelakowski 所说的「矩阵语义」</strong>。<span class="math">c(φ)=φ</span> 与 <span class="math">mng(φ) ∈ T</span> 是同一个判断的两种写法：<strong>前者把「真」编码进运算的定义域，后者把「真」编码进一个指定的子集。</strong>这正是 L27 四步流程里 <span class="math">Alg<sub>m</sub></span> 那一格在推广版里的样子。</p>
+  </div>
+
+  <div class="thm"><div class="bt">推广后的翻译（教材 §6.1 末）</div>
+    <p>许多已证定理可以平移（把 <span class="math">Alg</span> 换成 <span class="math">Alg<sup>+</sup></span>）：</p>
+    <div class="formula">⊨<sub>L</sub> φ　⇔　Alg<sup>+</sup><sub>m</sub>(L) ⊨ c(φ) = φ　　（对照定理 3.3.23）</div>
+    <p>以及「<span class="math">Alg<sup>+</sup><sub>⊨</sub>(L)</span> 对 <span class="math">Up</span> 封闭 <span class="math">⇒</span> <span class="math">L</span> 满足紧致性」（对照定理 4.1.5，即 L18 的桥之一）。<strong>唯一的接口变化：等式从 <span class="math">ε<sub>j</sub>(φ)=δ<sub>j</sub>(φ)</span> 变成 <span class="math">c(φ)=φ</span>。</strong></p>
+  </div>
+
+  <div class="warn"><div class="bt">再拆一步：相继式（§6.1 结尾段）</div>
+    <p>若连滤子性质都想丢，可以把 <span class="math">⊨</span> 限制到<strong>相继式</strong> <span class="math">(φ ⇒ ψ)</span>——注意 <span class="math">⇒</span> 不是对象语言联结词，而是元层次符号，相继式不是公式：</p>
+    <div class="formula">M ⊨ (φ ⇒ ψ)　⇔　mng<sub>M</sub>(φ) ⊆ mng<sub>M</sub>(ψ).</div>
+    <p>代价：代数侧要引入<strong>偏序</strong> <span class="math">⩽</span> 来编码 <span class="math">⇒</span>。好处：适用的逻辑更多、<span class="math">Alg<sub>i</sub>(L)</span> 里出现的代数种类更多。若再退一步，只保留成对的 <span class="math">(φ⇒ψ)</span> 与 <span class="math">(ψ⇒φ)</span>，连 <span class="math">⩽</span> 都不必加（文献 [35] 做了不少；亦见 Blok–Pigozzi 的 k-演绎系统、Guzmán–Verdú 与 Font–Verdú 的一般相继式方法）。<strong>把这一条记牢：L31 的「拆条件」与 L28–L29 的「换模型类」是两种独立的自由度。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O4 三种新逻辑 ============ -->
+<section id="newlogics">
+  <h2><span class="sn">5</span>三种新风味的逻辑 <span class="tag log">O4</span></h2>
+  <p class="lead">§6.2 原文开门见山：这些例子的<strong>主要目的</strong>是显示「本框架能处理来自逻辑、语言学、计算机科学等不同范式的各种寻常外观之外的逻辑」。注意它们的来源根本不是代数逻辑内部。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">6.2.1 · 无限值逻辑 L<sub>∞</sub></span></div>
+    <p>原子集 <span class="math">P</span> 任意，联结词 <span class="math">∧, ¬, ∨, →</span>。模型集</p>
+    <div class="formula">M<sub>∞</sub> = { f : P → [0, 1] },　　意义函数取值于意义的格</div>
+    <p>先算了「真值」 <span class="math">mnf<sub>f</sub></span>（教材记号 <span class="math">m<sub>n</sub><sup>f</sup></span>）：</p>
+    <div class="formula left">mnf(p) = f(p)；　mnf(φ ∧ ψ) = min{mnf(φ), mnf(ψ)}；　mnf(¬φ) = 1 − mnf(φ)；<br>mnf(φ ∨ ψ) = max{mnf(φ), mnf(ψ)}；<br>mnf(φ → ψ) = 1　若 mnf(φ) ⩽ mnf(ψ)，否则　1 − (mnf(φ) − mnf(ψ)) = 1 − mnf(φ) + mnf(ψ).</div>
+    <p><strong>关键是「意义」不是真值，而是下集：</strong></p>
+    <div class="formula">mng<sup>∞</sup>(φ, f) = { x ∈ [0,1] : x ⩽ mnf(φ) },　　f ⊨<sub>∞</sub> φ　⇔　mng<sup>∞</sup>(φ, f) = [0,1].</div>
+    <p class="src"><b>技术注（教材边界）：</b>PDF 里 <span class="math">→</span> 的 else 分支印成 <span class="math">1 − mnf(φ) − mnf(ψ)</span>，中间有一个丢失的控制字符；按 Łukasiewicz 蕴涵的标准语义（且须保证值仍在 <span class="math">[0,1]</span> 内），应读作 <span class="math">1 − (mnf(φ) − mnf(ψ))</span>，即上文所写。此处按正确语义讲解，不沿用字面误植。</p>
+  </div>
+
+  <div class="intu"><div class="bt">本质 · 为什么「意义 = 下集」这一招重要</div>
+    <p>如果直接把 <span class="math">mnf(φ)=1</span> 当作「有效」，那只是换了个多值真值表，谈不上新东西。教材特意指出：<strong>真值不等于最大意义，甚至不等于某个单一意义</strong>。它用 <span class="math">|=<sub>1</sub></span> 做例子：令 <span class="math">f ⊨<sub>1</sub> φ ⇔ mnf(φ) ⩾ 1/2</span>，而这个新有效性<strong>可以从 <span class="math">mng</span> 定义出来</strong>：</p>
+    <div class="formula">mnf(φ) ⩾ 1/2　当且仅当　mng<sup>∞</sup>(¬φ → φ) = mng<sup>∞</sup>(φ → φ).</div>
+    <p>也就是说 <span class="math">⊨<sub>1</sub></span> 不是「意义等于 [0,1]」这种粗暴识别，而是<strong>两个意义相等</strong>。这就给了 O3 里 <span class="math">c(φ)=φ</span> 一个预告：有效性总是靠「两个东西相等」来编码的，无论主题变元在不在。<strong>这是全讲最值得停下来想的一个设计。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">典型 · L<sub>∞</sub> 的「反常」与可代数化</div>
+    <ul>
+      <li>连直觉主义逻辑都证 <span class="math">⊨ ¬(φ ∧ ¬φ)</span>，但 <span class="math">L<sub>∞</sub></span> 里不成立：<span class="math">φ ∧ ¬φ</span> 的真值可以高达 <span class="math">1/2</span>（取 <span class="math">mnf(φ)=1/2</span>）。教材开了个冷玩笑：按这个理由可以叫它「辩证法逻辑」，但它不这么叫。</li>
+      <li><span class="math">φ ↔ ¬φ</span> 在某些模型里有效——直觉主义里也不可能。</li>
+      <li>它仍然<strong>可代数化</strong>：取 <span class="math">ε<sub>0</sub>(φ) = (φ → φ)</span>、<span class="math">δ<sub>0</sub>(φ) = φ</span>、<span class="math">(φ Δ<sub>0</sub> ψ) = (φ → ψ) ∧ (ψ → φ)</span> 即可（定义 6.2.1 末）。<strong>反常的语义并不妨碍标准的代数翻译。</strong></li>
+    </ul>
+    <p class="src">注 6.2.2：若去掉 <span class="math">∧</span>，就得用 <span class="math">Δ<sub>0</sub> = →</span>、<span class="math">Δ<sub>1</sub> = ←</span>；若把有效性改成 <span class="math">mnf(φ) &gt; 0.9</span>，就失去 niceness，但<strong>仍是 O2 的半 nice</strong>——注 6.2.2 明说这正是 §6.1 的用武之地。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">6.2.4 · 相关逻辑 L<sub>r</sub>（文献中又叫 R-Mingle / RM）</span></div>
+    <p>从 <span class="math">L<sub>∞</sub></span> 改三处：把 <span class="math">[0,1]</span> 全换成有理数集 <span class="math">ℚ</span>；<span class="math">mnf(¬φ) = −mnf(φ)</span>；蕴涵改成分段函数</p>
+    <div class="formula left">mnf(φ → ψ) = max{ −mnf(φ), mnf(ψ) }　若 mnf(φ) ⩽ mnf(ψ)；<br>　　　　　　　 = min{ mnf(φ), −mnf(ψ) }　否则.</div>
+    <p>其余同练习 6.2.3(4)（即 <span class="math">L<sub>Q</sub></span> 的版本）。于是 <span class="math">L<sub>r</sub> = ⟨F<sub>r</sub>, M<sub>r</sub>, mng<sub>r</sub>, ⊨<sub>r</sub>⟩</span>。</p>
+  </div>
+
+  <div class="ex"><div class="bt">本质 · 相关逻辑在「治」什么病</div>
+    <p>练习 6.2.3(4c) / 6.2.5(3) 要求证明</p>
+    <div class="formula">⊭<sub>r</sub> p<sub>0</sub> → (p<sub>1</sub> ∨ ¬p<sub>1</sub>).</div>
+    <p>理由是 <span class="math">p<sub>0</sub></span> 与 <span class="math">(p<sub>1</sub> ∨ ¬p<sub>1</sub>)</span> 没有公共原子公式，彼此不相干，因此不该「相关地蕴涵」——这正是相关逻辑的动机。教材还让你证 <span class="math">⊨<sub>r</sub> (φ → ψ) → (¬φ ∨ ψ)</span> 但反向不成立（练习 6.2.5(7)），以及 <span class="math">⊨<sub>r</sub> φ ∨ ¬φ</span> 成立。<strong>与 L27 的 <span class="math">L<sub>REL</sub></span> 对照：那边是换语义类来制造可代数化失败，这边是换意义函数来精确控制「相干性」。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">6.2.6 · 部分逻辑 L<sub>P</sub>（Prior 提出，Ruzsa 推进）</span></div>
+    <p>联结词 <span class="math">∧, ∨, ¬, N</span>，其中 <span class="math">N</span> 是<strong>强否定</strong>：<span class="math">N(φ)</span> 意为「<span class="math">φ</span> 要么无意义、要么为假」，即「并非如此 / 不是这个事实」。</p>
+    <div class="formula">M<sub>P</sub> = { f : f ∈ <sup>P</sup>{0, 1, 2} }.</div>
+    <p>三值 <span class="math">0, 1, 2</span> 分别表示<strong>假、真、无定义</strong>。只要 <span class="math">2</span> 不在 <span class="math">mng<sup>P</sup>(φ,f), mng<sup>P</sup>(ψ,f)</span> 之中，<span class="math">∧, ∨, ¬</span> 按经典逻辑 <span class="math">L<sub>S</sub></span> 算；只要有一个是 <span class="math">2</span>，三者全取 <span class="math">2</span>（<strong>无意义会传染</strong>）。强否定单独定义：</p>
+    <div class="formula left">mng<sup>P</sup>(N φ, f) = 0　若 mng<sup>P</sup>(φ,f) = 1；否则 = 1.<br>f ⊨<sub>P</sub> φ　⇔　mng<sup>P</sup>(φ, f) = 1.</div>
+  </div>
+
+  <div class="intu"><div class="bt">动机 · 为什么需要「无意义」这个第三值</div>
+    <p>教材举了两个例子：<strong>「整数 2 是粉红色的」</strong>在这样的情境下可能不是「假」，而是根本无意义；<strong>哥本哈根诠释下的量子力学</strong>——当粒子只有位置概率分布时，问它的精确位置是无意义的。<span class="math">N</span> 的存在让你能断言「<span class="math">φ</span> 不是事实」而不预设 <span class="math">φ</span> 有真值。<strong>这个逻辑直接来自物理哲学，却能被 L15 的四元组框架完整容纳。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">边界 · L<sub>P</sub> 居然是 nice 的（练习 6.2.7(1) 的答案骨架）</div>
+    <p>教材提示取</p>
+    <div class="formula">ε<sub>0</sub>(φ) = N(φ ∧ ¬φ),　　δ<sub>0</sub>(φ) = φ,</div>
+    <p>再令 <span class="math">φ Δ<sub>0</sub> ψ = N ¬(φ ↔ ψ) ∧ (u(φ) ↔ u(ψ))</span>，其中 <span class="math">u(φ) ⇔ N(φ) ∧ N(¬φ)</span> 表示「<span class="math">φ</span> 无定义 / 无意义」。<strong>一个处理「无意义」的三值逻辑，照样有主题变元、照样 nice</strong>——这一事实和 <span class="math">L<sub>∞</sub></span> 改阈值就掉到半 nice 放在一起看，很有意思：<strong>决定 nice 与否的不是「语义多怪」，而是「有效性能不能被干净地写成等式」。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O5 多排序缺口 ============ -->
+<section id="many">
+  <h2><span class="sn">6</span>真正的缺口：多排序逻辑 <span class="tag log">O5</span></h2>
+  <p class="lead">这是全书最诚实的一段话。作者在前言里写完 UAL 与抽象代数逻辑（AAL）、模型论逻辑、机构论的关系之后，说：</p>
+
+  <div class="box"><div class="bt">Preface 原文要点（逐句对照）</div>
+    <ul>
+      <li><strong>UAL 与 AAL 的分工</strong>：目标和方法非常接近；<strong>UAL 更看重语义方面和易应用性，AAL 更追求概念的优雅</strong>。</li>
+      <li><strong>本书的新意</strong>：给出了用<strong>原本的、非代入式</strong>的形式处理量词逻辑（如 FOL）的方法（这正是 L29 的排序版与非排序版之分）。</li>
+      <li><strong>与模型论逻辑、机构论的连接</strong>：来自语义方面的强调与对 FOL 的处理；§3.4 有详细比较。</li>
+      <li><strong>关键缺口</strong>：<em>Perhaps the most important direction in UAL missing is the treatment of many-sorted logics.</em>——「也许最重要的、UAL 尚未覆盖的方向，就是多排序逻辑的处理。」起点可看文献 [66] 与 [192]。</li>
+      <li><strong>为何重要</strong>：<em>Many-sorted logics are more and more important in applying logic to other sciences</em>，见 Halvorson [93]；同一文献也讲了代数逻辑在维也纳学派中的根源，以及本书副标题「Dedicated to the unity of science」的来历。</li>
+    </ul>
+  </div>
+
+  <div class="intu"><div class="bt">直觉 · 这个缺口我们其实早就撞见过</div>
+    <ol>
+      <li><strong>L17</strong> 就发现：一阶语言想做「项代人」必须分排序，否则替换会错位；<strong>L28</strong> 的 <span class="math">L′<sub>n</sub></span> 里，替换原子 <span class="math">R(v<sub>1</sub>,v<sub>0</sub>)</span> 与形式原子 <span class="math">R(v<sub>0</sub>,v<sub>1</sub>)</span> 被同态对调而核不变——直接用单排序框架就炸。</li>
+      <li><strong>L29</strong> 的非排序版 <span class="math">L<sup>rf</sup></span> 之所以要不紧致反例、要用 <span class="math">π(i)R</span> 造弱 Beth 反例，根源也是「 substitution 与变量角色纠缠」。排序版 <span class="math">L<sup>ranked</sup></span> 能把 Gödel 完全性救回来，靠的就是把变量按可用序号分层。</li>
+      <li><strong>L30</strong> 里那个三排序语言 <span class="math">S, P, R</span>（集合 / 对 / 关系）——用来给 <span class="math">Sir(BRA)</span> 做伪公理化——本身就是一次<strong>临时多排序</strong>：作者脚注 5 还得教读者「若不熟悉多排序模型，可把它想成单排序 + 一元谓词 S/P/R」。连本书自己都在用多排序工具，却没把它纳入一般框架。</li>
+    </ol>
+    <p><strong>所以这个缺口不是「没提到」，而是「一直在外面帮忙、始终没被请进来」。</strong></p>
+  </div>
+
+  <div class="warn"><div class="bt">为什么这对「统一科学」要紧</div>
+    <p>前言把副标题 Dedicated to the unity of science 与多排序逻辑放在同一段，不是随手为之。用逻辑去组织别的科学时，对象天然分型：<strong>个体、量、函数、测量值、状态、时间片</strong>混在一个单排序论域里，代入规则就会失真。UAL 这套框架要真正成为「跨科学的逻辑基础设施」，多排序是绕不过去的一步。<strong>这是 L32 收束时要回答的问题的一半。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O6 前沿 ============ -->
+<section id="frontier">
+  <h2><span class="sn">7</span>前沿地图与下一讲 <span class="tag log">O6</span></h2>
+  <p class="lead">把这一讲放到全课末尾看，它给出的不是终点，而是一张「哪些门还开着」的地图。</p>
+
+  <div class="box"><div class="bt">三条开放的线</div>
+    <table>
+      <tr><th>方向</th><th>现状（本讲 / 前讲证据）</th><th>通向哪里</th></tr>
+      <tr><td><span class="tag alg">代数侧</span> 推广</td><td>半 nice、部分运算 <span class="math">c</span>、矩阵语义 <span class="math">T</span>、相继式偏序；Blok–Pigozzi / Czelakowski 有大量强结果</td><td>与 AAL 的合流；k-演绎系统</td></tr>
+      <tr><td><span class="tag log">逻辑侧</span> 新种类</td><td><span class="math">L<sub>∞</sub></span>（多值）、<span class="math">L<sub>r</sub></span>（相关 / RM）、<span class="math">L<sub>P</sub></span>（部分逻辑）；来自语义学、相关逻辑、量子力学哲学</td><td>非经典逻辑的统一代数处理</td></tr>
+      <tr><td><span class="tag top">结构侧</span> 缺口</td><td>多排序逻辑缺席；<span class="math">Sir(BRA)</span> 的三排序只是临时手段</td><td><strong>L32</strong>：空间的逻辑、描述集合论、统一科学</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">本讲最重要的结论，一句话</div>
+    <p><strong>代数逻辑框架的承重墙只有两样：组合性（意义由部分决定整体）与「有效性可编码为某种相等」。</strong>主题变元、滤子性质、经典二值真值，全是可以拆或更换的脚手架。拆完之后框架不塌——但多排序是另一回事，它不是一根可拆的柱子，而是地基少了一块。</p>
+  </div>
+
+  <div class="fusion"><div class="bt">给 L32 留下的三个问题</div>
+    <ol>
+      <li>给定一类拓扑空间，<strong>它的逻辑</strong>是什么？反过来，给定一个逻辑，<strong>完备的空间类</strong>在哪里？（L23 Stone/Esakia 对偶的升级版。）</li>
+      <li>当空间复杂到 Borel 层级、可计算性、<span class="math">β<sub>ω</sub></span> 这一带，<strong>代数化还能走多远</strong>？</li>
+      <li>三条线最终统一在什么之上？——回到 §0 的红线：闭包算子、Galois 连接、对偶性，还是「可编码为相等」这件事本身？</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ 三层例 ============ -->
+<section id="examples">
+  <h2><span class="sn">8</span>三层例：典型 / 本质 / 边界 <span class="tag log">理解检验</span></h2>
+  <div class="tri">
+
+    <div class="ex"><div class="bt">典型 <span class="num">L<sub>∞</sub> 的阈值实验：nice 与半 nice 的分界线</span></div>
+      <p>同一个 <span class="math">L<sub>∞</sub></span>，把有效性从 <span class="math">mnf(φ)=1</span> 改成 <span class="math">mnf(φ)&gt;0.9</span>（练习 6.1.4(1) 甚至用 <span class="math">&gt;0.9</span> 的另一个版本：<span class="math">mnf(φ)&gt;0.9</span>），它就<strong>不再是 nice，却仍是半 nice</strong>（注 6.2.2）。为什么？因为「<span class="math">mnf(φ) &gt; 0.9</span>」不再是「意义等于最大元」这种能被主题变元整齐捕捉的等式，但仍可被 <span class="math">c(φ)=φ</span> 的部分运算编码。<strong>这是理解「拆条件」最省力的例子：改动只在有效性一行，代价立刻反映在代数接口上。</strong></p>
+    </div>
+
+    <div class="ex"><div class="bt">本质 <span class="num">L<sub>P</sub>：无意义也能 nice</span></div>
+      <p>三值、无意义传染、强否定 <span class="math">N</span>——从哥本哈根诠释来的语义，听起来比 <span class="math">L<sub>∞</sub></span> 的阈值改动「怪」得多，可它<strong>是 nice 的</strong>（练习 6.2.7(1)：<span class="math">ε<sub>0</sub>(φ)=N(φ∧¬φ)</span>、<span class="math">δ<sub>0</sub>(φ)=φ</span>）。这个反差把判据钉死了：<strong>决定 nice 与否的是「有效性能否写成等式」，不是语义看起来多离谱。</strong>换句话说，框架关心的是翻译的结构，不是直觉的可接受性。这也解释了为什么 L27 里 <span class="math">L<sub>REL</sub></span> 会全盘失败——问题出在代入不保有效（结构坏了），不是出在语义「怪」。</p>
+    </div>
+
+    <div class="ex"><div class="bt">边界 <span class="num">多排序：框架外的常客</span></div>
+      <p>把 L30 那个 <span class="math">S, P, R</span> 三排序伪公理化再想一遍：作者得加脚注教读者「若不熟悉多排序模型，把它想成单排序 + 一元谓词」。这不是优雅的解决，而是<strong>绕行</strong>。L17 的排序缺口、L28 的 <span class="math">L′<sub>n</sub></span> 反例、L29 排序版与非排序版的分道扬镳，都是同一块地基缺口的症状。教材把它列为「最重要的缺失方向」，并且点明它恰是与 Halvorson、与「统一科学」副标题相连的那块。<strong>所有前面能拆的柱子都拆过了；这一块拆不掉，因为它根本还没立起来。</strong></p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 融合 ============ -->
+<section id="fusion2">
+  <h2><span class="sn">9</span>融合接口：第十三张图 <span class="tag alg">全篇总览</span></h2>
+  <p>第一至五张是翻译图，第六至八张是各篇结构图，第九至十一张是桥与案例图，第十二张是判别式簇的兑现图。<strong>这一张是「边界图」</strong>：它标出框架能伸到的地方和伸不到的地方。</p>
+  <div class="diagram"><div class="bt">代数逻辑框架的承重墙与可拆件 · 第十三张图</div>
+<pre>                    四元组 L = ⟨F, M, mng, ⊨⟩  （L15）
+                                   │
+        ┌──────────────────────────┼──────────────────────────┐
+        │ 承重墙（拆了框架就塌）                                │
+        │  ① 组合性：意义由部分决定整体                        │
+        │  ② 有效性 ⇄ 某种「相等」                             │
+        └──────────────────────────┼──────────────────────────┘
+                                   │
+   ┌──────────────────┬────────────┴────────┬──────────────────┐
+   ▼                  ▼                     ▼                  ▼
+主题变元 ε,δ       滤子性质            二值真值          单排序
+   │                  │                     │                  │
+   │ 拆              │ 拆                  │ 换               │ 拆不了（缺口）
+   ▼                  ▼                     ▼                  ▼
+部分运算 c        相继式 (φ⇒ψ)          L∞：[0,1] 下集      many-sorted
+c(φ)=φ             mng(φ)⊆mng(ψ)       Lr ：ℚ 相干蕴涵      [66],[192]
+   │                  │                  LP ：{0,1,2} + N        │
+   │                  │                     │                  │
+   ▼                  ▼                     ▼                  ▼
+半 nice          代数 + 偏序 ⩽        三种新风味          Halvorson [93]
+   │            （双向 ⇒ 可省）       全部可装进框架       「统一科学」的
+   ▼                  ▼                     │              另一半地基
+矩阵语义 T        k-演绎系统                │                  │
+(Blok–Pigozzi)   (Blok–Pigozzi)             │                  │
+   │                  │                     │                  │
+   └──────────────────┴─────────────────────┴──────────────────┘
+                                   │
+                                   ▼
+                  L32：空间的逻辑 ⇄ 空间类；描述集合论；
+                       三条线统一在什么之上？</pre>
+  </div>
+  <div class="fusion"><div class="bt">与前三十讲的关系</div>
+    <p><strong>L15</strong> 的四元组是这张图的框；<strong>L16</strong> 的 nice 定义是没拆之前的样子；<strong>L17/L28/L29</strong> 反复撞到多排序这堵墙；<strong>L18</strong> 的紧致桥在半 nice 版本里照样走通（练习 6.1.4(2)）；<strong>L22</strong> 的判定桥在本讲不展开，但 <span class="math">L<sub>∞</sub></span> 与 <span class="math">L<sub>r</sub></span> 的真值域 <span class="math">[0,1] / ℚ</span> 显然会改变可判定性的面貌；<strong>L27</strong> 的四步流程里 <span class="math">Alg<sub>m</sub></span> 那一格在矩阵语义版里写成 <span class="math">⟨A,T⟩</span>；<strong>L30</strong> 的三排序伪公理化是多排序缺口的自白。<strong>第八篇不是新开端，是把前三十讲的隐含前提摊到桌面上。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+
+  <div class="ex"><div class="bt">O1 · 拆条件的动机</div>
+    <ol>
+      <li>列出 nice 可代数化逻辑定义中被第 6 章拆掉或放宽的三处，并分别说出每一拆换来的是「适用面更广」还是「接口更复杂」。</li>
+      <li>说明为什么「半 nice」仍需保留滤子性质 (i) 与句法代入性，而相继式版本才把它们整个丢掉；用一句话说清两者的差别在于<strong>有效性定义在什么对象上</strong>。</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">O2 · 半 nice / 半可代数化</div>
+    <ol start="3">
+      <li>把定义 3.3.18 与定义 6.1.1 并列抄一遍，逐条打勾，明确指出被删的究竟是哪一个条件、<span class="math">ε<sub>j</sub>, δ<sub>j</sub></span> 的去向。</li>
+      <li>（教材练习 6.1.4(1)）把 <span class="math">L<sub>∞</sub></span> 的有效性改成 <span class="math">mnf(φ) &gt; 0.9</span>，说明它为何不是 nice 却是半 nice；再说明为什么 <span class="math">⊨<sub>1</sub></span>（阈值 <span class="math">1/2</span>）可用 <span class="math">mng<sup>∞</sup>(¬φ→φ) = mng<sup>∞</sup>(φ→φ)</span> 定义就算「干净」。</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">O3 · 部分运算与矩阵语义</div>
+    <ol start="5">
+      <li>写出 <span class="math">c<sub>K</sub></span> 的定义，并说明为什么 <span class="math">∼<sub>K</sub></span> 自动是 <span class="math">⟨F, c<sub>K</sub>⟩</span> 上的同余；若 <span class="math">K ⊨ φ</span> 而 <span class="math">φ ∼<sub>K</sub> ψ</span>，<span class="math">c<sub>K</sub>(ψ)</span> 有定义吗？</li>
+      <li>解释部分代数里「<span class="math">τ = σ</span>」的满足条件，并回答：两边都无定义时算不算满足？为什么这条规定对编码有效性是必要的？</li>
+      <li>把 <span class="math">c(φ)=φ</span> 与 <span class="math">mng(φ) ∈ T</span> 两个写法对照，说明它们如何互为翻译；再查教材练习 6.1.4(6)：为什么把 <span class="math">c</span> 改成全运算 <span class="math">c<sub>K</sub>(φ)=φ Δ<sub>0</sub> φ</span>（无效时）会破坏定理 3.3.5？</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">O4 · 三种新逻辑</div>
+    <ol start="8">
+      <li>取 <span class="math">mnf(φ)=1/2</span>，计算 <span class="math">mnf(φ ∧ ¬φ)</span> 与 <span class="math">mnf(φ → φ)</span>，验证 <span class="math">⊭<sub>∞</sub> ¬(φ∧¬φ)</span> 且 <span class="math">⊨<sub>∞</sub> φ→φ</span>。</li>
+      <li>（教材练习 6.2.5(3)）用 <span class="math">L<sub>r</sub></span> 的 <span class="math">→</span> 定义说明为什么 <span class="math">⊭<sub>r</sub> p<sub>0</sub> → (p<sub>1</sub> ∨ ¬p<sub>1</sub>)</span>，并把「没有公共原子就不该相干地蕴涵」这句话写成对语义的具体约束。</li>
+      <li>在 <span class="math">L<sub>P</sub></span> 中取 <span class="math">mng<sup>P</sup>(φ)=2</span>，求 <span class="math">mng<sup>P</sup>(¬φ)</span>、<span class="math">mng<sup>P</sup>(N φ)</span>，并解释「无意义会传染」在 <span class="math">∧, ∨, ¬</span> 上的表现。</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">O5 · 多排序缺口</div>
+    <ol start="11">
+      <li>把 L28 的 <span class="math">L′<sub>n</sub></span> 失败、L29 的排序版 / 非排序版分道、L30 的三排序伪公理化排成一条证据链，说明它们为什么都指向同一个缺口。</li>
+      <li>（开放题）若要把 L15 的四元组推广到多排序，<span class="math">mng</span> 与 <span class="math">⊨</span> 各要改成什么形状？试着写出一个最小改动方案，并指出它会碰到 L17 的哪一个替换难题。</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">O6 · 前沿与收束</div>
+    <ol start="13">
+      <li>用本讲第十三张图回答：如果有一门新科学（比如量子信息）带着自己的逻辑来找你，按什么顺序检查它能否被代数化？把「组合性 → 有效性编码 → 是否需要多排序」写成可操作的检查清单。</li>
+    </ol>
+  </div>
+</section>
+
+<div class="footnav">
+  <a href="L30.html">← 上一讲：L30 案例 9：判别式簇的应用</a>
+  <a href="L32.html">下一讲：L32 空间的逻辑、描述集合论与统一科学 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L31 · 来源：UAL Ch6 §6.1（定义 6.1.1/6.1.2、注 6.1.3、练习 6.1.4）、§6.2（定义 6.2.1/6.2.4/6.2.6、注 6.2.2、练习 6.2.3/6.2.5/6.2.7）、Preface（多排序缺口、与 AAL/机构论比较）；回指 L15–L19/L22/L27–L30 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

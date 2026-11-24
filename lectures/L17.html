@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L17 与抽象代数逻辑、模型论逻辑、机构论的比较 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第四篇 代数化：把逻辑翻译成代数</span><span class="sep">/</span><span>L17</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 17 · 2 学时 · 代数篇收尾</div>
+  <h1>与抽象代数逻辑、模型论逻辑、机构论的比较</h1>
+  <div class="sub">四条路都通向「统一框架」，但每条路丢掉的东西不一样</div>
+  <div class="metarow"><span>来源：UAL §3.4（定义 3.4.1/3.4.2、Remark 3.4.2、AMT 五条件 (i)–(v) 与 (q)、机构 I(L) 构造）、Preface（UAL 的定位、多排序缺口）；L15 四元组、L16 代入/滤子</span>
+    <span class="tag log">逻辑</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：四条路，一把刀</a></li>
+  <li><a href="#aal">AAL：从演绎系统出发（O1）</a></li>
+  <li><a href="#terms">术语对照与性质阶梯（O2）</a></li>
+  <li><a href="#equiv">两个方向的等价定理（O3）</a></li>
+  <li><a href="#amt">AMT：抽象模型论（O4）</a></li>
+  <li><a href="#inst">机构论：范畴论版本（O5）</a></li>
+  <li><a href="#edge">UAL 的特色与缺口（O6）</a></li>
+  <li><a href="#fusion">融合接口：代数化只是众多框架之一</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">前两讲把逻辑做成四元组、算出代数影子。这一讲不往前推技术，而是<strong>往旁边看</strong>：同样想给逻辑建统一框架，还有三条路。看清它们各拿什么当起点、各丢掉什么，才知道 UAL 站在哪。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>它回答的问题</th></tr>
+      <tr><td>演绎系统 <span class="math">⟨F, ⊢⟩</span></td><td>L02 闭包算子</td><td>AAL 为什么只要语法和后承？</td></tr>
+      <tr><td>structurality（替换不变）</td><td>L16 句法代入</td><td>什么样的后承才算「逻辑的」？</td></tr>
+      <tr><td>可代数化阶梯</td><td>L16 滤子性质</td><td>「能翻成代数」能 weaken 到什么程度？</td></tr>
+      <tr><td>AMT 抽象逻辑</td><td>L15 四元组</td><td>模型论那边怎么统一？要哪些条件？</td></tr>
+      <tr><td>机构 <span class="math">⟨Sign, sen, Mod, ⊨⟩</span></td><td>上面 + L05 范畴语言</td><td>范畴论版本的统一框架长什么样？</td></tr>
+      <tr><td><span class="math">mng</span> 与开公式</td><td>L15、L16</td><td>UAL 相比另外三条路，多保留了什么？</td></tr>
+      <tr><td>多排序缺口</td><td>全课</td><td>UAL 自己承认还没覆盖什么？</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>四点同源（都从 Tarski 出、都想统一逻辑）→ 但<strong>基本对象不同</strong>：AAL 拿 <span class="math">⟨F, ⊢⟩</span>（只要后承）、AMT 拿 <span class="math">⟨L, ⊨⟩</span>（只要句子与满足）、机构论拿四元组 <span class="math">⟨Sign, sen, Mod, ⊨⟩</span>（范畴化、不要 <span class="math">mng</span>）、UAL 拿 <span class="math">⟨F, M, mng, ⊨⟩</span>（<strong>多留住意义函数和开公式</strong>）→ 比较之后看清：UAL 的强项是<strong>语义 + 非替换形式的一阶逻辑</strong>，缺口是<strong>多排序</strong> → 代数化本身只是工具，L18–L20 才把它用成桥。</p>
+  </div>
+</section>
+
+<!-- ============ 目标 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>说出 AAL 的出发点是演绎系统，解释 structurality 为何等价于替换不变</td><td><a href="#aal">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>对照 structural / algebraizable / nice 与 protoalgebraic / equivalential 阶梯</td><td><a href="#terms">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>重述 AAL 与 UAL 可代数化的双向等价定理，说明紧致性角色</td><td><a href="#equiv">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>列出 AMT 抽象逻辑的五条件，说明它为何是一般逻辑的特例</td><td><a href="#amt">§6</a></td><td><a href="#ex">E7, E8</a></td></tr>
+    <tr><td><b>O5</b></td><td>从逻辑态射造出机构 <span class="math">I(L)</span>，说明 IT 与一般逻辑为何可互换</td><td><a href="#inst">§7</a></td><td><a href="#ex">E9, E10, E11</a></td></tr>
+    <tr><td><b>O6</b></td><td>指出 UAL 相比 AAL/AMT/IT 多保留的东西，说清非替换形式与多排序缺口</td><td><a href="#edge">§8</a></td><td><a href="#ex">E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：四条路，一把刀</h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>到 L16 为止，我们只走了一条路——UAL：<strong>先把逻辑做成四元组，再算代数影子，最后把逻辑性质翻成代数性质</strong>。这条路不是唯一的。Tarski 之后至少分出四条，都想做同一件事：<strong>给「逻辑」一个统一形状，好让定理能一次证明</strong>。</p>
+    <p>奇怪的是，它们彼此不像。AAL 的基本对象只有 <span class="math">⟨F, ⊢⟩</span>，连模型都不要；AMT 只谈句子和满足关系；机构论把一切都范畴化；UAL 则死死抱住意义函数 <span class="math">mng</span> 不放。<strong>为什么会差这么多？</strong></p>
+    <p>答案藏在「<strong>为了统一，你愿意丢掉什么</strong>」这个问题里。丢得越多，框架越轻、定理越漂亮；丢得越少，能处理的逻辑越丰富、越贴近真实的一阶逻辑。四种选择对应四种答案：</p>
+    <ul>
+      <li><strong>AAL</strong> 丢掉语义，只留后承 → 换来一套极其干净的演绎系统理论；</li>
+      <li><strong>AMT</strong> 丢掉 <span class="math">mng</span>，只留句子与满足 → 换来模型论性质的统一处理；</li>
+      <li><strong>机构论</strong> 再进一步范畴化 → 换来程序语言规范那一侧的工具；</li>
+      <li><strong>UAL</strong> 什么都不丢，连开公式的意义都留 → 换来处理<strong>非替换形式的一阶逻辑</strong>的能力，代价是框架更重。</li>
+    </ul>
+    <p>这一讲就是把这个交换说清楚。<strong>不是评优劣，是看清楚哪把刀切哪块肉。</strong></p>
+  </div>
+
+  <div class="diagram"><pre>
+                        Tarski 的统一梦
+                              │
+       ┌──────────────┬───────┴────────┬────────────────┐
+       │              │                │                │
+      AAL           UAL              AMT            机构论
+   ⟨F, ⊢⟩      ⟨F,M,mng,⊨⟩      ⟨L, ⊨_L⟩      ⟨Sign,sen,Mod,⊨⟩
+       │              │                │                │
+   丢掉语义       全部保留       丢掉 mng        范畴化 + 丢 mng
+   保留后承       开公式也在     只看句子         只看句子
+       │              │                │                │
+   演绎系统       代数影子        模型论性质      规范 / 范畴工具
+   漂亮理论       Algᵐ / Alg⊨     表达力阶梯      Sign → Log 函子
+       │              │                │                │
+       └──── 可代数化互相翻译 ────┘   └── AMT ⊂ 一般逻辑 ──┘
+                    │                          │
+                    └──── 机构论 ⟷ 一般逻辑 ────┘
+  </pre></div>
+</section>
+
+
+<!-- ============ O1 ============ -->
+<section id="aal">
+  <h2><span class="sn">3</span>AAL：从演绎系统出发 <span class="tag log">O1</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>抽象代数逻辑（AAL）问的问题比 UAL 窄：如果<strong>只给你语法和后承关系</strong>，没有模型、没有意义函数，还能不能做代数化？答案是能，而且做出了一套极干净的理论。</p>
+    <p>它的基本对象叫<strong>演绎系统</strong> <span class="math">⟨F, ⊢⟩</span>：<span class="math">F</span> 是形式语言，<span class="math">⊢</span> 是后承运算。Tarski 要求 <span class="math">C(X) = {φ ∈ F : X ⊢ φ}</span> 是<strong>代数闭包算子</strong>——这正是 L02 讲的那三公理，在这里第一次以「逻辑公理」的身份出现。</p>
+    <p>Łoś 与 Suszko 后来加了一条：<strong>替换不变性</strong>，AAL 叫 <strong>structurality</strong>。加上它，所有这样的后承都来自某个 Hilbert 型系统（公理 + 推导规则）。<strong>这一步把「闭包算子」和「证明系统」接上了。</strong></p>
+  </div>
+
+  <div class="def"><div class="bt">演绎系统 <span class="num">AAL 的起点</span></div>
+    <p>一对 <span class="math">⟨F, ⊢⟩</span>，其中</p>
+    <div class="formula"><span class="math">C(X) = {φ ∈ F : X ⊢ φ}&nbsp; 是代数闭包算子（单调、扩张、幂等）</span></div>
+    <p><strong>structural（结构）</strong>指 <span class="math">C</span> 对替换不变：任意同态 <span class="math">h : F → F</span>，<span class="math">X ⊢ φ ⟹ h(X) ⊢ h(φ)</span>。这正是 L16 定义 3.3.9 的<strong>句法代入性质</strong>在后承层面的说法。</p>
+    <p>structural 的演绎系统叫 <strong>sentential logic</strong>（Font）。Blok–Pigozzi 定义：演绎系统<strong>可代数化</strong>，若它等价于某个<strong>唯一</strong>代数类 <span class="math">K</span> 的等式理论，翻译用的正是 L16 定义 3.3.18 滤子性质里的那组项。</p>
+  </div>
+
+  <div class="thm"><div class="bt">UAL 与 AAL：同源异向 <span class="num">UAL §3.4 开宗明义</span></div>
+    <p><strong>同源</strong>：两条路都从 Tarski 出发，都提供「一般化的代数逻辑」，目标与方法都很像。</p>
+    <p><strong>异向</strong>：UAL 可以看作<strong>向着一阶逻辑敞开、并把重心放在语义上的 AAL</strong>；也可以看作<strong>从柱形代数与关系代数理论中抽象出来的代数逻辑通论</strong>。</p>
+    <p>为什么 UAL 必须比 AAL 重？因为 FOL 比命题逻辑复杂得多（可判定 vs 不可判定）。UAL 的三个「重」处：</p>
+    <ul>
+      <li>代数化结果<strong>不止一个类</strong>，而是 <span class="math">Alg<sub>⊨</sub></span> 与 <span class="math">Alg<sup>m</sup></span> 两套；</li>
+      <li><span class="math">Alg<sup>m</sup>(L)</span> <strong>甚至不是抽象类</strong>——不对同构封闭，在弱 Beth 性质里这点很重要（L16、L20）；</li>
+      <li><strong>重心在开公式而非语句</strong>——给开公式赋意义的 <span class="math">mng</span> 函数，在别的技术路线里根本不出现。</li>
+    </ul>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型 · 经典命题逻辑</div>
+    <p><span class="math">⟨F, ⊢⟩</span> 取所有命题公式与标准推导，<span class="math">C</span> 是重言后承。它 structural（替换保真）、可代数化，唯一的 <span class="math">K</span> 是布尔代数类 <span class="math">BA</span>。<strong>AAL 与 UAL 在这里完全重合。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质 · Łoś–Suszko 定理在干什么</div>
+    <p>它说「满足闭包公理 + 替换不变的后承」<strong>恰好</strong>是「由 Hilbert 型公理系统给出的后承」。这一步的意义是：你不必逐个检查逻辑，只要验证两条抽象性质，就知道它能被公理化。<strong>这就是 L02 闭包算子观点的第一次大胜。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界 · AAL 丢掉的东西</div>
+    <p>演绎系统里 <span class="math">⊢</span> 可以<strong>兼指</strong>语义后承（Remark 3.1.2 的伪模型构造），但 AAL 的主要应用是<strong>句法可推导性</strong>。一旦丢掉 <span class="math">M</span> 与 <span class="math">mng</span>，你就问不了「某个模型里这个开公式指什么」——<strong>而这正是 UAL 要保留的。</strong></p>
+  </div></div>
+</section>
+
+<!-- ============ O2 ============ -->
+<section id="terms">
+  <h2><span class="sn">4</span>术语对照与性质阶梯 <span class="tag log">O2</span></h2>
+
+  <div class="def"><div class="bt">定义 3.4.1 <span class="num">为了兼容 AAL 而设的术语</span></div>
+    <table>
+      <tr><th>术语</th><th>定义 3.4.1 的官方条件</th><th>对应 L16 的哪一条</th></tr>
+      <tr><td><b>structural</b>（结构）</td><td>组合 + 两种代入性质都有</td><td>定义 3.3.2 + 3.3.9 + 3.3.10</td></tr>
+      <tr><td><b>algebraizable</b>（可代数化）</td><td>有滤子性质 + 语义代入</td><td>定义 3.3.18 + 3.3.10</td></tr>
+      <tr><td><b>conditionally algebraizable</b></td><td>组合 + 滤子性质 + 条件语义代入</td><td>定义 3.3.18 + 3.3.14</td></tr>
+      <tr><td><b>nice</b></td><td>组合 + 滤子性质 + 句法代入</td><td>定义 3.3.2 + 3.3.18 + 3.3.9</td></tr>
+    </table>
+    <p>一般逻辑 <span class="math">L = ⟨L<sub>P</sub> : P ∈ Sig⟩</span> 有这些性质，指<strong>每个</strong> <span class="math">L<sub>P</sub></span> 都有。</p>
+    <div class="warn"><div class="bt">一个术语坑</div>
+      <p>UAL §3.3 里说「有滤子性质就叫 algebraizable」（§3.4 Remark 3.4.2 仍这么用），但定义 3.4.1 为了和 AAL 兼容，把它定义成「滤子性质 <strong>+</strong> 语义代入」。<strong>同一本书两个口径，读的时候要看上下文。</strong>本讲按定义 3.4.1。</p>
+    </div>
+  </div>
+
+  <div class="intu"><div class="bt">Remark 3.4.2：可代数化能 weaken 到什么程度</div>
+    <p>Blok–Pigozzi 那边还有一连串<strong>更弱</strong>的性质，越弱越容易满足，能用的代数方法也越少。UAL 把它们平移到语义逻辑 <span class="math">L<sub>s</sub> = ⟨F, M, mng, ⊨⟩</span> 上：</p>
+    <div class="formula"><span class="math">L<sub>s</sub> protoalgebraic ⟺ 存在导出连接词集 ∆(φ,ψ) 使 ⊨ ∆(φ,φ) 且 M ⊨ ∆(φ,ψ) ⟹ (M ⊨ φ ⟺ M ⊨ ψ)</span></div>
+    <p>这条式子只读成一句话：<strong>∆ 至少能「检测」两个公式是否同真</strong>——它是滤子性质里 <span class="math">∆<sub>i</sub></span> 的削弱版（不要求意义相等，只要求同真）。</p>
+    <p>在此基础上逐级加码：</p>
+    <ul>
+      <li><strong>equivalential</strong>：<span class="math">∆</span> 还满足滤子性质的条件 (1)（意义相等 ⟺ 所有 <span class="math">φ∆<sub>i</sub>ψ</span> 有效）；</li>
+      <li><strong>weakly algebraizable</strong>：protoalgebraic + 滤子性质的条件 (2)（有一组 <span class="math">ε, δ</span>）；</li>
+      <li><strong>infinitely algebraizable</strong>：equivalential + weakly algebraizable，但 <span class="math">∆, ε, δ</span> 可以是<strong>无穷</strong>集；有限集时就是 algebraizable。</li>
+    </ul>
+    <div class="formula"><span class="math">protoalgebraic ⟹ equivalential ⟹ algebraizable</span></div>
+    <p><strong>UAL 本书只为 algebraizable 这一档展开机器</strong>，并邀请读者把 machinery 推广到更弱的两档。protoalgebraic 被认为是「还能用代数方法的最弱门槛」。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型 · 命题逻辑站在阶梯顶端</div>
+    <p>经典命题逻辑 protoalgebraic、equivalential、algebraizable、structural、nice 全占。<span class="math">∆ = {↔}</span>，<span class="math">ε = {⊤}</span>，<span class="math">δ = {id}</span>，一组有限的导出连接词把整条阶梯走完。</p>
+  </div>
+  <div class="ex"><div class="bt">本质 · 阶梯为什么是「加法」而不是「分类」</div>
+    <p>每一级都在前一级上加一条具体要求：先要有 <span class="math">∆</span> 能测同真，再要 <span class="math">∆</span> 能测意义相等，再要有 <span class="math">ε, δ</span> 把有效翻成等式。<strong>UAL 把 L16 那一大堆定义拆成可单独开关的旋钮，AAL 则给这些旋钮起了名字、排了序。</strong>两种风格互补。</p>
+  </div>
+  <div class="ex"><div class="bt">边界 · 别把「nice」当成夸奖</div>
+    <p>nice 是 UAL 借来的技术术语，= 组合 + 滤子性质 + <strong>句法</strong>代入。一阶逻辑连语义代入都没有，自然不 nice；但它无条件可代数化。<strong>「nice」在这里只是个标签，不是价值判断。</strong>另外注意 protoalgebraic 的 <span class="math">∆</span> 可以是无穷集，UAL 正文的「algebraizable」要求有限——infinitely algebraizable 是单独一档。</p>
+  </div></div>
+</section>
+
+<!-- ============ O3 ============ -->
+<section id="equiv">
+  <h2><span class="sn">5</span>两个方向的等价定理 <span class="tag log">O3</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>两套框架都对「可代数化」下了定义，它们是一回事吗？UAL 给了双向定理：<strong>在各自合适的条件下，AAL 的可代数化演绎系统 ⟷ UAL 的可代数化语义逻辑</strong>。这保证你在 AAL 证的定理不会和 UAL 的打架。</p>
+  </div>
+
+  <div class="thm"><div class="bt">UAL §3.4 · 双向等价 <span class="num">UAL ↔ AAL</span></div>
+    <p><strong>方向一（UAL → AAL）。</strong>设 <span class="math">L</span> 是 algebraizable、<strong>后承紧致</strong>（定义 4.1.1，L18 详讲）的语义逻辑。则 <span class="math">⟨F<sub>L</sub>, ⊨<sub>L</sub>⟩</span> 总是 Blok–Pigozzi 意义下的 algebraizable 演绎系统，而且与它等价的<strong>唯一的</strong> <span class="math">K</span> 就是 <span class="math">Alg<sub>⊨</sub>(L)</span>。</p>
+    <p><strong>方向二（AAL → UAL）。</strong>若 <span class="math">⟨F, ⊢⟩</span> 是 algebraizable 演绎系统，则由 Remark 3.1.2 的伪模型构造得到的 <span class="math">L<sub>⊢</sub></span>，总是 UAL 意义下 algebraizable、后承紧致的逻辑。</p>
+    <p>Font–Jansana 还指出：<strong>紧致性在这两个定义里都不重要</strong>——去掉它，等价仍然成立。UAL 这里加上，只是因为正文要在紧致语境里用。</p>
+    <p><strong>唯一性那句最值钱</strong>：AAL 那边「唯一的 K」正是 UAL 算出来的 <span class="math">Alg<sub>⊨</sub>(L)</span>。<strong>两套独立发展出的理论，指认了同一个代数类。</strong></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型 · 命题逻辑的 BA</div>
+    <p><span class="math">L<sub>S</sub></span> 后承紧致、algebraizable，<span class="math">Alg<sub>⊨</sub>(L<sub>S</sub>) = BA</span>。AAL 那边从 <span class="math">⟨F, ⊢⟩</span> 算出的唯一等价类也是 <span class="math">BA</span>。<strong>两边对上了。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质 · 为什么需要「唯一」</div>
+    <p>可代数化若允许一堆 <span class="math">K</span> 都等价，翻译就没有标准答案。<strong>唯一性让「这个逻辑的代数」成为一个确定的对象</strong>，L18–L20 的桥才写得出来。<span class="math">Alg<sub>⊨</sub>(L)</span> 凭什么配当这个唯一者？因为定理 3.3.5 保证它和语义侧只差 <span class="math">SP</span>（L16）。</p>
+  </div>
+  <div class="ex"><div class="bt">边界 · 紧致性的角色别搞反</div>
+    <p>UAL 方向一要求「后承紧致」，读者容易以为紧致性是可代数化的<strong>前提</strong>。Font–Jansana 的结果说不是：它是正文使用时的附加条件，不是定义的必要条件。<strong>L18 会把紧致性讲成一座独立的桥，别和这里的「可代数化」绑死。</strong></p>
+  </div></div>
+</section>
+
+
+<!-- ============ O4 ============ -->
+<section id="amt">
+  <h2><span class="sn">6</span>AMT：抽象模型论 <span class="tag log">O4</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>模型论那边问的是另一个问题：<strong>一阶逻辑有那么多性质（紧致、Löwenheim–Skolem、省略型……），哪些是「一阶逻辑」本身给的，哪些是具体语言给的？</strong>想回答，就得把「逻辑」抽象出来，让一阶逻辑只是其中一个实例。</p>
+    <p>AMT（Abstract Model Theory）的抽象逻辑是一对 <span class="math">⟨L, ⊨<sub>L</sub>⟩</span>：<span class="math">L</span> 定义在经典签名 <span class="math">τ</span> 上，<span class="math">L[τ]</span> 是语句类，<span class="math">⊨<sub>L</sub></span> 是结构与语句之间的满足关系，并满足五条条件。</p>
+  </div>
+
+  <div class="def"><div class="bt">AMT 抽象逻辑 <span class="num">五条件 (i)–(v)</span></div>
+    <table>
+      <tr><th>条件</th><th>内容</th><th>在 UAL 里的对应</th></tr>
+      <tr><td>(i) 扩张</td><td><span class="math">τ ⊆ σ ⟹ L[τ] ⊆ L[σ]</span></td><td>子逻辑 / 签名扩张</td></tr>
+      <tr><td>(ii) 语言封闭</td><td><span class="math">M ⊨<sub>L</sub> φ ⟹ φ ∈ L[τ<sub>M</sub>]</span></td><td><span class="math">mng</span> 的定义域</td></tr>
+      <tr><td>(iii) 同构不变</td><td><span class="math">M ⊨ φ</span> 且 <span class="math">M ≅ N ⟹ N ⊨ φ</span></td><td>模型同构保持满足</td></tr>
+      <tr><td>(iv) 约化</td><td><span class="math">φ ∈ L[τ]</span>、<span class="math">τ ⊆ τ<sub>M</sub></span> 时 <span class="math">M ⊨ φ ⟺ M↾τ ⊨ φ</span></td><td>L16 Remark 3.3.30 的约化函数</td></tr>
+      <tr><td>(v) 改名</td><td>重命名 <span class="math">ρ : τ → σ</span> 时存在 <span class="math">φ<sup>ρ</sup> ∈ L[σ]</span> 使 <span class="math">M ⊨ φ ⟺ M<sup>ρ</sup> ⊨ φ<sup>ρ</sup></span></td><td>L16 定义 3.3.26 的同构副本</td></tr>
+    </table>
+    <p><strong>逐条看下来你会发现：这五条 UAL 的一般逻辑都有（或等价地有）。</strong>所以 UAL §3.4 直接下结论：</p>
+    <div class="thm"><div class="bt">AMT ⊂ 一般逻辑 <span class="num">特例关系</span></div>
+      <p>抽象模型论是 UAL 一般逻辑的<strong>特例</strong>：签名类 <span class="math">Sig</span> 取所有一阶签名，模型类取经典一阶模型。<strong>AMT 的每条抽象逻辑，都是一个一般逻辑。</strong></p>
+      <p>差别在<strong>关注点</strong>：AMT 专心找<strong>表达力至少和 FOL 一样强</strong>的逻辑（如加入无穷量词、多数数量词）。它用一条额外条件刻画存在量词：</p>
+      <div class="formula"><span class="math">(q)&nbsp; 若 c ∈ τ，则对任意 φ ∈ L[τ] 存在 ψ ∈ L[τ−{c}]，使 M ⊨ ψ ⟺ (M,a) ⊨ φ 对某个 a ∈ M</span></div>
+      <p>读作：<strong>把变量当成一个额外的常元 c，存在量词就变成「在某个展开上成立」。</strong>这是模型论处理量词的标准手法。</p>
+    </div>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型 · 一阶逻辑本身</div>
+    <p><span class="math">L = FOL</span>，<span class="math">L[τ]</span> 是 <span class="math">τ</span> 上的一阶语句，<span class="math">⊨</span> 是 Tarski 满足关系。五条全满足，(q) 也满足——变量当常元的老手法。</p>
+  </div>
+  <div class="ex"><div class="bt">本质 · AMT 与 UAL 的分工</div>
+    <p>两者都强调语义、都认真对待 FOL，<strong>但 AMT 不打算研究语义与代数的桥</strong>。它要的是「更强的逻辑各自有哪些模型论性质」。<strong>UAL 要的是「逻辑性质和代数性质怎么互译」。</strong>工具箱不同，对象可以重叠。</p>
+  </div>
+  <div class="ex"><div class="bt">边界 · (q) 那招为什么在 UAL 里够用</div>
+    <p>(q) 把变量升级成常元，只在<strong>语句</strong>层面说话。可一旦要谈开公式的意义——比如 <span class="math">φ(x)</span> 在模型里定义一个集合——你就需要 <span class="math">mng(φ, M)</span> 这种东西。<strong>AMT 的 (q) 绕开了它，UAL 则正面接住它。</strong>这正是 UAL 后来能处理非替换形式一阶逻辑的本钱。</p>
+  </div></div>
+</section>
+
+<!-- ============ O5 ============ -->
+<section id="inst">
+  <h2><span class="sn">7</span>机构论：范畴论版本 <span class="tag log">O5</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>机构论（Institutions Theory）是 AMT 的<strong>范畴论版本</strong>。它最初不是为逻辑基础做的，而是<strong>为程序语言规范提供统一框架</strong>（Burstall–Goguen）。同一个「签名—句子—模型—满足」结构，换一套范畴论语言重说一遍，就得到另一套工具。</p>
+    <p>UAL 的态度很明确：机构论强调一般逻辑里的<strong>范畴论侧面</strong>（本书把它压下去了），同时<strong>抑制了由 <span class="math">mng</span> 表示的内涵侧面</strong>。</p>
+  </div>
+
+  <div class="def"><div class="bt">逻辑态射与签名范畴 <span class="num">从一般逻辑造范畴</span></div>
+    <p>设 <span class="math">P, P<sub>1</sub> ∈ Sig</span>。<strong>逻辑态射</strong> <span class="math">h : L<sub>P</sub> → L<sub>P<sub>1</sub></sub></span> 是一对 <span class="math">h = ⟨f, μ⟩</span>：</p>
+    <ul>
+      <li><span class="math">f : F<sup>P</sup> → F<sup>P<sub>1</sub></sup></span> 是公式代数的同态；</li>
+      <li><span class="math">μ : M<sup>P<sub>1</sub></sup> → M<sup>P</sup></span>（注意<strong>反向</strong>）使一切交换：<span class="math">M ⊨ f(φ) ⟺ μ(M) ⊨ φ</span>。</li>
+    </ul>
+    <p>若 <span class="math">mng</span> 也在场，<span class="math">μ</span> 还要诱导出意义上的函数 <span class="math">μ<sup>+</sup></span>，使</p>
+    <div class="formula"><span class="math">mng<sub>μ(M)</sub>(φ) = μ<sup>+</sup>( mng<sub>M</sub>(f(φ)) )</span></div>
+    <p><span class="math">f↾P</span> 叫<strong>签名态射</strong>。以签名态射为箭头、<span class="math">Sig</span> 为对象得范畴 <span class="math">Sign</span>；以逻辑态射为箭头得范畴 <span class="math">Log</span>。于是有函子 <span class="math">F : Sign → Log</span>，<span class="math">P ↦ L<sub>P</sub></span>。</p>
+  </div>
+
+  <div class="thm"><div class="bt">机构的构造 <span class="num">I(L) = ⟨Sign, fml, Mod, ⊨⟩</span></div>
+    <p>上面那个函子 <span class="math">F</span> <strong>几乎</strong>就是机构了，只差一味：在我们知道的所有应用里，<span class="math">M<sup>P</sup></span> 不只是一个类，而是<strong>一个范畴</strong>（本书压下了这个范畴侧面，但它确实在后方起作用）。设每个 <span class="math">M<sup>P</sup></span> 是范畴后，<span class="math">F</span> 诱导出两个函子：</p>
+    <div class="formula"><span class="math">fml : Sign → Fmla, &nbsp;&nbsp; Mod : Sign → Cat<sup>op</sup></span></div>
+    <p>于是 <span class="math">F(P) = ⟨fml(P), Mod(P), ⊨<sub>P</sub>⟩</span>，四元组</p>
+    <div class="formula"><span class="math">I(L) = ⟨Sign, fml, Mod, ⊨⟩&nbsp; 就是机构，其中 ⊨ = ⟨⊨<sub>P</sub> : P ∈ Sign⟩</span></div>
+    <p><strong>双向恢复</strong>：给一般逻辑 <span class="math">L</span> 得机构 <span class="math">I(L)</span>；给机构 <span class="math">I</span> 得一般逻辑 <span class="math">L(I)</span>，二者可互相还原（前提是 <span class="math">L(I)</span> 里模型仍成范畴）。<strong>要百分之百严丝合缝，还得把 <span class="math">mng</span> 也加进机构、把 <span class="math">M<sup>P</sup></span> 也做成范畴</strong>——UAL 说「看不出为什么不作此修正」。</p>
+    <p>机构论里 UAL 的「fml」写作 <strong>sen</strong>，<strong>正因为 <span class="math">mng</span> 被抑制，意义被真值取代</strong>。应用到 FOL 时，注意力只能限制在<strong>语句（闭公式）</strong>上——开公式的意义比真值复杂得多。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型 · 命题逻辑的机构</div>
+    <p><span class="math">Sign</span> 是命题字母集与改名，<span class="math">sen(P)</span> 是公式，<span class="math">Mod(P)</span> 是赋值，<span class="math">⊨</span> 是满足。四元组齐全，与 UAL 的一般逻辑一一对应。</p>
+  </div>
+  <div class="ex"><div class="bt">本质 · 反向的 μ 是精髓</div>
+    <p>签名从 <span class="math">P</span> 扩到 <span class="math">P<sub>1</sub></span>（公式变多），模型方向却从 <span class="math">P<sub>1</sub></span> 缩回 <span class="math">P</span>（忘掉多余结构）。<strong>这就是 L16 Remark 3.3.30 的约化函数，只是换成了范畴论的说法。</strong>两条路线在这里握手。</p>
+  </div>
+  <div class="ex"><div class="bt">边界 · sen 不是 fml</div>
+    <p>名字差别有实质内容：机构论只留真值，所以只能谈句子；UAL 留 <span class="math">mng</span>，所以能谈开公式。<strong>量词在 IT 里和 AMT 一样，靠「变量当常元」的 (q) 式手法处理</strong>——再次绕开了开公式的意义。<strong>这不是缺陷，是选择：换了工具，就得换能问的问题。</strong></p>
+  </div></div>
+</section>
+
+<!-- ============ O6 ============ -->
+<section id="edge">
+  <h2><span class="sn">8</span>UAL 的特色与缺口 <span class="tag log">O6</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>比较完三条路，回到 UAL 自己。Preface 用一句话点出自家的定位：</p>
+    <div class="formula"><span class="math">UAL 的新意 = 为量词逻辑（尤其 FOL）处理其「非替换形式」而发展出成套方法</span></div>
+    <p>「非替换形式」是什么意思？就是<strong>不假设命题字母可以任意换成公式</strong>。L16 已经看到：一阶逻辑的语义代入失败，只有条件代入成立。<strong>多数统一框架在这里悄悄假设了强替换性，一阶逻辑就被挤出去；UAL 偏要正面处理它。</strong></p>
+    <p>Preface 同时坦白一个缺口：<strong>多排序逻辑（many-sorted logics）尚未覆盖</strong>，这可能是 UAL 最重要的缺失方向。而多排序逻辑在把逻辑用于其他科学时越来越重要（Halvorson）。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型 · 开公式的 mng</div>
+    <p>在 <span class="math">L<sub>FOL</sub></span> 里，<span class="math">mng(φ(x), M)</span> 是满足 <span class="math">φ</span> 的赋值之集（L15）。<strong>AAL 不问它、AMT 绕开它、机构论把它压成真值；只有 UAL 把它当一等公民。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质 · 非替换形式为什么值钱</div>
+    <p>一阶逻辑里 <span class="math">r(x)</span> 是一元、<span class="math">s(x,y)</span> 是二元，替换会撞类型（L16 §5）。UAL 用<strong>条件代入</strong>接住这件事，代价是代数侧要用带定义关系的自由代数 <span class="math">Fr(K, P, ∼<sub>L</sub>)</span>。<strong>框架重一点，换来的是「真的一阶逻辑」而不是「一阶逻辑的替换式简化版」。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">边界 · 多排序缺口</div>
+    <p>Preface 说得很直白：<strong>UAL 最重要的缺失方向，或许就是多排序逻辑的处理</strong>。起点文献有 [66]、[192]，Halvorson [93] 谈它为何在跨学科应用中重要。<strong>本讲义到这里也停在同一处：我们能处理单排序的一阶逻辑，但把「多 sorts 的语言」做成四元组，还需另起炉灶。</strong></p>
+  </div></div>
+</section>
+
+<!-- ============ 融合接口 ============ -->
+<section id="fusion">
+  <h2><span class="sn">9</span>融合接口：代数化只是众多框架之一</h2>
+  <p class="lead">这一讲没有新技术，但它决定了后面怎么读：<strong>我们走的是四条路里最重的那条，为的是能谈真的一阶逻辑。</strong></p>
+
+  <div class="fusion"><div class="bt">表一 · 四条路对照</div>
+    <table>
+      <tr><th>框架</th><th>基本对象</th><th>丢掉什么</th><th>换来什么</th></tr>
+      <tr><td>AAL</td><td><span class="math">⟨F, ⊢⟩</span></td><td>语义、模型</td><td>演绎系统的干净理论；可代数化阶梯</td></tr>
+      <tr><td>UAL（本讲义）</td><td><span class="math">⟨F, M, mng, ⊨⟩</span></td><td>什么都不丢</td><td>非替换形式 FOL、开公式意义、两种影子</td></tr>
+      <tr><td>AMT</td><td><span class="math">⟨L, ⊨<sub>L</sub>⟩</span></td><td><span class="math">mng</span>；只看句子</td><td>表达力 ≥ FOL 的逻辑之模型论性质</td></tr>
+      <tr><td>机构论</td><td><span class="math">⟨Sign, sen, Mod, ⊨⟩</span></td><td><span class="math">mng</span>；范畴化</td><td>程序语言规范、范畴论工具</td></tr>
+    </table>
+  </div>
+
+  <div class="fusion"><div class="bt">表二 · 三条互通的桥</div>
+    <table>
+      <tr><th>桥</th><th>内容</th><th>靠什么搭成</th></tr>
+      <tr><td>UAL ⟷ AAL</td><td>algebraizable + 紧致 ⟷ Blok–Pigozzi 可代数化；唯一的 <span class="math">K = Alg<sub>⊨</sub>(L)</span></td><td>滤子性质 + 伪模型构造</td></tr>
+      <tr><td>AMT ⊂ 一般逻辑</td><td>五条件 (i)–(v) 都是一般逻辑已有的</td><td>约化函数、同构副本、子逻辑</td></tr>
+      <tr><td>机构 ⟷ 一般逻辑</td><td><span class="math">I(L)</span> 与 <span class="math">L(I)</span> 互相还原</td><td>逻辑态射 <span class="math">⟨f, μ⟩</span>、函子 <span class="math">F : Sign → Log</span></td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">往前看：本讲是桥定理的「使用说明」</div>
+    <p>UAL 的口号是「把逻辑问题译成代数问题，解完再译回来」。第 4 章给了四座样板桥，正是接下来的 L18–L20：</p>
+    <ul>
+      <li><strong>紧致性</strong> ⟷ 对超积封闭（L18）——对应拓扑侧超滤子收敛（L13）；</li>
+      <li><strong>完全性 / 有限公理化</strong> ⟷ 代数性质（L19）；</li>
+      <li><strong>Craig 插值 / Beth 可定义性</strong> ⟷ 融合性质 / 同态满射（L20）——注意 Beth 正是 L16 坚持 <span class="math">Alg<sup>m</sup></span> 不对同构封闭的地方。</li>
+    </ul>
+    <p><strong>四条路里我们选了最重的那条，就是为了走到这里时，手里还有足够的信息把桥搭回去。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+
+  <div class="ex"><div class="bt">O1 · AAL 的起点</div>
+  <ol start="1">
+    <li><span class="tag log">O1</span>验证 Tarski 的条件等价于 <span class="math">C(X) = {φ : X ⊢ φ}</span> 是 L02 意义上的代数闭包算子：<strong>逐条写出单调、扩张、幂等对应的后承性质。</strong></li>
+    <li><span class="tag log">O1</span>用 L16 §5 的例子说明：一阶逻辑在 UAL 意义下<strong>不是</strong> structural（语义代入失败）。再解释为什么 AAL 的 sentential logic 大多建立在命题逻辑上。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O2 · 术语与阶梯</div>
+  <ol start="3">
+    <li><span class="tag log">O2</span>把定义 3.4.1 四个术语（structural / algebraizable / conditionally algebraizable / nice）写成 L16 各定义编号的布尔组合，并指出「有滤子性质」在 §3.3 与定义 3.4.1 里口径不同的原因。</li>
+    <li><span class="tag alg">O2</span>写出 protoalgebraic 的条件 <span class="math">(∗)</span>，说明它比滤子性质条件 (1) 弱在哪里；再解释「infinitely algebraizable」为什么不能叫「algebraizable」。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O3 · 双向等价</div>
+  <ol start="5">
+    <li><span class="tag log">O3</span>复述 UAL → AAL 的方向：需要哪两个前提？得出的「唯一的 K」是谁？再用 <span class="math">L<sub>S</sub></span> 把这条定理走一遍。</li>
+    <li><span class="tag alg">O3</span>Font–Jansana 说紧致性在可代数化定义里不重要。若把方向一里的「后承紧致」删掉，定理还成立吗？<strong>本讲给出的口径是什么？</strong>（提示：§5 末段。）</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O4 · AMT</div>
+  <ol start="7">
+    <li><span class="tag log">O4</span>逐条把 AMT 五条件 (i)–(v) 对到 UAL 的一般逻辑条件（定义 3.3.27 的 (1)–(7) 与 Remark 3.3.30）。<strong>哪一条对应约化函数？哪一条对应同构副本？</strong></li>
+    <li><span class="tag log">O4</span>写出 (q) 条件，说明它为什么把变量当常元处理；再解释这条手法为什么在需要开公式意义的场合不够用。</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O5 · 机构论</div>
+  <ol start="9">
+    <li><span class="tag alg">O5</span>定义逻辑态射 <span class="math">h = ⟨f, μ⟩</span>，说明为什么 <span class="math">μ</span> 的方向与 <span class="math">f</span> 相反；再写出有 <span class="math">mng</span> 时要满足的额外条件。</li>
+    <li><span class="tag alg">O5</span>从一般逻辑 <span class="math">L</span> 造出机构 <span class="math">I(L) = ⟨Sign, fml, Mod, ⊨⟩</span>，写出中间两个函子的类型。<strong>「几乎就是机构」还差哪一味？</strong></li>
+    <li><span class="tag log">O5</span>解释为什么机构论把 UAL 的 fml 写成 sen：<strong>被抑制的是什么</strong>？后果是什么（谈句子还是开公式）？</li>
+  </ol></div>
+
+  <div class="ex"><div class="bt">O6 · 特色与缺口</div>
+  <ol start="12">
+    <li><span class="tag log">O6</span>用自己的话说明「非替换形式的一阶逻辑」是什么意思，并解释 UAL 为什么要为它付出「框架更重」的代价。</li>
+    <li><span class="tag alg">O6</span>Preface 说 UAL 最重要的缺失方向是什么？它为什么在跨学科应用中越来越重要？<strong>本讲义停在哪一处？</strong></li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L16.html">← 上一讲：L16 代数对应物、代入性质与滤子性质</a>
+  <a href="L18.html">下一讲：L18 紧致性 ↔ 对超积封闭 ↔ 拓扑紧致</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L17 · 来源：UAL §3.4、Preface；L02 闭包算子、L15 四元组、L16 代入与滤子 · v0.1</footer>
+
+</main></div>
+</body>
+</html>
+
+

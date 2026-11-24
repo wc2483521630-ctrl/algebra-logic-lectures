@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L07 专题：同余分配、算术、Maltsev 与有限代数 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第二篇 代数骨架</span><span class="sep">/</span><span>L07</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 07 · 3 学时（专题 / 研究生研讨）</div>
+  <h1>同余分配、算术、Maltsev 与有限代数</h1>
+  <div class="sub">Bergman 的深水区：把「同余格长什么样」反过来变成「项长什么样」的判定工具</div>
+  <div class="metarow"><span>来源：Bergman Ch5–Ch8</span><span>UAL §2.7</span>
+    <span class="tag alg">代数</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：为什么要研究同余格的形状</a></li>
+  <li><a href="#cd">同余分配与 Jónsson 引理（O1）</a></li>
+  <li><a href="#dpc">可定义主同余与有限基（O2）</a></li>
+  <li><a href="#bp">Baker–Pixley 与 primal 代数（O3）</a></li>
+  <li><a href="#commutator">中心化与交换子（O4）</a></li>
+  <li><a href="#minimalvar">极小 Maltsev 簇与函数完全（O5）</a></li>
+  <li><a href="#tame">极小代数、Pálfy 与 tame 类型（O6）</a></li>
+  <li><a href="#fusion">融合接口</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单（简） ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">本讲是四个专题的汇演，依赖只列主干。每个构造的动机与例证见正文各节。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>概念</th><th>依赖</th></tr>
+      <tr><td>同余分配 / Jónsson 引理</td><td>L03 同余格</td><td>中心化 / 交换子</td><td>L05 Maltsev</td></tr>
+      <tr><td>DPC / DPSC / 有限基</td><td>L04 自由代数</td><td>极小簇 / 函数完全</td><td>交换子 + Pol</td></tr>
+      <tr><td>Baker–Pixley / primal</td><td>L05 Pol–Inv</td><td>极小代数 / tame 类型</td><td>Pol + 有限性</td></tr>
+    </table>
+  </div>
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>两条支线：<strong>同余分配 → Jónsson 引理 → 有限基</strong>（用同余格的分配性控制子直既约成员）；<strong>Maltsev → 中心化 → 交换子 → Abelian/极小簇</strong>（用 Maltsev 项给同余格装上「乘法」）。两线在 <strong>Baker–Pixley / primal / tame 类型</strong> 处汇合：<strong>同余格的性质 ⇔ 项与多项式的存在</strong>。这是 L05 Pol–Inv 对偶的高潮。</p>
+  </div>
+</section>
+
+<!-- ============ 学习目标对照 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>用 Jónsson 引理证明有限生成 CD 簇的子直既约者有限</td><td><a href="#cd">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>解释 DPC/DPSC 与有限基的关系，运用 Baker 定理</td><td><a href="#dpc">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>用 Baker–Pixley 定理判定 clone，区分 primal 与 quasiprimal</td><td><a href="#bp">§5</a></td><td><a href="#ex">E5, E6, E7</a></td></tr>
+    <tr><td><b>O4</b></td><td>用中心化与交换子刻画 Abelian 代数</td><td><a href="#commutator">§6</a></td><td><a href="#ex">E8, E9</a></td></tr>
+    <tr><td><b>O5</b></td><td>叙述极小 Maltsev 簇分类，判定有限代数的函数完全性</td><td><a href="#minimalvar">§7</a></td><td><a href="#ex">E10, E11</a></td></tr>
+    <tr><td><b>O6</b></td><td>用 Pálfy 定理分类极小代数，用 tame 类型读出簇的性质</td><td><a href="#tame">§8</a></td><td><a href="#ex">E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：为什么要研究同余格的形状</h2>
+  <p class="lead">从 L03 起我们就知道：一个代数的全部「商」由它的同余格 <span class="math">Con(A)</span> 编码。但一直把它当成被动的台账——直到发现<strong>同余格的形状会强制项的存在</strong>。</p>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>设想你在研究一个有限代数生成的簇，想回答三个要命的问题：① 这个簇有多少个子簇（有限还是无穷）？② 它的等式理论能不能用有限条等式写出（有限基）？③ 给定代数上「所有可能的操作」里，哪些能由基本项表达（clone 的描述）？这三个问题看起来毫无关系，答案却都藏在一个地方——<strong><span class="math">Con(A)</span> 的分配性、可换性，以及一个叫「交换子」的隐藏运算</strong>。</p>
+    <p>本讲的主线因此非常集中：<strong>同余格的几何 → 项的存在性 → 簇的分类与判定</strong>。这也是判别式簇案例（L27–L29）的工具箱。</p>
+  </div>
+  <p class="src"><b>来源：</b>Bergman Ch5 引言、Ch7 引言。</p>
+</section>
+
+<!-- ============ O1 Jónsson ============ -->
+<section id="cd">
+  <h2><span class="sn">3</span>同余分配与 Jónsson 引理 <span class="tag alg">O1</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>由 Birkhoff 定理（L04），簇 <span class="math">V=Var(A)</span> 的子直既约成员 <span class="math">V<sub>si</sub></span> 决定一切：<span class="math">V=SP(V<sub>si</sub>)</span>。问题是 <span class="math">V<sub>si</sub></span> 可能很大、很wild。Jónsson 引理给出一个惊人数量的压缩：<strong>同余分配时，<span class="math">V<sub>si</sub></span> 里的成员都能从 K 的超幂里找到——若 K 有限，超幂塌回 K，于是 <span class="math">V<sub>si</sub>⊆HS(K)</span>，有限！</strong>无穷问题被压成有限枚举。</p>
+  </div>
+
+  <div class="thm"><div class="bt">引理 <span class="num">7.1（Bergman 5.9，Jónsson 引理）</span></div>
+    <p>设 <span class="math">C</span> 是乘积 <span class="math">∏<sub>I</sub>A<sub>i</sub></span> 的子代数且 <span class="math">C</span> 同余分配。则对 <span class="math">C</span> 上每个 meet-irreducible 同余 <span class="math">θ</span>，存在 <span class="math">I</span> 上的超滤子 <span class="math">U</span> 使 <span class="math">η<sub>U</sub>↾C ⊆ θ</span>。</p>
+    <p>证明的机关（Bergman 原式）：令 <span class="math">F={ [[a≠b]] : (a,b)∈C²−θ }</span>。若 <span class="math">F</span> 无有限交性质，则 <span class="math">I</span> 被若干 <span class="math">[[a<sub>i</sub>=b<sub>i</sub>]]</span> 覆盖，对应同余交 <span class="math">η<sub>J1</sub>∩⋯∩η<sub>Jk</sub>=0</span>；由分配性 <span class="math">θ=θ∨0=⋂(θ∨η<sub>Jm</sub>)</span>，再由 <span class="math">θ</span> meet-irreducible 得某个 <span class="math">θ≥η<sub>Jm</sub></span>，与取法矛盾。<strong>分配性与不可约性在此各司其职，缺一不可。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">7.2（Bergman 5.10/5.11/5.12）</span></div>
+    <ol>
+      <li>若 <span class="math">V</span> 同余分配且 <span class="math">V=V(K)</span>，则 <span class="math">V<sub>si</sub>⊆HSP<sub>u</sub>(K)</span>（5.10）。</li>
+      <li>若 <span class="math">K</span> 是有限个有限代数且 <span class="math">V(K)</span> 同余分配，则 <span class="math">V<sub>si</sub>⊆HS(K)</span>（5.11）。</li>
+      <li>推论：每个有限生成同余分配簇只有<strong>有限多个子簇</strong>（5.12，因子簇由 <span class="math">V<sub>si</sub></span> 的子集决定，而后者有限）。</li>
+    </ol>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>格簇与布尔代数簇都同余分配。对 <span class="math">N<sub>5</sub></span>（五元素非分配格）生成的簇，<span class="math">HS(N<sub>5</sub>)={N<sub>5</sub>, 4, 2×2, 3, 2, 1}</span>，其中只有 <span class="math">N<sub>5</sub></span> 与 <span class="math">2</span> 子直既约，于是子簇只有四个候选（Bergman 5.12 后的例子）。有限枚举真的可行。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子 <span class="num">引理「干活」的场合</span></div>
+    <p>设 <span class="math">V=Var(L)</span>，<span class="math">L</span> 是有限分配格。任取 <span class="math">A∈V<sub>si</sub></span>，它可能看起来比 <span class="math">L</span> 大得多（是某个无限乘积的子代数）。Jónsson 引理说：把 <span class="math">A</span> 塞进 <span class="math">L</span> 的某个超幂，再取同态像，就能得到它。<strong>「看起来无限的新对象」其实只是旧的有限砖块经超滤子染色后的影子。</strong>这与 L04 的超积技术、L06 的 Stone 表示是同一套直觉。</p>
+  </div>
+  <div class="warn"><div class="bt">边界与误解</div>
+    <ul>
+      <li><strong>分配性是硬前提</strong>：群簇同余可换但不分配（<span class="math">Con(G)</span> 有 <span class="math">M<sub>3</sub></span>），Jónsson 引理不适用；群簇确实有无穷多子簇。</li>
+      <li><strong>K 必须有限且成员有限</strong>：推论 5.11 以「有限」为前提；K 无限时 <span class="math">P<sub>u</sub>(K)</span> 不塌，得不到有限性。</li>
+      <li><strong>meet-irreducible ≠ 子直既约</strong>：子直既约要求 0 不可约，是最小的一种 meet-irreducible；引理对更广的一类同余成立，别把两个词混用。</li>
+    </ul>
+  </div></div>
+
+  <p class="src"><b>来源：</b>Bergman 定义 5.1/5.3、定理 5.4–5.6、引理 5.9、定理 5.10、推论 5.11–5.13。</p>
+</section>
+
+<!-- ============ O2 DPC ============ -->
+<section id="dpc">
+  <h2><span class="sn">4</span>可定义主同余与有限基 <span class="tag alg">O2</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>「簇 <span class="math">V</span> 有限基吗」问的是：能不能用有限条等式公理化 <span class="math">V</span>。这直接决定它的等式理论是否可判定、能否写成算法输入。DPC（definable principal congruences）是一个纯代数条件——<strong>把「<span class="math">c</span> 与 <span class="math">d</span> 在主同余 <span class="math">Cg(a,b)</span> 里」写成一阶公式</strong>——它居然能推出有限基。这是「语法性质由语义结构决定」的漂亮例子。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">7.3（Bergman 5.29/5.34）</span></div>
+    <ul>
+      <li><span class="math">V</span> 有 <strong>DPC</strong>：存在一阶公式 <span class="math">φ(x,y,u,v)</span>，使对所有 <span class="math">A∈V</span>、<span class="math">a,b,c,d∈A</span>，<span class="math">(c,d)∈Cg<sub>A</sub>(a,b) ⇔ A⊨φ(a,b,c,d)</span>。</li>
+      <li><span class="math">V</span> 有 <strong>DPSC</strong>（可定义主子同余）：存在公式枚举那些「最小的非平凡同余对」，比 DPC 弱。</li>
+    </ul>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">7.4（Baker–Wang 5.35；Baker 5.40）</span></div>
+    <ol>
+      <li>若 <span class="math">V</span> 有 DPSC 且 <span class="math">V<sub>si</sub></span> 有限可公理化，则 <span class="math">V</span> 有限基（5.35）。</li>
+      <li>推论（Baker 1977）：每个有限生成、同余分配、有限型的簇有限基（5.40）。因为这类簇有 DPSC，且 <span class="math">V<sub>si</sub>⊆HS(K)</span> 有限、严格初等。</li>
+    </ol>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>分配格簇有 DPC：Bergman 练习 5.41.1 给出公式 <span class="math">(c,d)∈Cg(a,b) ⇔ c∧(a∧b)=d∧(a∧b) 且 c∨(a∨b)=d∨(a∨b)</span>。半格簇也有 DPC（同练习 5.41.2）。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子 <span class="num">反例的力量</span></div>
+    <p>存在一个 4 元、有限型的代数 <span class="math">A=⟨A,·⟩</span> 使 <span class="math">Var(A)</span> 不是有限基（Bergman 5.28，源自 Birkhoff 的著名问题）。这说明「有限代数生成」本身不保证有限基——必须加上同余分配这类结构条件。DPC/DPSC 正是把条件精确化的工具。</p>
+  </div>
+  <div class="warn"><div class="bt">边界与误解</div>
+    <ul>
+      <li><strong>DPC 不等于有限基</strong>：DPC 单独不够，还需 <span class="math">V<sub>si</sub></span> 有限可公理化；Baker 定理是两者合力。</li>
+      <li><strong>「有限基」是关于整簇的等式理论</strong>，不是关于某个代数的；别和「有限代数」混为一谈。</li>
+      <li><strong>反向不成立</strong>：有限基簇未必有 DPC（练习 5.41.3 只给「有限基 + DPC ⇒ <span class="math">V<sub>si</sub></span> 严格初等」这一方向）。</li>
+    </ul>
+  </div></div>
+
+  <p class="src"><b>来源：</b>Bergman 定义 5.29/5.34、引理 5.31–5.33、定理 5.35/5.36、推论 5.37/5.40、5.28、练习 5.41。</p>
+</section>
+
+<!-- ============ O3 Baker–Pixley ============ -->
+<section id="bp">
+  <h2><span class="sn">5</span>Baker–Pixley 与 primal 代数 <span class="tag alg">O3</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>L05 的 Pol–Inv 对偶说 <span class="math">Clo(A)=F(Inv(F))</span>：clone 由它保持的关系决定。但「Inv(F) 有哪些」通常难以数清。Baker–Pixley 定理给了一个爆炸性简化：<strong>若 <span class="math">A</span> 有限且有 majority 项，那么只需看 <span class="math">A²</span> 的子代数就够了</strong>——子代数的数量往往小得多。于是「一个运算是不是项」变成「它是否保持 <span class="math">A²</span> 的每个子代数」，可检验。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">7.5（Baker–Pixley 6.1）</span></div>
+    <p>若 <span class="math">A</span> 是有限代数且有 majority 项 <span class="math">m</span>（满足 <span class="math">m(x,x,y)=m(x,y,x)=m(y,x,x)=x</span>），则</p>
+    <div class="formula">Clo(A) = F( Sub(A²) ).</div>
+    <p>证明的骨头：只需证每个保持 <span class="math">A²</span> 子代数的 <span class="math">f</span> 是项函数。对 <span class="math">k</span> 个点归纳：<span class="math">k=2</span> 时令 <span class="math">θ=Sg<sub>A²</sub>((a₁¹,a₂¹),…,(a₁ⁿ,a₂ⁿ))</span>，<span class="math">f</span> 保持 <span class="math">θ</span> 故 <span class="math">(f(a¹),f(a²))∈θ</span>，由 L04 的 <span class="math">Sg</span>=项值刻画（定理 4.65）取项 <span class="math">p</span>；归纳步用 <span class="math">q=m[p₁,p₂,p₃]</span> 把三个局部项粘成一个——<strong>majority 项在这里正是「三点粘合剂」</strong>。推广：k-ary near-unanimity 项给 <span class="math">Clo(A)=F(Sub(A<sup>k−1</sup>))</span>。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">7.6（Bergman 6.4/6.5/6.6/6.9）</span></div>
+    <ul>
+      <li><strong>primal</strong>：有限代数 <span class="math">P</span> 满足 <span class="math">Clo<sub>n</sub>(P)=Op<sub>n</sub>(P)</span> 对一切 <span class="math">n&gt;0</span>——每个操作都是项函数。</li>
+      <li>Foster–Pixley 定理（6.6）：<span class="math">P</span> primal ⟺ <span class="math">V(P)</span> 算术且 <span class="math">P</span> 单、刚体、无真子代数。</li>
+      <li><strong>quasiprimal</strong>（有限判别式代数）：判别式 <span class="math">d(x,y,z)=z</span> 若 <span class="math">x=y</span> 否则 <span class="math">x</span> 属于 <span class="math">Clo(A)</span>。定理 6.10 给出三个等价刻画，其一是 <span class="math">Clo(A)=F(Iso(A))</span>（内部同构的保持子）。</li>
+    </ul>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>有限域 <span class="math">𝔽<sub>p</sub></span> 是 primal（例 6.7）：用 <span class="math">d(x)=1−x<sup>p−1</sup></span>（<span class="math">d(0)=1</span>，<span class="math">d(x)=0</span> 否则）做 Lagrange 插值，任意 <span class="math">n</span> 元操作 <span class="math">f</span> 都由 <span class="math">g(x)=Σ<sub>a</sub> f(a)·Π<sub>i</sub> d(x<sub>i</sub>−a<sub>i</sub>)</span> 表达。两元素布尔代数与 <span class="math">𝔽<sub>2</sub></span> 同 clone，故 primal。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子 <span class="num">primal 为何稀有</span></div>
+    <p>对 <span class="math">k&gt;1</span>，域 <span class="math">𝔽<sub>p<sup>k</sup></sub></span> 有真子域与非平凡自同构，按 6.6 不 primal——而它仍是 quasiprimal（有判别式项）。这划出了「primal ⊂ quasiprimal」的真包含。更惊人的是随机现象：Bergman 6.23 证明随机有限 binar 以概率 1 是 idemprimal——「稀有」是就具体构造而言，随机意义下反而普遍（定理 6.21/6.22 的概率估计）。</p>
+  </div>
+  <div class="warn"><div class="bt">边界与误解</div>
+    <ul>
+      <li><strong>majority 项是硬前提</strong>：没有它，Baker–Pixley 的结论失效；群簇没有 majority 项（同余可换不分配），不能套用。</li>
+      <li><strong>primal 要求常值运算也是项</strong>：这通常意味着语言里要有零元常量；把「每个元素都是常量」加进语言后 <span class="math">A⁺</span> 自动刚体无真子代数（7.72 的证明技巧）。</li>
+      <li><strong>quasiprimal 的判别式唯一</strong>：不像 Maltsev/majority 项可以有很多个，集合 <span class="math">A</span> 上的判别式函数只有一个（Bergman 6.9 后的注）。</li>
+    </ul>
+  </div></div>
+
+  <p class="src"><b>来源：</b>Bergman 定理 6.1（Baker–Pixley）、定理 6.2（Fleischer）、定义 6.4、定理 6.5、推论 6.6/6.8、例 6.7、定义 6.9、定理 6.10、定理 6.23；UAL 定义 2.7.1/2.7.2。</p>
+</section>
+
+<!-- ============ O4 交换子 ============ -->
+<section id="commutator">
+  <h2><span class="sn">6</span>中心化与交换子 <span class="tag alg">O4</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>群论里有换位子 <span class="math">[H,K]</span>，环论里有理想乘积 <span class="math">IK</span>。泛代数里两个同余 <span class="math">α,β</span> 之间有没有类似物？<strong>交换子 <span class="math">[α,β]</span> 就是答案</strong>：它度量「<span class="math">α</span> 与 <span class="math">β</span> 在多大程度上不交换」，把「<span class="math">α</span> 中心化 <span class="math">β</span>」这个概念变成了同余格内部的一个运算。有了它，Abelian 性、可解性、模表示全都有了统一语言。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">7.7（Bergman 7.16/7.21/7.42）</span></div>
+    <p>对 <span class="math">α,β∈Con(A)</span>，称 <span class="math">α</span> <strong>中心化</strong> <span class="math">β</span>（记作 <span class="math">α≤β<sup>*</sup></span>）若对一切项 <span class="math">t</span>、<span class="math">a α b</span>、<span class="math">c β d</span>：</p>
+    <div class="formula">t(a,c) ≡ t(a,d) (mod β)　⇒　t(b,c) ≡ t(b,d) (mod β).</div>
+    <p>中心 <span class="math">ζ<sub>A</sub>=(1<sub>A</sub>)<sup>*</sup></span>；<span class="math">A</span> 是 <strong>Abelian</strong> 若 <span class="math">ζ<sub>A</sub>=1<sub>A</sub></span>。交换子 <span class="math">[α,β]</span> 定义为所有具有 <span class="math">(α,β)</span>-项条件的同余之交：最大者使 <span class="math">α/γ</span> 中心化 <span class="math">β/γ</span>（定理 7.44）。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">7.8（Bergman 7.44–7.46、7.48）</span></div>
+    <ol>
+      <li>一般代数中 <span class="math">[α,β]=⋂{γ : γ 有 (α,β)-项条件}</span>，且 <span class="math">[α,β]≤α∧β</span>、单调；但<strong>未必对称</strong>。</li>
+      <li>Maltsev 簇中 <span class="math">[α,β]=[β,α]</span>（7.46），且交换子完全可加（7.48）——这是「同余乘法」名副其实的场合。</li>
+      <li>Abelian  Maltsev 簇等价于模表示：存在环 <span class="math">R</span> 使簇等价于 <span class="math">R</span>-模簇（7.35/7.38）。</li>
+    </ol>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>群 <span class="math">G</span> 中 <span class="math">[α,β]</span> 对应通常的换位子子群：<span class="math">G</span> Abelian ⟺ 中心化平凡 ⟺ 通常意义的交换群。环中对应理想乘积，Abelian ⟺ 零环式乘法平凡。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子 <span class="num">项条件为何这样写</span></div>
+    <p>取 Maltsev 项 <span class="math">q</span>。条件 <span class="math">t(a,c)≡t(a,d) (mod β) ⇒ t(b,c)≡t(b,d) (mod β)</span> 说的是：<span class="math">β</span> 方向的相等性不因 <span class="math">α</span> 方向的移动而被破坏。群中代入 <span class="math">t(x,y)=xy</span>，这正是 <span class="math">a⁻¹b</span> 与 <span class="math">c⁻¹d</span> 换位子的舞台。Bergman 引理 7.24 给出 Maltsev 簇中 <span class="math">Δ<sup>β</sup><sub>α</sub></span> 的项描述：<span class="math">{ (t(a,c),t(b,c) ; t(a,d),t(b,d)) }</span>——<strong>一个 2×2 矩阵，交换子就藏在这个矩阵的「可交换性」里</strong>。</p>
+  </div>
+  <div class="warn"><div class="bt">边界与误解</div>
+    <ul>
+      <li><strong>一般代数中交换子不对称</strong>（7.45 只有单调性）；对称性要靠 Maltsev（7.46）。别把群论直觉无条件外推。</li>
+      <li><strong>中心化在一般情形对同态行为不好</strong>：Bergman 7.22 后明说「centralizers behave under homomorphism」在完全一般情形下不清楚；加同余可换才有好理论。</li>
+      <li><strong>Abelian 不等于「可换」</strong>：Abelian 是 <span class="math">ζ=1</span>，在 Maltsev 簇中等价于模表示；与同余可换（Maltsev 项）是两个层次的概念。</li>
+    </ul>
+  </div></div>
+
+  <p class="src"><b>来源：</b>Bergman 定义 7.16/7.21/7.23/7.42、命题 7.22、引理 7.24、定理 7.25–7.30/7.35/7.38/7.44–7.48。</p>
+</section>
+
+<!-- ============ O5 极小簇 ============ -->
+<section id="minimalvar">
+  <h2><span class="sn">7</span>极小 Maltsev 簇与函数完全 <span class="tag alg">O5</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>簇格的最底层长什么样？「极小簇」（不含非平凡真子簇）是簇格的原子，理解它就理解了分类的起点。另一个实际问题是：<strong>一个有限代数上哪些操作能用带参数的项表达</strong>（<span class="math">Pol(A)=Op(A)</span> 即函数完全）？在 Maltsev 簇里，这两个问题有干脆的答案，而且都由交换子决定。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">7.9（Bergman 7.68/7.70/7.72）</span></div>
+    <ol>
+      <li>每个极小、局部有限的 Maltsev 簇要么是算术簇，要么是 Abelian 簇（7.68）。证明用严格单生成元 + 7.63/7.67。</li>
+      <li><strong>函数完全</strong>：<span class="math">Pol(A)=Op(A)</span>（定义 7.70）。Maltsev 簇中，有限成员 <span class="math">A</span> 函数完全 ⟺ <span class="math">A</span> 单且非 Abelian（7.72）。</li>
+      <li>推论：每个有限单非 Abelian 群函数完全；有限环函数完全 ⟺ 单且非零环。</li>
+    </ol>
+    <p>证明机关：加全部常量得 <span class="math">A⁺</span>（自动刚体、无真子代数，且 <span class="math">Con(A²)=Con((A⁺)²)</span>）。<span class="math">A</span> 函数完全 ⟺ <span class="math">A⁺</span> primal；再由 <span class="math">A⁺</span> 严格单 + 7.63 得 quasiprimal，配上命题 7.71 即结论。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>有限单非 Abelian 群（如 <span class="math">A<sub>5</sub></span>）函数完全；<span class="math">𝔽<sub>p</sub></span> 作为环单但交换（零环？非零环），其乘法非零，故函数完全——与它 primal（O3）一致。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子 <span class="num">分类的两极</span></div>
+    <p>极小 Maltsev 簇的二分——算术 vs Abelian——正好对应「布尔型」与「仿射型」：前者由有限域上的拟本原代数生成，后者由模生成。Bergman 7.67/7.63 说明严格单生成元的走向；这条二分线在 tame 类型论里被推广为 <span class="math">typ(V)⊆{2,3}</span>（下节 O6）。</p>
+  </div>
+  <div class="warn"><div class="bt">边界与误解</div>
+    <ul>
+      <li><strong>函数完全弱于 primal</strong>：前者只要求多项式（带参数）实现全部运算，后者要求纯项实现；7.72 的比较正在于此。</li>
+      <li><strong>极小簇未必局部有限</strong>：无限域上的向量空间簇极小但不局部有限（7.68 后的注）；二分定理不能直接搬。</li>
+      <li><strong>非 Abelian 不可省</strong>：Abelian 有限单代数的 <span class="math">Pol</span> 是仿射形式 <span class="math">Σa<sub>i</sub>x<sub>i</sub>+b</span>，远非全部操作。</li>
+    </ul>
+  </div></div>
+
+  <p class="src"><b>来源：</b>Bergman 定理 7.63/7.67、推论 7.68、定义 7.70、定理 7.72、命题 7.71。</p>
+</section>
+
+<!-- ============ O6 tame ============ -->
+<section id="tame">
+  <h2><span class="sn">8</span>极小代数、Pálfy 与 tame 类型 <span class="tag alg">O6</span></h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>tame congruence theory 的雄心：给同余格的每一条「边」（prime quotient <span class="math">α≺β</span>）贴一个类型标签（1–5），于是代数的局部结构有了有限的「元素周期表」。Pálfy 定理是它的起点：<strong>「极小代数」只有两种</strong>——本质一元的，或有限域上向量空间的仿射型。整个 tame 理论就是把这条分类「局部化」到每条同余边上。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">7.10（Bergman 8.1/8.22）</span></div>
+    <ul>
+      <li><strong>极小代数</strong>：有限非平凡 <span class="math">A</span>，<span class="math">Pol<sub>1</sub>(A)</span> 的每个非恒定成员可逆。</li>
+      <li>五个类型（Bergman 11984 行）：<strong>1 unary、2 affine、3 Boolean、4 lattice、5 semilattice</strong>。对 <span class="math">α≺β</span> 定义 <span class="math">typ(α,β)∈{1,…,5}</span>；<span class="math">typ(A)={typ(α,β): α≺β}</span>，<span class="math">typ(K)=⋃ typ(A)</span>。</li>
+    </ul>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">7.11（Pálfy 8.5；Bergman 8.23/8.47）</span></div>
+    <ol>
+      <li>Pálfy：基数 &gt; 2 的极小代数要么本质一元，要么多项式等价于有限域上有限维向量空间（8.5）。证明先用 8.3 找出二元本质多项式，用 8.4 得 Maltsev 多项式 <span class="math">q</span>，再验证项条件 (8–3) 得到 Abelian，最后套 7.35 的模表示。</li>
+      <li>Maltsev 簇 <span class="math">V</span> 满足 <span class="math">typ(V)⊆{2,3}</span>（8.23）——只能仿射型或布尔型；这把 O5 的二分推广到全部素商。</li>
+      <li>局部有限 <span class="math">V</span> 同余分配 ⟺ <span class="math">typ(V)⊆{3,4}</span> 且 tails 为空（8.47）——布尔型或格型。</li>
+    </ol>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p>两元素代数自动极小（基数理由）。<span class="math">{0,1}</span> 上恰有 7 个含常量 clone（8.6），对应五类型的最小模型：两元素群是 type 2，两元素布尔代数是 type 3，两元素格是 type 4，两元素半格是 type 5，置换群是 type 1。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子 <span class="num">类型如何「读出」全局性质</span></div>
+    <p>取布尔代数 <span class="math">B</span>，<span class="math">μ</span> 为下述同余：把 0 单独分出，其余合并。<span class="math">(μ,1)</span> 的 trace 是两元素布尔代数，故 <span class="math">typ(μ,1)=3</span>；<span class="math">(0,μ)</span> 的 trace 不是布尔的，故为 4（Bergman 12351–12379 行的演算）。<strong>一条边的类型就是那个「局部极小代数」的 clone 类型——全局的分配性由此类局部信息拼出。</strong></p>
+  </div>
+  <div class="warn"><div class="bt">边界与误解</div>
+    <ul>
+      <li><strong>「极小代数」与 §7.6「极小簇」无关</strong>：Bergman 8.1 后专门警告同名不同义。</li>
+      <li><strong>类型的偏序只是辅助</strong>：五类型可排成偏序（图 8.4），但其格运算「似乎没有意义」（8.22 后），别硬套序结构。</li>
+      <li><strong>typ 条件是必要的但不是充分的</strong>：8.47 还要 tails 为空；单看类型集合会误判。</li>
+      <li><strong>Abelian 边的类型</strong>：<span class="math">β</span> 在 <span class="math">α</span> 上 Abelian ⟺ <span class="math">typ(α,β)∈{1,2}</span>（8.27）——注意与 Maltsev 簇 typ⊆{2,3} 的区别，后者排除了 type 1。</li>
+    </ul>
+  </div></div>
+
+  <p class="src"><b>来源：</b>Bergman 定义 8.1/8.22、引理 8.2/8.3/8.4、定理 8.5/8.6、定理 8.23/8.27/8.47、8.22 后的类型说明。</p>
+</section>
+
+<!-- ============ 融合接口 ============ -->
+<section id="fusion">
+  <h2><span class="sn">9</span>融合接口</h2>
+  <div class="fusion"><div class="bt">四条线的交汇</div>
+    <table>
+      <tr><th>工具</th><th>解决的问题</th><th>回响</th></tr>
+      <tr><td>Jónsson 引理</td><td>把 <span class="math">V<sub>si</sub></span> 压回有限 HS(K)</td><td>判别式簇案例 L27–L29 的有限性依据</td></tr>
+      <tr><td>DPC / Baker 定理</td><td>等式理论的有限公理化</td><td>逻辑完备性与判定性的代数前置</td></tr>
+      <tr><td>Baker–Pixley</td><td>clone 的可检验描述</td><td>L05 Pol–Inv 对偶的计算版本</td></tr>
+      <tr><td>交换子</td><td>同余格上的「乘法」</td><td>L06 判别式簇的单性、L25 模态的对偶结构</td></tr>
+      <tr><td>tame 类型</td><td>素商的有限分类</td><td>L32 专题：局部有限簇的结构图景</td></tr>
+    </table>
+  </div>
+  <p class="lead">一句话记忆：<strong>分配性管「有限」，majority 项管「可表达」，交换子管「可交换」，类型管「局部长相」。</strong></p>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按学习目标编号）</h2>
+  <div class="exercise"><ol>
+    <li><span class="tag alg">O1</span> 复述 Jónsson 引理证明中「有限交性质」的论证：写出 <span class="math">η<sub>J1</sub>∩⋯∩η<sub>Jk</sub>=0</span> 到 <span class="math">θ≥η<sub>Jm</sub></span> 的每一步，并指出分配性与 meet-irreducible 各用在哪里。</li>
+    <li><span class="tag alg">O1</span> 对格簇 <span class="math">V=Var(N<sub>5</sub>)</span>，列出 <span class="math">HS(N<sub>5</sub>)</span> 中的子直既约成员，数出子簇个数。</li>
+    <li><span class="tag alg">O2</span> 验证分配格簇的 DPC 公式：<span class="math">(c,d)∈Cg(a,b) ⇔ c∧(a∧b)=d∧(a∧b) 且 c∨(a∨b)=d∨(a∨b)</span>。</li>
+    <li><span class="tag alg">O2</span> 用 Baker 推论 5.40 说明为什么有限分配格生成的簇有限基，并指出前提中哪条不可少。</li>
+    <li><span class="tag alg">O3</span> 验证 majority 项 <span class="math">m(x,y,z)</span> 满足三条等式，并用归纳步 <span class="math">q=m[p₁,p₂,p₃]</span> 说明 Baker–Pixley 证明中「三点粘合」的作用。</li>
+    <li><span class="tag alg">O3</span> 对 <span class="math">𝔽<sub>5</sub></span>，用插值公式写出实现 <span class="math">f(x)=x²</span> 的项。</li>
+    <li><span class="tag alg">O3</span> 说明为什么 <span class="math">𝔽<sub>p²</sub></span> 不是 primal 但是 quasiprimal（提示：真子域、自同构、判别式项）。</li>
+    <li><span class="tag alg">O4</span> 写出群中 <span class="math">[α,β]</span> 与通常换位子子群的对应，验证「Abelian ⟺ 中心化」在群情形成立。</li>
+    <li><span class="tag alg">O4</span> 用 7.44 证明 <span class="math">[α,β]≤α∧β</span>，并说明为什么一般代数中 <span class="math">[α,β]≠[β,α]</span> 可能成立。</li>
+    <li><span class="tag alg">O5</span> 用 7.72 判定：有限单非 Abelian 群、<span class="math">ℤ<sub>p</sub></span>（作为环）、Abelian 有限群中哪些函数完全。</li>
+    <li><span class="tag alg">O5</span> 说明「函数完全弱于 primal」：<span class="math">A⁺</span>（加全部常量）primal 但 <span class="math">A</span> 未必 primal。</li>
+    <li><span class="tag alg">O6</span> 叙述 Pálfy 定理的证明骨架：从二元本质多项式到 Maltsev 多项式到 Abelian 到模表示，指出每一步用的引理号。</li>
+    <li><span class="tag alg">O6</span> 用 8.23 与 8.47 说明：Maltsev 簇与同余分配簇的类型集合为何不同，并解释 <span class="math">typ(V)⊆{2,3}</span> 与 <span class="math">typ(V)⊆{3,4}</span> 的交集意味着什么。</li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L06.html">← 上一讲：L06 布尔代数、BAO 与判别式簇</a>
+  <a href="L08.html">下一讲：L08 开集 = 可验证命题 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L07 · 来源 Bergman Ch5–Ch8 / UAL §2.7 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

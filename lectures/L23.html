@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L23 Stone 对偶：布尔代数 ↔ Stone 空间 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第六篇 对偶与表示：三条线的汇合点</span><span class="sep">/</span><span>L23</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 23 · 2 学时 · 第六篇开篇 · 全课最重要的单一例子</div>
+  <h1>Stone 对偶：布尔代数 ↔ Stone 空间</h1>
+  <div class="sub">「点是什么？」——代数说是一个到 2 的同态，逻辑说是一个完全理论，拓扑说是一个超滤子。这一讲让三者在同一页纸上对齐</div>
+  <div class="metarow"><span>来源：UAL §2.6（定义 2.6.2/2.6.4、引理 2.6.3、定理 2.6.5/2.6.11/2.6.15、推论 2.6.12、引理 2.6.14）；Bergman 定义 2.40、定理 2.41/2.43/2.44/2.45/2.46、推论 2.42、练习 2.47；拓扑讲义 定义 6.2.7、引理 6.2.8、命题 6.2.5/6.3.4；回指 L02 Galois 连接、L06 Stone 表示、L08 邻域滤子、L12 T0、L13 紧致化、L14 Stone 空间、L16 Lindenbaum 代数、L21 插值</span>
+    <span class="tag log">逻辑</span><span class="tag alg">代数</span><span class="tag top">拓扑</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：为什么「点」偏偏是超滤子</a></li>
+  <li><a href="#ultra">超滤子与素理想定理（O1）</a></li>
+  <li><a href="#represent">Stone 表示定理的完整证明（O1）</a></li>
+  <li><a href="#duality">范畴对偶：BA<sup>op</sup> ≃ Stone（O2）</a></li>
+  <li><a href="#dictionary">对偶词典：理想、商、子代数（O3）</a></li>
+  <li><a href="#logic">三线汇合：Lindenbaum 代数的几何（O4）</a></li>
+  <li><a href="#beyond">推广与边界：Priestley、Esakia、反例（O5）</a></li>
+  <li><a href="#fusion2">融合接口：三面一体图</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">前五讲一直在<strong>过桥</strong>：紧致、完全、可定义、插值、判定，都是把一个问题译到另一边解完再译回来。这一讲不过桥——它要把三条线<strong>焊成同一个对象</strong>。布尔代数、Stone 空间、命题理论，不再是三个彼此类比的东西，而是同一件事的三种说法。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>它回答的问题</th></tr>
+      <tr><td>滤子 / 超滤子（UAL 2.6.2）</td><td>L02 滤子三条、L06 超滤子</td><td>代数里的「一个立场」长什么样？</td></tr>
+      <tr><td>素理想定理（Bergman 2.41）</td><td>分配格、Zorn 引理</td><td>两个不同元素凭什么能被一个立场分开？</td></tr>
+      <tr><td><span class="math">rep(a) = {U : a ∈ U}</span></td><td>超滤子刻画 2.6.3(ii)</td><td>元素怎么变成点集？</td></tr>
+      <tr><td>Stone 空间（拓扑讲义 6.2.7）</td><td>L12 Hausdorff、L13 紧致、L14 开闭基</td><td>布尔代数的点空间长什么样？</td></tr>
+      <tr><td>开闭集代数 <span class="math">Clop(X)</span></td><td>L10 开集与闭集</td><td>从空间怎么走回代数？</td></tr>
+      <tr><td>范畴对偶 <span class="math">BA<sup>op</sup> ≃ Stone</span></td><td>上面两条 + 两个自然同构</td><td>同态与连续映射为什么反向对应？</td></tr>
+      <tr><td>理想 ↔ 开集</td><td>紧致性（L13）</td><td>代数的「被否定的集合」在哪里安家？</td></tr>
+      <tr><td>Lindenbaum 代数 <span class="math">L<sub>T</sub></span></td><td>L03 商代数、L16 自由代数</td><td>理论的模型空间为什么就是 <span class="math">Ult(L<sub>T</sub>)</span>？</td></tr>
+      <tr><td>Priestley / Esakia 对偶</td><td>分配格 / Heyting 代数</td><td>拿掉补运算，对偶还剩下什么？</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p>超滤子 = 到 2 的同态的核纤维 <span class="math">1</span> 的原像（UAL 2.6.2）→ 素理想定理保证这些「立场」够多、能分开任意两个不同元素 → <span class="math">rep</span> 把代数嵌进超滤子空间的开闭集代数 → 紧致性把这个嵌入补成<strong>满射</strong>，于是 <span class="math">A ≅ Clop(Ult A)</span> → 反方向 <span class="math">X ≅ Ult(Clop X)</span> 靠有限交性质 → 两边合起来就是范畴对偶。<strong>整讲一台发动机：把「立场」当点，紧致性负责把点补全。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 目标 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>用素理想定理完整证明 Stone 表示，包括 <span class="math">rep</span> 的单射与满射</td><td><a href="#ultra">§3</a>、<a href="#represent">§4</a></td><td><a href="#ex">E1, E2, E3</a></td></tr>
+    <tr><td><b>O2</b></td><td>构造两个方向的函数子，验证 <span class="math">A ≅ Clop(Ult A)</span> 与 <span class="math">X ≅ Ult(Clop X)</span> 是自然同构</td><td><a href="#duality">§5</a></td><td><a href="#ex">E4, E5</a></td></tr>
+    <tr><td><b>O3</b></td><td>逐条证明理想 ↔ 开集、滤子 ↔ 闭集、商 ↔ 闭子空间、子代数 ↔ 连续满像</td><td><a href="#dictionary">§6</a></td><td><a href="#ex">E6, E7, E8</a></td></tr>
+    <tr><td><b>O4</b></td><td>把命题理论的相容性、完全理论、紧致性翻译成 Stone 空间里的有限交性质与点</td><td><a href="#logic">§7</a></td><td><a href="#ex">E9, E10</a></td></tr>
+    <tr><td><b>O5</b></td><td>说清 Priestley / Esakia 为什么要加序，并给出本对偶失效的三个边界例子</td><td><a href="#beyond">§8</a></td><td><a href="#ex">E11, E12</a></td></tr>
+    <tr><td><b>O6</b></td><td>综合运用：从三面一体图读出「可判定 / 插值 / 紧致」各自在对偶里的位置</td><td><a href="#fusion2">§9</a></td><td><a href="#ex">E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：为什么「点」偏偏是超滤子</h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>抽象布尔代数 <span class="math">A = ⟨A, ∨, −, 0⟩</span> 的元素不是集合，里面根本没有「点」。可我们看命题逻辑时又非要有「可能世界」不可：一个公式在哪个世界成立？L06 给过一个答案——把超滤子当点，元素 <span class="math">a</span> 对应含它的超滤子全体。当时只证明了这是嵌入。这一讲要追问两件更硬的事：<strong>为什么这个选择不是凑出来的</strong>，以及<strong>为什么它刚好把代数和拓扑变成同一个范畴的两面</strong>。</p>
+  </div>
+
+  <p>先看一个立场问题。给一个公式 <span class="math">φ</span>，一个「可能世界」应当回答「<span class="math">φ</span> 真不真」。但要算一个世界，你至少要满足三条朴素要求：</p>
+  <ol>
+    <li>重言式必须真；矛盾式必须假。</li>
+    <li><span class="math">φ</span> 真且 <span class="math">φ → ψ</span> 真，则 <span class="math">ψ</span> 真。</li>
+    <li><span class="math">φ</span> 真且 <span class="math">ψ</span> 真，则 <span class="math">φ ∧ ψ</span> 真。</li>
+  </ol>
+  <p>把这三条翻译成代数语言，就是「含 <span class="math">1</span>、上闭、对 <span class="math">∧</span> 封闭」——<strong>恰好是 UAL 引理 2.6.3(i) 的滤子定义</strong>。到这里还只是「立场」，不要求它决断一切：一个模棱两可的立场可以让 <span class="math">φ</span> 和 <span class="math">−φ</span> 都不置可否（这正是 L10 讲过的「既不可验证也不可证伪」）。</p>
+
+  <p>要得到一个<strong>世界</strong>，还得加一条：每个命题都得有个真值，不能骑墙。写成公式就是</p>
+  <div class="formula">φ ∈ F　当且仅当　−φ ∉ F.</div>
+  <p>这就是 UAL 引理 2.6.3(ii) 的超滤子刻画。<strong>所以超滤子不是从拓扑里借来的技术物件，它就是「一个不模棱两可的立场」的代数原文。</strong>再看 UAL 定义 2.6.2 怎么说：超滤子是「到二元代数 <span class="math">2</span> 的满同态下 <span class="math">1</span> 的同余类」。两种说法指的是同一个东西——一个世界就是一次<strong>取值</strong>，把每个元素判成 <span class="math">0</span> 或 <span class="math">1</span>，且保布尔运算。</p>
+
+  <div class="box warn"><div class="bt">这一步为什么值得慢慢走</div>
+    <p>「点 = 同态到 2」这句话后面 L24 还要再用一次：关系代数的表示，就是把抽象元素 ↦ 二元关系，也就是找一批「取值」。L26 的 locale 则走反方向——<strong>干脆不要点，只保留开集格</strong>。本讲是这两条路的岔口：我们先把点造出来、看清楚它靠什么成立，下一讲才知道「不要点」到底放弃了什么。</p>
+  </div>
+</section>
+
+<!-- ============ O1 超滤子与素理想定理 ============ -->
+<section id="ultra">
+  <h2><span class="sn">3</span>超滤子与素理想定理 <span class="tag alg">O1</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">UAL 2.6.2 / 引理 2.6.3</span></div>
+    <ul>
+      <li><span class="math">A ∈ BA</span> 的<strong>滤子</strong>是 <span class="math">1<sub>A</sub></span> 所在的同余类；<strong>超滤子</strong>是极大滤子，等价于某个满同态 <span class="math">A ↠ 2</span> 下 <span class="math">1</span> 的原像。</li>
+      <li>等价刻画：<span class="math">F</span> 是滤子当且仅当 <span class="math">1 ∈ F</span>，且 <span class="math">a ∈ F, a ≤ b ⇒ b ∈ F</span>，且 <span class="math">a, b ∈ F ⇒ a ∧ b ∈ F</span>。</li>
+      <li><span class="math">F</span> 是超滤子当且仅当它是滤子且对每个 <span class="math">a</span>：<span class="math">a ∈ F ⇔ −a ∉ F</span>。</li>
+      <li><strong>理想</strong>是对偶概念：<span class="math">0 ∈ I</span>、下闭、对 <span class="math">∨</span> 封闭。<span class="math">I</span> 素指 <span class="math">a ∧ b ∈ I ⇒ a ∈ I</span> 或 <span class="math">b ∈ I</span>。</li>
+    </ul>
+    <p>在布尔代数里，「<span class="math">I</span> 素」与「<span class="math">I</span> 极大」等价，且 <span class="math">U = A − I</span> 给出素理想与超滤子的一一对应。<strong>这是 Bergman 定义 2.40 前面那段话的核心，也是下面把「素理想」与「超滤子」混着用的依据。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">Bergman 2.41（素理想定理，L06 用过但没证）</span></div>
+    <p>设 <span class="math">L</span> 是分配格，<span class="math">I</span> 是理想，<span class="math">F</span> 是滤子，且 <span class="math">I ∩ F = ∅</span>。则存在素理想 <span class="math">P</span>，使 <span class="math">I ⊆ P</span> 且 <span class="math">P ∩ F = ∅</span>。</p>
+  </div>
+
+  <div class="proof"><span class="pt">证明（逐步，Zorn 引理）</span>
+    <p><strong>第 1 步：摆出候选集。</strong>令 <span class="math">S = {J : J 是 L 的理想，I ⊆ J，J ∩ F = ∅}</span>。显然 <span class="math">I ∈ S</span>，所以 <span class="math">S ≠ ∅</span>。按包含排序。</p>
+    <p><strong>第 2 步：链有上界。</strong>取 <span class="math">S</span> 中的一条链 <span class="math">C</span>，令 <span class="math">J = ⋃C</span>。理想三条逐条验：含 <span class="math">I</span> 显然；若 <span class="math">x ∈ J</span>、<span class="math">y ≤ x</span>，则 <span class="math">x</span> 落在链中某个 <span class="math">Jᵢ</span> 里，故 <span class="math">y ∈ Jᵢ ⊆ J</span>；若 <span class="math">x, y ∈ J</span>，两者分别落在 <span class="math">Jᵢ, Jⱼ</span>，由链的全序性可设 <span class="math">Jᵢ ⊆ Jⱼ</span>，于是 <span class="math">x ∨ y ∈ Jⱼ ⊆ J</span>。最后若 <span class="math">J ∩ F ≠ ∅</span>，某个 <span class="math">Jᵢ</span> 也交 <span class="math">F</span>，矛盾。故 <span class="math">J ∈ S</span>。</p>
+    <p><strong>第 3 步：取极大元。</strong>Zorn 引理给 <span class="math">S</span> 的极大元 <span class="math">P</span>。它含 <span class="math">I</span>、不交 <span class="math">F</span>，只差证它素。</p>
+    <p><strong>第 4 步：反证设素性失败。</strong>取 <span class="math">a, b ∉ P</span> 而 <span class="math">a ∧ b ∈ P</span>。造两个理想</p>
+    <div class="formula">J = {p ∨ x : p ∈ P, x ≤ a}　　K = {p ∨ y : p ∈ P, y ≤ b}.</div>
+    <p><strong>第 5 步：它们真是理想，且真大于 P。</strong>以 <span class="math">J</span> 为例：对 <span class="math">∨</span> 封闭用分配律 <span class="math">(p∨x) ∨ (p′∨x′) = (p∨p′) ∨ (x∨x′)</span>，其中 <span class="math">p∨p′ ∈ P</span>、<span class="math">x∨x′ ≤ a</span>；下闭性同样来自 <span class="math">p∨x = p ∨ (p ∧ x)</span> 与 <span class="math">p ∧ x ∈ P</span>。又对每个 <span class="math">p ∈ P</span> 有 <span class="math">p = p ∨ (p ∧ a) ∈ J</span>，故 <span class="math">P ⊆ J</span>；而 <span class="math">a = (a ∧ p) ∨ a ∈ J − P</span>（这里取任意 <span class="math">p ∈ P</span>，若 <span class="math">P</span> 空则显然），所以 <span class="math">J</span> 严格包含 <span class="math">P</span>。<span class="math">K</span> 同理。</p>
+    <p><strong>第 6 步：极大性逼出交点。</strong>由 <span class="math">P</span> 在 <span class="math">S</span> 中的极大性，<span class="math">J</span> 和 <span class="math">K</span> 都不在 <span class="math">S</span> 里；它们仍是理想且含 <span class="math">I</span>，所以只能是「交了 <span class="math">F</span>」。取 <span class="math">p ∨ x ∈ J ∩ F</span>、<span class="math">q ∨ y ∈ K ∩ F</span>，其中 <span class="math">x ≤ a</span>、<span class="math">y ≤ b</span>、<span class="math">p, q ∈ P</span>。</p>
+    <p><strong>第 7 步：分配律收口。</strong>滤子对 <span class="math">∧</span> 封闭，故 <span class="math">z = (p∨x) ∧ (q∨y) ∈ F</span>。展开：</p>
+    <div class="formula">z = (p ∧ q) ∨ (p ∧ y) ∨ (q ∧ x) ∨ (x ∧ y).</div>
+    <p>前三项都 <span class="math">≤ p</span> 或 <span class="math">≤ q</span>，由下闭性落在 <span class="math">P</span>；第四项 <span class="math">x ∧ y ≤ a ∧ b ∈ P</span>，也落在 <span class="math">P</span>。理想对 <span class="math">∨</span> 封闭，所以 <span class="math">z ∈ P</span>。于是 <span class="math">z ∈ P ∩ F</span>，与 <span class="math">P ∩ F = ∅</span> 矛盾。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="intu"><div class="bt">这一定理在干什么</div>
+    <p>「<span class="math">a ≠ b</span> 就该有立场分开它们」不是自明的——它是素理想定理<strong>换来的</strong>。取 <span class="math">I = (b]</span>、<span class="math">F = [a)</span>（设 <span class="math">a ≰ b</span>），<span class="math">I ∩ F = ∅</span> 成立，定理给的 <span class="math">P</span> 含 <span class="math">b</span> 不含 <span class="math">a</span>。在 BA 里取补滤子 <span class="math">U = A − P</span>，就是一个含 <span class="math">a</span> 不含 <span class="math">b</span> 的超滤子。<strong>L06 那句「存在超滤子分开它们」的欠账，到这里才还清。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O1 Stone 表示完整证明 ============ -->
+<section id="represent">
+  <h2><span class="sn">4</span>Stone 表示定理的完整证明 <span class="tag alg">O1</span><span class="tag top">O1</span></h2>
+
+  <div class="thm"><div class="bt">定理 <span class="num">Stone 表示（UAL 定理 2.6.5 证明中给出 rep；Bergman 2.43 / 2.44；L06 定理 6.3）</span></div>
+    <p>设 <span class="math">A</span> 是布尔代数，<span class="math">X<sub>A</sub> = Ult(A)</span> 是它的超滤子全体。对 <span class="math">a ∈ A</span> 定义</p>
+    <div class="formula">rep(a) = { U ∈ X<sub>A</sub> : a ∈ U }.</div>
+    <p>则 <span class="math">rep : A → 𝓟(X<sub>A</sub>)</span> 是 BA 同态，且是<strong>到开闭集代数 <span class="math">Clop(X<sub>A</sub>)</span> 的同构</strong>。</p>
+  </div>
+
+  <div class="proof"><span class="pt">第 1 步：等式成立——rep 是同态</span>
+    <p>逐条直接来自超滤子的定义与刻画 2.6.3(ii)：</p>
+    <div class="formula">rep(a ∧ b) = rep(a) ∩ rep(b)　　rep(a ∨ b) = rep(a) ∪ rep(b)
+rep(−a) = X<sub>A</sub> − rep(a)　　rep(0) = ∅　　rep(1) = X<sub>A</sub>.</div>
+    <p>第三行值得停一下：它正是 <span class="math">a ∈ U ⇔ −a ∉ U</span> 的集合论翻译。没有超滤子的「不骑墙」，补集就对不上。</p>
+  </div>
+
+  <div class="proof"><span class="pt">第 2 步：像落在开闭集里，而且撑起一个基</span>
+    <p>给 <span class="math">X<sub>A</sub></span> 赋拓扑，以 <span class="math">{rep(a) : a ∈ A}</span> 为基。第 1 步说明这些集合对有限交封闭，所以基条件成立。又 <span class="math">X<sub>A</sub> − rep(a) = rep(−a)</span> 仍是基元素，故每个 <span class="math">rep(a)</span> 既开又闭。<strong>「开闭」不是额外加的要求，是「不骑墙」的直接后果。</strong></p>
+  </div>
+
+  <div class="proof"><span class="pt">第 3 步：X<sub>A</sub> 是 Stone 空间</span>
+    <p>先证 Hausdorff：若 <span class="math">U ≠ V</span>，取 <span class="math">a ∈ U − V</span>，则 <span class="math">rep(a)</span> 含 <span class="math">U</span> 不含 <span class="math">V</span>，而 <span class="math">rep(−a)</span> 含 <span class="math">V</span> 不含 <span class="math">U</span>，两者不交且开。</p>
+    <p>再证紧致：把每个超滤子 <span class="math">U</span> 看成 <span class="math">2<sup>A</sup></span> 中的点（特征函数）。成为超滤子的条件——含 <span class="math">1</span> 不含 <span class="math">0</span>、上闭、对 <span class="math">∧</span> 封闭、<span class="math">a ∈ U ⇔ −a ∉ U</span>——都能写成一族闭条件（每条只涉及有限个坐标）。由 Tychonoff 定理 <span class="math">2<sup>A</sup></span> 紧，闭子集 <span class="math">X<sub>A</sub></span> 紧。<strong>这就是 L13 的「紧致 = 超滤子收敛」在代数侧的翻版。</strong></p>
+    <p>有开闭基 + 紧 + Hausdorff，按拓扑讲义引理 6.2.8，<span class="math">X<sub>A</sub></span> 是 Stone 空间。</p>
+  </div>
+
+  <div class="proof"><span class="pt">第 4 步：单射——素理想定理上场</span>
+    <p>设 <span class="math">a ≠ b</span>。若 <span class="math">a ≰ b</span>，取 <span class="math">I = (b]</span>、<span class="math">F = [a)</span>，由 §3 得超滤子 <span class="math">U ∋ a</span>、<span class="math">U ∌ b</span>，故 <span class="math">U ∈ rep(a) − rep(b)</span>。若 <span class="math">b ≰ a</span> 同理。<strong>所以 <span class="math">rep</span> 分开任意两点，是单射。</strong></p>
+  </div>
+
+  <div class="proof"><span class="pt">第 5 步：满射——这一步 L06 没做，靠紧致性</span>
+    <p>取任意开闭集 <span class="math">C ⊆ X<sub>A</sub></span>。它是开集，且是紧空间的闭子集，故<strong>紧</strong>。因 <span class="math">{rep(a)}</span> 是基，对每个 <span class="math">U ∈ C</span> 可取 <span class="math">a<sub>U</sub></span> 使 <span class="math">U ∈ rep(a<sub>U</sub>) ⊆ C</span>；有限子覆盖给出</p>
+    <div class="formula">C = rep(a<sub>1</sub>) ∪ ⋯ ∪ rep(a<sub>n</sub>) = rep(a<sub>1</sub> ∨ ⋯ ∨ a<sub>n</sub>).</div>
+    <p>令 <span class="math">a = a<sub>1</sub> ∨ ⋯ ∨ a<sub>n</sub></span>，则 <span class="math">C = rep(a)</span>。<strong>「开闭集必是有限个基本开闭集之并」这一步，正是紧致性把无穷覆盖压成有限——和 L18 的用法同源。</strong></p>
+  </div>
+
+  <div class="box warn"><div class="bt">别把「嵌入」和「同构」搞混</div>
+    <p>L06 只证到 <span class="math">rep</span> 嵌入 <span class="math">𝓟(X<sub>A</sub>)</span>；那还不够，因为像可能只是幂集的一小块。第 5 步说明：<strong>取对偶拓扑的开闭集作目标，像就恰好填满</strong>。目标选对了，嵌入自动升级成同构。这也解释了为什么 Stone 对偶必须带拓扑——只谈集合代数，对偶不成立。</p>
+  </div>
+
+  <p class="src"><b>来源：</b>UAL 定理 2.6.5 证明（<span class="math">rep</span> 的定义与同态验证）、定理 2.6.15、推论 2.6.12；Bergman 定理 2.41、2.43、2.44；拓扑讲义 引理 6.2.8。第 3、5 步的紧致性论证按 L13 的口径展开。</p>
+</section>
+
+<!-- ============ O2 范畴对偶 ============ -->
+<section id="duality">
+  <h2><span class="sn">5</span>范畴对偶：BA<sup>op</sup> ≃ Stone <span class="tag alg">O2</span><span class="tag top">O2</span></h2>
+
+  <div class="intu"><div class="bt">从「一个代数」到「一整类代数」</div>
+    <p>§4 证明了单个代数 <span class="math">A</span> 与单个空间 <span class="math">Ult A</span> 同构。范畴对偶要的是<strong>连同映射一起对应</strong>：布尔代数之间的同态，对应 Stone 空间之间的连续映射，方向反过来。方向反转是「对偶」这个名字的由来，也是初学者最容易卡住的地方——多花十秒钟想清楚它为什么必须反。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">两个函数子</span></div>
+    <ul>
+      <li><span class="math">F : BA → Stone<sup>op</sup></span>：对象 <span class="math">A ↦ Ult A</span>；同态 <span class="math">f : A → B</span> 送到
+        <div class="formula">F(f) = f<sup>*</sup> : Ult B → Ult A,　f<sup>*</sup>(V) = f<sup>−1</sup>(V) = { a ∈ A : f(a) ∈ V }.</div>
+      </li>
+      <li><span class="math">G : Stone<sup>op</sup> → BA</span>：对象 <span class="math">X ↦ Clop X</span>；连续映射 <span class="math">g : X → Y</span> 送到
+        <div class="formula">G(g) = g<sup>−1</sup> : Clop Y → Clop X.</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="proof"><span class="pt">验证一：f<sup>*</sup> 定义良好且连续</span>
+    <p><strong>良定义。</strong>设 <span class="math">V</span> 是 <span class="math">B</span> 的超滤子。<span class="math">f<sup>−1</sup>(V)</span> 含 <span class="math">1<sub>A</sub></span>（因 <span class="math">f(1)=1 ∈ V</span>）、不含 <span class="math">0<sub>A</sub></span>、上闭、对 <span class="math">∧</span> 封闭——逐条从 <span class="math">V</span> 的滤子性质拉回即可。关键是超滤子性质也保住：若 <span class="math">a ∉ f<sup>−1</sup>(V)</span>，则 <span class="math">f(a) ∉ V</span>，故 <span class="math">f(−a) = −f(a) ∈ V</span>，于是 <span class="math">−a ∈ f<sup>−1</sup>(V)</span>。<strong>所以 <span class="math">f<sup>−1</sup>(V)</span> 是 <span class="math">A</span> 的超滤子。</strong></p>
+    <p><strong>连续。</strong>只需验基本开集的原像开。对 <span class="math">a ∈ A</span>：</p>
+    <div class="formula">(f<sup>*</sup>)<sup>−1</sup>(rep(a)) = { V ∈ Ult B : f(a) ∈ V } = rep(f(a)),</div>
+    <p>右边是 <span class="math">Ult B</span> 的基本开闭集。<strong>方向为什么反？</strong>因为同态 <span class="math">f</span> 把 <span class="math">A</span> 的元素送到 <span class="math">B</span>，于是 <span class="math">B</span> 上的取值自然拉回成 <span class="math">A</span> 上的取值——映射跟着「取值」走，而取值是往回拉的。用 L02 的话说：<strong>这是同一个 Galois 连接的两极</strong>。</p>
+  </div>
+
+  <div class="proof"><span class="pt">验证二：g<sup>−1</sup> 是布尔代数同态</span>
+    <p>集合的原像运算保 <span class="math">∪, ∩, −, ∅, X</span>，且开闭集的原像仍开闭（连续映射定义）。逐条对应 <span class="math">∨, ∧, −, 0, 1</span>，所以 <span class="math">g<sup>−1</sup> : Clop Y → Clop X</span> 是 BA 同态。这里方向<strong>不反</strong>：连续映射 <span class="math">X → Y</span> 直接给出 <span class="math">Clop Y → Clop X</span>，恰好与「<span class="math">BA<sup>op</sup></span>」中的箭头对齐。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">Stone 对偶（范畴版）</span></div>
+    <p>存在自然同构</p>
+    <div class="formula">η<sub>A</sub> : A → Clop(Ult A)　　ε<sub>X</sub> : X → Ult(Clop X),</div>
+    <p>使 <span class="math">G ∘ F ≃ Id<sub>BA</sub></span>、<span class="math">F ∘ G ≃ Id<sub>Stone</sub></span>。因此 <span class="math">BA<sup>op</sup></span> 与 <span class="math">Stone</span> 范畴等价。</p>
+  </div>
+
+  <div class="proof"><span class="pt">验证三：η<sub>A</sub> 就是 rep，已证是同构</span>
+    <p>§4 第 1、4、5 步合起来正是 <span class="math">A ≅ Clop(Ult A)</span>。自然性检验：给定 <span class="math">f : A → B</span>，两条路径</p>
+    <div class="formula">A ──f──→ B ──η<sub>B</sub>──→ Clop(Ult B)
+A ──η<sub>A</sub>──→ Clop(Ult A) ──(f<sup>*</sup>)<sup>−1</sup>──→ Clop(Ult B)</div>
+    <p>在 <span class="math">a ∈ A</span> 上取值，第一条给 <span class="math">rep<sub>B</sub>(f(a))</span>；第二条给 <span class="math">(f<sup>*</sup>)<sup>−1</sup>(rep<sub>A</sub>(a))</span>，按验证一正是 <span class="math">rep<sub>B</sub>(f(a))</span>。两路相等，方框交换。</p>
+  </div>
+
+  <div class="proof"><span class="pt">验证四：ε<sub>X</sub> 是同胚——反向走一遍</span>
+    <p>设 <span class="math">X</span> 是 Stone 空间。对 <span class="math">x ∈ X</span> 令</p>
+    <div class="formula">ε<sub>X</sub>(x) = { C ∈ Clop X : x ∈ C }.</div>
+    <p><strong>是超滤子：</strong>含 <span class="math">X</span> 不含 <span class="math">∅</span>、上闭、交封闭；<span class="math">C ∉ ε(x)</span> 意味着 <span class="math">x ∈ X − C</span>，而 <span class="math">X − C</span> 开闭，故 <span class="math">−C ∈ ε(x)</span>。</p>
+    <p><strong>连续：</strong>基本开集 <span class="math">rep(C)</span> 的原像是</p>
+    <div class="formula">ε<sub>X</sub><sup>−1</sup>(rep(C)) = { x : C ∈ ε(x) } = C,</div>
+    <p>开闭，故连续。</p>
+    <p><strong>单射：</strong><span class="math">x ≠ y</span> 时，Stone 空间有开闭基且 Hausdorff（引理 6.2.8），取含 <span class="math">x</span> 不含 <span class="math">y</span> 的开闭集 <span class="math">C</span>，则 <span class="math">C ∈ ε(x)</span>、<span class="math">C ∉ ε(y)</span>。</p>
+    <p><strong>满射：</strong>取 <span class="math">U ∈ Ult(Clop X)</span>。闭集族 <span class="math">{C : C ∈ U}</span> 有有限交性质（<span class="math">U</span> 对 <span class="math">∧</span> 封闭且不含 <span class="math">∅</span>）；<span class="math">X</span> 紧，故 <span class="math">K = ⋂<sub>C∈U</sub> C ≠ ∅</span>。取 <span class="math">x ∈ K</span>，则 <span class="math">U ⊆ ε(x)</span>，两者都是超滤子，故相等。<strong>紧致性第二次登场，这次保证「点」不缺。</strong></p>
+    <p><strong>同胚：</strong>连续双射，定义域紧、值域 Hausdorff，故是同胚。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="box warn"><div class="bt">三个常见方向性错误</div>
+    <ul>
+      <li>把 <span class="math">F(f)</span> 写成 <span class="math">V ↦ f(V)</span>：<span class="math">V</span> 是 <span class="math">B</span> 的超滤子，<span class="math">f</span> 从 <span class="math">A</span> 出发，方向不对；必须取原像。</li>
+      <li>以为 <span class="math">η<sub>A</sub></span> 只在有限代数上满：满射对任意 BA 成立，代价是要用紧致性（选择公理藏在 Tychonoff 里）。</li>
+      <li>以为 <span class="math">ε<sub>X</sub></span> 的满射靠 Zorn：靠的是 <span class="math">X</span> 的紧致性和有限交性质，不是超滤子扩张定理。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ O3 对偶词典 ============ -->
+<section id="dictionary">
+  <h2><span class="sn">6</span>对偶词典：理想、商、子代数 <span class="tag alg">O3</span><span class="tag top">O3</span></h2>
+
+  <p class="lead">范畴等价不只是「对象互换」，它把代数里的基本构造一个个翻成拓扑里的基本构造。下面四条逐条给证明，因为<strong>方向最容易记反</strong>，只有把定义摊开才不会再忘。</p>
+
+  <div class="thm"><div class="bt">对照 <span class="num">四条对偶关系</span></div>
+    <table>
+      <tr><th>代数侧</th><th>拓扑侧（<span class="math">Ult A</span> 中）</th><th>用到的工具</th></tr>
+      <tr><td>理想 <span class="math">I ⊆ A</span></td><td>开集 <span class="math">U<sub>I</sub> = ⋃<sub>a∈I</sub> rep(a)</span></td><td>并；反向靠紧致</td></tr>
+      <tr><td>滤子 <span class="math">F ⊆ A</span></td><td>闭集 <span class="math">K<sub>F</sub> = ⋂<sub>a∈F</sub> rep(a)</span></td><td>有限交性质 + 紧致</td></tr>
+      <tr><td>商 <span class="math">A/I</span></td><td>闭子空间 <span class="math">Ult A − U<sub>I</sub></span></td><td><span class="math">q<sup>−1</sup></span> 与原像双射</td></tr>
+      <tr><td>子代数 <span class="math">B ≤ A</span></td><td>连续满像 <span class="math">Ult A ↠ Ult B</span></td><td>限制 <span class="math">U ↦ U ∩ B</span></td></tr>
+    </table>
+  </div>
+
+  <div class="proof"><span class="pt">① 理想 ↔ 开集（这条最漂亮，也最需要紧致）</span>
+    <p>给理想 <span class="math">I</span>，令 <span class="math">U<sub>I</sub> = ⋃<sub>a∈I</sub> rep(a)</span>，开。给开集 <span class="math">U</span>，令 <span class="math">I<sub>U</sub> = {a : rep(a) ⊆ U}</span>：含 <span class="math">0</span>、下闭（<span class="math">b ≤ a</span> 给 <span class="math">rep(b) ⊆ rep(a)</span>）、对 <span class="math">∨</span> 封闭（<span class="math">rep(a∨b)=rep(a)∪rep(b)</span>），是理想。</p>
+    <p><strong>证 <span class="math">I<sub>U<sub>I</sub></sub> = I</span>：</strong>若 <span class="math">rep(a) ⊆ U<sub>I</sub></span>，则紧集 <span class="math">rep(a)</span> 被 <span class="math">{rep(b) : b∈I}</span> 覆盖，取有限子覆盖得 <span class="math">rep(a) ⊆ rep(b<sub>1</sub>∨⋯∨b<sub>n</sub>)</span>，故 <span class="math">a ≤ b<sub>1</sub>∨⋯∨b<sub>n</sub> ∈ I</span>，由下闭性 <span class="math">a ∈ I</span>。<strong>反向包含显然。</strong></p>
+    <p><strong>证 <span class="math">U<sub>I<sub>U</sub></sub> = U</span>：</strong>因 <span class="math">{rep(a)}</span> 是基且 <span class="math">U</span> 开，每个点所在的基本开闭集含于 <span class="math">U</span>，故这些 <span class="math">rep(a)</span> 覆盖 <span class="math">U</span>，正是 <span class="math">U<sub>I<sub>U</sub></sub></span>。</p>
+    <p><strong>结论：</strong><span class="math">Idl(A) ≅ Open(Ult A)</span> 作为格同构。这是 L02「Galois 连接生闭包算子」的一个实例：关系就是「超滤子含元素」。</p>
+  </div>
+
+  <div class="proof"><span class="pt">② 滤子 ↔ 闭集</span>
+    <p>对偶地，<span class="math">F ↦ K<sub>F</sub> = ⋂<sub>a∈F</sub> rep(a)</span> 是闭集（任意交闭）；闭集 <span class="math">K ↦ F<sub>K</sub> = {a : K ⊆ rep(a)}</span> 是滤子。有限交性质 + <span class="math">Ult A</span> 紧致保证 <span class="math">K<sub>F</sub> ≠ ∅</span> 当 <span class="math">F</span> 是真滤子；再用开闭基把 <span class="math">K ⊆ rep(a)</span> 写成有限步，得 <span class="math">F<sub>K<sub>F</sub></sub> = F</span>。<strong>这与 ① 互为补：取补运算就把滤子翻成理想。</strong></p>
+  </div>
+
+  <div class="proof"><span class="pt">③ 商 ↔ 闭子空间</span>
+    <p>设 <span class="math">q : A → A/I</span> 是商映射。一个超滤子 <span class="math">V ∈ Ult(A/I)</span> 拉回成 <span class="math">q<sup>−1</sup>(V) ∈ Ult A</span>，且不含 <span class="math">I</span> 的任何元素（因为 <span class="math">q(a)=0 ∉ V</span>）。反过来，若 <span class="math">U ∈ Ult A</span> 且 <span class="math">U ∩ I = ∅</span>，则 <span class="math">q(U)</span> 生成 <span class="math">A/I</span> 的真滤子，扩成超滤子 <span class="math">V</span>，并且 <span class="math">q<sup>−1</sup>(V)=U</span>（两者都是含 <span class="math">U</span> 的超滤子，故相等）。于是</p>
+    <div class="formula">Ult(A/I) ≅ { U ∈ Ult A : U ∩ I = ∅ } = Ult A − ⋃<sub>a∈I</sub> rep(a),</div>
+    <p>右边开集的补，是<strong>闭子空间</strong>。<strong>注意方向：代数「缩小」（取商）对应空间「缩小」（取闭子集），不是商空间。</strong></p>
+  </div>
+
+  <div class="proof"><span class="pt">④ 子代数 ↔ 连续满像</span>
+    <p>设 <span class="math">B ≤ A</span>。定义 <span class="math">r : Ult A → Ult B</span>，<span class="math">r(U) = U ∩ B</span>。它良定义（超滤子交子代数仍是子代数的超滤子：若 <span class="math">b ∈ B − U</span>，则 <span class="math">−b ∈ U ∩ B</span>），连续（<span class="math">r<sup>−1</sup>(rep<sub>B</sub>(b)) = rep<sub>A</sub>(b)</span>），且<strong>满</strong>：给定 <span class="math">V ∈ Ult B</span>，它在 <span class="math">A</span> 中生成的滤子可扩成超滤子 <span class="math">U</span>（超滤子引理），而 <span class="math">U ∩ B</span> 真含 <span class="math">V</span> 就会违背 <span class="math">V</span> 的极大性，故 <span class="math">U ∩ B = V</span>。</p>
+    <p>于是子代数对应<strong>连续满像</strong>（商空间），与 ③ 正好互补：<strong>商对应闭嵌入，子代数对应满射。</strong>这两条合起来说明范畴对偶把「子对象 / 商对象」也一并交换了。</p>
+  </div>
+
+  <div class="box warn"><div class="bt">有限积可以，无限积要小心</div>
+    <p>对<strong>有限</strong>积有 <span class="math">Ult(A × B) ≅ Ult A ⊔ Ult B</span>（不交并）：每个超滤子恰落在一个分量上。对<strong>无限</strong>积 <span class="math">∏<sub>i∈I</sub> A<sub>i</sub></span>，除了各分量的拉回点，还有由 <span class="math">I</span> 上非主超滤子产生的<strong>额外点</strong>——它是 <span class="math">⨆<sub>i</sub> Ult A<sub>i</sub></span> 的 Stone–Čech 紧致化（L13）。这不矛盾：<strong>不交并不紧，紧致化才对得上。</strong></p>
+  </div>
+</section>
+
+<!-- ============ O4 三线汇合 ============ -->
+<section id="logic">
+  <h2><span class="sn">7</span>三线汇合：Lindenbaum 代数的几何 <span class="tag log">O4</span><span class="tag alg">O4</span><span class="tag top">O4</span></h2>
+
+  <div class="intu"><div class="bt">全课最重要的单一例子</div>
+    <p>给一个命题逻辑理论 <span class="math">T</span>，L16 把公式按 <span class="math">T</span>-等价商掉，得到 Lindenbaum–Tarski 代数 <span class="math">L<sub>T</sub> = F/∼<sub>T</sub></span>。现在把 <span class="math">A = L<sub>T</sub></span> 代进本节：<span class="math">Ult(L<sub>T</sub>)</span> 是什么？<strong>就是 <span class="math">T</span> 的所有完全理论（可能世界）组成的 Stone 空间。</strong>代数、拓扑、逻辑在这里不是类比，是同一对象的三层皮。</p>
+  </div>
+
+  <div class="thm"><div class="bt">对照 <span class="num">三面逐行对齐</span></div>
+    <table>
+      <tr><th>逻辑</th><th>代数（<span class="math">L<sub>T</sub></span>）</th><th>拓扑（<span class="math">Ult L<sub>T</sub></span>）</th></tr>
+      <tr><td>公式 <span class="math">φ</span></td><td>元素 <span class="math">[φ]</span></td><td>开闭集 <span class="math">rep([φ])</span></td></tr>
+      <tr><td><span class="math">φ ∨ ψ</span> / <span class="math">¬φ</span></td><td><span class="math">∨</span> / <span class="math">−</span></td><td><span class="math">∪</span> / 补</td></tr>
+      <tr><td>完全理论</td><td>超滤子</td><td>点</td></tr>
+      <tr><td>理论 <span class="math">Γ</span> 一致</td><td><span class="math">Γ</span> 生成真滤子</td><td><span class="math">{rep([φ]) : φ∈Γ}</span> 有有限交性质</td></tr>
+      <tr><td><span class="math">Γ</span> 有模型</td><td>滤子可扩张成超滤子</td><td><span class="math">⋂<sub>φ∈Γ</sub> rep([φ]) ≠ ∅</span></td></tr>
+      <tr><td>扩张 <span class="math">T′ ⊇ T</span></td><td>商 <span class="math">L<sub>T</sub> → L<sub>T′</sub></span></td><td>闭子空间 <span class="math">Ult L<sub>T′</sub> ⊆ Ult L<sub>T</sub></span></td></tr>
+      <tr><td>插值式 <span class="math">θ</span>（L21）</td><td>夹逼元 <span class="math">b ≤ a ≤ c</span></td><td>夹在两组开闭集之间的中间开闭集</td></tr>
+    </table>
+  </div>
+
+  <div class="proof"><span class="pt">紧致性定理的几何原文</span>
+    <p>Γ 有限可满足，按定义是「每个有限子集有模型」，翻译成代数是「Γ 的每个有限子集生成真滤子」，翻译成拓扑是「<span class="math">{rep([φ]) : φ∈Γ}</span> 有有限交性质」。因为 <span class="math">Ult L<sub>T</sub></span> 紧，这些闭集整体交非空（L13 命题 5.2.9），于是 Γ 有模型。<strong>L18 那座紧致桥，在这里变成了「闭集族交非空」一句话。</strong></p>
+  </div>
+
+  <div class="box"><div class="bt">再看 L20 的可定义性</div>
+    <p>L20 说「语言能定义 ⟺ 语言能区分」，代数侧写成伴随同态满射，拓扑侧写成 T0 可分。用现在的语言重说一遍：<strong>两个世界不可区分，就是它们在所有开闭集上真假一致；商掉不可区分关系，就是把 <span class="math">Ult L<sub>T</sub></span> 压成 T0 空间</strong>（L12 的商空间泛性质）。三座桥在这里同时到场，而且各自的位置都能在图里指出来。</p>
+  </div>
+</section>
+
+<!-- ============ O5 推广与边界 ============ -->
+<section id="beyond">
+  <h2><span class="sn">8</span>推广与边界：Priestley、Esakia、反例 <span class="tag alg">O5</span><span class="tag top">O5</span></h2>
+
+  <div class="thm"><div class="bt">推广 <span class="num">拿掉补运算，就要加序</span></div>
+    <ul>
+      <li><strong>Priestley 对偶。</strong>把布尔代数放宽成<strong>分配格</strong>，元素不再自带补，超滤子也不够用——要用<strong>素理想</strong>，而素理想全体自带包含序 <span class="math">⟨Prm L, ⊆⟩</span>（Bergman 定理 2.43 后那段明确指出这一点）。对偶对象从 Stone 空间换成 <strong>Priestley 空间</strong>：紧、Hausdorff、带偏序，且序闭集能被开闭上集分离。分配格 ≃ Priestley 空间的开闭上集格。<strong>Bergman 在定理 2.46 后明文说：有限情形的推广由 Stone（BA）与 Priestley（分配格）对偶提供。</strong></li>
+      <li><strong>Esakia 对偶（L26 预告）。</strong>再加一层 Heyting 代数（直觉主义逻辑的代数），对偶对象换成 <strong>Esakia 空间</strong>，即满足「每个点的开上邻域含一个开闭上集」条件的 Priestley 空间。<strong>这一条超出本次三本教材，是有意留的预告</strong>，到 L26 展开；这里只需记住方向：<strong>结构越弱，对偶空间上要补的序结构越多</strong>。</li>
+    </ul>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子 <span class="num">有限情形可以对着看</span></div>
+    <p><span class="math">A = 𝓟({1,2,3})</span> 的超滤子恰是三个主超滤子 <span class="math">↑{1}, ↑{2}, ↑{3}</span>，所以 <span class="math">Ult A</span> 是离散三点空间，<span class="math">Clop(Ult A) = 𝓟(Ult A)</span>，<span class="math">rep</span> 就是恒等。<strong>有限 BA 上对偶退化成「集合 ⟷ 离散空间」</strong>，两个方向都能手算出来——这是检验定义的试验田，不是对偶真正厉害的地方。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子 <span class="num">对偶真正干活的场合</span></div>
+    <p><span class="math">A = 𝓟(ℕ)/fin</span>（相差有限集即视为相等）。超滤子远不止自然数给出的那些：非主超滤子给 <span class="math">βℕ</span> 中 <span class="math">ℕ</span> 之外的点。<strong>「商掉有限误差」这个纯代数动作，翻译成拓扑就是「添上理想点」</strong>（L13）。此时 <span class="math">rep : A → Clop(βℕ)</span> 是同构，却远不是到 <span class="math">𝓟(βℕ)</span> 的同构——正说明<strong>开闭集这个目标选得多要紧</strong>。</p>
+  </div>
+  <div class="ex"><div class="bt">边界例子 <span class="num">三个「以为对其实不对」</span></div>
+    <ul>
+      <li><strong>余有限拓扑的无限集不是 Stone 空间。</strong>它紧致、T1，但不 Hausdorff；开闭集只有 <span class="math">∅</span> 与 <span class="math">X</span>，于是 <span class="math">Clop X ≅ 2</span>，<span class="math">Ult(Clop X)</span> 只有一个点。<strong>从 <span class="math">X</span> 到对偶再回来，信息全丢了。</strong>可见「紧 + 开闭基」里的 Hausdorff 不能省（例 6.2.10 与 L14 已记下这个反例）。</li>
+      <li><strong><span class="math">ℝ</span> 也不是。</strong>它连通，<span class="math">Clop ℝ</span> 同样只有平凡两个元素。一般 Tychonoff 空间 <span class="math">X</span> 与 <span class="math">Ult(Clop X)</span> 不同胚，除非 <span class="math">X</span> 本身就是 Stone 空间（0 维紧 Hausdorff）。<strong>范畴对偶只在 Stone 范畴里成立，不是对所有空间成立。</strong></li>
+      <li><strong>无限积不是不交并。</strong><span class="math">Ult(∏<sub>i</sub> A<sub>i</sub>)</span> 比 <span class="math">⨆<sub>i</sub> Ult A<sub>i</sub></span> 多出非主超滤子带来的点，前者是后者的 Stone–Čech 紧致化。<strong>有限积的直觉不能直接外推到无穷。</strong></li>
+    </ul>
+  </div></div>
+</section>
+
+<!-- ============ 融合接口 ============ -->
+<section id="fusion2">
+  <h2><span class="sn">9</span>融合接口：三面一体图</h2>
+
+  <p class="lead">前五座桥各画过一张三面一体图，那五张是<strong>翻译图</strong>：左边问题、中间代数、右边答案。这一张不同——它是<strong>恒等图</strong>：三列逐行说的是同一件事，不需要「译过去再译回来」。</p>
+
+  <div class="diagram"><pre>  逻辑                      代数                        拓扑
+  ──────────────────      ──────────────────      ──────────────────
+  公式 φ                   元素 [φ]                   开闭集 rep([φ])
+  完全理论                 超滤子 U                   点 x
+  理论 T                   滤子 / 理想                闭集 / 开集
+  一致的公式集 Γ           真滤子                     有限交性质的闭集族
+  Γ 有模型                 滤子扩张成超滤子            ⋂ rep([φ]) ≠ ∅
+  理论扩张 T′              商 A → A/I                 闭子空间
+  插值式 θ                 夹逼元 a                   中间开闭集
+  ──────────────────      ──────────────────      ──────────────────
+         共用骨架：  立场 = 同态到 2 = 超滤子 = 点
+         补全机制：  紧致性把「有限立场」补成「完整立场」</pre></div>
+
+  <div class="box"><div class="bt">这张图与五座桥的关系</div>
+    <p>L18 紧致：在第三列是「闭集族有有限交性质 ⇒ 交非空」，在第二列是「滤子可扩张成超滤子」，在第一列是「有限可满足 ⇒ 可满足」。L19 完全：第一列「有效 = 可证」，第二列「<span class="math">Alg<sub>⊨</sub></span> 由等式刻画」，第三列「Henkin 点在 Stone 空间里补齐」。L20 可定义：第一列「能定义」，第二列「同态满射」，第三列「T0 可分」。L21 插值：三列如上表末行。L22 判定：第一列「有效式集可判定」，第二列「等式理论可判定」，第三列「<span class="math">Clop</span> 的结构可计算」。<strong>五座桥各用了一次这个图的一行；本讲把整张图一次画全。</strong></p>
+  </div>
+
+  <div class="box warn"><div class="bt">一处口径提醒</div>
+    <p>Stone 对偶里的「点」是<strong>超滤子</strong>，而 L14 定义 Stone 空间时用的是「紧 + Hausdorff + 全不连通」。两者等价，但靠的是引理 6.2.8（开闭基刻画）：<span class="math">Ult A</span> 的开闭基 <span class="math">{rep(a)}</span> 让第一定义自动成立。<strong>不要把「全不连通」直接当作「点 = 超滤子」的证据</strong>，中间必须经过开闭基和紧致性。</p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+  <ol>
+    <li><span class="tag alg">O1</span> 写出 <span class="math">A = 𝓟({1,2,3})</span> 的全部超滤子，并逐一算 <span class="math">rep({1})</span>、<span class="math">rep({1,2})</span>。验证 <span class="math">rep</span> 是到 <span class="math">𝓟(X<sub>A</sub>)</span> 的同构。<strong>提示：</strong>有限 BA 的每个超滤子都是主的。</li>
+    <li><span class="tag alg">O1</span> 在素理想定理的证明里，把第 5 步「<span class="math">J</span> 是理想」的验证补完整，特别说明分配律用在哪里；若 <span class="math">L</span> 不分配，论证在哪一步断掉？</li>
+    <li><span class="tag alg">O1</span> 证明 §4 第 3 步：<span class="math">Ult A</span> 作为 <span class="math">2<sup>A</sup></span> 的子集是闭的。<strong>提示：</strong>把「上闭」「对 <span class="math">∧</span> 封闭」各写成一族只涉及有限个坐标的闭条件。</li>
+    <li><span class="tag top">O2</span> 设 <span class="math">f : A → B</span> 是 BA 同态。证明 <span class="math">f<sup>*</sup> : Ult B → Ult A</span> 连续，并举例说明 <span class="math">f</span> 单射时 <span class="math">f<sup>*</sup></span> 是满射、<span class="math">f</span> 满射时 <span class="math">f<sup>*</sup></span> 是单射（用 §6 ③④）。</li>
+    <li><span class="tag top">O2</span> 对 <span class="math">X = 2<sup>ω</sup></span>（Cantor 空间），具体写出 <span class="math">ε<sub>X</sub></span>：一个点 <span class="math">x ∈ 2<sup>ω</sup></span> 被送到哪个超滤子？为什么它不是单点 <span class="math">{x}</span> 对应的滤子？</li>
+    <li><span class="tag alg">O3</span> 取 <span class="math">A = 𝓟(ℕ)</span>，<span class="math">I = fin</span>（有限子集理想）。写出 <span class="math">U<sub>I</sub> ⊆ Ult A</span>，并说明它为什么是开集、它的补为什么对应于 <span class="math">𝓟(ℕ)/fin</span>。</li>
+    <li><span class="tag top">O3</span> 证明 §6 ② 的细节：<span class="math">F<sub>K<sub>F</sub></sub> = F</span>。<strong>提示：</strong>若 <span class="math">a ∉ F</span>，用素理想定理找 <span class="math">U ∈ K<sub>F</sub></span> 且 <span class="math">a ∉ U</span>。</li>
+    <li><span class="tag alg">O3</span> 说明「商 ↔ 闭子空间」与「子代数 ↔ 连续满像」为什么方向互补。取 <span class="math">A = 2 × 2 × 2</span>，<span class="math">B =</span> 由 <span class="math">(1,0,0), (0,1,0)</span> 生成的子代数，画出 <span class="math">r : Ult A → Ult B</span>。</li>
+    <li><span class="tag log">O4</span> 设命题变元只有 <span class="math">p, q</span>，<span class="math">T = ∅</span>。写出 <span class="math">L<sub>T</sub></span> 的全部超滤子（四个），并验证「<span class="math">Γ = {p, p → q}</span> 有模型」对应 <span class="math">rep([p]) ∩ rep([q]) ≠ ∅</span>。</li>
+    <li><span class="tag log">O4</span> 把 L18 的紧致性定理改写成 Stone 空间中的一句话，并说明为什么「有限可满足」恰好是有限交性质，而「可满足」恰好是整体交非空。</li>
+    <li><span class="tag top">O5</span> 验证余有限拓扑的无限集 <span class="math">X</span> 满足「紧 + T1」但不满足 Hausdorff，并算出 <span class="math">Clop X</span>。解释为什么 <span class="math">X ↦ Ult(Clop X)</span> 把它压成了一个点。</li>
+    <li><span class="tag alg">O5</span> 比较 Stone、Priestley、Esakia 三种对偶的对象与额外结构，填一张三列表；指出「加序」各自补回了什么信息。</li>
+    <li><span class="tag log">O6</span> 综合题：从 §9 的图出发，为 L18–L22 的五座桥各找出一行作为「落脚点」，再说明为什么本讲这张图能同时容纳五行——<strong>最后用一句话写出你理解的「对偶」</strong>。</li>
+  </ol>
+</section>
+
+<div class="footnav">
+  <a href="L22.html">← 上一讲：L22 桥之五：判定性与 Gödel 不完全性</a>
+  <a href="L24.html" style="font-size:13.5px">下一讲：L24 关系代数与 RRA</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L23 · 来源：UAL §2.6（定义 2.6.2/2.6.4、引理 2.6.3、定理 2.6.5/2.6.11/2.6.15、推论 2.6.12）；Bergman 定理 2.41/2.43/2.44/2.45/2.46；拓扑讲义 定义 6.2.7、引理 6.2.8 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

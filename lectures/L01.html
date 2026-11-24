@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L01 集合论基础与一阶逻辑速览 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第一篇 共同基础</span><span class="sep">/</span><span>L01</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 01 · 2 学时</div>
+  <h1>集合论基础与一阶逻辑速览</h1>
+  <div class="sub">从关系、函数、序到一阶逻辑：把后面反复要用的记号一次性钉死</div>
+  <div class="metarow"><span>来源：UAL Ch1 §1.1–1.6, §1.8</span><span>Bergman Ch2 §2.1</span>
+    <span class="tag alg">代数</span><span class="tag log">逻辑</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#motive">动机：为什么先讲这些</a></li>
+  <li><a href="#sets">集合、类、Russell 悖论</a></li>
+  <li><a href="#rel">二元关系、等价关系、函数</a></li>
+  <li><a href="#order">序、序数、基数</a></li>
+  <li><a href="#prod">序列、族的直接积、高阶关系</a></li>
+  <li><a href="#fol">一阶逻辑语法与语义速览</a></li>
+  <li><a href="#fusion">融合接口：三种「关系」的同源</a></li>
+  <li><a href="#ex">习题</a></li>
+</ol></div>
+
+<!-- 动机 -->
+<section id="motive">
+  <h2><span class="sn">0</span>动机：为什么先讲这些</h2>
+  <p class="lead">这一讲没有新定理，目的是把三本书共用的语言统一起来。代数、拓扑、逻辑三条线看似各说各话，底层其实都站在同一块地基上：<strong>集合、关系、函数、序</strong>。</p>
+  <div class="intu"><div class="bt">直观</div>
+    <p>后面你会遇到三个长得很像的东西：代数里的<strong>同余关系</strong>（哪些元素「可视为相等」）、拓扑里的<strong>可达关系</strong>（哪个世界能走到哪个世界）、逻辑里的<strong>等价/代入</strong>（哪些公式可互换）。它们的定义都只是「集合 <span class="var">A</span> 上的一个二元关系」。先把关系的语言讲清楚，后面每次遇到只是换一个名字。</p>
+    <p>还有一件更隐蔽的事：本课程的枢纽是<strong>闭包算子</strong>（L02），而闭包算子的最小例子就是<strong>天花板函数</strong>——一个从实数序到整数序的映射。序、函数、幂集这三样东西在这里第一次碰头。</p>
+  </div>
+  <p>如果你已经熟悉这些，可以只看 §<a href="#fusion">融合接口</a>，确认记号一致即可。</p>
+</section>
+
+<!-- 集合 -->
+<section id="sets">
+  <h2><span class="sn">1</span>集合、类、Russell 悖论</h2>
+
+  <p>用 <span class="math">x ∈ A</span> 表示「<span class="var">x</span> 是 <span class="var">A</span> 的元素」。<span class="math">A ⊆ B</span> 表示「<span class="var">A</span> 是 <span class="var">B</span> 的子集」，即每个 <span class="var">A</span> 的元素都是 <span class="var">B</span> 的元素。幂集 <span class="math">𝒫(A)</span>（Bergman 记作 <span class="math">Sb(A)</span>）是 <span class="var">A</span> 全体子集构成的集合。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">1.1</span></div>
+    <p>元组（有序 <span class="var">n</span> 元组）写作 <span class="math">⟨a₁,…,aₙ⟩</span>，相等当且仅当逐坐标相等。笛卡尔积 <span class="math">A × B = {⟨a,b⟩ : a∈A, b∈B}</span>。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 · Russell 悖论（UAL 1.1.1）</div>
+    <p>「所有集合的集合」不存在。若存在这样的 <span class="var">V</span>，则按分离公理 <span class="math">R = {x∈V : x∉x}</span> 也是集合。问 <span class="math">R∈R</span> 吗？若 <span class="math">R∈R</span>，按 <span class="var">R</span> 的定义 <span class="math">R∉R</span>；若 <span class="math">R∉R</span>，又满足定义故 <span class="math">R∈R</span>。矛盾。</p>
+    <p>本讲义采取朴素的集合论立场：只谈我们实际用到的集合，不做公理化展开。遇到「所有……的集合」时，总把它限制在一个已经给定的全集 <span class="var">H</span> 之内。</p>
+  </div>
+  <p class="src"><b>来源：</b>UAL §1.1（定义 1.1.1 定理形式的 Russell 悖论）；Bergman Ch1。</p>
+</section>
+
+<!-- 关系 -->
+<section id="rel">
+  <h2><span class="sn">2</span>二元关系、等价关系、函数</h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">1.2</span></div>
+    <p>集合 <span class="var">A</span> 上的<strong>二元关系</strong>是 <span class="math">R ⊆ A × A</span>。写 <span class="math">aRb</span> 表示 <span class="math">⟨a,b⟩∈R</span>。</p>
+    <p><span class="var">R</span> 是<strong>等价关系</strong>，若它满足：自反 <span class="math">aRa</span>；对称 <span class="math">aRb ⇒ bRa</span>；传递 <span class="math">aRb ∧ bRc ⇒ aRc</span>。</p>
+    <p>等价关系把 <span class="var">A</span> 切成互不相交的<strong>等价类</strong> <span class="math">a/R = {b∈A : aRb}</span>，全体等价类构成<strong>商集</strong> <span class="math">A/R</span>。映射 <span class="math">a ↦ a/R</span> 称为<strong>自然投影</strong>。</p>
+  </div>
+
+  <div class="intu"><div class="bt">直观 · 等价关系就是「决定忽略什么」</div>
+    <p>给 <span class="var">A</span> 装一个等价关系，等于宣布「某些差别不算差别」。整数模 5 的等价关系忽略「相差几个 5」；代数里同余关系忽略「在运算下可否替换」；拓扑/模态里不可区分关系忽略「哪些世界用可验证命题分不开」。商集就是你忽略这些差别之后剩下的东西。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">1.3</span></div>
+    <p><strong>函数</strong> <span class="math">f : A → B</span> 是满足「每个 <span class="var">a∈A</span> 恰有一个像」的关系 <span class="math">f ⊆ A×B</span>。单射、满射、双射如常。函数诱导出幂集上的两个映射：像 <span class="math">f[X] = {f(x):x∈X}</span> 与原像 <span class="math">f⁻¹[Y] = {x:f(x)∈Y}</span>。</p>
+  </div>
+
+  <div class="fusion"><div class="bt">融合接口</div>
+    <p><strong>原像 <span class="math">f⁻¹</span> 是拓扑连续性的关键：</strong>映射 <span class="math">f : X→Y</span> 连续，当且仅当 <span class="var">Y</span> 的每个开集 <span class="var">V</span> 的原像 <span class="math">f⁻¹[V]</span> 在 <span class="var">X</span> 中开（L11）。用中文讲义的说法，<span class="math">f⁻¹</span> 把「目标里的可验证命题」翻译成「源里的可验证命题」。一个纯集合论的记号，后来承担了「翻译」的全部重量。</p>
+  </div>
+  <p class="src"><b>来源：</b>UAL §1.2（含练习 1.2.1 自由代表、1.2.2 划分）；中文拓扑讲义注 3.1.2。</p>
+</section>
+
+<!-- 序 -->
+<section id="order">
+  <h2><span class="sn">3</span>序、序数、基数</h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">1.4</span></div>
+    <p>集合 <span class="var">P</span> 上的<strong>偏序</strong> <span class="math">≤</span> 满足自反、反对称、传递；<span class="math">⟨P,≤⟩</span> 称为偏序集（poset）。若任意两元素可比，称为<strong>全序</strong>。</p>
+    <p>对 <span class="math">S⊆P</span>：<span class="math">u</span> 是上界指 <span class="math">(∀s∈S) s≤u</span>；<strong>最小上界</strong>（上确界、join）<span class="math">⋁S</span> 是全体上界中的最小者；对偶地有下界与<strong>最大下界</strong>（meet）<span class="math">⋀S</span>。</p>
+  </div>
+
+  <div class="intu"><div class="bt">直观 · 「≤」到底在排什么</div>
+    <p>不要把它只读成「小于等于」。在数据里读成「信息量不超过」；在格论里读成「包含于」；在逻辑里读成「可推出」（<span class="math">φ ≤ ψ</span> 表示 <span class="math">φ ⊢ ψ</span>）；在闭包系统里读成「被包含于」。同一个符号承载「小 / 少 / 弱 / 特殊」这一族意思——这就是序能统一三条线的原因。</p>
+  </div>
+
+  <p>若每对元素都有 <span class="math">⋁{a,b}</span> 与 <span class="math">⋀{a,b}</span>，偏序集是<strong>格</strong>；若任意子集（含无穷集）都有上下确界，是<strong>完全格</strong>。幂集 <span class="math">⟨𝒫(H),⊆⟩</span> 是完全格，<span class="math">⋁</span> 是并、<span class="math">⋀</span> 是交——这是 L02 的原型例子。</p>
+
+  <div class="ex"><div class="bt">例 · 我们真正用得到的序数/基数</div>
+    <p>序数用来给「第 <span class="var">n</span> 步」编号：有限序数 <span class="math">0,1,2,…</span>、第一个无穷序数 <span class="math">ω</span>。基数用来数「有多大」：<span class="math">ℵ₀</span>（可数）、<span class="math">2^{ℵ₀}</span>（连续统）。</p>
+    <p>本讲义只在两处认真用到它们：一是「代数闭包算子」要求「有限子集」（<span class="math">Z ⊆ᵩ X</span>，L02）；一是「有限可满足 ⇒ 整体可满足」这类紧致性陈述（L18）中「有限」二字的分量。</p>
+  </div>
+  <p class="src"><b>来源：</b>UAL §1.3；Bergman §2.1（特别是由「每个子集有上确界」推出完全格的命题 2.14）。</p>
+</section>
+
+<!-- 序列与积 -->
+<section id="prod">
+  <h2><span class="sn">4</span>序列、族的直接积、高阶关系</h2>
+  <p><strong>序列</strong>是从 <span class="math">ω</span>（或其初段）出发的函数，写作 <span class="math">(aₙ)_{n∈ω}</span>。<strong>集族</strong>由指标集 <span class="var">I</span> 标记，写作 <span class="math">(Aᵢ)_{i∈I}</span>。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">1.5</span></div>
+    <p>集族 <span class="math">(Aᵢ)_{i∈I}</span> 的<strong>直接积</strong> <span class="math">∏_{i∈I} Aᵢ</span> 是所有函数 <span class="math">f : I → ⋃_{i∈I} Aᵢ</span> 的集合，且满足 <span class="math">f(i)∈Aᵢ</span>。元素写作 <span class="math">(aᵢ)_{i∈I}</span>，投影 <span class="math">πⱼ : ∏Aᵢ → Aⱼ</span> 取第 <span class="var">j</span> 个坐标。</p>
+  </div>
+
+  <div class="intu"><div class="bt">直观 · 直接积是「并行世界」</div>
+    <p>把 <span class="var">I</span> 想成代的「世界」或「部件」：<span class="math">∏Aᵢ</span> 的一个点就是给每个世界各挑一个值。投影 <span class="math">πⱼ</span> 是「只看第 <span class="var">j</span> 个世界」。这个构造在 L04 会原样长成<strong>代数的直积</strong>，在 L10 长成<strong>超积</strong>（在直积上再按超滤子把世界「合并」），在拓扑里长成<strong>积拓扑</strong>。</p>
+  </div>
+  <p><strong>高阶关系</strong>是 <span class="math">Aⁿ</span>（<span class="var">n</span> 元）或 <span class="math">Aᴵ</span>（<span class="var">I</span> 元）的子集。一元关系是集合，二元关系是上面讨论的对象，<span class="var">n</span> 元关系是 UAL 第七章「关系代数」的舞台（L24）。</p>
+  <p class="src"><b>来源：</b>UAL §1.4–1.6。</p>
+</section>
+
+<!-- 一阶逻辑 -->
+<section id="fol">
+  <h2><span class="sn">5</span>一阶逻辑语法与语义速览</h2>
+  <p class="lead">这里的记号在 L15「逻辑的规范形式」里会被推广到任意逻辑，请先记住它们的形状。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">1.6 · 语法</span></div>
+    <p>一阶语言由函数符号、关系符号、常量符号（带元数）组成。<strong>词项</strong>由变量、常量经函数符号递归生成；<strong>公式</strong>由原子式 <span class="math">R(t₁,…,tₙ)</span> 经 <span class="math">¬,∧,∨,→</span> 与量词 <span class="math">∀,∃</span> 递归生成。变量在公式中出现若不在量词辖域内称为<strong>自由</strong>的；无自由变量的公式是<strong>句子</strong>。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">1.7 · 语义</span></div>
+    <p>一个<strong>模型</strong> <span class="math">𝔐 = ⟨M, …⟩</span> 给出非空论域 <span class="var">M</span> 及符号的解释。赋值 <span class="math">v</span> 把变量映到 <span class="var">M</span>。<strong>满足关系</strong> <span class="math">𝔐 ⊨ φ[v]</span> 按 Tarski 递归定义：<span class="math">𝔐 ⊨ ∀xφ[v]</span> 当且仅当对所有 <span class="math">m∈M</span>，<span class="math">𝔐 ⊨ φ[v(x↦m)]</span>。</p>
+    <p>句子 <span class="var">φ</span> 在模型中为真记作 <span class="math">𝔐 ⊨ φ</span>。对理论 <span class="var">T</span>（句子集），<span class="math">𝔐 ⊨ T</span> 表示满足其中每句。<strong>后承关系</strong>：<span class="math">T ⊨ φ</span> 当且仅当满足 <span class="var">T</span> 的每个模型都满足 <span class="var">φ</span>。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 · 真值集（通向拓扑的桥）</div>
+    <p>固定模型 <span class="math">𝔐</span> 与自由变量集 <span class="math">{x}</span>，把公式 <span class="var">φ</span> 映到它成立的赋值集合：</p>
+    <div class="formula">[[φ]] = { v : 𝔐 ⊨ φ[v] } ⊆ M</div>
+    <p>中文拓扑讲义 §2.1 正是从这里起步的：把 <span class="var">M</span>（或更一般的世界集 <span class="var">X</span>）看作认识世界，把 <span class="math">[[φ]]</span> 看作命题 <span class="var">φ</span> 的真值集，于是 <span class="math">[[φ∨ψ]] = [[φ]]∪[[ψ]]</span>、<span class="math">[[φ∧ψ]] = [[φ]]∩[[ψ]]</span>、<span class="math">[[¬φ]] = X∖[[φ]]</span>。这三式在 L08 会变成开集公理的认识论论证。</p>
+  </div>
+
+  <div class="fusion"><div class="bt">融合接口 · 三个「⊨」的用法预告</div>
+    <p>符号 <span class="math">⊨</span> 在全课出现三种形态，留意区分：<span class="math">𝔐 ⊨ φ</span>（模型满足公式）、<span class="math">T ⊨ φ</span>（语义后承）、以及 L18 中代数侧的 <span class="math">Alg<sub>⊨</sub>(L)</span>（一个逻辑的「语义部分」的代数对应物）。UAL 的全名 <span class="math">Alg<sub>⊨</sub></span> 就是在提醒你它来自后承关系。</p>
+  </div>
+  <p class="src"><b>来源：</b>UAL §1.8；中文拓扑讲义 §2.1（例 2.1.1 天鹅例子）。</p>
+</section>
+
+<!-- 融合 -->
+<section id="fusion">
+  <h2><span class="sn">6</span>融合接口：三种「关系」的同源</h2>
+  <p class="lead">把这一讲的东西按用途排成一张表，后面的新概念大多只是给某一行换个名字。</p>
+  <table>
+    <thead><tr><th>集合论对象</th><th>代数中的化身</th><th>逻辑/拓扑中的化身</th></tr></thead>
+    <tbody>
+      <tr><td><span class="math">A×A</span> 的子集<br>二元关系</td><td>同余关系 <span class="math">θ</span>（L03）<br>不变关系（L05）</td><td>可达关系 <span class="math">R</span>（Kripke）<br>可区分关系（L12）</td></tr>
+      <tr><td>等价关系 + 商集<br><span class="math">A/R</span></td><td>商代数 <span class="math">A/θ</span>（L03）<br>Lindenbaum–Tarski 代数（L21）</td><td>商空间（L11）<br>模态的「骨架」（L25）</td></tr>
+      <tr><td>函数 <span class="math">f : A→B</span><br>原像 <span class="math">f⁻¹</span></td><td>同态（L03）<br>代入（L16）</td><td>连续映射（L11）=「不增知识」的翻译</td></tr>
+      <tr><td>幂集 <span class="math">𝒫(H)</span><br>+ 包含序</td><td>子代数格 <span class="math">Sub(A)</span><br>同余格 <span class="math">Con(A)</span></td><td>开集族 <span class="math">τ</span>（L08）<br>理论集（L16）</td></tr>
+      <tr><td>直接积 <span class="math">∏Aᵢ</span></td><td>代数直积、超积（L04）</td><td>积拓扑、超滤子极限（L13）</td></tr>
+    </tbody>
+  </table>
+  <div class="intu"><div class="bt">拿到下一讲</div>
+    <p>最后一行的 <span class="math">𝒫(H)</span> 与「包含序」是本讲和 L02 的接缝。在 <span class="math">𝒫(H)</span> 上有三种自然操作：<span class="var">并</span>、<span class="var">交</span>、以及「把一个集合<strong>补全</strong>到封闭」。第三种正是闭包算子，它是全课第一个真正的融合点。</p>
+  </div>
+</section>
+
+<!-- 习题 -->
+<section id="ex">
+  <h2><span class="sn">7</span>习题</h2>
+  <div class="exercise"><ol>
+    <li>证明：若 <span class="math">R</span> 是 <span class="var">A</span> 上的等价关系，则等价类 <span class="math">a/R</span> 两两不交且并为 <span class="var">A</span>。（UAL 练习 1.2.2）</li>
+    <li>证明：对任意函数 <span class="math">f : A→B</span> 与 <span class="math">X⊆A</span>，有 <span class="math">X ⊆ f⁻¹[f[X]]</span>；当 <span class="var">f</span> 单射时取等。</li>
+    <li>验证：若把 <span class="math">≤</span> 读成「可推出 <span class="math">⊢</span>」，则「<span class="math">⋁</span>」对应析取、「<span class="math">⋀</span>」对应合取。这个类比在 L21（Lindenbaum 代数）中会被严格实现。</li>
+    <li>（预告 L02）在 <span class="math">𝒫(ℝ)</span> 上定义 <span class="math">c(X)=X</span> 的拓扑闭包。验证 <span class="math">X⊆c(X)</span>、<span class="math">X⊆Y⇒c(X)⊆c(Y)</span>、<span class="math">c(c(X))=c(X)</span>。再问：<span class="math">c(X∪Y)=c(X)∪c(Y)</span> 对吗？</li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+  <a href="L02.html">下一讲：L02 格、闭包系统与 Galois 连接 →</a>
+</div>
+<footer>代数逻辑讲义 · L01 · 来源 UAL Ch1 / Bergman Ch2 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

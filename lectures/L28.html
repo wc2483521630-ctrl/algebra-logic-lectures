@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L28 案例 3–4：一阶逻辑的有限变元片段 L<sub>n</sub> · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第七篇 案例工坊</span><span class="sep">/</span><span>L28</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 28 · 2 学时 · 案例工坊第二站 · 两个变量是分水岭</div>
+  <h1>案例 3–4：一阶逻辑的有限变元片段 L<sub>n</sub></h1>
+  <div class="sub">同一个一阶逻辑，只许用 n 个变量，会变成什么样的代数、什么样的逻辑？答案在 n = 2 处一刀两断：2 以下乖得像布尔代数，3 以上野得像关系代数</div>
+  <div class="metarow"><span>来源：UAL §5.3（定义 5.3.1、命题 5.3.2）、§5.4（命题 5.4.1、定理 5.4.2/5.4.6/5.4.8、推论 5.4.7）、§7.2；回指 L15 四元组与 L<sub>n</sub> 初见、L16 语义代入、L19 完全性桥、L20 Beth、L21 插值、L22 判定桥与 CA<sub>n</sub> 自由代数、L24 关系代数、L27 四步流程</span>
+    <span class="tag log">逻辑</span><span class="tag alg">代数</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">O1　为什么要数变量个数；两个案例的差别</a></li>
+  <li><a href="#prime">O1　案例 3：带替换片段 L′<sub>n</sub> 与那个反例</a></li>
+  <li><a href="#ln">O2　案例 4：正式片段 L<sub>n</sub> 与柱体代数对应</a></li>
+  <li><a href="#divide">O3　n = 2 分水岭：可判定与不可判定两侧</a></li>
+  <li><a href="#deduct">O4　两套演绎关系 ⊢<sub>n</sub> 与 ⊢<sub>n,m</sub></a></li>
+  <li><a href="#complete">O5　三栏对应与「多变量拯救证明」</a></li>
+  <li><a href="#power">O6　演绎能力的严格阶梯</a></li>
+  <li><a href="#examples">三层例：典型 / 本质 / 边界</a></li>
+  <li><a href="#fusion2">融合接口：第十张图</a></li>
+  <li><a href="#ex">习题</a></li>
+</ol></div>
+
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系 <span class="tag alg">先摆牌</span></h2>
+  <div class="box"><div class="bt">本讲新概念（七个，按依赖排序）</div>
+    <ol>
+      <li><strong>带替换片段 <span class="math">L′<sub>n</sub></span></strong>：原子公式允许变量任意排列 <span class="math">R(x₀,…,x<sub>n−1</sub>)</span>，结果 n≥2 连条件代入都坏掉。</li>
+      <li><strong>正式片段 <span class="math">L<sub>n</sub></span></strong>：原子只留 <span class="math">R(v₀,…,v<sub>n−1</sub>)</span>，替换靠量词与等号表达（Tarski 观察）。</li>
+      <li><strong>柱体代数 CA<sub>n</sub> / Cs<sub>n</sub> / RCA<sub>n</sub></strong>：抽象代数 / 集合代数 / 可表示代数三层（对应 L24 的 RA/setRRA/RRA）。</li>
+      <li><strong>neat reduct <span class="math">SNr<sub>n</sub></span></strong>：把 m 维代数「削」成 n 维，定理 5.4.7(1) 的主角。</li>
+      <li><strong><span class="math">⊢<sub>n</sub></span></strong>：n 变量内的 Hilbert 系统；<strong><span class="math">⊢<sub>n,m</sub></span></strong>：允许用 m 变量证明——证明可以「借」变量。</li>
+      <li><strong>有限模型性质 fmp</strong>：L₂ 有，支撑它的可判定性与有限公理化。</li>
+      <li><strong>演绎能力阶梯</strong>：<span class="math">⊢<sub>n</sub> ⊊ ⊢<sub>n+1</sub></span>（n&gt;1）、<span class="math">⊢ₙ,ₘ ⊊ ⊢ₙ,ₘ₊₁</span>（n≥3）、而 <span class="math">⊢₂ = ⊢₂,₃ = ⊢₂,ₘ</span>。</li>
+    </ol>
+  </div>
+  <div class="diagram"><div class="bt">依赖图（箭头 = 「先懂左边才懂右边」）</div>
+<pre>  L15 L_n 四元组 ──┐
+  L16 语义代入 ────┼──L′_n 反例 ──「替换不能白给」 ──L_n（量词+等号造替换）
+  L27 四步流程 ────┘                                      │
+                                                          ▼
+                      Algm=Cs_n  Alg⊨=RCA_n ──L27 查性质 ──n=2 分水岭
+                                                          │
+                       L19 完全性桥 ──定理 5.4.2 ─────────┤
+                                                          ▼
+                      ⊢_n（n变量内）◄──对照──► ⊢_{n,m}（借 m 变量）
+                          │                         │
+                    定理 5.4.6 三栏对应              定理 7.3.9 neat reduct
+                          └────────┬────────────────┘
+                                   ▼
+                        多变量完全性（5.4.7）+ 演绎能力阶梯（5.4.8）</pre>
+  </div>
+  <p class="src"><b>与前讲的分工：</b>L15 只把 <span class="math">L<sub>n</sub></span> 作为四元组的一个实例介绍，L22 只顺带提了 <span class="math">Fr<sub>k</sub> CA<sub>n</sub></span> 非原子。<strong>本讲第一次系统开机器</strong>：把两节片段完整走一遍四步流程，并回答一个前讲没碰的问题——「证明能用几个变量」这件事，对逻辑本身意味着什么。</p>
+</section>
+
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习</h2>
+  <div class="box"><div class="bt">六个目标，每个都有对应讲解和练习</div>
+    <table>
+      <tr><th>目标</th><th>要拿到什么</th><th>讲解</th><th>练习</th></tr>
+      <tr><td><span class="tag log">O1</span></td><td>L′<sub>n</sub> 为何坏；五元模 5 反例怎么读</td><td><a href="#motive">§2</a>、<a href="#prime">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+      <tr><td><span class="tag alg">O2</span></td><td>L<sub>n</sub> 定义；Algm=Cs<sub>n</sub>、Alg⊨=RCA<sub>n</sub> 的推导</td><td><a href="#ln">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+      <tr><td><span class="tag alg">O3</span></td><td>n=2 分水岭两侧的性质对照</td><td><a href="#divide">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+      <tr><td><span class="tag log">O4</span></td><td>⊢<sub>n</sub> 公理系统；⊢<sub>n,m</sub> 的「借变量」定义</td><td><a href="#deduct">§6</a></td><td><a href="#ex">E7, E8</a></td></tr>
+      <tr><td><span class="tag log">O5</span></td><td>定理 5.4.6 三栏对应；多变量完全性推论</td><td><a href="#complete">§7</a></td><td><a href="#ex">E9, E10</a></td></tr>
+      <tr><td><span class="tag alg">O6</span></td><td>演绎能力阶梯；为什么 L₂ 特殊</td><td><a href="#power">§8</a></td><td><a href="#ex">E11, E12</a></td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="motive">
+  <h2><span class="sn">2</span>O1　为什么要数变量个数；两个案例的差别 <span class="tag log">O1</span></h2>
+  <p class="lead">一阶逻辑我们熟：变量随便用多少个。代数逻辑偏要问「只给 n 个变量会怎样」。这不是刁难——它逼出了一阶逻辑内部一整条精细结构，而且这条结构正好被代数侧完整镜像。</p>
+
+  <h3><span class="sn">2.1</span>变量是资源</h3>
+  <p>把变量当<strong>有限资源</strong>看，很多熟悉的事立刻改观：</p>
+  <ul>
+    <li>公式 <span class="math">∃x∃y∃z R(x,y,z)</span> 要 3 个变量；只给 2 个就写不出来——除非你用「换名复用」的技巧，但那恰恰需要等号帮忙。</li>
+    <li>证明也吃资源：一条 n 变量公式的证明，可能中途需要第 n+1 个变量当临时中转站。<strong>「证明能用几个变量」于是成了一个独立于「公式用了几个变量」的问题。</strong></li>
+    <li>代数侧同步：n 个变量 ↔ n 维柱体代数。变量数的每一次增减，都对应一个代数操作（neat reduct）。</li>
+  </ul>
+  <div class="box intu"><div class="bt">一句话点破</div>
+    <p>有限变元片段不是「一阶逻辑的残缺版」，是<strong>把变量当刻度切开的一族逻辑</strong>。每一档有自己的代数、自己的完全性、自己的判定性。这条刻度在 n=2 处断裂。</p>
+  </div>
+
+  <h3><span class="sn">2.2</span>两个案例差在哪</h3>
+  <p>UAL 这一节摆了两个片段，看上去只差一点，结果天差地别：</p>
+  <table>
+    <tr><th></th><th>案例 3：L′<sub>n</sub>（带替换）</th><th>案例 4：L<sub>n</sub>（正式片段）</th></tr>
+    <tr><td>原子公式</td><td><span class="math">R(x₀,…,x<sub>n−1</sub>)</span>，变量可任意排列</td><td>只留 <span class="math">R(v₀,…,v<sub>n−1</sub>)</span></td></tr>
+    <tr><td>替换</td><td>白送（原子里直接写）</td><td>用 <span class="math">∃</span> 与 <span class="math">=</span> 表达出来</td></tr>
+    <tr><td>结局</td><td>n≥2 连条件代入都不满足，<strong>不可代数化</strong></td><td>所有 n 都可代数化，桥全部开放</td></tr>
+  </table>
+  <p><strong>这是「语法多给一点反而更坏」的绝佳例子。</strong>你以为把替换直接放进原子是方便，结果它让原子公式的意义互相牵连，破坏了语义代入性质，机器直接停摆。UAL 在这里给的反例值得逐行读，下一节细看。</p>
+  <p class="src"><b>来源：</b>UAL §5.3 开头与末尾讨论、§5.4 开头，Tarski 观察（量词加等号可表达替换）。</p>
+</section>
+
+<section id="prime">
+  <h2><span class="sn">3</span>O1　案例 3：带替换片段 L′<sub>n</sub> 与那个反例 <span class="tag log">O1</span></h2>
+  <p class="lead">先说清定义，再读反例。反例是本讲第一个技术高潮，我一步一步拆，不跳过任何一行。</p>
+
+  <div class="box def"><div class="bt">定义 <span class="num">5.3.1（FOL，n 变量，带替换原子公式）</span></div>
+    <ul>
+      <li><strong>变量</strong> <span class="math">V<sub>n</sub> = {v<sub>i</sub> : i &lt; n}</span>；<strong>关系符号集</strong> <span class="math">R</span> 任意。</li>
+      <li><strong>原子公式</strong> <span class="math">P = {R(x₀,…,x<sub>n−1</sub>) : R ∈ R, x₀,…,x<sub>n−1</sub> ∈ V<sub>n</sub>}</span>——注意变量可以任意取、可重复。</li>
+      <li><strong>联结词</strong> <span class="math">{∧, ¬, ⊥, v<sub>i</sub> = v<sub>j</sub>, ∃v<sub>i</sub> : i,j &lt; n}</span>。</li>
+      <li><strong>模型</strong> <span class="math">M<sup>R</sup><sub>n</sub> = {⟨M, R<sup>M</sup>⟩<sub>R∈R</sub> : M ≠ ∅, R<sup>M</sup> ⊆ <sup>n</sup>M}</span>。</li>
+      <li><strong>赋值</strong> <span class="math">h ∈ <sup>n</sup>M</span>；<span class="math">M ⊨ ∃v<sub>i</sub> φ[h]</span> 当且仅当存在 <span class="math">h′ ∈ <sup>n</sup>M</span> 与 h 至多在 i 处不同、且 <span class="math">M ⊨ φ[h′]</span>。<strong>「至多在 i 处不同」正是量词的标准约束。</strong></li>
+      <li><strong>意义函数</strong> <span class="math">mng<sub>M</sub>(φ) = {h ∈ <sup>n</sup>M : M ⊨ φ[h]}</span>——文献里叫「φ 在 M 中定义的关系」，所以 <span class="math">mng(M)</span> 是 M 中 n 变量可定义关系的代数。</li>
+    </ul>
+  </div>
+
+  <p><strong>第 1 步走流程：</strong>UAL 命题 5.3.2 说 <span class="math">L′<sub>n</sub></span> 是一般逻辑且有滤子性质，理由是两行等式：</p>
+  <div class="formula">mng(M, φ) = mng(M, ψ)　⟺　M ⊨ ∀v₀…∀v<sub>n−1</sub>(φ ↔ ψ)
+mng(M, φ) = mng(M, ¬⊥)　⟺　M ⊨ φ.</div>
+  <p>第一行是 ∆₀ 的候选（公式等价 ⟺ 意义相等），第二行是 ε/δ 的候选。滤子性质过了。<strong>但语义代入性质过不了。</strong></p>
+
+  <div class="box warn"><div class="bt">反例一：替换把公式搞乱 <span class="num">UAL 命题 5.3.2 证明</span></div>
+    <p>取 <span class="math">p = R(v₀,v₁)</span>、<span class="math">q = R(v₀,v₀)</span>。可以验证：</p>
+    <div class="formula">⊨<sub>n</sub> q ↔ ∃v₁(v₁ = v₀ ∧ p)，　但　⊭<sub>n</sub> p ↔ ∃v₁(v₁ = v₀ ∧ p).</div>
+    <p><strong>怎么读：</strong>式一把「把第二个位置换成第一个」的效果用 <span class="math">∃v₁(v₁=v₀ ∧ p)</span> 写出来了——这正是 Tarski 观察在起作用。式二说同样的表达式<strong>不等于</strong> p 本身，因为 <span class="math">p</span> 里两个位置是独立的，而右边强行把它们绑成相等。<strong>替换改了关系的结构，不是换个名字那么简单。</strong></p>
+    <p>UAL 还给一个对称版本：取 <span class="math">p = R(v₀,v₁)</span>、<span class="math">q = R(v₁,v₀)</span>，则 <span class="math">⊨<sub>n</sub> ∃v₁ p ↔ ∃v₁(v₁=v₀ ∧ ∃v₀ q)</span> 而右边对 q 不成立。<strong>两个方向都坏，说明这不是个别公式的毛病。</strong></p>
+  </div>
+
+  <div class="box warn"><div class="bt">反例二：五元模 5——条件代入也救不了 <span class="num">n = 2 的完整反例</span></div>
+    <p>上面的反例只打了「语法代入」。更强的是：哪怕退一步只要<strong>条件</strong>语义代入，也不行。UAL 给的构造是这样的：</p>
+    <ol>
+      <li>取 <span class="math">R = {R, S}</span>，模型 <span class="math">M</span> 的底集是 <span class="math">5 = {0,1,2,3,4}</span>。</li>
+      <li><span class="math">R<sup>M</sup> = {⟨u,v⟩ : v = u+1 mod 5}</span>（五边形的「下一顶点」），<span class="math">S<sup>M</sup> = {⟨u,v⟩ : v = u+2 mod 5}</span>（「隔一个顶点」）。</li>
+      <li>于是 <span class="math">mng<sub>M</sub>(R(v₁,v₀)) = {⟨u,v⟩ : v = u+4 mod 5}</span>，<span class="math">mng<sub>M</sub>(S(v₁,v₀)) = {⟨u,v⟩ : v = u+3 mod 5}</span>——掉头把 +1 变 +4、+2 变 +3。</li>
+      <li>造同态 <span class="math">h</span>：在 <span class="math">R(v₀,v₁)</span>、<span class="math">S(v₀,v₁)</span> 上与 <span class="math">mng<sub>M</sub></span> 一致，但<strong>故意对调</strong> <span class="math">R(v₁,v₀)</span> 与 <span class="math">S(v₁,v₀)</span> 的像：<span class="math">h(R(v₁,v₀)) = mng<sub>M</sub>(S(v₁,v₀))</span>、<span class="math">h(S(v₁,v₀)) = mng<sub>M</sub>(R(v₁,v₀))</span>。</li>
+      <li>于是 <span class="math">ker(h) = ker(mng<sub>M</sub>)</span>（核相同，条件代入要求的正是这个），但 <span class="math">h</span> <strong>不是任何模型的意义函数</strong>——因为任何真模型的意义函数必须保持「掉头」这个结构：<span class="math">R</span> 掉头得到 +4，不可能突然变成 +3。</li>
+    </ol>
+    <p><strong>这个反例的直觉：</strong>意义函数不只是保布尔结构，它还得尊重「变量位置」这个几何。同态只看到代数结构，看不到几何；把两个「掉头关系」对调，代数上无懈可击，语义上却根本不存在这样的模型。<strong>条件代入要求核相同就能找到模型，这里核相同却找不到——桥断了。</strong></p>
+  </div>
+
+  <p><strong>后果：</strong><span class="math">L′<sub>0</sub></span> 就是经典命题逻辑，<span class="math">L′<sub>1</sub></span> 基本就是 S5（都能代数化）；但 <span class="math">n ≥ 2</span> 时 <span class="math">L′<sub>n</sub></span> 不是语法代入、不是语义代入、甚至不是条件代入，<strong>因而不可代数化，六座桥全部关闭</strong>。它的代数对应物 UAL 记作 <span class="math">Rdca Psen</span> 与 <span class="math">Rdca RPEAn</span>（多相等代数的柱体约化），但桥定理用不上它们。</p>
+  <div class="box intu"><div class="bt">UAL 给的解法</div>
+    <p>「原子白送替换」这条路走不通，退回来：只把 <span class="math">R(v₀,…,v<sub>n−1</sub>)</span> 当原子，替换式 <span class="math">R(x₀,…)</span> 当成<strong>复合公式</strong>造出来。两条路：一条用 Tarski 观察（量词加等号），一条把替换直接当联结词加进来。<strong>案例 4 走的是第一条。</strong></p>
+  </div>
+  <p class="src"><b>来源：</b>UAL 定义 5.3.1、命题 5.3.2 全文、§5.3 末段、Tarski [207][209]。</p>
+</section>
+
+<section id="ln">
+  <h2><span class="sn">4</span>O2　案例 4：正式片段 L<sub>n</sub> 与柱体代数对应 <span class="tag alg">O2</span></h2>
+  <p class="lead">只改一处：原子公式只留固定变量序 <span class="math">R(v₀,…,v<sub>n−1</sub>)</span>，简写为 <span class="math">R</span>。联结词、模型、意义函数都不变（L15 已见过这个四元组）。这一改，机器全开。</p>
+
+  <div class="box def"><div class="bt">定义（正式 n 变量片段 <span class="num">L<sub>n</sub>，n ≤ ω</span>）</div>
+    <p>与 L′<sub>n</sub> 唯一差别：<strong>原子公式集就是 <span class="math">R</span> 本身</strong>，即只保留 <span class="math">R(v₀,…,v<sub>n−1</sub>)</span>（n 无限时是 <span class="math">R(v₀,…,v<sub>i</sub>,…)<sub>i&lt;n</sub></span>）。UAL 叫它「完全受限的一阶语言」：「受限」指变量序固定，「完全」指每个关系符号的元数都是 n。其余完全照旧。</p>
+    <p><strong>「受限」不是缺陷：</strong>L15 §边界例子里我提醒过「不允许写 <span class="math">r(v₁,…)</span>」，当时说可以用量词和等号表达出替换效果——现在你知道这句话的依据就是 Tarski 观察，而且 L′<sub>n</sub> 的反例正好说明「不这么绕就会坏」。</p>
+  </div>
+
+  <div class="box thm"><div class="bt">命题 <span class="num">5.4.1</span>：L<sub>n</sub> 可代数化，且 Algm(L<sub>n</sub>) = Cs<sub>n</sub>、Alg⊨(L<sub>n</sub>) = RCA<sub>n</sub></div>
+    <div class="proof"><span class="pt">第 1 步：语义代入。</span>
+      <p>组合性照旧；<span class="math">Mng = Hom(F<sup>R</sup>, Cs<sub>n</sub>)</span>，由命题 3.3.32 得语义代入性质。<strong>注意这和 L′<sub>n</sub> 的关键差别</strong>：一旦原子固定，意义函数必须保「位置」，不再出现五元模 5 那种对调。</p>
+    </div>
+    <div class="proof"><span class="pt">第 2 步：滤子性质。</span>
+      <p>取 <span class="math">ε = φ₀</span>、<span class="math">δ = ⊤</span>、<span class="math">∆ = (φ₀ ↔ φ₁)</span>，与 L<sub>C</sub> 同形。于是可代数化。</p>
+    </div>
+    <div class="proof"><span class="pt">第 3 步：代数对应物。</span>
+      <p><span class="math">Algᵐ(L<sup>R</sup><sub>n</sub>)</span> 恰是 <span class="math">|R|</span>-生成的 <span class="math">Cs<sub>n</sub></span>（n 维柱体集合代数），故 <span class="math">Algᵐ(L<sub>n</sub>) = Cs<sub>n</sub></span>。再由定理 3.3.36(ii) 与 <span class="math">RCA<sub>n</sub> = SP Cs<sub>n</sub></span>，得 <span class="math">Alg⊨(L<sub>n</sub>) = RCA<sub>n</sub></span>。<span class="qed">∎</span></p>
+    </div>
+  </div>
+
+  <div class="box intu"><div class="bt">三层代数对照（把 L24 的词典搬过来）</div>
+    <table>
+      <tr><th>层次</th><th>关系代数侧（L24/L27）</th><th>柱体代数侧（本讲）</th></tr>
+      <tr><td>具体集合代数</td><td>setRRA</td><td><span class="math">Cs<sub>n</sub></span>（n 维柱体集合代数）</td></tr>
+      <tr><td>可表示抽象代数</td><td>RRA = SP setRRA</td><td><span class="math">RCA<sub>n</sub> = SP Cs<sub>n</sub></span></td></tr>
+      <tr><td>纯抽象公理代数</td><td>RA（Tarski 公理）</td><td><span class="math">CA<sub>n</sub></span>（柱体公理）</td></tr>
+    </table>
+    <p><strong>同样的鸿沟：</strong><span class="math">CA<sub>n</sub> ⊋ RCA<sub>n</sub></span> 对 n≥3（L22 定理 4.6.13 说 <span class="math">Fr<sub>k</sub> CA<sub>n</sub></span> 非原子，就是这条鸿沟的后果）。</p>
+  </div>
+</section>
+
+<section id="divide">
+  <h2><span class="sn">5</span>O3　n = 2 分水岭：可判定与不可判定两侧 <span class="tag alg">O3</span></h2>
+  <p class="lead">UAL 原文一句话点破：<span class="math">RCA<sub>n</sub></span> 的基本性质，「n ≥ 3 时很像 RRA，n &lt; 3 时更像 BA」。于是 L27 那张对照表在这里被复制成两半。先摊开代数性质。</p>
+
+  <h3><span class="sn">5.1</span>RCA<sub>n</sub> 的性质清单</h3>
+  <div class="box"><div class="bt">按 n 分段（UAL §5.4 原文列出）</div>
+    <ul>
+      <li><strong>所有 <span class="math">n ≤ ω</span></strong>：<span class="math">RCA<sub>n</sub> = SP setRCA<sub>n</sub></span> 是簇；n 有限时是判别簇，<span class="math">RCA<sub>ω</sub></span> 不是。</li>
+      <li><strong><span class="math">n ≤ 2</span></strong>：等式理论<strong>有限公理化且可判定</strong>；<span class="math">RCA<sub>n</sub></span> (n≤1) 有超合并；但 RCA₂ 中<strong>满射不满</strong>。</li>
+      <li><strong><span class="math">3 ≤ n ≤ ω</span></strong>：不可有限公理化、等式理论不可判定、集合论可解释进等式理论；满射不满，故无超合并。</li>
+    </ul>
+  </div>
+
+  <h3><span class="sn">5.2</span>搬运到逻辑侧：四档片段的结局</h3>
+  <table>
+    <tr><th>片段</th><th>等价物</th><th>可判定</th><th>Hilbert 系统</th><th>Beth / 插值</th></tr>
+    <tr><td><span class="math">L<sub>0</sub></span></td><td>经典命题逻辑 L<sub>S</sub></td><td>可判定</td><td>强完备强可靠</td><td>全有（L27）</td></tr>
+    <tr><td><span class="math">L<sub>1</sub></span></td><td>S5</td><td>可判定</td><td>强完备强可靠</td><td>全有</td></tr>
+    <tr><td><span class="math">L<sub>2</sub></span></td><td>—</td><td><strong>可判定</strong> + 有限模型性质</td><td>强完备强可靠（由 RCA₂ 公理化得到）</td><td><strong>无</strong> Beth、<strong>无</strong>插值，<strong>但有</strong>弱 Beth</td></tr>
+    <tr><td><span class="math">L<sub>n</sub>, 3≤n&lt;ω</span></td><td>—</td><td><strong>不可判定</strong></td><td>无强完备强可靠系统（弱的是否存在仍开放）</td><td>Beth、弱 Beth、插值全无</td></tr>
+    <tr><td><span class="math">L<sub>ω</sub></span></td><td>「无限关系的有限公式逻辑」</td><td colspan="3">模型论结果见 Németi，代数方法</td></tr>
+  </table>
+
+  <div class="box warn"><div class="bt">这里藏着一个反直觉的组合：L₂ 可判定却没有 Beth</div>
+    <p>直觉里「可判定」总跟「性质好」绑一起。L₂ 拆开它：<strong>可判定性来自 RCA₂ 的有限公理化，Beth 失败来自 RCA₂ 的满射不满</strong>——两件事由不同的代数性质决定，互不牵连。L27 的 RRA 是「全坏」，L₂ 是「好一半坏一半」，这种错配只有把桥逐条查才看得见。</p>
+    <p>同理，<strong>n≥2 的无局部 Beth</strong> 由定理 4.3.19 读出（因为 Cs<sub>n</sub> 满射不满）；<strong>n≥2 的无插值</strong> 由定理 4.4.18 读出（因为 RCA<sub>n</sub> 无合并，Comer 的结果）。<strong>n=3 连弱 Beth 都没有（[116]），n=2 却有弱 Beth（[30]）——这是 n=2 特殊的又一处信号。</strong></p>
+  </div>
+
+  <div class="box thm"><div class="bt">定理 <span class="num">5.4.2</span>：n &gt; 2 时没有弱完备且强可靠的 Hilbert 系统；n ≤ 2 有强完备强可靠的</div>
+    <div class="proof"><span class="pt">n &gt; 2 一侧。</span>
+      <p>由定理 4.2.13：若存在弱完备且强可靠的 Hilbert 系统，则 Alg⊨ 是某个有限公理化拟簇的 SP 闭包之类。但 <span class="math">RCA<sub>n</sub></span> 不是有限公理化的（定理 7.2.5、7.3.3、7.3.4），矛盾。</p>
+    </div>
+    <div class="proof"><span class="pt">n ≤ 2 一侧。</span>
+      <p>由定理 4.2.20：<span class="math">RCA<sub>n</sub></span> (n≤2) 是有限公理化拟簇，于是从它的等式公理系统构造出强完备强可靠的 Hilbert 系统。<strong>和 L27 里 L<sub>C</sub> 的 Hilbert 系统是同一台构造。</strong><span class="qed">∎</span></p>
+    </div>
+  </div>
+  <p>定理 5.4.2 还留了个开放问题（UAL 问题 5.4.3）：<strong>n&gt;2 有没有弱完备且弱可靠的 Hilbert 系统？</strong>UAL 指出它等价于一个代数问题 7.3.6：<span class="math">RCA<sub>n</sub> = HK</span> 对某个有限公理化拟簇 K 是否成立。<strong>一个证明论问题被桥翻译成代数问题——这就是本系列反复见的「译过去」。</strong></p>
+  <p class="src"><b>来源：</b>UAL §5.4 性质清单、定理 4.3.19/4.4.18 的应用段、定理 5.4.2 及问题 5.4.3、定理 7.2.5/7.3.3/7.3.4。</p>
+</section>
+
+<section id="deduct">
+  <h2><span class="sn">6</span>O4　两套演绎关系 ⊢<sub>n</sub> 与 ⊢<sub>n,m</sub> <span class="tag log">O4</span></h2>
+  <p class="lead">这是本讲最独特的一节：别的逻辑只有一种「可证」，这里有两种，而且第二种要向更高的维度借变量。先把两套系统摆清楚，再问它们各自证明了什么。</p>
+
+  <h3><span class="sn">6.1</span>⊢<sub>n</sub>：关在 n 变量里的 Hilbert 系统</h3>
+  <div class="box def"><div class="bt">定义 <span class="num">5.4.4(i)（⊢<sub>n</sub> 的公理与规则）</span></div>
+    <p>导出联结词：<span class="math">∀v<sub>i</sub> φ = ¬∃v<sub>i</sub> ¬φ</span>、<span class="math">φ → ψ = ¬(¬φ ∧ ψ)</span>。公理模式 <span class="math">Ax<sub>n</sub></span>（对一切 <span class="math">i,j,k &lt; n</span>）：</p>
+    <ol>
+      <li><span class="math">χ</span>，<span class="math">χ</span> 是命题重言式（即 L₀ 的有效公式模式）。</li>
+      <li><span class="math">∀v<sub>i</sub>(φ → ψ) → (∀v<sub>i</sub> φ → ∀v<sub>i</sub> ψ)</span></li>
+      <li><span class="math">∀v<sub>i</sub> φ → φ</span></li>
+      <li><span class="math">∀v<sub>i</sub>∀v<sub>j</sub> φ → ∀v<sub>j</sub>∀v<sub>i</sub> φ</span></li>
+      <li><span class="math">∀v<sub>i</sub> φ → ∀v<sub>i</sub>∀v<sub>i</sub> φ</span></li>
+      <li><span class="math">∃v<sub>i</sub> φ → ∀v<sub>i</sub>∃v<sub>i</sub> φ</span></li>
+      <li><span class="math">v<sub>i</sub> = v<sub>i</sub></span></li>
+      <li><span class="math">v<sub>i</sub> = v<sub>j</sub> → (v<sub>i</sub> = v<sub>k</sub> → v<sub>j</sub> = v<sub>k</sub>)</span></li>
+      <li><span class="math">∃v<sub>i</sub>(v<sub>i</sub> = v<sub>j</sub>)</span></li>
+      <li><span class="math">v<sub>i</sub> = v<sub>j</sub> → ∀v<sub>k</sub>(v<sub>i</sub> = v<sub>j</sub>)</span>，若 <span class="math">k ≠ i,j</span></li>
+      <li><span class="math">v<sub>i</sub> = v<sub>j</sub> → (φ → ∀v<sub>i</sub>(v<sub>i</sub> = v<sub>j</sub> → φ))</span>，若 <span class="math">i ≠ j</span></li>
+    </ol>
+    <p>规则 <span class="math">Ru<sub>n</sub></span>：分离（MP）<span class="math">φ, φ → ψ / ψ</span> 与推广 <span class="math">φ / ∀v<sub>i</sub> φ</span>（<span class="math">i &lt; n</span>）。</p>
+  </div>
+  <div class="box intu"><div class="bt">最后一条公理最难，单独说人话</div>
+    <p><span class="math">v<sub>i</sub> = v<sub>j</sub> → (φ → ∀v<sub>i</sub>(v<sub>i</sub> = v<sub>j</sub> → φ))</span> 是<strong>替换公理</strong>：若 <span class="math">v<sub>i</sub></span> 与 <span class="math">v<sub>j</sub></span> 相等，且 φ 成立，那么把 φ 里 <span class="math">v<sub>i</sub></span> 换成 <span class="math">v<sub>j</sub></span> 后仍成立。<strong>这正是案例 3 说「替换要靠等号表达」的落实</strong>——它现在是公理，不是免费的原子操作。前面几条管量词，这条管等号与替换的交互，是 n 变量片段的脊梁。</p>
+  </div>
+  <p>UAL 提醒两个技术细节：n 无限时公理有无穷多条（每个 i 一条），n 有限时可把第一条的无穷多命题重言式换成一个有限的 L₀ 公理系统，从而 <span class="math">Ax<sub>n</sub></span> 有限；此外 <span class="math">⊢<sub>n</sub></span> 也可由机械翻译 CA<sub>n</sub> 公理得到——<strong>和 L27 里从 BA 公理翻译出 L<sub>C</sub> 的 Hilbert 系统完全同一招。</strong></p>
+
+  <h3><span class="sn">6.2</span>⊢<sub>n,m</sub>：向 m 变量借力</h3>
+  <div class="box def"><div class="bt">定义 <span class="num">5.4.4(ii)（m 变量可证）</span></div>
+    <p>设 <span class="math">n ≤ m ≤ ω</span>。在高维公式集 <span class="math">F<sup>R</sup><sub>m</sub></span> 里加一组公理</p>
+    <div class="formula">(R)　R → ∀v<sub>i</sub> R　（n ≤ i &lt; m，R ∈ R），</div>
+    <p>然后定义 <span class="math">⊢<sub>n,m</sub> = {⟨Σ, φ⟩ : Σ ∪ Ax<sub>nm</sub> ⊢<sub>m</sub> φ，Σ ∪ {φ} ⊆ F<sup>R</sup><sub>n</sub>}</span>——即「在 m 维系统里证明，但前提与结论都落在 n 维语言里」。</p>
+    <p><strong>直觉：新变量 <span class="math">v<sub>n</sub>,…,v<sub>m−1</sub></span> 是临时的。</strong>公理 (R) 说：关系符号 <span class="math">R</span> 不依赖这些新变量（对新变量全称封闭仍成立）。于是你可以用额外的维度做中转推理，最后结论仍落回原来的 n 变量公式。<strong>「证明用了几个变量」和「公式用了几个变量」就此分离。</strong></p>
+  </div>
+  <div class="box warn"><div class="bt">⊢<sub>n,m</sub> 不是 Hilbert 系统（这个区别要紧）</div>
+    <p>UAL 特意说：<span class="math">⊢<sub>n</sub></span> 由 Hilbert 系统给出，<span class="math">⊢<sub>n,m</sub></span> <strong>不是</strong>（m&gt;n 时）。原因是它的证明会用到 <span class="math">F<sub>m</sub></span> 里的公式，超出了 n 维语言；要把它写成只允许 n 维公式的系统，就得牺牲强可靠性（见 §8 末 UAL 说明）。<strong>「多变量证明」是一种元层面的可证关系，不是 n 语言内部的形式系统。</strong></p>
+  </div>
+  <p>两套系统都强可靠（UAL 明说「易于验证」）。但完备性差别巨大——下一节用三栏对应一次看清。</p>
+</section>
+
+<section id="complete">
+  <h2><span class="sn">7</span>O5　三栏对应与「多变量拯救证明」 <span class="tag log">O5</span></h2>
+  <p class="lead">这是全讲最漂亮的一页：三个概念——n 变量内可证、借 m 变量可证、语义有效——分别精确对应三个代数等式判定问题。桥在这里不是比喻，是一一对应的翻译表。</p>
+
+  <div class="box thm"><div class="bt">定理 <span class="num">5.4.6</span>：三栏对应（n 任意序数，n ≤ m）</div>
+    <div class="formula">(<span class="math">i</span>)　⊢<sub>n</sub> φ　⟺　CA<sub>n</sub> ⊨ φ = 1
+(<span class="math">ii</span>)　⊢<sub>n,m</sub> φ　⟺　SNr<sub>n</sub> CA<sub>m</sub> ⊨ φ = 1
+(<span class="math">iii</span>)　⊨<sub>n</sub> φ　⟺　RCA<sub>n</sub> ⊨ φ = 1</div>
+    <p>其中 <span class="math">SNr<sub>n</sub> CA<sub>m</sub></span> 是 <span class="math">CA<sub>m</sub></span> 的 <strong>neat reduct</strong>：把 m 维代数「削」掉多余维度，只留 n 维结构（UAL §7.3，定理 7.3.9）。三行分别来自 Henkin–Monk–Tarski 经典教材 [97] 的推论 4.3.26、定理 4.3.25、定理 4.3.17。</p>
+  </div>
+
+  <div class="box intu"><div class="bt">这张表怎么读</div>
+    <p>每一栏都是一座桥，把「逻辑里的一句话」翻译成「代数里的一个等式」：</p>
+    <ul>
+      <li><strong>⊢<sub>n</sub> → CA<sub>n</sub></strong>：<span class="math">⊢<sub>n</sub></span> 的公理就是 CA<sub>n</sub> 的公理，所以「n 变量内可证」=「在所有抽象柱体代数里等于 1」。<strong>注意是 CA<sub>n</sub>，不是 RCA<sub>n</sub></strong>——抽象系统管的是公理，不管可表示性。</li>
+      <li><strong>⊢<sub>n,m</sub> → SNr<sub>n</sub> CA<sub>m</sub></strong>：借 m 变量证明，对应的是「m 维代数削成 n 维」后的类。借高维 = 在更大的代数里算完再削回来。</li>
+      <li><strong>⊨<sub>n</sub> → RCA<sub>n</sub></strong>：语义有效对应<strong>可表示</strong>代数。这是 L16 的命题 3.3.20 在片段上的版本。</li>
+    </ul>
+    <p><strong>三栏按包含关系排成一条链：</strong><span class="math">CA<sub>n</sub> ⊇ SNr<sub>n</sub> CA<sub>n+1</sub> ⊇ … ⊇ RCA<sub>n</sub></span>（代数类越大，等式理论越弱、可证的东西越少），于是逻辑侧 <span class="math">⊢<sub>n</sub> ⊆ ⊢<sub>n,n+1</sub> ⊆ … ⊆ ⊨<sub>n</sub></span>。<strong>中间那些「借变量」正是把这条链填满的台阶。</strong></p>
+  </div>
+
+  <div class="box thm"><div class="bt">推论 <span class="num">5.4.7</span>：多变量完全性</div>
+    <ol>
+      <li><span class="math">⊢<sub>n,n+ω</sub></span> 对 L<sub>n</sub> <strong>强完备</strong>（对所有 n）。</li>
+      <li>若 <span class="math">m &lt; ω</span>，<span class="math">⊢<sub>n,n+m</sub></span> 对 L<sub>n</sub> <strong>连弱完备都不是</strong>。</li>
+      <li>对任意 <span class="math">φ ∈ L<sub>n</sub></span>：<span class="math">⊨<sub>n</sub> φ ⟺ ⊢<sub>n,n+m</sub> φ</span> 对<strong>某个</strong>有限 m 成立。</li>
+      <li>对任意 <span class="math">n,m &lt; ω</span>：存在有效的 n 变量公式，不能用 m 变量证明；但每个有效 n 变量公式，都存在某个 m 使它 m 变量可证。</li>
+    </ol>
+  </div>
+
+  <div class="proof"><span class="pt">为什么成立：把定理 5.4.6 与定理 7.3.9 接起来。</span>
+    <p>关键代数等式是 <span class="math">RCA<sub>n</sub> = SNr<sub>n</sub> CA<sub>n+ω</sub></span>（定理 7.3.9）。于是对任意有效式：</p>
+    <div class="formula">⊨<sub>n</sub> φ　⟺　RCA<sub>n</sub> ⊨ φ = 1　⟺　SNr<sub>n</sub> CA<sub>n+ω</sub> ⊨ φ = 1　⟺　⊢<sub>n,n+ω</sub> φ.</div>
+    <p>最后一步是 (ii)。强完备性对有限 n 还要用 L<sub>n</sub> 紧致 + 有演绎定理（对 n ≥ ω 用 [97, 4.3.23(ii)] 另证）。(3) 的「某个有限 m」来自 <span class="math">⊢<sub>n,n+ω</sub></span> 的定义：证明是有限对象，只会用到有限多个额外变量。<strong>这是一处典型的「紧致性在背后干活」：无穷多变量够用，是因为每个具体证明只需有限多。</strong></p>
+  </div>
+
+  <div class="box intu"><div class="bt">本讲的主题句</div>
+    <p><strong>n 变量公式的证明可能需要超过 n 个变量；但只要允许借任意多个（有限个）变量，完备性就回来了。</strong>定理 5.4.2 说「关在 n 里不完备」，推论 5.4.7 说「开门借变量就完备」。两句合起来才完整。</p>
+  </div>
+  <p>推论还顺带覆盖普通一阶逻辑：n 变量公式在 L<sub>n</sub> 中有效当且仅当在通常 FOL 中有效；而任意一阶公式都有某个 L<sub>n</sub> 里的正常形。<strong>有限变元片段不是旁支，它是一阶逻辑按变量数切出的骨架。</strong></p>
+  <p class="src"><b>来源：</b>UAL 定理 5.4.6、推论 5.4.7 及证明、定理 7.3.9（RCA<sub>n</sub> = SNr<sub>n</sub> CA<sub>n+ω</sub>）、[97] 4.3.17/4.3.23/4.3.25/4.3.26。</p>
+</section>
+
+<section id="power">
+  <h2><span class="sn">8</span>O6　演绎能力的严格阶梯 <span class="tag alg">O6</span></h2>
+  <p class="lead">既然「借变量」有用，自然问：多借一个变量，能力涨多少？定理 5.4.8 给出完整答案，而且答案在 n=2 处再次显出特殊性。</p>
+
+  <div class="box thm"><div class="bt">定理 <span class="num">5.4.8</span>（演绎能力）</div>
+    <ol>
+      <li>若 <span class="math">1 &lt; n &lt; ω</span>，<span class="math">⊢<sub>n</sub> ≠ (⊢<sub>n+1</sub> 限制到 L<sub>n</sub>)</span>：存在 n 变量公式，<span class="math">⊢<sub>n</sub></span> 证不出，<span class="math">⊢<sub>n+1</sub></span> 证得出。</li>
+      <li>若 <span class="math">n ≤ 1</span>，对任意 n 变量公式与 <span class="math">m ≥ n</span>，<span class="math">⊢<sub>n</sub> φ ⟺ ⊢<sub>m</sub> φ</span>。<strong>0、1 变量处，多给变量毫无帮助。</strong></li>
+      <li>若 <span class="math">3 ≤ n ≤ m &lt; ω</span>，<span class="math">⊢<sub>n,m</sub> ≠ ⊢<sub>n,m+1</sub></span>：存在 3 变量公式，用 m 变量证不出、用 m+1 变量证得出。<strong>每多借一个变量，能力都真涨。</strong></li>
+      <li><span class="math">n = 2</span> 时 <span class="math">⊢<sub>2</sub> ≠ ⊢<sub>2,3</sub> = ⊢<sub>2,m</sub></span>（一切 <span class="math">m ≥ 3</span>）。<strong>2 变量处，借到 3 个就到顶了。</strong></li>
+      <li>若 <span class="math">n ≤ 1</span>，<span class="math">⊢<sub>n</sub> = ⊢<sub>n,m</sub></span> 对一切 <span class="math">m ≥ n</span>。</li>
+    </ol>
+  </div>
+
+  <div class="box intu"><div class="bt">五条一句话记法</div>
+    <p><strong>0、1 变量：借变量无用（ii、v）。2 变量：借一次到位（iv）。3 变量以上：无底洞，每借一个涨一级（i、iii）。</strong>这条阶梯和 §5 的可判定性分水岭是同一件事的两种说法——(iv) 背后是 <span class="math">CA₂ ≠ SNr₂ CA₃ = RCA₂ = SNr₂ CA<sub>ω</sub></span>：2 维处「削一次」就已经得到全部可表示代数，所以借到 3 个变量就饱和了；3 维以上 <span class="math">SNr<sub>n</sub> CA<sub>m</sub></span> 随 m 严格下降，永远追不上 <span class="math">RCA<sub>n</sub></span>，所以每多借一个都在逼近但永不抵达。</p>
+  </div>
+
+  <div class="proof"><span class="pt">(i) 的证明为什么这么短（UAL 原文只两行）。</span>
+    <p>由 [97, 2.6.14]：存在 CA<sub>n</sub> 的等式 e，使 <span class="math">CA<sub>n</sub> ⊭ e</span> 而 <span class="math">CA<sub>n+1</sub> ⊨ e</span>。可设 e 是 <span class="math">φ = 1</span> 形。于是定理 5.4.6(i) 直接给 <span class="math">⊬<sub>n</sub> φ</span> 而 <span class="math">⊢<sub>n+1</sub> φ</span>。<strong>整个证明论结论是从一条代数等式搬过来的——这就是四步流程第 4 步的威力。</strong>(ii)(v) 同理，用 <span class="math">CA<sub>n</sub> = RCA<sub>n</sub> = SNr<sub>n</sub> CA<sub>n+m</sub></span>（n≤1）；(iv) 用上面那条 CA₂ 的链。</p>
+  </div>
+
+  <div class="box warn"><div class="bt">一个必须承认的边界</div>
+    <p>推论 5.4.7(i) 的 <span class="math">⊢<sub>n,n+ω</sub></span> 是强完备的，但它的证明<strong>用了不在 L<sub>n</sub> 里的公式</strong>。如果你坚持证明里只许出现 n 变量公式，文献里确实有完备系统（[201]、[151]、[157]、[158]），但它们<strong>共同牺牲强可靠性</strong>。这不是品味问题，是定理 5.4.2 的硬性结论：n&gt;2 时强可靠 + 强完备的 Hilbert 系统根本不存在。<strong>「证明只能用 n 变量」和「证明可靠且完备」两者不可兼得。</strong></p>
+  </div>
+  <p class="src"><b>来源：</b>UAL 定理 5.4.8 及证明、注 5.4.9、[97] 2.6.8/2.6.9/2.6.14/2.6.42/3.2.65、[104][103]。</p>
+</section>
+
+<section id="examples">
+  <h2><span class="sn">9</span>三层例：典型 / 本质 / 边界 <span class="tag alg">三层例</span></h2>
+  <div class="tri">
+    <div class="bt">典型 · L₂ 是能亲手算的那一档</div>
+    <div class="ex"><div class="bt">二元关系上的两个变量 <span class="num">L₂ 与 RRA 的第一课</span></div>
+      <p>取 <span class="math">R</span> 一个二元关系符号，<span class="math">L₂</span> 的原子就是 <span class="math">R</span>（代表 <span class="math">R(v₀,v₁)</span>）。公式 <span class="math">∃v₀ R</span> 表示「某点指向当前点」，<span class="math">∃v₁ R</span> 表示「当前点指向某点」——两个变量刚好够写出关系代数的逆与复合。<strong>这就是 L27 里 L<sub>REL</sub> 的方形语义在片段里的影子</strong>，也是为什么 L₂ 的代数 RCA₂ 与关系代数贴得最近。</p>
+    </div>
+  </div>
+  <div class="tri">
+    <div class="bt">本质 · L′₂ 的五元模 5 反例</div>
+    <div class="ex"><div class="bt">原子多给一点，桥就塌 <span class="num">§3 反例二的浓缩</span></div>
+      <p>同样的 5 个点，<span class="math">R</span> 是 +1、<span class="math">S</span> 是 +2。在 L′₂ 里 <span class="math">R(v₁,v₀)</span> 与 <span class="math">S(v₁,v₀)</span> 是合法原子，于是可以在同态里对调它们的像而核不变。<strong>在 L₂ 里这两个公式根本不是原子</strong>，必须用 <span class="math">∃</span> 与 <span class="math">=</span> 从 <span class="math">R, S</span> 造出来，一造就被结构锁死，对调不再可能。<strong>同一个模型，两种语法，一个可代数化一个不可——语法不是包装纸。</strong></p>
+    </div>
+  </div>
+  <div class="tri">
+    <div class="bt">边界 · 无穷变量 L<sub>ω</sub> 与「借变量」的极限</div>
+    <div class="ex"><div class="bt">两处别越界 <span class="num">n=ω 的演绎定理；n finite 的公理有限性</span></div>
+      <ul>
+        <li><strong>L<sub>ω</sub> 紧致但没有演绎定理。</strong>推论 5.4.7(i) 对 n ≥ ω 的强完备性要用 [97, 4.3.23(ii)] 另证，不能照搬有限 n 的「紧致 + 演绎定理」路线。<strong>「变量无穷多」和「公式有限长」是两回事，别混。</strong></li>
+        <li><strong>n 有限时 Ax<sub>n</sub> 才能压成有限。</strong>注 5.4.5(1) 说要把无穷多条命题重言式公理换成一个有限的 L₀ 系统；n=ω 时做不到。<strong>这直接呼应定理 5.4.2：有限公理化是 Hilbert 系统能拿到的前提。</strong></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="fusion2">
+  <h2><span class="sn">10</span>融合接口：第十张图 <span class="tag alg">第十张图</span></h2>
+  <p class="lead">这张图画「三维刻度」：横轴是变量数 n，纵轴是证明许可的变量数 m，深度是代数类。三轴一起看，L₂ 的特殊地位一眼可见。</p>
+  <div class="diagram"><div class="bt">第十张图：变量数 × 证明许可 × 代数类</div>
+<pre>  变量数 n：   0          1           2            3 ────► ω
+              │          │           │            │
+  逻辑        L_C        S5         L₂          L₃…        L_ω
+  可判定       ✓         ✓          ✓            ✗          —
+  Hilbert    强完备     强完备     强完备       无强可靠      —
+  Beth/插值    全有       全有      无(弱Beth有)   全无         —
+              │          │           │            │
+  代数        BA/CA₀    CA₁        RCA₂        RCA₃…      RCA_ω
+  有限公理化    ✓         ✓          ✓            ✗          ✗
+  满射满       ✓         ✓          ✗            ✗          ✗
+              │          │           │            │
+  证明 ⊢ₙ     够用       够用      不够，借到3顶   不够，无底洞
+  ⊢_{n,m}     =⊢ₙ       =⊢ₙ      =⊢_{2,≥3}   严格 ↗ 随 m
+              │          │           │            │
+              └──────────┴───────────┴────────────┘
+                         ▼
+        三栏对应（5.4.6）：⊢ₙ ↔ CAₙ  |  ⊢_{n,m} ↔ SNrₙ CAₘ  |  ⊨ₙ ↔ RCAₙ
+                         ▼
+    RCA_n = SNr_n CA_{n+ω} ──► 多变量强完备（5.4.7），但证明要出界</pre>
+  </div>
+  <div class="box fuse"><div class="bt">和第七篇前两讲的接法</div>
+    <ul>
+      <li><strong>L27 的四步流程在这里第二次跑通</strong>：L′<sub>n</sub> 死在第 1 步（语义代入），L<sub>n</sub> 走完全四步——这就是「两个案例」的对照价值。</li>
+      <li><strong>定理 5.4.6 是 L16 那个翻译表的精细版</strong>：L16 给一般四元组的翻译，这里给出 n 变量片段的三档精确对应（可证/借变量可证/有效各对一个代数类）。</li>
+      <li><strong>「借变量」= L22 紧致桥的又一次现身</strong>：推论 5.4.7(3) 里「无穷够用因为每个证明只需有限」，和 L18 紧致性的有限特征同出一源。<strong>有限性在这里不是限制，是让证明存在的条件。</strong></li>
+    </ul>
+  </div>
+</section>
+
+<section id="ex">
+  <h2><span class="sn">11</span>习题 <span class="tag log">按目标编号</span></h2>
+  <div class="box"><div class="bt">O1　L′<sub>n</sub> 与反例</div>
+    <ol>
+      <li>用 <span class="math">p = R(v₀,v₁)</span>、<span class="math">q = R(v₀,v₀)</span> 逐模型验证 <span class="math">⊨ q ↔ ∃v₁(v₁=v₀ ∧ p)</span>，并找一个模型说明 <span class="math">⊭ p ↔ ∃v₁(v₁=v₀ ∧ p)</span>。</li>
+      <li>复述五元模 5 反例的五步。关键一问：为什么 <span class="math">ker(h) = ker(mng<sub>M</sub>)</span> 仍不足以让 h 成为某模型的意义函数？（提示：h 对调了两个「掉头关系」的像。）</li>
+    </ol>
+  </div>
+  <div class="box"><div class="bt">O2　L<sub>n</sub> 的代数对应</div>
+    <ol start="3">
+      <li>把命题 5.4.1 的三步证明补全，特别说明 <span class="math">Mng = Hom(F<sup>R</sup>, Cs<sub>n</sub>)</span> 为什么成立。</li>
+      <li>画一张表，把 setRRA / RRA / RA 与 Cs<sub>n</sub> / RCA<sub>n</sub> / CA<sub>n</sub> 六层对齐，并写出「可表示鸿沟」在两侧的对应形式。</li>
+    </ol>
+  </div>
+  <div class="box"><div class="bt">O3　n=2 分水岭</div>
+    <ol start="5">
+      <li>用 L27 的四步流程，从 RCA₂ 与 RCA₃ 的代数性质清单分别推出 L₂ 与 L₃ 的逻辑性质清单。</li>
+      <li>解释「L₂ 可判定却无 Beth」为什么不矛盾：指出两条性质各自依赖的代数条件。</li>
+      <li>定理 5.4.2 的两侧各用哪条桥（4.2.13 / 4.2.20）？写出推理链。</li>
+    </ol>
+  </div>
+  <div class="box"><div class="bt">O4　两套演绎关系</div>
+    <ol start="8">
+      <li>挑 <span class="math">Ax<sub>n</sub></span> 里最后一条替换公理，用一个具体模型验证它在 L₂ 中有效。</li>
+      <li>说明 <span class="math">⊢<sub>n,m</sub></span> 为什么不是 Hilbert 系统：它的证明用到哪些 L<sub>n</sub> 之外的公式？公理 (R) 起什么作用？</li>
+    </ol>
+  </div>
+  <div class="box"><div class="bt">O5　三栏对应与多变量完全性</div>
+    <ol start="10">
+      <li>把定理 5.4.6 三行背出来，并说明为什么「可证」对应 CA<sub>n</sub> 而「有效」对应 RCA<sub>n</sub>——两者差在哪。</li>
+      <li>用 <span class="math">RCA<sub>n</sub> = SNr<sub>n</sub> CA<sub>n+ω</sub></span> 推出推论 5.4.7(3)：为什么「某个有限 m 就够了」？（提示：证明是有限对象。）</li>
+    </ol>
+  </div>
+  <div class="box"><div class="bt">O6　演绎能力阶梯</div>
+    <ol start="12">
+      <li>把定理 5.4.8 五条写成一张 n–m 格点图，标出每条等式/严格包含成立的区域。</li>
+      <li>解释为什么 n=2 处 <span class="math">⊢<sub>2,3</sub> = ⊢<sub>2,m</sub></span>（一切 m≥3）：写出背后的代数等式链。</li>
+    </ol>
+  </div>
+  <p class="src"><b>对应讲解：</b><a href="#motive">§2</a>、<a href="#prime">§3</a> → E1–E2；<a href="#ln">§4</a> → E3–E4；<a href="#divide">§5</a> → E5–E7；<a href="#deduct">§6</a> → E8–E9；<a href="#complete">§7</a> → E10–E11；<a href="#power">§8</a> → E12–E13。</p>
+</section>
+
+<div class="footnav">
+  <a href="L27.html">← 上一讲：L27 案例 1–2：经典命题逻辑 L<sub>C</sub> 与箭头逻辑 L<sub>REL</sub></a>
+  <a href="L29.html" style="font-size:13.5px;color:#5a7fb5">下一讲：L29 案例 5–8：FOL 的各种变体 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L28 · 来源：UAL §5.3（定义 5.3.1、命题 5.3.2）、§5.4（命题 5.4.1、定理 5.4.2/5.4.6/5.4.8、推论 5.4.7）、§7.2–7.3；回指 L15/L16 片段初见、L19–L22 桥定理、L24 关系代数、L27 四步流程 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

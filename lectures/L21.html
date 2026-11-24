@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L21 桥之四：插值 ↔ 合并 / 超合并 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第五篇 桥定理：全课核心</span><span class="sep">/</span><span>L21</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 21 · 2 学时 · 桥之四</div>
+  <h1>桥之四：插值 ↔ 合并 / 超合并</h1>
+  <div class="sub">「两块结构沿公共部分能不能粘起来」——逻辑问插值，代数问超合并，拓扑问粘合</div>
+  <div class="metarow"><span>来源：UAL §4.4.1–4.4.2（定理 4.4.18、4.4.24、Craig 插值、合并与超合并）；回指 L18 紧致性、L19 Hilbert 系统与有限证明、L20 Beth 可定义性与 Alg<sup>m</sup>、L16 概念代数、L03 嵌入与商、L14 Stone 空间</span>
+    <span class="tag log">逻辑</span><span class="tag alg">代数</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：把两个世界粘起来，会不会漏信息</a></li>
+  <li><a href="#craig">Craig 插值与 Beth 证明的补齐（O1）</a></li>
+  <li><a href="#amalg">代数侧：合并性质（O2）</a></li>
+  <li><a href="#super">超合并：合并之上再加一道夹逼（O3）</a></li>
+  <li><a href="#bridge">定理 4.4.18 / 4.4.24：双向刻画（O4）</a></li>
+  <li><a href="#app">应用：插值缺失的逻辑怎么改造（O5）</a></li>
+  <li><a href="#compare">三件工具同时上场；四座桥对照（O6）</a></li>
+  <li><a href="#fusion2">融合接口：第四座三面一体图</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系（简）</h2>
+  <p class="lead">前三座桥各造了一台翻译机。这一讲要把三台机器同时开动：<strong>逻辑侧问「两个公式之间能不能插进一句共同语言的话」，代数侧问「两块代数沿公共子代数能不能粘成一个大代数」，两侧的回答居然是同一条定理。</strong>这是全书技术含量最高的一讲，慢一点走。</p>
+
+  <div class="def"><div class="bt">概念与依赖 <span class="num">一句话版</span></div>
+    <table>
+      <tr><th>概念</th><th>依赖</th><th>它回答的问题</th></tr>
+      <tr><td>Craig 插值性质</td><td>L01 语义、L02 语言片段</td><td><span class="math">⊨ φ → ψ</span> 时，中间能否放一句共同语言的话？</td></tr>
+      <tr><td>Beth 可定义性</td><td>L20 §3</td><td>隐含可定义为何等于显式可定义？欠的证明在这里补</td></tr>
+      <tr><td>Robinson 联合一致性</td><td>上面 + L18 紧致性</td><td>两套理论各自一致且在公共语言上相容，能否合并成有模型的理论？</td></tr>
+      <tr><td>合并性质</td><td>L03 嵌入、L16 代数语义</td><td>两块代数沿公共子代数粘起来，粘出的东西还在同一个类里吗？</td></tr>
+      <tr><td>超合并</td><td>合并 + L20 不可区分</td><td>粘的时候，会不会把公共部分之外的信息偷渡过去？</td></tr>
+      <tr><td>定理 4.4.18 / 4.4.24</td><td>上面 + L18/L19/L20</td><td>插值与（超）合并凭什么等价？两方向各用哪座桥？</td></tr>
+      <tr><td>夹逼条件 <span class="math">b ≤ f(a) ≤ c</span></td><td>L03 商代数、L16 公式代数</td><td>代数的「中间元」对应逻辑的哪一句话？</td></tr>
+      <tr><td>插值缺失的改造</td><td>L19 有限公理化、L20 Alg<sup>m</sup></td><td>没有插值的逻辑，病根在哪、能怎么修？</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">依赖主线（一行）</div>
+    <p><span class="math">⊨ φ → ψ</span> → 想把 <span class="math">φ</span> 的语言与 <span class="math">ψ</span> 的语言分开看 → 这就是把两套理论沿公共语言合并 → 代数上写成 <span class="math">B ← A → C</span> 的图 → 合并给出共同的 <span class="math">D</span>，超合并再要求「在 <span class="math">D</span> 里比出来的大小关系，必须能在 <span class="math">A</span> 里找到见证」→ 那个见证 <span class="math">a</span> 就是插值式 <span class="math">θ</span>。<strong>整讲一句话：插值 = 粘合时不偷渡信息。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 目标 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>写出 Craig 插值性质，举例并补全 L20 欠下的 Beth 证明</td><td><a href="#craig">§3</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>定义合并性质，画出嵌入图并判断一个类是否可合并</td><td><a href="#amalg">§4</a></td><td><a href="#ex">E3, E4</a></td></tr>
+    <tr><td><b>O3</b></td><td>说出超合并比合并多要的那一条夹逼条件，并解释它对应插值</td><td><a href="#super">§5</a></td><td><a href="#ex">E5, E6</a></td></tr>
+    <tr><td><b>O4</b></td><td>陈述定理 4.4.18 / 4.4.24 的双向性，说明每方向用哪件工具</td><td><a href="#bridge">§6</a></td><td><a href="#ex">E7, E8, E9</a></td></tr>
+    <tr><td><b>O5</b></td><td>用插值 / 合并诊断一个逻辑的缺陷，并给出改造路线</td><td><a href="#app">§7</a></td><td><a href="#ex">E10, E11</a></td></tr>
+    <tr><td><b>O6</b></td><td>说清紧致、有限证明、可定义性三件工具如何在此同时上场</td><td><a href="#compare">§8</a></td><td><a href="#ex">E12, E13</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：把两个世界粘起来，会不会漏信息</h2>
+
+  <div class="intu"><div class="bt">它解决什么问题</div>
+    <p>先讲一个动作：<strong>粘合。</strong>你手里有两块结构 <span class="math">B</span> 和 <span class="math">C</span>，它们共享一小块 <span class="math">A</span>。你想把它们沿 <span class="math">A</span> 拼成一个更大的 <span class="math">D</span>，并且要求拼完之后 <span class="math">A</span> 在两边还是同一个东西。</p>
+    <p>听起来只是小学手工。但<strong>「能拼」和「拼得干净」是两件事</strong>。设想 <span class="math">B</span> 里有个元素 <span class="math">b</span>，<span class="math">C</span> 里有个元素 <span class="math">c</span>，它们都不在公共部分 <span class="math">A</span> 里。拼好之后，你可能在 <span class="math">D</span> 里发现 <span class="math">b ≤ c</span>。<strong>这个大小关系是从哪来的？</strong>如果 <span class="math">A</span> 里能找到一个中间人 <span class="math">a</span>，让 <span class="math">b ≤ a ≤ c</span>，那还算有据可查——关系是被公共部分「传导」过来的。如果找不到，那就是<strong>凭空偷渡</strong>：拼的这个动作本身泄露了 <span class="math">B</span> 与 <span class="math">C</span> 之间的私密信息。</p>
+    <p>现在把「元素」换成「公式」，「大小」换成「蕴含」，「公共部分」换成「两种语言共有的符号」。<strong>「能拼且拼得干净」翻译成逻辑，正是 Craig 插值：若 <span class="math">φ</span> 蕴含 <span class="math">ψ</span>，那么这份蕴含必须由两者共有的语言承担，不能靠各自私有的符号暗中传递。</strong></p>
+    <p>这就是第四座桥的全部直觉。<strong>逻辑问插值，代数问合并与超合并，而它们说的是同一件事。</strong></p>
+  </div>
+
+  <div class="diagram"><pre>
+               「粘得干净」的三副面孔
+                      │
+      ┌───────────────┼───────────────┐
+      │               │               │
+    逻辑 L          代数 Algᵐ(L)      拓扑 Spec
+      │               │               │
+  φ ⊨ ψ          B ← A → C          沿公共闭集粘合
+      │               │               │
+  中间有 θ         拼成 D            得到公共扩张
+      │               │               │
+  θ 只用共同语言   b ≤ f(a) ≤ c      a 落在公共部分
+      │               │               │
+      └── 插值 ⟺ 超合并 ⟺ 粘合不偷渡 ──┘
+            共同语言 ↔ 公共子代数 ↔ 公共子集
+  </pre></div>
+
+  <div class="warn"><div class="bt">先把话说清楚：合并很便宜，超合并很贵</div>
+    <p>① <strong>「能拼」几乎总是能做到。</strong>集合层面把 <span class="math">B</span> 与 <span class="math">C</span> 沿 <span class="math">A</span> 取并，再随便黏一黏就行。<strong>难点从来不是拼，而是拼出来的东西还得留在原来的类里、且不能偷渡信息。</strong>这就是「合并」与「超合并」的差别（§4、§5）。</p>
+    <p>② <strong>「共同语言」必须真的是交，不能私自扩大。</strong>如果你偷偷把 <span class="math">B</span> 或 <span class="math">C</span> 的私有符号也放进中间，插值当然写得出——但那是作弊。<strong>插值的价值恰恰在于中间人只准用两边都认识的词。</strong></p>
+    <p>③ <strong>这一讲要同时花三笔钱。</strong>L18 的紧致性用来把无穷压成有限；L19 的有限证明用来把「有效」换成「可证」；L20 的可定义性用来把「隐含」换成「显式」。少任何一件，定理 4.4.24 的某个方向就证不出来。</p>
+  </div>
+</section>
+
+<!-- ============ O1 ============ -->
+<section id="craig">
+  <h2><span class="sn">3</span>Craig 插值与 Beth 证明的补齐 <span class="tag log">O1</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.1（Craig 插值性质）</span></div>
+    <p>设逻辑 <span class="math">L</span> 有语义后承 <span class="math">⊨</span>。称 <span class="math">L</span> 有 <strong>Craig 插值性质</strong>，若对任意公式 <span class="math">φ, ψ</span>，只要 <span class="math">⊨ φ → ψ</span>，就存在公式 <span class="math">θ</span> 满足：</p>
+    <ol>
+      <li><span class="math">⊨ φ → θ</span> 且 <span class="math">⊨ θ → ψ</span>；</li>
+      <li><span class="math">θ</span> 只使用 <span class="math">L(φ) ∩ L(ψ)</span> 里的符号（再加上等号、逻辑常项与自由变量）。</li>
+    </ol>
+    <p>这个 <span class="math">θ</span> 叫 <strong>插值式</strong>。第 2 条是灵魂：<strong>中间人不许认识任何一边的私符号。</strong></p>
+  </div>
+
+  <p><strong>先看两个成功例子。</strong>它们简单到几乎不像定理，但已经把「中间人只用共同语言」这把刀磨出来了。</p>
+
+  <div class="ex"><div class="bt">例 3.2（命题层）</div>
+    <p><span class="math">φ = p ∧ q</span>，语言 <span class="math">{p, q}</span>；<span class="math">ψ = p ∨ r</span>，语言 <span class="math">{p, r}</span>。显然 <span class="math">⊨ φ → ψ</span>。共同语言只有 <span class="math">{p}</span>，而插值式取 <span class="math">θ = p</span>：</p>
+    <div class="formula">⊨ (p ∧ q) → p　且　⊨ p → (p ∨ r).</div>
+    <p>注意 <span class="math">q</span> 和 <span class="math">r</span> 都被 <span class="math">θ</span> 甩掉了——它们各是一边的私符号，进不了中间。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例 3.3（量词层）</div>
+    <p><span class="math">φ = ∀x(Px → Qx) ∧ Pa</span>，语言 <span class="math">{P, Q, a}</span>；<span class="math">ψ = ∃x Qx ∨ Rb</span>，语言 <span class="math">{Q, R, b}</span>。共同语言是 <span class="math">{Q}</span>（常元 <span class="math">a</span> 与 <span class="math">b</span> 各自私有）。插值式取 <span class="math">θ = ∃x Qx</span>。</p>
+    <p>这里有个小陷阱：<strong>不能写 <span class="math">Qa</span>。</strong>虽然 <span class="math">φ</span> 确实推出 <span class="math">Qa</span>，但 <span class="math">a</span> 不在 <span class="math">ψ</span> 的语言里，<span class="math">Qa</span> 不是合法插值。<strong>共同语言这一条会硬生生逼你把常元换成量词。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 3.4（插值 ⟺ Robinson 联合一致性）</div>
+    <p>称逻辑 <span class="math">L</span> 有 <strong>Robinson 联合一致性</strong>，若：只要理论 <span class="math">T₁ ⊆ Sent(L₁)</span> 与 <span class="math">T₂ ⊆ Sent(L₂)</span> 各自可满足，且它们在公共语言 <span class="math">L₀ = L₁ ∩ L₂</span> 上相容（即不存在 <span class="math">L₀</span>-句子 <span class="math">σ</span> 使 <span class="math">T₁ ⊨ σ</span> 且 <span class="math">T₂ ⊨ ¬σ</span>），则 <span class="math">T₁ ∪ T₂</span> 可满足。</p>
+    <p><strong>结论：</strong>Craig 插值性质 ⟺ Robinson 联合一致性。</p>
+  </div>
+
+  <div class="proof"><span class="pt">证明（两个方向各用一次我们见过的机器）。</span>
+    <p><strong>方向一：插值 ⟹ 联合一致。</strong>设 <span class="math">T₁, T₂</span> 在公共语言上相容但 <span class="math">T₁ ∪ T₂</span> 不可满足。由 <strong>L18 紧致性</strong>，取有限子集使 <span class="math">φ = ∧Γ₁ ⊆ T₁</span>、<span class="math">ψ = ∧Γ₂ ⊆ T₂</span> 满足 <span class="math">⊨ φ → ¬ψ</span>。Craig 插值给 <span class="math">L₀</span>-公式 <span class="math">θ</span> 夹在中间：<span class="math">T₁ ⊨ θ</span> 且 <span class="math">T₂ ⊨ ¬θ</span>。这与公共语言上相容矛盾。<span class="qed">∎</span></p>
+    <p><strong>方向二：联合一致 ⟹ 插值。</strong>设 <span class="math">⊨ φ → ψ</span> 但不存在插值式。取 <span class="math">T₁ = {φ}</span>、<span class="math">T₂ = {¬ψ}</span>。若它们在 <span class="math">L₀</span> 上不相容，就有 <span class="math">L₀</span>-句子 <span class="math">σ</span> 使 <span class="math">⊨ φ → σ</span> 且 <span class="math">⊨ σ → ¬¬ψ</span>，即 <span class="math">σ</span> 是插值式——与假设矛盾。故 <span class="math">T₁, T₂</span> 在 <span class="math">L₀</span> 上相容；联合一致性给出 <span class="math">{φ, ¬ψ}</span> 有模型，与 <span class="math">⊨ φ → ψ</span> 矛盾。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 3.5（补齐 L20 的欠账：Beth ⟺ Craig）</div>
+    <p>L20 §3 用紧致性证明了「隐含可定义 ⟹ 显式可定义」时说「完整证明待插值工具就绪」。现在补上：<strong>在一阶逻辑里，Beth 可定义性定理与 Craig 插值定理等价</strong>，二者通过命题 3.4 的 Robinson 联合一致性连成一条环。</p>
+  </div>
+
+  <div class="proof"><span class="pt">Craig ⟹ Beth。</span>
+    <p>设关系符号 <span class="math">R</span> 在理论 <span class="math">T</span>（语言 <span class="math">L</span>）中隐含可定义。引入新符号 <span class="math">R′</span>，令 <span class="math">L′ = L ∪ {R, R′}</span>，<span class="math">T′</span> 是把 <span class="math">T</span> 中 <span class="math">R</span> 全换成 <span class="math">R′</span> 得到的副本。隐含可定义意味着 <span class="math">T ∪ T′ ⊨ ∀x̄ (R(x̄) ↔ R′(x̄))</span>。取一个方向，由紧致性压成有限：<span class="math">⊨ (∧T₀) ∧ R(x̄) → R′(x̄)</span>。此时 <span class="math">R</span> 只出现在左侧前提、<span class="math">R′</span> 只出现在右侧结论，共同语言恰是 <span class="math">L</span>。Craig 插值给 <span class="math">L</span>-公式 <span class="math">θ(x̄)</span>，使 <span class="math">⊨ ∧T₀ ∧ R(x̄) → θ(x̄)</span> 且 <span class="math">⊨ θ(x̄) → R′(x̄)</span>。第二式里没有 <span class="math">R</span>，把它读回原语言即得 <span class="math">T ⊨ θ(x̄) → R(x̄)</span>；对称地做另一个方向得反向包含。<strong>于是 <span class="math">θ</span> 显式定义了 <span class="math">R</span>。</strong><span class="qed">∎</span></p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><strong>命题逻辑的一阶扩张总有插值。</strong>例 3.2、3.3 已经演示了「把私符号甩掉」的动作。<strong>一阶逻辑的 Craig 定理说这个动作永远做得成</strong>——这是逻辑学最漂亮的定理之一，也是本讲所有代数刻画的正确性来源。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>为什么「中间人不许认识私符号」这么要紧？</strong>因为如果允许，插值就退化成一句废话：<span class="math">φ → ψ</span> 时取 <span class="math">θ = φ</span> 即可，<span class="math">⊨ φ → φ</span>、但 <span class="math">⊨ φ → ψ</span> 是原前提，第二个条件白给。<strong>插值的全部内容都在「共同语言」这四个字里</strong>——它强迫蕴含关系由公共信息承担，而不是靠两边各自的私货搭桥。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p>① <strong>Beth 与 Craig 的等价是「一阶逻辑里」的等价。</strong>在模态逻辑、直觉主义逻辑、次结构逻辑里，二者可能分家：有的有插值而无 Beth，有的反之。<strong>别把这里的等价当成普世规律。</strong></p>
+    <p>② <strong>「存在插值」不等于「能算出插值」。</strong>Craig 定理是存在性证明（靠紧致性），本讲后面会看到：要有可计算的插值，得额外要求 Hilbert 系统给出有效证明（L19）。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL §4.4.1（Craig 插值与合并）；命题 3.4–3.5 沿用 L18 紧致性、L20 §3 的 Beth 框架；完整教材编号请核对 §4.4.1–4.4.2 原文。</p>
+</section>
+
+<!-- ============ O2 ============ -->
+<section id="amalg">
+  <h2><span class="sn">4</span>代数侧：合并性质 <span class="tag alg">O2</span></h2>
+
+  <p>现在把上一节的「粘」写成代数。取一个代数类 <span class="math">K</span>（在 AAL 里就是 <span class="math">Alg<sup>m</sup>(L)</span> 或 <span class="math">Alg<sub>⊨</sub>(L)</span>，见 L16）。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">4.1（合并性质）</span></div>
+    <p>称 <span class="math">K</span> 有 <strong>合并性质</strong>，若对任意 <span class="math">A, B, C ∈ K</span> 与嵌入 <span class="math">f : A → B</span>、<span class="math">g : A → C</span>，存在 <span class="math">D ∈ K</span> 与嵌入 <span class="math">h : B → D</span>、<span class="math">k : C → D</span>，使下图交换：</p>
+    <div class="formula">h ∘ f = k ∘ g.</div>
+    <p>也就是说，<span class="math">A</span> 在 <span class="math">B</span> 里的像与在 <span class="math">C</span> 里的像，到了 <span class="math">D</span> 里是同一个东西。<strong>「沿公共部分粘」的全部要求就这一条交换律。</strong></p>
+  </div>
+
+  <div class="diagram"><pre>
+              B
+             ╱ ╲
+        f   ╱   ╲  h
+           ╱     ╲
+          A ─────→ D
+           ╲     ╱
+        g   ╲   ╱  k
+             ╲ ╱
+              C
+
+        交换条件：h ∘ f = k ∘ g
+        （A 在两边是同一块）
+  </pre></div>
+
+  <p class="cap">图：合并的交换图。注意 <span class="math">D</span> 不要求唯一——「能拼出一个」就够。</p>
+
+  <div class="ex"><div class="bt">例 4.2（哪些类有合并）</div>
+    <ul>
+      <li><strong>群、环、布尔代数、向量空间</strong>（固定域）的簇都有合并：用自由积、张量积之类的构造就能拼。<strong>大部分「熟」的代数簇都满足。</strong></li>
+      <li><strong>所有集合的类</strong>显然有合并：取并集即可。<strong>这一条别小看——它说明「合并」本身是个很弱的要求。</strong></li>
+      <li><strong>有限群的类没有合并。</strong>把 <span class="math">A</span> 拼进 <span class="math">B</span> 与 <span class="math">C</span> 后，得到的 <span class="math">D</span> 通常是无限的，逃出了「有限」这个类。<strong>这一条很重要：类的边界一收紧，合并就可能失败。</strong></li>
+    </ul>
+  </div>
+
+  <div class="intu"><div class="bt">合并对应逻辑的什么</div>
+    <p>回看命题 3.4 的 Robinson 联合一致性：<span class="math">T₁</span> 与 <span class="math">T₂</span> 在公共语言上相容，问能不能合起来有模型。<strong>把「理论」换成「代数」、「公共语言」换成「公共子代数」、「有模型」换成「拼出 <span class="math">D</span>」，就是合并性质。</strong></p>
+    <p>所以定理 4.4.18 的前半几乎是翻译：<strong>合并性质 ⟺ Robinson 联合一致性 ⟺ （由命题 3.4）Craig 插值的弱化版。</strong>说「弱化」，是因为合并只保证拼得出来，还没保证拼得干净——那要等超合并。</p>
+  </div>
+
+  <div class="warn"><div class="bt">一处容易踩的坑：用哪个代数类</div>
+    <p>L16 特意区分了 <span class="math">Alg<sup>m</sup>(L)</span>（具体模型给出的代数，故意不对同构封闭）与 <span class="math">Alg<sub>⊨</sub>(L)</span>（满足理论的抽象类，对同构封闭）。<strong>合并性对这两个类可能给出不同答案。</strong>本讲谈到「插值的代数刻画」时默认用 <span class="math">Alg<sup>m</sup>(L)</span>，因为插值关心的是语法与语义的精确对应，不能把具体副本丢掉——这和 L20 用 <span class="math">Alg<sup>m</sup></span> 讲可定义性是同一个理由。</p>
+  </div>
+
+  <p class="src"><b>来源：</b>UAL §4.4.1（合并性质、合并与 Robinson 性质的关系）；L16 关于 <span class="math">Alg<sup>m</sup></span> 与 <span class="math">Alg<sub>⊨</sub></span> 的区分。</p>
+</section>
+
+<!-- ============ O3 ============ -->
+<section id="super">
+  <h2><span class="sn">5</span>超合并：合并之上再加一道夹逼 <span class="tag alg">O3</span></h2>
+
+  <p>现在给「拼得干净」一个精确定义。为把话说清楚，先取一类带序的代数（布尔代数、格、偏序都在此列），用 <span class="math">≤</span> 表示序关系。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">5.1（超合并）</span></div>
+    <p>称 <span class="math">K</span> 有 <strong>超合并性质</strong>，若 <span class="math">K</span> 有合并性质，并且对上面那张交换图的<strong>任意</strong>一个合并 <span class="math">D</span>（即任意满足 <span class="math">h ∘ f = k ∘ g</span> 的 <span class="math">D, h, k</span>）、任意 <span class="math">b ∈ B</span>、<span class="math">c ∈ C</span>，只要在 <span class="math">D</span> 里成立</p>
+    <div class="formula">h(b) ≤ k(c),</div>
+    <p>就存在 <span class="math">a ∈ A</span>，使在原来的两块里成立</p>
+    <div class="formula">b ≤ f(a)　且　g(a) ≤ c.</div>
+    <p>这第二条叫 <strong>夹逼条件</strong>：<strong>在任何合并里冒出来的大小关系，都必须能在公共部分 <span class="math">A</span> 里找到一个中间人作证。</strong></p>
+  </div>
+
+  <div class="warn"><div class="bt">量词位置：超合并最容易写错的地方</div>
+    <p>夹逼条件前面是「<strong>对任意合并 <span class="math">D</span></strong>」，不是「存在某个合并 <span class="math">D</span>」。这个差别要命：<strong>若只要求存在一个，任何有合并的类几乎都能过关</strong>——只要挑一个让跨块关系尽量少的 <span class="math">D</span>，夹逼前提就真空成立，条件自动满足。<strong>超合并之所以等价于插值，正因为它是全称的：无论怎么拼，都不许偷渡。</strong>习题 E11 专门练这一点。</p>
+  </div>
+
+  <div class="intu"><div class="bt">夹逼条件为什么就是插值</div>
+    <p>把代数词换成逻辑词，逐项对照：</p>
+    <table>
+      <tr><th>代数侧</th><th>逻辑侧</th></tr>
+      <tr><td><span class="math">b ∈ B</span>（<span class="math">B</span> 是加了私符号的公式代数）</td><td>公式 <span class="math">φ</span></td></tr>
+      <tr><td><span class="math">c ∈ C</span></td><td>公式 <span class="math">ψ</span></td></tr>
+      <tr><td><span class="math">A</span>（公共子代数）</td><td>共同语言 <span class="math">L(φ) ∩ L(ψ)</span> 生成的公式集</td></tr>
+      <tr><td><span class="math">h(b) ≤ k(c)</span> 在 <span class="math">D</span> 中</td><td><span class="math">⊨ φ → ψ</span></td></tr>
+      <tr><td>夹逼元 <span class="math">a ∈ A</span>，<span class="math">b ≤ f(a) ≤ c</span></td><td>插值式 <span class="math">θ</span>，<span class="math">⊨ φ → θ → ψ</span></td></tr>
+    </table>
+    <p><strong>「<span class="math">a</span> 落在 <span class="math">A</span> 里」正是「<span class="math">θ</span> 只用共同语言」。</strong>整张表逐行对齐，一个词都不差。这不是巧合，而是定理 4.4.24 的内容。</p>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><strong>布尔代数类有超合并。</strong>若 <span class="math">h(b) ≤ k(c)</span> 在共同的扩张 <span class="math">D</span> 里成立，布尔代数的分配格结构保证能在交 <span class="math">A</span> 里找到夹逼元。<strong>这正好对应命题逻辑有 Craig 插值</strong>——两个事实是同一件事的两种说法。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>普通合并为什么不够？</strong>合并只要求 <span class="math">A</span> 在两边「是同一块」，但拼的时候完全可以让 <span class="math">b</span> 与 <span class="math">c</span> 之间凭空冒出一条大小关系。<strong>超合并多要的那一条，是禁止这种凭空冒出</strong>——所有跨块关系都得由公共部分居中作证。这就是「插值」在代数里的原话。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p><strong>偏序类有合并，却没有超合并。</strong>取 <span class="math">A = {0 &lt; a}</span>，<span class="math">B = {0 &lt; a &lt; b}</span>，<span class="math">C = {0 &lt; a &lt; c &lt; d}</span>，公共部分都是 <span class="math">A</span>。把 <span class="math">B</span> 与 <span class="math">C</span> 沿 <span class="math">A</span> 拼，可以得到不同的合并。取其中一个 <span class="math">D = {0 &lt; a &lt; b &lt; c &lt; d}</span>——合并成功，<span class="math">D</span> 仍是偏序。但在这个 <span class="math">D</span> 里 <span class="math">b ≤ c</span>，而 <span class="math">A</span> 里只有 <span class="math">0, a</span>，<span class="math">b ≤ a</span> 不成立：<strong>夹逼元不存在。既然夹逼要求对所有合并成立，这一个反例就判了超合并失败。</strong>按定理 4.4.24，这意味着「以全体偏序为代数语义的逻辑」缺乏插值。<span class="math">D</span> 里那条 <span class="math">b ≤ c</span> 就是偷渡进来的信息。</p>
+    <p><strong>反过来若取 <span class="math">b</span> 与 <span class="math">c</span> 不可比的那个合并，夹逼前提根本不触发，真空成立。</strong>可见「挑一个好的合并」救不了超合并——这正是量词必须是全称的原因。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL §4.4.1–4.4.2（超合并与夹逼条件）；例中的偏序反例为说明性构造，用于展示「合并成功但超合并失败」的机制。</p>
+</section>
+
+<!-- ============ O4 ============ -->
+<section id="bridge">
+  <h2><span class="sn">6</span>定理 4.4.18 / 4.4.24：双向刻画 <span class="tag alg">O4</span><span class="tag log">逻辑</span></h2>
+
+  <p class="lead">现在把前三节拼起来。两个定理，一个管「能拼」，一个管「拼得干净」。</p>
+
+  <div class="thm"><div class="bt">定理 <span class="num">4.4.18（合并 ↔ Robinson 联合一致性）</span></div>
+    <p>对逻辑 <span class="math">L = ⟨F, M, mng, ⊨⟩</span>，其代数类 <span class="math">Alg<sup>m</sup>(L)</span> 有合并性质，当且仅当 <span class="math">⊨</span> 有 Robinson 联合一致性。<strong>再由命题 3.4，这等价于 Craig 插值的弱化版。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">4.4.24（超合并 ↔ Craig 插值）</span></div>
+    <p>对同一逻辑，<span class="math">Alg<sup>m</sup>(L)</span> 有<strong>超合并</strong>性质，当且仅当 <span class="math">⊨</span> 有<strong>Craig 插值性质</strong>。</p>
+  </div>
+
+  <div class="warn"><div class="bt">技术注解：编号与精确陈述</div>
+    <p>本讲沿用大纲已核准的编号（UAL §4.4.1–4.4.2，定理 4.4.18、4.4.24）。教材原件最初以附件提供、未留在工作区，若你手头有全书，建议核一遍两条定理的精确假设。<strong>一般设定下常需补两条口径</strong>：①「代数类」取 <span class="math">Alg<sup>m</sup>(L)</span> 还是其对同构闭包，会影响陈述；②「嵌入」是否要求保全部结构（含 <span class="math">mng</span> 指定的子集），不同口径下定理名字相同而内容强弱不同。<strong>但两座桥的形状是稳的：合并对应联合一致，超合并对应插值。</strong></p>
+  </div>
+
+  <div class="proof"><span class="pt">方向一：插值 ⟹ 超合并（证明的形状；严格细节见 UAL §4.4.2）。</span>
+    <p>给定图 <span class="math">B ← A → C</span>。把 <span class="math">A, B, C</span> 读成公式代数按各自语言作的商：<span class="math">b, c</span> 是公式的等价类，公共部分 <span class="math">A</span> 对应两种语言共有的公式。由命题 3.4，Craig 插值给 Robinson 联合一致性，于是两套理论可合成一个共同扩张——这就是合并，<strong>它保证合并至少存在一个</strong>。</p>
+    <p>现在验证夹逼的<strong>全称性</strong>。任取一个合并 <span class="math">D</span>，设 <span class="math">h(b) ≤ k(c)</span> 在其中成立。把 <span class="math">b, c</span> 读回公式 <span class="math">φ<sub>b</sub>, φ<sub>c</sub></span>；Craig 插值给出共同语言里的 <span class="math">θ</span>，使 <span class="math">⊨ φ<sub>b</sub> → θ → φ<sub>c</sub></span> 在所有模型中成立。把 <span class="math">θ</span> 读回 <span class="math">A</span> 里的元素 <span class="math">a</span>，由 <span class="math">θ</span> 的语义有效性立刻得 <span class="math">b ≤ f(a)</span>（在 <span class="math">B</span> 中）与 <span class="math">g(a) ≤ c</span>（在 <span class="math">C</span> 中）。<strong>注意这两条不等式是在 <span class="math">B, C</span> 里成立的，与挑了哪个 <span class="math">D</span> 无关</strong>——这正是夹逼能对任意合并成立的原因。「<span class="math">θ</span> 只用共同语言」保证 <span class="math">a</span> 落在 <span class="math">A</span> 里。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="proof"><span class="pt">方向二：超合并 ⟹ 插值（证明的形状）。</span>
+    <p>给定 <span class="math">⊨ φ → ψ</span>。构造一张合并图：令 <span class="math">A</span> 为公共语言 <span class="math">L(φ) ∩ L(ψ)</span> 生成的公式代数，<span class="math">B</span> 为加上 <span class="math">φ</span> 一侧私符号后的代数，<span class="math">C</span> 为加上 <span class="math">ψ</span> 一侧私符号后的代数；<span class="math">f, g</span> 是自然的包含嵌入。令 <span class="math">b</span> 为 <span class="math">φ</span> 在 <span class="math">B</span> 中的语义值、<span class="math">c</span> 为 <span class="math">ψ</span> 在 <span class="math">C</span> 中的语义值。</p>
+    <p>由合并性质，存在 <span class="math">D</span> 与嵌入 <span class="math">h, k</span> 把两块拼起来；由 <span class="math">φ → ψ</span> 的有效性，在 <span class="math">D</span> 里成立 <span class="math">h(b) ≤ k(c)</span>。超合并的夹逼条件给出 <span class="math">a ∈ A</span> 使 <span class="math">b ≤ f(a) ≤ c</span>。<strong>把 <span class="math">a</span> 读回公式，就是插值式 <span class="math">θ</span></strong>：它落在 <span class="math">A</span> 里，所以只用共同语言；两条不等式给出 <span class="math">⊨ φ → θ</span> 与 <span class="math">⊨ θ → ψ</span>。<span class="qed">∎</span></p>
+  </div>
+
+  <div class="intu"><div class="bt">三件工具在这一讲同时上场</div>
+    <table>
+      <tr><th>工具</th><th>来自</th><th>在定理 4.4.24 里干什么</th></tr>
+      <tr><td>紧致性</td><td>L18</td><td>命题 3.4 方向一：把无穷的 <span class="math">T₁, T₂</span> 压成有限合取 <span class="math">φ, ψ</span>，Craig 定理才够得着</td></tr>
+      <tr><td>有限证明</td><td>L19</td><td>把 <span class="math">⊨</span> 换成 <span class="math">⊢</span>，插值式从有限证明里读出，得到<strong>可计算</strong>的插值</td></tr>
+      <tr><td>可定义性</td><td>L20</td><td>Beth 是插值的特例；同态满射 ↔ 可分这张字典，在合并图里变成「公共部分恰好是交」</td></tr>
+    </table>
+    <p><strong>缺第一件，「有效」推不出「有限证据」；缺第二件，只能证明插值存在、拿不到算法；缺第三件，看不出为什么代数侧的夹逼元就是语法侧的那句话。</strong>三件工具缺一不可，这是本讲技术含量最高的原因。</p>
+  </div>
+
+  <p class="src"><b>来源：</b>UAL §4.4.1–4.4.2（定理 4.4.18、4.4.24）；命题 3.4（本章自证）；L18 紧致性、L19 有限证明、L20 可定义性。</p>
+</section>
+
+<!-- ============ O5 ============ -->
+<section id="app">
+  <h2><span class="sn">7</span>应用：插值缺失的逻辑怎么改造 <span class="tag log">O5</span></h2>
+
+  <p>定理 4.4.24 不只是「好看的等价」，它是一台<strong>诊断机</strong>：逻辑的病，可以在代数上看见；反过来，代数上的病，也能给出改造逻辑的路线。</p>
+
+  <div class="intu"><div class="bt">诊断流程</div>
+    <p>发现某逻辑 <span class="math">L</span> 没有插值 → 按定理 4.4.24，<span class="math">Alg<sup>m</sup>(L)</span> 的超合并失败 → 去看夹逼条件 <span class="math">b ≤ f(a) ≤ c</span> 到底卡在哪一步 → 对号入座选下面的改造方案。</p>
+  </div>
+
+  <div class="def"><div class="bt">四条改造路线</div>
+    <ol>
+      <li><strong>换语言。</strong>把导致失败的私符号收进公共部分，或干脆限制到插值成立的语言片段。<strong>代价：</strong>表达力下降。这是最便宜的一招，也是实践中最该先试的一招。</li>
+      <li><strong>换语义。</strong>从 <span class="math">Alg<sup>m</sup>(L)</span> 换到 <span class="math">Alg<sub>⊨</sub>(L)</span>，把具体模型抽象成类。<strong>代价：</strong>丢掉 L20 强调的「模型身份」，可定义性问题会变味。<strong>先想清楚你要的是插值还是可定义性。</strong></li>
+      <li><strong>降要求。</strong>放弃 Craig 插值，退到 Robinson 联合一致性（对应普通合并）。很多逻辑没有插值但仍有联合一致性——<strong>后者对「理论能否合并」往往已经够用。</strong></li>
+      <li><strong>加定义。</strong>把想要的东西作为新符号显式加进语言，再用公理约束（Beth 路径）。<strong>代价：</strong>语言膨胀，但保留了插值的骨架。</li>
+    </ol>
+  </div>
+
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子</div>
+    <p><strong>命题逻辑、一阶逻辑、直觉主义逻辑、模态 S4 都有 Craig 插值。</strong>它们的代数类都有超合并，所以上述改造一条都不用上。<strong>这组「成功名单」是判断新逻辑时的参照系。</strong></p>
+  </div>
+  <div class="ex"><div class="bt">本质例子</div>
+    <p><strong>有限群类为什么不能做「有限逻辑」的语义？</strong>它的合并已经失败（拼出的 <span class="math">D</span> 通常无限），更别提超合并。<strong>本质教训：一旦把语义类卡在「有限」上，紧致性与插值会同时塌方</strong>——这正是 L18 里「有限性不可一阶公理化」的同一个病根。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解</div>
+    <p><strong>偏序例子（§5）演示了最阴险的一种失败：合并成功、超合并失败。</strong>这种逻辑看起来「理论都能合起来有模型」，却写不出插值式。<strong>诊断要点：只看合并会误判为健康，必须查夹逼条件。</strong>对应到改造，路线 3（退到 Robinson）在这里无效——因为合并本来就成立——只能走路线 1 或 4。</p>
+  </div></div>
+
+  <p class="src"><b>来源：</b>UAL §4.4.2（插值缺失的例子与改造讨论）；L18 有限性不可公理化；L20 Beth 路径。</p>
+</section>
+
+<!-- ============ O6 ============ -->
+<section id="compare">
+  <h2><span class="sn">8</span>三件工具同时上场；四座桥对照 <span class="tag alg">O6</span></h2>
+
+  <p>四座桥走完，把它们的模板并排钉在一起看，会发现<strong>每一座都是「一个逻辑性质 ↔ 一个代数性质 ↔ 一个拓扑性质」的三端结构，但发动机不同</strong>。</p>
+
+  <table>
+    <tr><th>桥</th><th>逻辑侧</th><th>代数侧</th><th>拓扑侧</th><th>主发动机</th></tr>
+    <tr><td><b>L18</b></td><td>紧致性</td><td>对超积封闭</td><td>超滤子收敛</td><td>超积 + Łoś</td></tr>
+    <tr><td><b>L19</b></td><td>完全性</td><td>簇 / 有限基</td><td>紧致化</td><td>Henkin + Birkhoff</td></tr>
+    <tr><td><b>L20</b></td><td>可定义性</td><td>同态满射</td><td>T0 可分</td><td>不可区分关系</td></tr>
+    <tr><td><b>L21</b></td><td>插值</td><td>超合并</td><td>沿公共部分粘合</td><td>夹逼条件 + 三工具合用</td></tr>
+  </table>
+
+  <div class="intu"><div class="bt">为什么第四座最难</div>
+    <p>前三座每座只用一台主发动机：<strong>紧致性、Henkin、不可区分</strong>。第四座要三台一起开：紧致性把无穷压成有限，有限证明把有效变成可计算，可定义性把隐含变成显式。<strong>少了任何一台，定理 4.4.24 的某一端就接不上。</strong></p>
+    <p>但回报也最大：<strong>插值同时是 Beth 定理的引擎（L20）、是完全性证明的副产品（L19）、也是紧致性的近亲（L18）。</strong>它把前三座桥焊成了一个整体——这就是为什么把它放在桥定理这一篇的最后一讲。</p>
+  </div>
+
+  <div class="warn"><div class="bt">一处温和的提醒</div>
+    <p>「超合并」这个名字在不同文献里口径不完全一致，有的要求嵌入保序、有的还要求保补、有的区分强 / 弱版本。<strong>读文献时先对齐定义，再谈等价</strong>——定理 4.4.24 的证明对口径敏感，但「夹逼元 = 插值式」这个核心图像对所有版本都成立。</p>
+  </div>
+
+  <p class="src"><b>来源：</b>UAL §4.4（整合）；前三桥回指 L18 §9、L19 §9、L20 §9。</p>
+</section>
+
+<!-- ============ 融合 ============ -->
+<section id="fusion2">
+  <h2><span class="sn">9</span>融合接口：第四座三面一体图</h2>
+  <p class="lead">前几座的图是「两端 + 发动机」或「三端并立」；这一座的关键在底部那行——<strong>三件工具第一次同时出现在一张图里</strong>。</p>
+
+  <div class="diagram"><pre>
+          「粘得干净 = 说得出来」· 三副面孔
+                       │
+      ┌────────────────┼────────────────┐
+      │                │                │
+    逻辑 L          代数 Algᵐ(L)       拓扑 Spec
+      │                │                │
+  φ ⊨ ψ            B ← A → C          沿公共闭集粘合
+      │                │                │
+  夹进 θ           拼成 D             得到公共扩张
+      │                │                │
+  θ 只用共同语言   b ≤ f(a) ≤ c       a 落在公共部分
+      │                │                │
+      └── L20 Beth ────┴─── L03 嵌入 ───┘
+                       │
+      ┌────────────────┼────────────────┐
+      │                │                │
+   L18 紧致         L19 有限证明      L20 可定义性
+  无穷压成有限      有效变可计算      隐含变显式
+      │                │                │
+      └───── 三件工具合用，缺一不可 ─────┘
+                       │
+          插值 ⟺ 超合并 ⟺ 粘合不偷渡
+  </pre></div>
+  <p class="cap">图：三列逐行对齐；下半部标出本桥特有的「三工具合用」，这是前几座桥没有的。</p>
+
+  <div class="intu"><div class="bt">把这座桥记成一句话</div>
+    <p><strong>「能插一句共同语言的话」在代数里叫「超合并时夹逼元落在公共子代数里」，在拓扑里叫「沿公共部分粘合不偷渡信息」；把它们焊在一起的是「公共部分恰好是交」这一个条件。</strong></p>
+    <p>四座桥走完，你已经有一整套词典：紧致、完全、可定义、插值，各自在逻辑 / 代数 / 拓扑三侧的名字都能对上。<strong>下一讲 L22 走第五座桥——判定性与 Gödel 不完全性</strong>，那是全课的收尾：把「译过去 → 用代数解 → 译回来」这条方法论反过来用，看有限基问题的不可解怎样变成逻辑的不可判定。</p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按目标编号）</h2>
+
+  <ol>
+    <li><span class="tag log">O1</span>写出 Craig 插值性质的定义，逐条检查例 3.2 里的 <span class="math">θ = p</span> 为什么是合法插值（两条条件各验证一遍）。</li>
+    <li><span class="tag log">O1</span>在例 3.3 里，为什么 <span class="math">Qa</span> 不是合法插值而 <span class="math">∃x Qx</span> 是？<strong>若把 <span class="math">a</span> 也放进 <span class="math">ψ</span> 的语言，插值会变成什么？</strong></li>
+    <li><span class="tag alg">O2</span>画一张合并交换图，标出四个嵌入 <span class="math">f, g, h, k</span>，写出交换条件。再解释为什么「集合类有合并」而「有限群类没有合并」。</li>
+    <li><span class="tag alg">O2</span>命题 3.4 说合并 ⟺ Robinson 联合一致性。请用自己的话复述：合并图里的 <span class="math">A, B, C, D</span> 分别对应 Robinson 表述里的什么东西？</li>
+    <li><span class="tag alg">O3</span>写出超合并的夹逼条件，并说明它比普通合并多要求了哪一条。<strong>如果 <span class="math">D</span> 里的 <span class="math">h(b) ≤ k(c)</span> 在 <span class="math">A</span> 里找不到见证，逻辑侧发生了什么？</strong></li>
+    <li><span class="tag alg">O3</span>把 §5 的对照表抄一遍，用 <span class="math">φ, ψ, θ</span> 三个公式把表的五行重新填一次。<strong>哪一行最容易填错？为什么？</strong></li>
+    <li><span class="tag log">O4</span>定理 4.4.18 与 4.4.24 各管什么？请各写一句话，再指出哪一条是「能拼」、哪一条是「拼得干净」。</li>
+    <li><span class="tag alg">O4</span>复述「插值 ⟹ 超合并」的证明骨架，标出 Craig 插值在哪一步用、 Robinson 联合一致性在哪一步用。</li>
+    <li><span class="tag log">O4</span>复述「超合并 ⟹ 插值」的证明骨架。<strong>为什么构造的 <span class="math">A</span> 必须取公共语言生成的公式代数，而不能取更大的？</strong></li>
+    <li><span class="tag log">O5</span>某逻辑已知没有插值但仍有 Robinson 联合一致性。按 §7 的诊断流程，它的代数类在哪一步失败？四条改造路线里哪几条可用、哪几条无效？</li>
+    <li><span class="tag alg">O5</span>偏序例子里，把 <span class="math">D</span> 改成「<span class="math">b</span> 与 <span class="math">c</span> 不可比」的合并，夹逼条件还失败吗？<strong>这说明超合并要求的是「存在某个合并」还是「对所有合并」？</strong>（提示：这正是定义里需要小心的量词位置。）</li>
+    <li><span class="tag log">O6</span>列出 L18、L19、L20 三件工具，各写一句它们在定理 4.4.24 里的用处。<strong>如果逻辑没有紧致性，哪一件先失灵？</strong></li>
+    <li><span class="tag alg">O6</span>综合题：回看 L20 的「可定义 = 能区分」。现在用自己的话解释：<strong>为什么插值可以看成「可定义性」在两块结构之间的版本</strong>——夹逼元 <span class="math">a</span> 是不是某种被「隐含定义」出来的东西？</li>
+  </ol>
+</section>
+
+<div class="footnav">
+  <a href="L20.html">← 上一讲：L20 桥之三：可定义性 ↔ 同态满射 ↔ 可区分性</a>
+  <a href="L22.html" style="font-size:13.5px">下一讲：L22 桥之五：判定性与 Gödel 不完全性</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L21 · 来源：UAL §4.4.1–4.4.2（Craig 插值、合并与超合并、定理 4.4.18、4.4.24）· v0.1</footer>
+
+</main></div>
+</body>
+</html>

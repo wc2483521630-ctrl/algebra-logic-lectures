@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L03 代数、子代数、同态、同余与商代数 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第二篇 代数骨架</span><span class="sep">/</span><span>L03</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 03 · 2 学时</div>
+  <h1>代数、子代数、同态、同余与商代数</h1>
+  <div class="sub">从「哪些东西算同一个」出发，把群论的熟悉动作抽象成泛代数的通用机器</div>
+  <div class="metarow"><span>来源：Bergman Ch1 §1.1–1.5, Ch3 §3.1–3.3</span><span>UAL §2.1–2.2.5</span>
+    <span class="tag alg">代数</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">动机：什么算「同一个」</a></li>
+  <li><a href="#algebra">代数与类型；子代数与生成（O1）</a></li>
+  <li><a href="#homo">同态与核（O2）</a></li>
+  <li><a href="#congruence">同余关系（O3）</a></li>
+  <li><a href="#quotient">商代数与基本同态定理（O4）</a></li>
+  <li><a href="#iso">三个同构定理与对应定理（O5）</a></li>
+  <li><a href="#products">直积、子直积、约化积（O6）</a></li>
+  <li><a href="#fusion">融合接口</a></li>
+  <li><a href="#ex">习题（按目标编号）</a></li>
+</ol></div>
+
+<!-- ============ 概念清单与依赖 ============ -->
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系</h2>
+  <p class="lead">动笔之前先点清本讲出现的概念，以及每个概念依赖谁。依赖是讲序的依据：箭头右边的概念，必须先懂左边的。</p>
+
+  <div class="def"><div class="bt">概念清单 <span class="num">C01–C14</span></div>
+    <table>
+      <tr><th>编号</th><th>概念</th><th>依赖</th><th>首次出现</th></tr>
+      <tr><td>C01</td><td>类型 / 语言 <span class="math">ρ: F→ω</span></td><td>—</td><td>L01</td></tr>
+      <tr><td>C02</td><td>代数 <span class="math">A=⟨A,F⟩</span></td><td>C01</td><td>§1</td></tr>
+      <tr><td>C03</td><td>子代数 <span class="math">Sub(A)</span></td><td>C02</td><td>§1</td></tr>
+      <tr><td>C04</td><td>生成子代数 <span class="math">Sg(X)</span></td><td>C03, L02 闭包算子</td><td>§1</td></tr>
+      <tr><td>C05</td><td>同态 <span class="math">h: A→B</span></td><td>C02</td><td>§2</td></tr>
+      <tr><td>C06</td><td>核 <span class="math">ker(h)</span></td><td>C05, C07</td><td>§2</td></tr>
+      <tr><td>C07</td><td>等价关系</td><td>L01</td><td>L01</td></tr>
+      <tr><td>C08</td><td>同余关系 <span class="math">θ∈Con(A)</span></td><td>C02, C07</td><td>§3</td></tr>
+      <tr><td>C09</td><td>商代数 <span class="math">A/θ</span></td><td>C08</td><td>§4</td></tr>
+      <tr><td>C10</td><td>正则投影 <span class="math">q<sub>θ</sub></span></td><td>C09</td><td>§4</td></tr>
+      <tr><td>C11</td><td>基本同态定理</td><td>C06, C09, C10</td><td>§4</td></tr>
+      <tr><td>C12</td><td>同余格 <span class="math">Con(A)</span></td><td>C08, L02 完全格</td><td>§3</td></tr>
+      <tr><td>C13</td><td>直积 <span class="math">∏A<sub>i</sub></span></td><td>C02</td><td>§6</td></tr>
+      <tr><td>C14</td><td>子直积 / 约化积</td><td>C13, C03</td><td>§6</td></tr>
+    </table>
+  </div>
+
+  <div class="intu"><div class="bt">依赖链（读作「先……才能……」）</div>
+    <div class="diagram">L01 集合·关系 ──┬──→ C07 等价关系 ──→ C08 同余 ──→ C09 商代数 ──→ C11 基本同态定理
+                  │                          │                              │
+                  └──→ C01 类型 ──→ C02 代数 ─┤                              ├──→ C12 同余格
+                                      │       │                              │
+                                      ├──→ C03 子代数 ──→ C04 生成子代数      └──→ C05 同态 ──→ C06 核
+                                      │
+                                      └──→ C13 直积 ──→ C14 子直积／约化积</div>
+    <p>关键观察：<strong>核与同余是同一个概念的两面</strong>（C06 与 C08 在 §3 合流），这是全讲的枢纽。理解了这一点，基本同态定理就只是「把核除掉」的一句话。</p>
+  </div>
+</section>
+
+<!-- ============ 学习目标对照 ============ -->
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习 对照</h2>
+  <p class="lead">每个学习目标都配了专属讲解小节与专属练习。下表可当核对表用：学完一条，做对应练习；做不出，就回对应小节。</p>
+  <div class="box def"><table>
+    <tr><th>目标</th><th>学完你应该能……</th><th>讲解</th><th>对应练习</th></tr>
+    <tr><td><b>O1</b></td><td>说出代数的类型与语言，判断一个子集是否子代数，并计算生成子代数</td><td><a href="#algebra">§2</a></td><td><a href="#ex">E1, E2</a></td></tr>
+    <tr><td><b>O2</b></td><td>验证一个映射是同态，并计算它的核</td><td><a href="#homo">§3</a></td><td><a href="#ex">E3</a></td></tr>
+    <tr><td><b>O3</b></td><td>判断一个等价关系是否为同余，说明同余与滤子/理想的对偶</td><td><a href="#congruence">§4</a></td><td><a href="#ex">E4, E5</a></td></tr>
+    <tr><td><b>O4</b></td><td>构造商代数，并用基本同态定理分解一个同态</td><td><a href="#quotient">§5</a></td><td><a href="#ex">E6, E7</a></td></tr>
+    <tr><td><b>O5</b></td><td>叙述三个同构定理与对应定理，并各做一次应用</td><td><a href="#iso">§6</a></td><td><a href="#ex">E8, E9</a></td></tr>
+    <tr><td><b>O6</b></td><td>构造直积、子直积与约化积，说明投影映射的作用</td><td><a href="#products">§7</a></td><td><a href="#ex">E10, E11</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 动机 ============ -->
+<section id="motive">
+  <h2><span class="sn">2</span>动机：什么算「同一个」</h2>
+  <p class="lead">群论里你做过无数次的一件事：把元素「模掉」。模 <span class="math">n</span> 的同余类、模正规子群的商群。当时觉得这是群的特技。现在我们要问：这件事到底需要什么？答案会少得让你意外——只需要一个<strong>和运算相容的等价关系</strong>。</p>
+
+  <div class="intu"><div class="bt">从一个具体场景切入</div>
+    <p>设 <span class="math">ℤ₆</span> 是模 6 剩余类。为什么能把 <span class="math">2</span> 和 <span class="math">8</span> 看作「同一个」？因为对任意运算，它们的行为一致：加上 <span class="math">3</span> 都得到 <span class="math">5</span> 一类，乘以 <span class="math">4</span> 都得到 <span class="math">2</span> 一类。这个「行为一致」如果只对加法成立，那你现在正在做的事就叫<strong>同余</strong>。</p>
+    <p>泛代数要做的就是把这个动作从群搬到<strong>任意</strong>代数上：格、布尔代数、Heyting 代数、逻辑的公式代数——只要你能写出运算，就能谈同余、谈商。这就是 L16「代数化」的机器零件。</p>
+  </div>
+
+  <div class="fusion"><div class="bt">三线预告</div>
+    <p><span class="tag alg">代数</span> 同余是「可替换关系」：若 <span class="math">a θ b</span>，则在任何语境下 <span class="math">a</span> 都能换成 <span class="math">b</span>。<span class="tag log">逻辑</span> 逻辑里的「等价可证」就是这个关系，商代数就是 Lindenbaum–Tarski 代数。<span class="tag top">拓扑</span> 拓扑里的「不可区分关系」（同一分离结构下无法分开的点）也是它。本讲先把代数侧造扎实。</p>
+  </div>
+</section>
+
+<!-- ============ O1 代数与子代数 ============ -->
+<section id="algebra">
+  <h2><span class="sn">3</span>代数与子代数 <span class="tag alg">O1</span></h2>
+  <p class="lead">先把舞台搭起来。这一部分很快，因为你能认出每一件家具——只是名字更通用了。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.1（Bergman 1.1 / UAL 2.1）</span></div>
+    <p><strong>类型</strong>（similarity type）是一个映射 <span class="math">ρ: F→ω</span>，给每个运算符号指定元数。<strong>代数</strong> <span class="math">A=⟨A, F<sup>A</sup>⟩</span> 是集合 <span class="var">A</span>（载体）加上一组运算，每个 <span class="math">f∈F</span> 解释为 <span class="math">f<sup>A</sup>: A<sup>ρ(f)</sup>→A</span>。<span class="math">ρ(f)=0</span> 时 <span class="math">f<sup>A</sup></span> 是一个常量。</p>
+    <p><strong>同型</strong>（similar）：两个代数类型相同。本讲所有构造默认同型。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例子 · 同一个类型下的不同代数</div>
+    <ol>
+      <li>群：类型 <span class="math">{·:2, ⁻¹:1, e:0}</span>。</li>
+      <li>格：类型 <span class="math">{∨:2, ∧:2}</span>；有界格再加 <span class="math">{0:0, 1:0}</span>。</li>
+      <li>布尔代数：类型 <span class="math">{∨:2, ∧:2, ¬:1, 0:0, 1:0}</span>。L18 会看到它和逻辑的对应。</li>
+    </ol>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.2（子代数）</span></div>
+    <p><span class="math">B⊆A</span> 是<strong>子代数</strong>，若 <span class="math">B</span> 对每个运算封闭：对任意 <span class="math">n</span> 元 <span class="math">f</span> 和 <span class="math">b₁,…,b<sub>n</sub>∈B</span>，有 <span class="math">f<sup>A</sup>(b₁,…,b<sub>n</sub>)∈B</span>；且含所有常量。记作 <span class="math">B≤A</span>。</p>
+    <p><strong>生成子代数</strong> <span class="math">Sg(X)</span>：包含 <span class="math">X</span> 的最小子代数，等于所有含 <span class="math">X</span> 的子代数的交。</p>
+  </div>
+
+  <div class="intu"><div class="bt">这里 L02 直接复用</div>
+    <p><span class="math">Sg</span> 是闭包算子吗？逐条看：扩张（<span class="math">X⊆Sg(X)</span>）、单调（<span class="math">X⊆Y ⇒ Sg(X)⊆Sg(Y)</span>）、幂等（<span class="math">Sg(Sg(X))=Sg(X)</span>）。三条全中。所以 <span class="math">Sub(A)</span> 是 L02 说的闭包系统，<span class="math">Sg</span> 的闭元就是子代数。<strong>你没有在学习一个新概念，你在学习旧概念的新名字。</strong></p>
+    <p>但要留意一个和 L02 相关的细节：<span class="math">Sub(A)</span> 的并 <span class="math">B∪C</span> 一般<strong>不是</strong>子代数，所以 <span class="math">⋁</span> 不是并而是 <span class="math">Sg(B∪C)</span>。这是「闭包系统的交封闭、并未必」的具体体现。</p>
+  </div>
+  <p class="src"><b>来源：</b>Bergman §1.1–1.2；UAL §2.1；L02 §3（三副面孔表的 Sg 一行）。</p>
+</section>
+
+<!-- ============ O2 同态 ============ -->
+<section id="homo">
+  <h2><span class="sn">4</span>同态与核 <span class="tag alg">O2</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.3（同态；Bergman 1.3）</span></div>
+    <p><span class="math">h: A→B</span> 是<strong>同态</strong>，若对每个 <span class="math">n</span> 元 <span class="math">f</span> 和 <span class="math">a₁,…,a<sub>n</sub>∈A</span>：</p>
+    <div class="formula">h(f<sup>A</sup>(a₁,…,a<sub>n</sub>)) = f<sup>B</sup>(h(a₁),…,h(a<sub>n</sub>))</div>
+    <p>即「先运算后映射」=「先映射后运算」。双射同态叫<strong>同构</strong>；<span class="math">A</span> 到自身的同态叫自同态。</p>
+    <p><strong>核</strong>：<span class="math">ker(h) = {⟨a,b⟩∈A² : h(a)=h(b)}</span>。它是 <span class="var">A</span> 上的一个等价关系——「被 <span class="math">h</span> 送到同一点」。</p>
+  </div>
+
+  <div class="intu"><div class="bt">核为什么重要：它度量「丢了多少信息」</div>
+    <p>同态是把 <span class="var">A</span> 压到 <span class="var">B</span> 的映射。核大，说明很多不同元素被压成同一个，信息丢得多；核是恒等关系（只有 <span class="math">a=b</span> 时相等），说明没丢信息，<span class="math">h</span> 是单射。<strong>同构定理的全部内容，都是把「丢信息的程度」和「商掉多少」对齐。</strong></p>
+    <p>关键问题：<span class="math">ker(h)</span> 仅仅是等价关系吗？不是。若 <span class="math">a ker b</span> 且 <span class="math">a' ker b'</span>，则 <span class="math">h(f(a,a'))=f(h(a),h(a'))=f(h(b),h(b'))=h(f(b,b'))</span>，所以 <span class="math">f(a,a') ker f(b,b')</span>。这个性质有个名字——同余。下一节正式登场。</p>
+  </div>
+
+  <div class="warn"><div class="bt">常见错误</div>
+    <p>群论里核是<strong>子集</strong>（单位元的原像 <span class="math">h⁻¹({e})</span>），泛代数里核是<strong>二元关系</strong>。两者在群的情形可以互相编码（靠正规子群），但对一般代数没有「单位元」可用，所以必须写成关系。别把群的直觉直接搬过来。</p>
+  </div>
+  <p class="src"><b>来源：</b>Bergman §1.3–1.4；UAL §2.2.1–2.2.2。</p>
+</section>
+
+<!-- ============ O3 同余 ============ -->
+<section id="congruence">
+  <h2><span class="sn">5</span>同余关系 <span class="tag alg">O3</span></h2>
+  <p class="lead">这是全讲的枢纽概念。前面核的性质在这里被抽出来，独立命名。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.4（同余；Bergman 1.4）</span></div>
+    <p>代数 <span class="var">A</span> 上的<strong>同余</strong>是等价关系 <span class="math">θ</span>，且对每个 <span class="math">n</span> 元基本运算 <span class="math">f</span> 满足<strong>相容性</strong>：</p>
+    <div class="formula">a<sub>i</sub> θ b<sub>i</sub> (i=1,…,n) ⟹ f<sup>A</sup>(a₁,…,a<sub>n</sub>) θ f<sup>A</sup>(b₁,…,b<sub>n</sub>)</div>
+    <p>全体同余记作 <span class="math">Con(A)</span>。<span class="math">0<sub>A</sub></span>（恒等关系）与 <span class="math">1<sub>A</sub></span>（全域关系）总是同余。</p>
+  </div>
+
+  <div class="intu"><div class="bt">相容性在说什么：可替换性</div>
+    <p>把 <span class="math">θ</span> 读成「等价」。相容性说的就是：<strong>如果几个输入分别等价，那么把它们同时替换之后，输出仍然等价</strong>。也就是说，<span class="math">θ</span> 认可的区分是「运算 respect 的区分」。这正是你在群论里用正规子群做的事——正规性保证陪集上的运算良定义。</p>
+    <p>于是 <span class="math">ker(h)</span> 总是同余（上一节末尾已验），而任何同余 <span class="math">θ</span> 也都是某个同态的核——就是正则投影 <span class="math">q<sub>θ</sub>: A→A/θ</span> 的核。<strong>核 = 同余</strong>，这是本节的核心等式。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.5（同余格；Bergman 推论 2.15）</span></div>
+    <p><span class="math">⟨Con(A), ⊆⟩</span> 是完全格：任意同余族的交仍是同余；并是「生成同余」 <span class="math">⋁θ<sub>i</sub> = Cg(⋃θ<sub>i</sub>)</span>，其中 <span class="math">Cg</span> 是闭包算子（L02）。<span class="math">Con(A)</span> 的分配性、模性会决定后面整个簇的性质（Bergman Ch5–7，L07 专题）。</p>
+  </div>
+
+  <div class="fusion"><div class="bt">同余 ≍ 理想 / 滤子 ≍ 可替换关系</div>
+    <p>在群、环里，同余由正规子群 / 理想决定：<span class="math">a θ b ⇔ a−b∈I</span>。在布尔代数里，同余由滤子（或理想）决定：<span class="math">a θ b ⇔ a↔b∈F</span>。在逻辑里，<span class="math">φ θ ψ ⇔ φ↔ψ</span> 可证。<strong>同余是「理想概念」的一般化</strong>：它不需要你有减法或「零」，只需要有运算。L18 的桥定理之一就是说，某个逻辑可代数化，当且仅当它的理论滤子和同余能这样对上。</p>
+  </div>
+  <p class="src"><b>来源：</b>Bergman §1.4、推论 2.15；UAL §2.2.2–2.2.4；L02 §4（Cg 一行）。</p>
+</section>
+
+<!-- ============ O4 商代数 ============ -->
+<section id="quotient">
+  <h2><span class="sn">6</span>商代数与基本同态定理 <span class="tag alg">O4</span></h2>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.6（商代数；Bergman 1.4）</span></div>
+    <p>设 <span class="math">θ∈Con(A)</span>。元素 <span class="math">a</span> 的等价类记作 <span class="math">a/θ</span>。定义商集 <span class="math">A/θ={a/θ : a∈A}</span> 上的运算：</p>
+    <div class="formula">f<sup>A/θ</sup>(a₁/θ,…,a<sub>n</sub>/θ) = f<sup>A</sup>(a₁,…,a<sub>n</sub>)/θ</div>
+    <p>相容性正是保证这个定义<strong>与代表元选择无关</strong>的条件。<span class="math">q<sub>θ</sub>: A→A/θ, a↦a/θ</span> 是满同态，叫<strong>正则投影</strong>（自然同态）。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">3.7（基本同态定理；Bergman 1.22，又称第一同构定理）</span></div>
+    <p>设 <span class="math">h: A→B</span> 是同态，<span class="math">θ=ker(h)</span>。则存在唯一的单同态 <span class="math">h̄: A/θ→B</span> 使 <span class="math">h̄∘q<sub>θ</sub>=h</span>。若 <span class="math">h</span> 满，则 <span class="math">h̄</span> 是同构。</p>
+    <div class="diagram">     h
+   A ───────→ B
+   │ qθ       ↑ h̄（唯一，单）
+   ↓          │
+  A/θ ────────┘</div>
+    <div class="proof"><span class="pt">证明要点。</span>被迫定义 <span class="math">h̄(a/θ)=h(a)</span>——这是唯一性的来源。良定义：若 <span class="math">a/θ=b/θ</span> 则 <span class="math">⟨a,b⟩∈ker(h)</span>，故 <span class="math">h(a)=h(b)</span>。同态性与单射性直接验证；满射时 <span class="math">h̄</span> 双射。<span class="qed">∎</span></div>
+  </div>
+
+  <div class="intu"><div class="bt">一句话记住这个定理</div>
+    <p><strong>任何同态都是「先商掉核，再嵌入像」</strong>。用公式写：<span class="math">A/ker(h) ≅ im(h) ≤ B</span>。你在本科学过的群同构定理、环同构定理、线性代数的秩-零化度定理（第一同构定理在向量空间上的影子），都是这一句话的特例。</p>
+    <p>为什么叫「基本」？因为后面三个同构定理都能从它推出（见 §6）。这一条是发动机，其余是传动轴。</p>
+  </div>
+
+  <div class="ex"><div class="bt">例子 · 中国剩余定理的代数版</div>
+    <p>设 <span class="math">θ, ψ∈Con(A)</span> 且 <span class="math">θ∧ψ=0<sub>A</sub></span>、<span class="math">θ∨ψ=1<sub>A</sub></span>（「互补」）。则 <span class="math">A ≅ A/θ × A/ψ</span>。这就是 Bergman 定理 3.11（互补因子同余对），也是整除互素时 <span class="math">ℤ/(mn)≅ℤ/m×ℤ/n</span> 的一般化。O6 的直积在这里已经露面。</p>
+  </div>
+  <p class="src"><b>来源：</b>Bergman §1.4 定理 1.22、§3.1 定理 3.11；UAL §2.2.3。</p>
+</section>
+
+<!-- ============ O5 同构定理 ============ -->
+<section id="iso">
+  <h2><span class="sn">7</span>三个同构定理与对应定理 <span class="tag alg">O5</span></h2>
+  <p class="lead">这些名字你都听过。这里给出泛代数版本——证明几乎和群论一样，但适用范围广得多。</p>
+
+  <div class="thm"><div class="bt">定理 <span class="num">3.8（第二同构定理；Bergman 3.5）</span></div>
+    <p>设 <span class="math">θ⊆ψ</span> 是 <span class="var">A</span> 的同余。在 <span class="math">A/θ</span> 上定义 <span class="math">ψ/θ = {⟨x/θ, y/θ⟩ : ⟨x,y⟩∈ψ}</span>，则 <span class="math">ψ/θ∈Con(A/θ)</span>，且</p>
+    <div class="formula">(A/θ)/(ψ/θ) ≅ A/ψ</div>
+    <div class="proof"><span class="pt">证明。</span>映射 <span class="math">f: A/θ→A/ψ, a/θ↦a/ψ</span> 良定义（因 <span class="math">θ⊆ψ</span>），满同态，<span class="math">ker(f)=ψ/θ</span>。由基本同态定理即得。<span class="qed">∎</span></div>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">3.9（对应定理；Bergman 3.6）</span></div>
+    <p>设 <span class="math">θ∈Con(A)</span>，<span class="math">q: A↠A/θ</span> 为正则投影。则区间 <span class="math">I[θ,1<sub>A</sub>]⊆Con(A)</span> 与 <span class="math">Con(A/θ)</span> 由 <span class="math">ψ↦ψ/θ</span> 格同构。</p>
+    <div class="intu" style="margin:8px 0"><p>读作：<strong>商代数的同余，恰好是原代数中「在 θ 之上的同余」</strong>。格论的语言让「商的同余」这件事变得完全透明。</p></div>
+  </div>
+
+  <div class="def"><div class="bt">记号 <span class="num">3.10（Bergman 3.7）</span></div>
+    <p><span class="math">B⊆A</span>，<span class="math">θ∈Con(A)</span>。令 <span class="math">B<sup>θ</sup> = ⋃<sub>b∈B</sub> b/θ</span>（<span class="math">B</span> 的 θ-饱和），<span class="math">θ↾B = θ∩B²</span>（限制）。若 <span class="math">B≤A</span>，则 <span class="math">B<sup>θ</sup>≤A</span> 且 <span class="math">θ↾B∈Con(B)</span>。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">3.11（第三同构定理；Bergman 3.8）</span></div>
+    <p>设 <span class="math">B≤A</span>，<span class="math">θ∈Con(A)</span>。则</p>
+    <div class="formula">B<sup>θ</sup>/(θ↾B<sup>θ</sup>) ≅ B/(θ↾B)</div>
+    <div class="proof"><span class="pt">证明。</span>考虑复合同态 <span class="math">B ↪ B<sup>θ</sup> ↠ B<sup>θ</sup>/(θ↾B<sup>θ</sup>)</span>，它满，核为 <span class="math">θ↾B</span>。由基本同态定理即得。<span class="qed">∎</span></div>
+  </div>
+
+  <div class="warn"><div class="bt">别记混三个定理</div>
+    <p>第二定理处理<strong>同余的商</strong>（<span class="math">θ⊆ψ</span>），对应定理处理<strong>同余的区间</strong>，第三定理处理<strong>子代数与同余的交互</strong>。它们的证明都只用到基本同态定理——如果你记不住陈述，现场用那张交换图推一遍更可靠。</p>
+  </div>
+  <p class="src"><b>来源：</b>Bergman §3.1 定理 3.5、3.6、3.8；定义 3.7。</p>
+</section>
+
+<!-- ============ O6 直积 ============ -->
+<section id="products">
+  <h2><span class="sn">8</span>直积、子直积与约化积 <span class="tag alg">O6</span></h2>
+  <p class="lead">造新代数的三种方式。L04 会把它们变成分解定理的主角。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.12（直积；Bergman 3.9 / UAL 2.2.39）</span></div>
+    <p>代数族 <span class="math">⟨A<sub>i</sub> : i∈I⟩</span> 的<strong>直积</strong> <span class="math">∏<sub>i∈I</sub>A<sub>i</sub></span> 以笛卡尔积为载体，运算<strong>逐点</strong>定义：</p>
+    <div class="formula">f( a¹,…,a<sup>n</sup> )(i) = f<sup>A<sub>i</sub></sup>( a¹(i),…,a<sup>n</sup>(i) )</div>
+    <p>投影 <span class="math">π<sub>j</sub>: ∏A<sub>i</sub>→A<sub>j</sub></span> 是满同态。若所有 <span class="math">A<sub>i</sub>=A</span>，记作 <span class="math">A<sup>I</sup></span>。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.13（子直积；Bergman 3.16 / UAL 2.2.49）</span></div>
+    <p><span class="math">B≤∏A<sub>i</sub></span> 是<strong>子直积</strong>，若每个投影限制 <span class="math">π<sub>i</sub>↾B: B↠A<sub>i</sub></span> 仍满。等价地：<span class="math">⋂<sub>i∈I</sub>ker(π<sub>i</sub>↾B) = 0<sub>B</sub></span>——<strong>投影族能分开 <span class="var">B</span> 的任意两点</strong>。这是 L04 子直表示定理的入口。</p>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">3.14（约化积；UAL 2.2.69）</span></div>
+    <p>设 <span class="math">F</span> 是指标集 <span class="var">I</span> 上的滤子。在积上定义 <span class="math">a≡<sub>F</sub>b ⟺ {i∈I : a(i)=b(i)}∈F</span>，这是同余。商代数 <span class="math">∏A<sub>i</sub>/F</span> 叫<strong>约化积</strong>；<span class="math">F</span> 为超滤子时叫<strong>超积</strong>。</p>
+    <p>注意关系：<span class="math">F={I}</span> 时得到直积；<span class="math">F</span> 为主超滤子 <span class="math">U<sub>j</sub>={X⊆I : j∈X}</span> 时，<span class="math">∏A<sub>i</sub>/U<sub>j</sub>≅A<sub>j</sub></span>。<strong>超积是直积和投影的统一推广</strong>——L04 会看到它如何变成逻辑紧致性的引擎。</p>
+  </div>
+
+  <div class="intu"><div class="bt">从直积到约化积：一个「多数决」的比喻</div>
+    <p>直积里两个元素相等，要求<strong>每个坐标</strong>都相等。约化积放宽为：<strong>「足够多」的坐标相等</strong>——「足够多」由滤子 <span class="math">F</span> 定义。滤子越大，相等的要求越松，商得越狠。超滤子是最极端的情况：任意一片坐标集合，要么它「大」（在 <span class="math">F</span> 中），要么它的补集「大」——没有中间地带。这正是「二值」在指标集上的体现，也是 Łoś 定理成立的关键。</p>
+  </div>
+  <p class="src"><b>来源：</b>Bergman §3.2–3.3（定义 3.16）；UAL §1.5、§2.2.5、§2.2.7。</p>
+</section>
+
+<!-- ============ 融合 ============ -->
+<section id="fusion">
+  <h2><span class="sn">9</span>融合接口</h2>
+  <table>
+    <tr><th>代数（本讲）</th><th>逻辑（L16 起）</th><th>拓扑（L08 起）</th></tr>
+    <tr><td>同余 <span class="math">θ</span>：可替换关系</td><td><span class="math">φ↔ψ</span> 可证；理论上的等价</td><td>不可区分点；无法由开集分开</td></tr>
+    <tr><td>商代数 <span class="math">A/θ</span></td><td>Lindenbaum–Tarski 代数 <span class="math">Fm/≡</span></td><td>商空间 <span class="math">X/∼</span></td></tr>
+    <tr><td>正则投影 <span class="math">q<sub>θ</sub></span></td><td>公式 → 等价类的赋值</td><td>商映射 <span class="math">X→X/∼</span></td></tr>
+    <tr><td>基本同态定理</td><td>完全性证明的骨架：语法商 ≅ 语义像</td><td>连续映射的分解定理</td></tr>
+  </table>
+  <div class="fusion"><div class="bt">把 L02 接上</div>
+    <p>本讲两次用到 L02：<span class="math">Sg</span> 与 <span class="math">Cg</span> 是闭包算子，<span class="math">Con(A)</span> 与 <span class="math">Sub(A)</span> 是完全格。L04 会第三次用到：<span class="math">Cg</span> 生成的同余与滤子的对应（L18 桥定理之一）。到 L10，L02 的「代数闭包 ↔ 有限 witness」会变身为紧致性——那时你会看到，本讲的超积构造正是那座桥的地基。</p>
+  </div>
+</section>
+
+<!-- ============ 习题 ============ -->
+<section id="ex">
+  <h2><span class="sn">10</span>习题（按学习目标编号）</h2>
+  <p class="lead">每道练习标注对应的目标。建议学完一条目标就做它的题，别攒到最后。</p>
+  <div class="exercise"><ol>
+    <li><span class="tag alg">O1</span> 验证 <span class="math">2ℤ⊆ℤ</span> 是子代数（群 <span class="math">⟨ℤ,+,-,0⟩</span>），而 <span class="math">{0,1}⊆ℤ</span> 不是。再求 <span class="math">Sg({2,3})</span> 在加法群中的结果。</li>
+    <li><span class="tag alg">O1</span> 设格 <span class="math">L=⟨{0,a,b,1},∨,∧⟩</span>（<span class="math">a,b</span> 不可比）。计算 <span class="math">Sg({a})</span>、<span class="math">Sg({a,b})</span>，并验证 <span class="math">Sg({a})∪Sg({b})</span> 不是子代数。</li>
+    <li><span class="tag alg">O2</span> 定义 <span class="math">h: ℤ→ℤ₆, n↦n mod 6</span>。验证它是同态，计算 <span class="math">ker(h)</span>，并说明为什么 <span class="math">ker(h)</span> 是 <span class="math">ℤ</span> 上的同余而非仅是子集。</li>
+    <li><span class="tag alg">O3</span> 设 <span class="math">θ</span> 是 <span class="math">A</span> 上的等价关系且相容于所有基本运算。请逐条验证 <span class="math">θ∈Con(A)</span>（即确认定义 3.4 的三条件）。再举一个等价关系<strong>不是</strong>同余的例子。</li>
+    <li><span class="tag alg">O3</span><span class="tag log">逻辑</span> 在布尔代数 <span class="math">2<sup>{p,q}</sup></span> 上，令滤子 <span class="math">F={X⊆{p,q}: p∈X}</span>。验证 <span class="math">θ<sub>F</sub>={⟨a,b⟩: a↔b∈F}</span> 是同余，并写出它把哪些元素归为一类。</li>
+    <li><span class="tag alg">O4</span> 对 <span class="math">h: ℤ→ℤ₆</span>（E3），写出基本同态定理给出的 <span class="math">h̄: ℤ/ker(h)→ℤ₆</span>，并验证 <span class="math">h̄∘q=h</span>。</li>
+    <li><span class="tag alg">O4</span> 证明：若 <span class="math">h: A→B</span> 是同态，则 <span class="math">A/ker(h)≅im(h)</span>（提示：把 <span class="math">h</span> 的陪域限制为像，再用基本同态定理）。</li>
+    <li><span class="tag alg">O5</span> 设 <span class="math">θ⊆ψ</span> 是 <span class="math">ℤ</span> 上的同余（模 6 与模 2，注意 <span class="math">6ℤ⊆2ℤ</span> 对应 <span class="math">θ⊆ψ</span>）。写出 <span class="math">(ℤ/θ)/(ψ/θ)</span> 并验证它同构于 <span class="math">ℤ/ψ</span>。</li>
+    <li><span class="tag alg">O5</span> 用对应定理证明：<span class="math">Con(ℤ/6ℤ)</span> 与 <span class="math">Con(ℤ)</span> 中模 6 以上的区间同构，并数出 <span class="math">ℤ/6ℤ</span> 有几个同余。</li>
+    <li><span class="tag alg">O6</span> 构造 <span class="math">ℤ₂×ℤ₃</span>，写出全部运算表（加法模 2、模 3），验证投影 <span class="math">π₁,π₂</span> 是满同态，并求 <span class="math">ker(π₁)</span>。</li>
+    <li><span class="tag alg">O6</span><span class="tag log">逻辑</span> 设 <span class="math">I=ℕ</span>，<span class="math">F</span> 为余有限滤子（补集有限者）。取 <span class="math">A<sub>i</sub>=ℤ₂</span>。证明约化积 <span class="math">∏ℤ₂/F</span> 不是有限代数（提示：构造两个只在有限个点不同的函数）。L04 将看到这与 Łoś 定理的关系。</li>
+  </ol></div>
+</section>
+
+<div class="footnav">
+  <a href="L02.html">← 上一讲：L02 格、闭包系统与 Galois 连接</a>
+  <a href="L04.html">下一讲：L04 子直积、超积、自由代数与 Birkhoff 定理 →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L03 · 来源 Bergman Ch1/Ch3 / UAL §2.1–2.2.5 · v0.1</footer>
+
+</main></div>
+</body>
+</html>

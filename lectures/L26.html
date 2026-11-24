@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L26 无点拓扑、locale 与 Heyting 代数 · 代数逻辑讲义</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="crumb"><a href="../代数逻辑讲义_大纲.html">代数逻辑讲义</a><span class="sep">/</span>
+    <span>第六篇 对偶与表示：三条线的汇合点</span><span class="sep">/</span><span>L26</span></div>
+  <div class="spacer"></div><a class="back" href="../代数逻辑讲义_大纲.html">← 返回大纲</a>
+</div></div>
+
+<header><div class="wrap">
+  <div class="kicker">Lecture 26 · 3 学时 · 全课最深的一讲 · 从「点是什么」问到「几何能不能没有点」</div>
+  <h1>无点拓扑、locale 与 Heyting 代数</h1>
+  <div class="sub">前面二十五讲我们一直在给点找替身：滤子、超滤子、同态、模型。这一讲问到底——如果这些替身都不要，只留下「什么样的话算可验证」，几何还剩什么</div>
+  <div class="metarow"><span>来源：拓扑讲义 Ch7「无点拓扑」；Bergman 定义 3.30、例 3.31(3)、素理想定理 2.41、表示定理 2.43/2.46；回指 L02 闭包算子与 Galois 连接、L08 邻域滤子、L10 开集格、L13 紧致化、L14 余有限拓扑与 Stone 空间、L18 紧致桥、L23 Stone 对偶、L25 空间模态逻辑</span>
+    <span class="tag top">拓扑</span><span class="tag alg">代数</span><span class="tag log">逻辑</span></div>
+</div></header>
+
+<div class="wrap"><main>
+
+<div class="roadmap"><div class="rt">本讲路线图</div>
+<ol>
+  <li><a href="#concepts">概念清单与依赖关系（简）</a></li>
+  <li><a href="#objectives">学习目标 ↔ 讲解 ↔ 练习 对照</a></li>
+  <li><a href="#motive">O1　哲学动机：点到底是什么</a></li>
+  <li><a href="#frame">O2　Frame 与 locale：把开集格抽出来</a></li>
+  <li><a href="#points">O3　点 = 完全素滤子；sober 与 sobrification</a></li>
+  <li><a href="#sublocale">O4　空间性、子 locale 与「locale 不是空间的翻版」</a></li>
+  <li><a href="#compact">O5　way-below、紧 locale 与连续格（L13 的深化）</a></li>
+  <li><a href="#heyting">O6　Heyting 代数与直觉主义（L02 的深化）</a></li>
+  <li><a href="#godel">O7　Gödel 翻译与模态伴侣（L25 的深化）</a></li>
+  <li><a href="#esakia">O8　Esakia 对偶与对偶谱系总收束</a></li>
+  <li><a href="#examples">三层例：典型 / 本质 / 边界</a></li>
+  <li><a href="#ex">习题</a></li>
+  <li><a href="#refs">标准文献指南</a></li>
+  <li><a href="#fusion2">融合接口：第八张图</a></li>
+</ol></div>
+
+<section id="concepts">
+  <h2><span class="sn">0</span>概念清单与依赖关系 <span class="tag top">先摆牌</span></h2>
+  <div class="box"><div class="bt">本讲新概念（八个，按依赖排序）</div>
+    <ol>
+      <li><strong>几何逻辑 / 有限观察</strong>：开集 = 半可判定性质；拓扑公理 = 逻辑联结词的规则（哲学起点）。</li>
+      <li><strong>Frame</strong>：完备格 + 有限交对任意并分配；元素是「可验证命题」。</li>
+      <li><strong>Locale</strong>：<span class="math">Frame<sup>op</sup></span> 的对象；连续映射 = 帧同态的拉回。</li>
+      <li><strong>完全素滤子</strong>：任意并形成的新点在滤子里 ⟹ 某个成员已在里面；locale 的「点」。</li>
+      <li><strong>Sober / sobrification</strong>：不可约闭集有唯一泛点；非 sober 空间可补点成 sober。</li>
+      <li><strong>way-below <span class="math">≪</span></strong>：紧包含关系；紧 locale = <span class="math">1 ≪ 1</span>；局部紧 = 连续格。</li>
+      <li><strong>Heyting 代数</strong>：有相对伪补 <span class="math">→</span> 的有界分配格；直觉主义逻辑的代数。</li>
+      <li><strong>Esakia 对偶</strong>：Heyting 代数 ↔ 带序 Stone 空间；对偶谱系的终点。</li>
+    </ol>
+  </div>
+  <div class="diagram"><div class="bt">依赖图（箭头 = 「先懂左边才懂右边」）</div>
+<pre>  L02 Galois 连接 ──┐
+  L08 邻域滤子 ─────┼──滤子 ──完全素滤子 ──pt(F) ──sober ──Ω ⊣ pt
+  L23 点=超滤子 ────┘                                      │
+                                                            ▼
+  L10 开集格 ────Frame ──Locale(=Frameᵒᵖ) ──子locale/积 ──非空间性
+       │              │
+       │              └──way-below ──紧 locale ──局部紧 ──L13 重访
+       ▼
+  Bergman 3.30 伪补 ──Heyting 代数 ──¬=□¬ ──Gödel 翻译 ──L25 S4 重访
+                            │                              │
+                            └──Esakia 对偶 ─────────────────┘
+                                      ↓
+                        对偶谱系总表（BA/分配格/Heyting/BAO/Frame）</pre>
+  </div>
+  <p class="src"><b>文献边界先说清：</b>三本教材给的是<strong>入口与术语</strong>——拓扑讲义 Ch7 一段综述，Bergman 的伪补与素理想表示，UAL 的 BAO/JT。<strong>frame/locale 的精确定义、sober 对偶、Esakia 对偶、Gödel 翻译完全性</strong>来自标准文献（Johnstone、Vickers、Mac Lane–Moerdijk、Esakia、Blok–Esakia 等），§11 列了指南，正文逐处标注来源，不冒充教材原文。</p>
+</section>
+
+<section id="objectives">
+  <h2><span class="sn">1</span>学习目标 ↔ 讲解 ↔ 练习</h2>
+  <div class="box"><div class="bt">八个目标，每个都有对应讲解和练习</div>
+    <table>
+      <tr><th>目标</th><th>要拿到什么</th><th>讲解</th><th>练习</th></tr>
+      <tr><td><span class="tag top">O1</span></td><td>说清「不要点」的三条哲学动机，不把它当成纯技术花招</td><td><a href="#motive">§2</a></td><td><a href="#ex">E1</a></td></tr>
+      <tr><td><span class="tag alg">O2</span></td><td>frame 定义、分配律为什么是那条、locale 与 frame 的范畴方向</td><td><a href="#frame">§3</a></td><td><a href="#ex">E2, E3</a></td></tr>
+      <tr><td><span class="tag top">O3</span></td><td>完全素滤子与素滤子的区别；sober 与 sobrification</td><td><a href="#points">§4</a></td><td><a href="#ex">E4, E5, E6</a></td></tr>
+      <tr><td><span class="tag top">O4</span></td><td>空间性、子 locale、稠密交：locale 与空间的真实差别</td><td><a href="#sublocale">§5</a></td><td><a href="#ex">E7</a></td></tr>
+      <tr><td><span class="tag top">O5</span></td><td>way-below、紧 locale 的覆蓋证明、局部紧与连续格</td><td><a href="#compact">§6</a></td><td><a href="#ex">E8, E9</a></td></tr>
+      <tr><td><span class="tag alg">O6</span></td><td>Heyting 代数、开集格上的伪补与排中律失败、¬¬ 是闭包算子</td><td><a href="#heyting">§7</a></td><td><a href="#ex">E10, E11</a></td></tr>
+      <tr><td><span class="tag log">O7</span></td><td>Gödel 翻译、模态伴侣、KC↔S4.2 的对应</td><td><a href="#godel">§8</a></td><td><a href="#ex">E12, E13</a></td></tr>
+      <tr><td><span class="tag alg">O8</span></td><td>Esakia 对偶与对偶谱系总表，说清「结构越弱、空间序越强」</td><td><a href="#esakia">§9</a></td><td><a href="#ex">E14, E15, E16</a></td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="motive">
+  <h2><span class="sn">2</span>O1　哲学动机：点到底是什么 <span class="tag top">O1</span></h2>
+  <p class="lead">这一讲最该先问的不是「locale 怎么定义」，而是「为什么有人愿意不要点」。答案有三层，一层比一层硬。</p>
+
+  <h3><span class="sn">2.1</span>第一层：我们能观察到的从来不是点</h3>
+  <p>先回到你从第 1 讲就带着的东西。L01 把逻辑定义为四元组 <span class="math">L = ⟨F, M, mng, ⊨⟩</span>，其中 <span class="math">mng</span> 把公式送到「模型上的真值集合」。L02 你学了闭包算子与 Galois 连接，看见「理论」和「模型」是一对极性。L08 你学了邻域滤子，那天我写过一句话：<strong>「不必真有点，一个滤子就能当作一个可能世界。」</strong>L10 你把开集格 <span class="math">τ</span> 和 S4 的 <span class="math">□=int</span> 对上。L23 你终于看见点 = 超滤子 = 同态到 2。</p>
+  <p>把这条线索连起来读，会发现一个一直在发生却没被点破的事实：<strong>我们从来没有直接把握过点，我们把握的一直是「哪些命题在点里成立」。</strong>点是我们从这些信息里<strong>反推</strong>出来的。L23 的反推用的工具是超滤子；这一讲问的是：如果反推这一步根本不做呢？</p>
+  <div class="intu"><div class="bt">Vickers 的那句判词</div>
+    <p>Steven Vickers 在《Topology via Logic》(1989) 的序言里说得相当不客气：传统点集拓扑的动机是「先从欧氏空间抽象到度量空间，然后<strong>出于一个并不明显的理由</strong>，把开集的性质抽出来」。他的主张是：把这些公理<strong>不当集合论读，当逻辑读</strong>——拓扑就是<strong>有限观察的逻辑</strong>。</p>
+    <p>具体对应是 Smyth (1983) 与 Abramsky (1987) 那批工作的口号：<strong>开集 = 半可判定性质</strong>——存在有效方法能在有限步内<strong>验证</strong>它，但未必能否证它。「程序停下来了」是半可判定的；「程序永不停止」不是。两个半可判定性质可以同时验证（交），一族半可判定性质只要有一个被验证就验证（并）。<strong>拓扑公理不是天上掉下来的集合论约定，是「可验证性」这个概念的运算规则。</strong></p>
+  </div>
+  <p>这就把 L02 的闭包算子、L10 的内部算子、L25 的 <span class="math">□=int</span> 全部收进一个更基本的出发点：<strong>先有可验证的命题，后有它们描述的世界</strong>。点是这个世界的可选重构，不是它的地基。</p>
+
+  <h3><span class="sn">2.2</span>第二层：点太贵——构造性与选择公理</h3>
+  <p>L23 证明 Stone 表示时用了 Zorn 引理（Bergman 定理 2.41 素理想定理）把滤子扩张成超滤子。L13 证明紧致 ⇔ 超滤子收敛时也用了非主超滤子。<strong>「点存在」这件事，在很多情形下是靠选择公理买的。</strong>如果你在构造性数学里工作，或在一个 topos 里工作，这笔钱未必付得起。</p>
+  <p>更细的麻烦是 Vickers 后来反复讲的「<strong>变体集合</strong>」问题：你想研究一族随参数 <span class="math">z</span> 变化的空间 <span class="math">X(z)</span>，很自然地想给每个 <span class="math">z</span> 配一个点集。可有些变体空间<strong>没有令人满意的点集表示</strong>——你硬要做，得到的点集不是「集合」。点集定义在这里不是不方便，是不成立。</p>
+  <p>无点拓扑的做法是：<strong>把每个开集 <span class="math">U</span> 不当成点的集合，而当成一个逻辑性质「<span class="math">x ∈ U</span>」</strong>——至于 <span class="math">x</span> 是什么、有多少，先不管。原先靠「知道点是什么」才隐含成立的那些关系，现在显式写成逻辑公理。于是你得到一个理论，<strong>点则定义成这个理论的模型</strong>。Vickers 一语中的：无点空间就是一个几何理论，它的点就是模型的集合。</p>
+  <div class="warn"><div class="bt">为什么这比「省点事」重要</div>
+    <p>构造性数学里最著名的胜利之一：经典 Tychonoff 定理（任意积的紧致性）依赖选择公理，<strong>但 locale 版本的 Tychonoff 可以构造性地证明</strong>。同类的还有 Heine–Borel 定理。<strong>换掉点，换掉的不是表述，是定理的证明强度。</strong>这正是 L18 紧致桥在无点世界里的回响：紧致性本来就该是「有限观察能覆盖整体」这种构造性说法，而不是「每个超滤子收敛」这种非构造性说法。</p>
+  </div>
+
+  <h3><span class="sn">2.3</span>第三层：有些几何本来就没有点</h3>
+  <p>如果你的物理图景在普朗克尺度上没有光滑流形、没有点事件，那么以点集为地基的几何就不是「近似」，而是<strong>用错了语言</strong>。Isham 与 Butterfield 的 topos 方案、量子引力中的位置 locale，走的都是这条路：把观测量（可问的问题）放在 frame 里，空间由它们生成，点只是可选的模型。</p>
+  <p>还有一个更贴近本课程的例子。你在 L06 见过<strong>无原子的布尔代数</strong>：<span class="math">𝓟(ℕ)/fin</span> 没有原子，它的 Stone 空间 <span class="math">βℕ − ℕ</span> 里的点不是任何自然数。L23 你学会把这些点叫「非主超滤子」。今天换一个看法：<strong>那些点之所以存在，是因为我们允许自己用选择公理把「余有限滤子」扩张到底。</strong>locale 视角问的是：如果不做这个扩张，<span class="math">𝓟(ℕ)/fin</span> 自己作为格，还描述了一个几何对象吗？描述了——而且描述得更省。这就是「代数方法比点集方法更广」的意思，也是拓扑讲义 Ch7 那段话的重心。</p>
+
+  <h3><span class="sn">2.4</span>一次本体论换向</h3>
+  <div class="intu"><div class="bt">本体论在前，还是认识论在前</div>
+    <p>把两种做法并排看，哲学立场就出来了：</p>
+    <table>
+      <tr><th></th><th>点集拓扑</th><th>Locale 理论</th></tr>
+      <tr><td>起点</td><td>一批点（可能世界、实体）</td><td>一批可验证命题（观察、事实）</td></tr>
+      <tr><td>顺序</td><td><strong>本体论先于认识论</strong></td><td><strong>认识论先于本体论</strong></td></tr>
+      <tr><td>开集是什么</td><td>点的集合</td><td>命题（半可判定性质）</td></tr>
+      <tr><td>点是什么</td><td>给定的、基本的</td><td>推出来的、可选的（理论的模型）</td></tr>
+      <tr><td>亲近的逻辑</td><td>经典逻辑</td><td>直觉主义逻辑 / 几何逻辑</td></tr>
+    </table>
+    <p>维特根斯坦《逻辑哲学论》开头两句放在这里几乎就是注脚：「世界是一切实际情况。<strong>世界是事实的总体，不是事物的总体。</strong>」点集拓扑从「事物」起，locale 从「事实」起。这一讲的整个技术展开，都是在这句哲学判断底下发生的。</p>
+  </div>
+  <p class="src"><b>来源：</b>拓扑讲义 Ch7「无点拓扑」段；Vickers《Topology via Logic》(1989) 序言与 Vickers 研究主页；Smyth (1983)、Abramsky (1987)；哲学对照见 Arthur–Sullivan 关于拓扑进入分析哲学的讨论。L01/L02/L08/L10/L13/L14/L23 回指。</p>
+</section>
+
+<section id="frame">
+  <h2><span class="sn">3</span>O2　Frame 与 locale：把开集格抽出来 <span class="tag alg">O2</span></h2>
+  <p class="lead">哲学立场定了，技术就顺了：把开集族从「点的集合」升级成「抽象命题」，然后只保留它作为可验证命题必须满足的运算规则。</p>
+
+  <h3><span class="sn">3.1</span>从开集格到 frame</h3>
+  <div class="def"><div class="bt">定义 <span class="num">Frame（标准文献；拓扑讲义 Ch7 只给「完备 Heyting 代数」的说法）</span></div>
+    <p>一个 <strong>frame</strong> 是一个完备格 <span class="math">F = ⟨F, ∧, ∨, 0, 1⟩</span>，满足<strong>有限交对任意并分配</strong>：</p>
+    <div class="formula">a ∧ ⋁<sub>i ∈ I</sub> b<sub>i</sub> = ⋁<sub>i ∈ I</sub> (a ∧ b<sub>i</sub>)　　（任意指标集 I，包括空集）</div>
+    <p>frame 同态 <span class="math">h : F → G</span> 是保有限交（含顶元）与任意并（含底元）的映射。</p>
+    <p><strong>原型：</strong>任何拓扑空间 <span class="math">X</span> 的开集格 <span class="math">Ω(X) = ⟨τ, ∩, ∪, ∅, X⟩</span> 是 frame——任意并封闭、有限交封闭、交对并分配，都是拓扑公理加集合运算的直接后果。</p>
+  </div>
+
+  <div class="intu"><div class="bt">那条分配律凭什么挑中它</div>
+    <p>回到「可验证性」读法。设 <span class="math">a</span> 是「观察到 <span class="math">a</span>」，<span class="math">b<sub>i</sub></span> 是一族观察。那么：</p>
+    <ul>
+      <li><span class="math">⋁<sub>i</sub> b<sub>i</sub></span> = 「<strong>至少一个</strong> <span class="math">b<sub>i</sub></span> 被验证」——这仍然是可验证的：只要给出那个 <span class="math">i</span> 和它的证据就行。<strong>任意析取都允许</strong>，这是半可判定性的关键特征。</li>
+      <li><span class="math">a ∧ b</span> = 「<span class="math">a</span> 与 <span class="math">b</span> 都被验证」——有限个证据拼起来就行，所以<strong>有限合取允许</strong>；无穷合取要同时给出无穷多证据，一般做不到。</li>
+      <li>分配律 <span class="math">a ∧ ⋁<sub>i</sub> b<sub>i</sub> = ⋁<sub>i</sub> (a ∧ b<sub>i</sub>)</span> 说的是：<strong>「先看到 <span class="math">a</span>，再看到某个 <span class="math">b<sub>i</sub></span>」等价于「看到某个「<span class="math">a</span> 与 <span class="math">b<sub>i</sub></span> 同时成立」的证据」</strong>——正是观察能拼合的意思。</li>
+    </ul>
+    <p>所以 frame 公理不是拓扑公理的代数伪装，<strong>它是可观察性本身的逻辑</strong>。教材说的「几何逻辑」就是这套「有限 ∧ + 任意 ∨」的逻辑。</p>
+  </div>
+
+  <div class="ex"><div class="bt">分配律不是免费的：一个反例</div>
+    <p>取向量空间 <span class="math">V</span> 的<strong>子空间格</strong>（按包含排序）。它是完备格：任意并是生成子空间，任意交是集合交。但不满足 frame 分配律。取 <span class="math">V = ℝ²</span>，<span class="math">a = x</span> 轴，<span class="math">b₁ = y</span> 轴，<span class="math">b₂ =</span> 对角线 <span class="math">y = x</span>。则 <span class="math">b₁ ∨ b₂ = ℝ²</span>，故 <span class="math">a ∧ (b₁ ∨ b₂) = a</span>；但 <span class="math">a ∧ b₁ = 0</span>、<span class="math">a ∧ b₂ = 0</span>，故右边 <span class="math">= 0</span>。<strong>子空间格不是 frame</strong>——「同时可验证」在量子式的叠加结构里不按经典分配律走。这也提示了为什么量子逻辑要用正交模格而不是 frame。</p>
+  </div>
+
+  <h3><span class="sn">3.2</span>Locale = Frame<sup>op</sup>：方向为什么必须反</h3>
+  <div class="def"><div class="bt">定义 <span class="num">Locale</span></div>
+    <p><strong>Locale 的范畴 <span class="math">Loc</span> 定义为 <span class="math">Frame<sup>op</sup></span></strong>：locale 就是 frame（记号上区分，写 <span class="math">ΩX</span> 表示 locale <span class="math">X</span> 对应的 frame），但从 <span class="math">X</span> 到 <span class="math">Y</span> 的<strong>连续映射</strong> <span class="math">f : X → Y</span> 定义为 frame 同态 <span class="math">f<sup>*</sup> : ΩY → ΩX</span>。</p>
+  </div>
+  <div class="intu"><div class="bt">方向反，是因为观察只能拉回</div>
+    <p>你在 L23 已经见过同一件事：Stone 对偶里 <span class="math">BA<sup>op</sup> ≃ Stone</span>，连续映射 <span class="math">f : X → Y</span> 给同态 <span class="math">f<sup>*</sup>(V) = f<sup>−1</sup>(V)</span>。<strong>这里一模一样。</strong>给你一台显微镜（<span class="math">f</span>：载玻片 → 屏幕），你在屏幕上做一个观察 <span class="math">V</span>，等于在载玻片上做了观察 <span class="math">f<sup>−1</sup>(V)</span>。<strong>观察天然沿映射反向搬运</strong>，所以 frame 同态的方向必须和连续映射相反。</p>
+    <p>这不是别扭，是情报：<strong>连续的真定义就是「拉回保有限观察」</strong>。显微镜像（观察到 <span class="math">V</span>）能翻译回载玻片上的观察（<span class="math">f<sup>−1</sup>(V)</span>），而且这个翻译保持「同时」与「或者」。这条思路后来直接长成 topos 理论里几何态射的定义。</p>
+  </div>
+  <div class="box"><div class="bt">两套记号，别混</div>
+    <table>
+      <tr><th>这边（locale）</th><th>那边（frame）</th><th>为什么</th></tr>
+      <tr><td>积 <span class="math">X × Y</span></td><td>余积 <span class="math">ΩX ⊗ ΩY</span></td><td>范畴取反，积变余积</td></tr>
+      <tr><td>子 locale</td><td>frame 的商</td><td>同上</td></tr>
+      <tr><td>连续映射 <span class="math">f</span></td><td>同态 <span class="math">f<sup>*</sup></span></td><td>拉回方向</td></tr>
+      <tr><td>点 <span class="math">x : 1 → X</span></td><td>同态 <span class="math">x<sup>*</sup> : ΩX → Ω1</span></td><td>一点空间的 frame 是 2</td></tr>
+    </table>
+  </div>
+  <p class="src"><b>来源：</b>frame 定义与 Loc = Frameᵒᵖ 见 Johnstone《Stone Spaces》Ch II、Vickers《Some constructive roads to Tychonoff》定义 0.1、Piccinini–Pultr《Frames and Locales》；分配律反例为标准例子。拓扑讲义 Ch7 给「locale 的开集结构形成完备 Heyting 代数」的综述。</p>
+</section>
+
+<section id="points">
+  <h2><span class="sn">4</span>O3　点 = 完全素滤子；sober 与 sobrification <span class="tag top">O3</span></h2>
+  <p class="lead">L23 说「点 = 超滤子」。现在要把这句话升级成 frame 版本，而且必须升级对——因为这里藏着一个特别容易讲错、又特别有教益的区别。</p>
+
+  <h3><span class="sn">4.1</span>素滤子 vs 完全素滤子：量词的位置又要人命</h3>
+  <div class="def"><div class="bt">定义 <span class="num">两种素性</span></div>
+    <p>设 <span class="math">F ⊆ A</span> 是 frame（或有界格）上的滤子（L02 三条：上闭、有限交封闭、含顶）。</p>
+    <ul>
+      <li><span class="math">F</span> <strong>素</strong>：若 <span class="math">a ∨ b ∈ F</span>，则 <span class="math">a ∈ F</span> 或 <span class="math">b ∈ F</span>。<strong>有限</strong>析取。</li>
+      <li><span class="math">F</span> <strong>完全素</strong>：若 <span class="math">⋁<sub>i ∈ I</sub> a<sub>i</sub> ∈ F</span>，则存在 <span class="math">i ∈ I</span> 使 <span class="math">a<sub>i</sub> ∈ F</span>。<strong>任意</strong>析取。</li>
+    </ul>
+    <p>在<strong>有限</strong>布尔代数上两者显然等价。在什么条件下一般也等价？这就是下面的关键例子。</p>
+  </div>
+
+  <div class="warn"><div class="bt">L23 的「超滤子 = 点」不是 locale 的「点」</div>
+    <p>取 <span class="math">A = 𝓟(ℕ)</span>，把它当 frame（并 = 集合并，交 = 集合交）。它是离散空间 <span class="math">ℕ</span> 的开集格。取任一<strong>非主超滤子</strong> <span class="math">U</span>（L13/L14 里 <span class="math">βℕ − ℕ</span> 的点）。它是素滤子：这没问题是 L23 证过的。</p>
+    <p>但它<strong>不是完全素滤子</strong>。证明只需一行：令 <span class="math">a<sub>n</sub> = {n}</span>，则 <span class="math">⋁<sub>n</sub> a<sub>n</sub> = ℕ ∈ U</span>，但没有任何 <span class="math">{n} ∈ U</span>——否则 <span class="math">U</span> 就是主超滤子了。<strong>量词一从「两个」换成「任意一族」，非主超滤子全军覆没。</strong></p>
+    <p>于是 <span class="math">pt(𝓟(ℕ)) = ℕ</span>（只有主超滤子给出的点），而 L23 的 Stone 空间 <span class="math">Ult(𝓟(ℕ)) = βℕ</span> 多出一大片。<strong>这不是矛盾，是两个不同对象的开集格不同</strong>：<span class="math">𝓟(ℕ)</span> 是 <span class="math">ℕ</span> 的开集格（也是 <span class="math">βℕ</span> 的<strong>开闭</strong>格，不是全部开集格）。<span class="math">βℕ</span> 的开集格更大，它的完全素滤子确实给回 <span class="math">βℕ</span> 的全部点，因为 <span class="math">βℕ</span> 是 Stone 空间、从而 sober（下面会证）。<strong>记住这句话：Stone 对偶用超滤子，locale 用完全素滤子；在无穷并出现时二者分道扬镳。</strong></p>
+  </div>
+
+  <h3><span class="sn">4.2</span>点的空间 pt(F)</h3>
+  <div class="def"><div class="bt">定义 <span class="num">pt(F) 与 Ω ⊣ pt</span></div>
+    <p>对 frame <span class="math">F</span>，令 <span class="math">pt(F)</span> = 全体完全素滤子。对 <span class="math">a ∈ F</span>，令</p>
+    <div class="formula">φ(a) = { p ∈ pt(F) : a ∈ p }</div>
+    <p>这些 <span class="math">φ(a)</span> 构成 <span class="math">pt(F)</span> 的一个拓扑（交对有限、并对任意还是由完全素性保证——验一下：<span class="math">p ∈ φ(⋁a<sub>i</sub>) ⟺ ⋁a<sub>i</sub> ∈ p ⟺ ∃i (a<sub>i</sub> ∈ p) ⟺ p ∈ ⋃φ(a<sub>i</sub>)</span>）。这就得到一个函子 <span class="math">pt : Frame<sup>op</sup> → Top</span>。</p>
+    <p>反方向就是 <span class="math">Ω : Top → Frame<sup>op</sup></span>：<span class="math">X ↦ Ω(X)</span>，连续 <span class="math">f ↦ f<sup>−1</sup></span>。<strong>这两者构成伴随 <span class="math">Ω ⊣ pt</span></strong>（Johnstone、Piccinini–Pultr）。</p>
+  </div>
+
+  <h3><span class="sn">4.3</span>Sober：可见的都在，且不重影</h3>
+  <div class="def"><div class="bt">定义 <span class="num">Sober 空间</span></div>
+    <p>拓扑空间 <span class="math">X</span> <strong>sober</strong>，若每个<strong>不可约闭集</strong> <span class="math">C</span>（<span class="math">C ⊆ U ∪ V</span> 且 <span class="math">U, V</span> 开 ⟹ <span class="math">C ⊆ U</span> 或 <span class="math">C ⊆ V</span>）都是某个点的闭包 <span class="math">cl{x}</span>，且这个点唯一。</p>
+    <p>等价说法：每个完全素滤子都是某点的邻域滤子，且该点唯一。<strong>白话：你从开集能认出来的「位置」，在空间里真的有一个点；而且只有一个。</strong>有个俏皮记法：sober 就是「看见的都在，而且不重影」。</p>
+  </div>
+
+  <div class="thm"><div class="bt">命题 <span class="num">sober 判定与例子（标准文献）</span></div>
+    <ol>
+      <li><strong>sober ⟹ T0</strong>；<strong>Hausdorff ⟹ sober</strong>。所以要找非 sober 例子，得往分离性弱的地方去。</li>
+      <li>伴随 <span class="math">Ω ⊣ pt</span> 的单位 <span class="math">η : X → pt(ΩX)</span> 把 <span class="math">x</span> 送到邻域滤子；<strong><span class="math">η</span> 是同胚 ⟺ <span class="math">X</span> sober</strong>。</li>
+      <li>限制到 sober 空间与 spatial frame（§5），<span class="math">Ω</span> 与 <span class="math">pt</span> 给出<strong>范畴等价</strong> <span class="math">Sob ≃ SFrm<sup>op</sup></span>。</li>
+      <li><strong>L23 回指：</strong>每个 Stone 空间是紧 Hausdorff，故 sober。<strong>Stone 对偶完美地待在 sober 世界里</strong>——这就是为什么 L23 没遇到任何「点不够」的麻烦。</li>
+    </ol>
+  </div>
+
+  <div class="ex"><div class="bt">例 4.4（老朋友回来）余有限拓扑非 sober</div>
+    <p>取无限集 <span class="math">X</span> 上的余有限拓扑（L14 例 6.3.10：连通且极端不连通、T1 但非 Hausdorff）。它的闭集只有有限集与 <span class="math">X</span>。整个 <span class="math">X</span> 是闭集，而且<strong>不可约</strong>（两个真闭子集都是有限的，有限集的并不能覆盖无限集 <span class="math">X</span>）。</p>
+    <p>但 <span class="math">X</span> 不是任何点的闭包：在 T1 空间里 <span class="math">cl{x} = {x}</span>，而 <span class="math">X</span> 无限。<strong>于是 <span class="math">X</span> 不可约闭，却没有泛点——非 sober。</strong>这个例子你 L14 见过两次（极端不连通的边界例、T1 导集麻烦），现在第三次出场，角色是「点不够」的标本。</p>
+    <p><strong>sobrification 怎么修：</strong>给 <span class="math">X</span> 添一个点 <span class="math">∞</span>，规定含 <span class="math">∞</span> 的开集是 <span class="math">{∞} ∪ (X − F)</span>（<span class="math">F</span> 有限）。新空间里 <span class="math">cl{∞} = X</span>，泛点有了，sober。<strong>这是一个「理想点」——和 L13 用 Stone–Čech 紧致化补点、L19 Henkin 构造补见证常元，是同一个动作的第三次出现。</strong></p>
+  </div>
+
+  <div class="ex"><div class="bt">例 4.5（L25 回来）Alexandrov 空间一般非 sober</div>
+    <p>L25 §4 把预序 <span class="math">≤</span> 赋成「开集 = 上集」的 Alexandrov 拓扑。Vickers 指出：这类偏序集<strong>一般非 sober</strong>。理由一眼可见：定向集 <span class="math">D</span> 的上界集合（理想完备化要补的东西）对应一个「不可约闭集」，而原偏序集里未必有点实现它的上确界。</p>
+    <p><strong>补法：作理想完备化</strong>——把所有定向理想当成新点。<strong>这正是 L25 里 Kripke 语义能装进拓扑语义的代价：Alexandrov 空间为了「任意并封闭」多给了太多开集，点反而不够用了。</strong>把这例子和 L25 §4.1 的警告并读，会看见无点视角并不是在挑刺，而是在指出一个真实的结构缺口。</p>
+  </div>
+
+  <div class="intu"><div class="bt">「locale 天生 sober」是什么意思</div>
+    <p>因为 locale 的<strong>定义里就没有任何多余的点</strong>——它的点按定义就是完全素滤子，即「从开集能认出来的位置」。所以 <span class="math">pt(ΩX) ≅ X</span> 对 locale 自动成立（在适当意义下）。<strong>非 sober 是点集空间的病，不是 locale 的病。</strong>这也解释了为什么范畴论者偏爱 locale：他们把「拓扑自然的空间」直接定义成 sober 的，其余的视为携带了拓扑看不见的冗余信息。</p>
+  </div>
+  <p class="src"><b>来源：</b>Johnstone《Stone Spaces》Ch II §1–2；Piccinini–Pultr《Frames and Locales》Ch II；Vickers《Some constructive roads to Tychonoff》§0.1.2、Vickers 研究主页；L23 Stone 表示、L14 例 6.3.10、L25 §4.1。</p>
+</section>
+
+<section id="sublocale">
+  <h2><span class="sn">5</span>O4　空间性、子 locale 与「locale 不是空间的翻版」 <span class="tag top">O4</span></h2>
+  <p class="lead">到这一步很容易以为 locale 只是点集空间的另一种写法。这一节专门拆掉这个误会：有 frame 点不够（非空间），有 locale 算出来的子对象和积跟空间里的不是一回事。<strong>差别正是新几何的内容，不是技术瑕疵。</strong></p>
+
+  <div class="def"><div class="bt">定义 <span class="num">Spatial frame</span></div>
+    <p>frame <span class="math">F</span> <strong>空间</strong>（spatial），若它的元素能被点分开：</p>
+    <div class="formula">∀a ≠ b ∈ F,　∃p ∈ pt(F) 使 a ∈ p, b ∉ p（或反过来）</div>
+    <p>等价说法：每个元素都是「素元」的并。<strong>判定定理：</strong>单位 <span class="math">η : X → pt(ΩX)</span> 是同胚 ⟺ <span class="math">X</span> sober；<span class="math">ε : F → Ω(pt F)</span> 是同构 ⟺ <span class="math">F</span> spatial。两者合起来给等价 <span class="math">Sob ≃ SFrm<sup>op</sup></span>（§4.3）。</p>
+  </div>
+
+  <div class="box warn"><div class="bt">非空间 frame 是真实存在的</div>
+    <p>不满足上面条件的 frame 叫<strong>非空间</strong>——它有开集结构，但「点」不足以来区分这些开集。存在性是标准结果（Johnstone《Stone Spaces》Ch II §2 给系统例子；Banaschewski、Isbell 有经典构造）。</p>
+    <p>这里不硬塞一个复杂构造，只把判定机制说透：<strong>如果有两个不同的 <span class="math">a, b</span>，使得每个完全素滤子要么同时含它们、要么同时不含，点就永远分不开这对开集。</strong>此时 <span class="math">Ω(pt F) ⊊ F</span>，从点回看丢了信息。<strong>L23 的 Stone 对偶从不遇到这事</strong>，因为布尔代数的超滤子总能分开不等元素（那是定理 2.43 的内容）；<strong>无穷分配律一进来，情况就变了</strong>——这正是「frame 比布尔代数强」要付出的对价。</p>
+    <p>哲学上值得停一下：如果当年拓扑学是从 frame 起步的，我们大概会把非空间 frame 当作<strong>正常几何对象</strong>，而不会觉得它「没有点、不像空间」。「像不像空间」是历史习惯，不是数学性质。</p>
+  </div>
+
+  <h3><span class="sn">5.1</span>子 locale = frame 的商（方向反的后果）</h3>
+  <div class="box"><div class="bt">三条与点集直觉冲突的事实（标准文献）</div>
+    <ol>
+      <li><strong>子 locale 对应 frame 的商</strong>，不是子 frame。因为 <span class="math">Loc = Frame<sup>op</sup></span>，单态变满态。</li>
+      <li><strong>任意多个稠密子 locale 的交仍稠密。</strong>点集空间里完全不对：在 <span class="math">ℝ</span> 中 <span class="math">ℚ</span> 与 <span class="math">ℝ−ℚ</span> 都稠密，交是空的。<strong>locale 里不可能出现两个稠密子对象"互相躲开"</strong>——这深刻改变了「子集」的几何意义。</li>
+      <li><strong>locale 的积不必是空间积。</strong>对 sober 空间 <span class="math">X, Y</span>，<span class="math">Ω(X ×<sub>Top</sub> Y)</span> 与 <span class="math">ΩX ⊗ ΩY</span>（locale 积）一般不同；<strong>当其中一个因子局部紧时一致</strong>。这是 Johnstone《Stone Spaces》的经典定理。</li>
+    </ol>
+    <p><strong>为什么第 2 条会发生：</strong>子 locale 不是「挑一批点」，而是「在 frame 上加一层约束」；稠密意味着约束不改变可观察的真值。两个这样的约束叠加，仍然不改变真值——所以交还稠密。<strong>你一旦用点去想「稠密 = 到处有点」，这条定理就显得诡异；用观察去想，它几乎是必然的。</strong></p>
+  </div>
+
+  <div class="intu"><div class="bt">这一节真正想说的</div>
+    <p>locale 不是点集空间的「优化版」，而是<strong>另一个范畴</strong>，它和空间只在 sober/spatial 的交集上吻合。范畴不同，意味着「子对象」「积」「稠密」这些词都要重新定义。你在 L23 已经历过一次同样的转向（<span class="math">BA<sup>op</sup> ≃ Stone</span> 时，商代数 ↔ 闭子空间、子代数 ↔ 连续满像，方向全反）；这次只是把同一课重上一遍，但对象更大。</p>
+  </div>
+  <p class="src"><b>来源：</b>Johnstone《Stone Spaces》Ch II §2、Piccinini–Pultr《Frames and Locales》Ch II；稠密交与积的定理见 HandWiki「Locale」条目综述；L23 对偶词典回指。</p>
+</section>
+
+<section id="compact">
+  <h2><span class="sn">6</span>O5　way-below、紧 locale 与连续格（L13 的深化） <span class="tag top">O5</span></h2>
+  <p class="lead">L13 把紧致性讲成「每个开覆盖有有限子覆盖」，又讲成「每个超滤子收敛」，再讲成「完备性」。这一节用 frame 的语言把它说成第三个样子：<span class="math">1 ≪ 1</span>。三个说法是同一件事在不同范畴里的影子。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">way-below（紧包含）</span></div>
+    <p>在完备格 <span class="math">L</span> 上，<span class="math">a ≪ b</span> 读作「<span class="math">a</span> 紧包含于 <span class="math">b</span>」，若对<strong>任意定向集</strong> <span class="math">D ⊆ L</span>（非空、每两个元素有共同上界）：</p>
+    <div class="formula">b ≤ ⋁D　⟹　∃d ∈ D (a ≤ d)</div>
+    <p><span class="math">L</span> 是<strong>连续格</strong>，若每个元素都是紧包含于它的元素的定向并：<span class="math">b = ⋁{a : a ≪ b}</span>。若可取「紧元」（满足 <span class="math">a ≪ a</span>）为基，称<strong>代数格</strong>。</p>
+  </div>
+
+  <div class="intu"><div class="bt">≪ 到底在说什么</div>
+    <p>把 <span class="math">a ≪ b</span> 读成「<span class="math">b</span> 的成立<strong>只靠有限信息</strong>就能保证 <span class="math">a</span>」。定向集 <span class="math">D</span> 是一步步增长、彼此相容的观察序列；<span class="math">⋁D</span> 是它们的极限。如果 <span class="math">a</span> 在极限里成立却永远不在某一步里成立，那 <span class="math">a</span> 需要「无穷多观察」才能确认——不是有限可验证的。<span class="math">a ≪ b</span> 排除这种情况。</p>
+    <p>在拓扑空间里，<span class="math">K ≪ U</span> 对紧集 <span class="math">K</span> 与开集 <span class="math">U</span> 恰好成立：任何递增开覆盖 <span class="math">U</span> 都能抽有限子覆盖。<strong>「紧」这个字就是从这里长出来的。</strong></p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">6.1（紧 locale 的两种刻画，逐步证）</span></div>
+    <p>对 frame <span class="math">F</span>，以下等价：</p>
+    <div class="formula">(i) 1 ≪ 1；　(ii) 若 ⋁<sub>i ∈ I</sub> a<sub>i</sub> = 1，则存在有限 J ⊆ I 使 ⋁<sub>j ∈ J</sub> a<sub>j</sub> = 1</div>
+    <p>满足者称<strong>紧 locale</strong>（frame 意义下的紧）。</p>
+    <div class="proof"><span class="pt">（i ⟹ ii）</span><p>设 <span class="math">⋁<sub>i</sub> a<sub>i</sub> = 1</span>。令 <span class="math">D = { ⋁<sub>j ∈ J</sub> a<sub>j</sub> : J ⊆ I 有限 }</span>。这是定向集（两个有限集的并仍有限，给出共同上界），且 <span class="math">⋁D = 1</span>。由 <span class="math">1 ≪ 1</span> 得存在 <span class="math">d ∈ D</span> 使 <span class="math">1 ≤ d</span>，这个 <span class="math">d</span> 就是有限子覆盖。</p>
+      <p><span class="pt">（ii ⟹ i）</span>设 <span class="math">D</span> 定向且 <span class="math">⋁D = 1</span>。把 <span class="math">D</span> 本身看成覆盖，由 (ii) 取有限 <span class="math">d₁,…,d<sub>n</sub> ∈ D</span> 使 <span class="math">d₁ ∨ … ∨ d<sub>n</sub> = 1</span>。由定向性，存在 <span class="math">d ∈ D</span> 同时≥所有 <span class="math">dᵢ</span>，于是 <span class="math">d = 1</span>。这正是 <span class="math">1 ≪ 1</span>（取 <span class="math">a = 1</span>）。<span class="qed">∎</span></p>
+    </div>
+  </div>
+
+  <div class="box"><div class="bt">L13 / L18 的三重回指</div>
+    <table>
+      <tr><th>讲次</th><th>紧的写法</th><th>用的机器</th></tr>
+      <tr><td>L13</td><td>每个开覆盖有有限子覆盖 ⟺ 每个超滤子收敛</td><td>素滤子 / 紧致化</td></tr>
+      <tr><td>L18</td><td>有限可满足 ⟹ 整体可满足</td><td>超积 + Łoś</td></tr>
+      <tr><td>L26（本讲）</td><td><span class="math">1 ≪ 1</span> ⟺ 覆盖有有限子覆盖</td><td>定向集 / way-below</td></tr>
+    </table>
+    <p><strong>三种写法都抓住同一件事：无穷信息能被有限信息兑现。</strong>L18 的超滤子写法靠选择公理，本讲的 <span class="math">≪</span> 写法是构造性的——这就是 Vickers 能构造性证明 locale Tychonoff 的原因（§2.2）。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">6.2（局部紧 locale，标准文献）</span></div>
+    <p>locale <span class="math">X</span> <strong>局部紧</strong>，若 frame <span class="math">ΩX</span> 是连续格。并且：</p>
+    <ul>
+      <li><strong>局部紧 locale 必空间</strong>（Johnstone）；</li>
+      <li><strong>局部紧 locale 范畴 ≃ 局部紧 sober 空间范畴</strong>。</li>
+    </ul>
+    <p class="src">这是无点拓扑最漂亮的成果之一：在局部紧这个天然条件下，两个范畴严丝合缝。<strong>L13 的 <span class="math">βX</span>、L14 的 Stone 空间、L25 的极端不连通空间，全部落在这个等价里面。</strong></p>
+  </div>
+  <p class="src"><b>来源：</b>way-below 与连续格见 Johnstone《Stone Spaces》Ch VII、Abramsky–Jung《Domain Theory》；紧 locale 刻画与局部紧等价见 HandWiki「Locale」综述与 Piccinini–Pultr。L13/L18 回指。</p>
+</section>
+
+<section id="heyting">
+  <h2><span class="sn">7</span>O6　Heyting 代数与直觉主义（L02 的深化） <span class="tag alg">O6</span></h2>
+  <p class="lead">现在接上教材里最实在的一块：Bergman 定义 3.30 与例 3.31。拓扑讲义说「locale 的开集结构形成完备 Heyting 代数」——这句话到底是什么意思，为什么它和直觉主义逻辑绑在一起。</p>
+
+  <h3><span class="sn">7.1</span>从伪补到相对伪补</h3>
+  <div class="def"><div class="bt">定义 <span class="num">Bergman 3.30（伪补）</span></div>
+    <p>有界分配格 <span class="math">L</span> 中，<span class="math">b</span> 是 <span class="math">a</span> 的<strong>伪补</strong>，若对所有 <span class="math">x ∈ L</span>：</p>
+    <div class="formula">x ∧ a = 0　⟺　x ≤ b</div>
+    <p>即 <span class="math">b</span> 是与 <span class="math">a</span> 不相交的最大元素，记作 <span class="math">a<sup>*</sup></span>。每个元素都有伪补的有界分配格称<strong>伪补格</strong>。</p>
+  </div>
+
+  <div class="thm"><div class="bt">Bergman 例 3.31(3)：开集格是伪补格</div>
+    <p>设 <span class="math">⟨X, τ⟩</span> 是拓扑空间，<span class="math">Ω = ⟨τ, ∩, ∪, ∅, X⟩</span> 是有界分配格。对开集 <span class="math">A</span>：</p>
+    <div class="formula">A<sup>*</sup> = (X − A)° = int(X − A)</div>
+    <p>即「<span class="math">A</span> 的补的内部」是 <span class="math">A</span> 在开集格中的伪补。</p>
+    <div class="proof"><span class="pt">验证三条。</span><p>（1）它是开集，由定义。（2）<span class="math">A ∩ int(X−A) ⊆ A ∩ (X−A) = ∅</span>。（3）若 <span class="math">B</span> 开且 <span class="math">B ∩ A = ∅</span>，则 <span class="math">B ⊆ X−A</span>，而 <span class="math">B</span> 开，故 <span class="math">B ⊆ int(X−A)</span>。<span class="qed">∎</span></p>
+    </div>
+  </div>
+
+  <div class="def"><div class="bt">定义 <span class="num">Heyting 代数（相对伪补）</span></div>
+    <p>有界格 <span class="math">H</span> 是 <strong>Heyting 代数</strong>，若对每对 <span class="math">a, b</span> 存在元素 <span class="math">a → b</span>，满足伴随条件：</p>
+    <div class="formula">c ∧ a ≤ b　⟺　c ≤ a → b　　对所有 c ∈ H</div>
+    <p>即「<span class="math">a → b</span>」是使 <span class="math">c ∧ a ≤ b</span> 成立的最大 <span class="math">c</span>。<strong>否定定义为 <span class="math">¬a = a → 0</span></strong>，于是 <span class="math">¬a</span> 恰是 Bergman 的伪补 <span class="math">a<sup>*</sup></span>。</p>
+    <p>在 frame 中，由于有任意并，<span class="math">a → b</span> 可以显式造出来：</p>
+    <div class="formula">a → b = ⋁ { c ∈ F : c ∧ a ≤ b }</div>
+    <p><strong>这就是拓扑讲义「完备 Heyting 代数」那句话的精确内容</strong>：frame 的无限分配律保证这个并真能满足伴随条件。反过来说，一个 frame 忘掉无限分配律，只剩有限分配与这个 <span class="math">→</span>，就是 Heyting 代数。</p>
+  </div>
+
+  <h3><span class="sn">7.2</span>开集格上的蕴涵与排中律的失败</h3>
+  <div class="thm"><div class="bt">命题 <span class="num">开集格的 Heyting 结构</span></div>
+    <p>在 <span class="math">Ω(X)</span> 中：</p>
+    <div class="formula">A → B = int( (X − A) ∪ B )　　¬A = int(X − A)</div>
+    <div class="proof"><span class="pt">验证伴随。</span><p><span class="math">C ∩ A ⊆ B ⟺ C ⊆ (X−A) ∪ B</span>；因 <span class="math">C</span> 开，这又等价于 <span class="math">C ⊆ int((X−A) ∪ B)</span>。正是伴随条件。<span class="qed">∎</span></p>
+    </div>
+  </div>
+
+  <div class="ex"><div class="bt">手算：排中律在 ℝ 里坏在哪</div>
+    <p>取 <span class="math">A = (0,1) ⊆ ℝ</span>：</p>
+    <div class="formula">¬A = int( ℝ − (0,1) ) = int( (−∞,0] ∪ [1,∞) ) = (−∞,0) ∪ (1,∞)</div>
+    <p>注意端点 <span class="math">0</span> 和 <span class="math">1</span> 被内部算子<strong>丢掉了</strong>——任何含 <span class="math">0</span> 的开区间都伸进 <span class="math">(0,1)</span>。于是</p>
+    <div class="formula">A ∨ ¬A = (0,1) ∪ (−∞,0) ∪ (1,∞) = ℝ − {0,1}　⊊　ℝ</div>
+    <p><strong>排中律 <span class="math">A ∨ ¬A = 1</span> 失败。</strong>但双否定成立：<span class="math">¬¬A = int( ℝ − ((−∞,0) ∪ (1,∞)) ) = int([0,1]) = (0,1) = A</span>。<strong>这个具体计算把「直觉主义为什么不是排版错误」钉死了：它描述的是「可验证」而非「真或假」。</strong></p>
+  </div>
+
+  <div class="box"><div class="bt">与布尔代数的准确关系</div>
+    <p>布尔代数是 Heyting 代数的特例：在 BA 里 <span class="math">a → b = ¬a ∨ b</span>，因为补运算真存在。判别条件是</p>
+    <div class="formula">Heyting 代数满足排中律（∀a, a ∨ ¬a = 1）　⟺　它是布尔代数</div>
+    <p>所以「 Heyting 比 Boole 弱」不是缺点，而是<strong>允许的语义更多</strong>：开集格、上集格、连续格都是 Heyting 而不是 Boole。L23 的 Stone 对偶只对 Boole 成立；要覆盖 Heyting，得换 Esakia 空间（§9）。</p>
+  </div>
+
+  <h3><span class="sn">7.3</span>¬¬ 是闭包算子：L02 的第三次出场</h3>
+  <div class="thm"><div class="bt">命题 <span class="num">在 Heyting 代数中，<span class="math">j(a) = ¬¬a</span> 是闭包算子</span></div>
+    <div class="proof"><p><span class="pt">扩张。</span><span class="math">a ≤ ¬¬a</span>：直觉主义定理，代数证明为 <span class="math">a ∧ ¬a = 0</span>，由伴随得 <span class="math">a ≤ ¬¬a</span>。</p>
+      <p><span class="pt">单调。</span><span class="math">a ≤ b ⟹ ¬b ≤ ¬a ⟹ ¬¬a ≤ ¬¬b</span>，两次用反序性。</p>
+      <p><span class="pt">幂等。</span>先证三重否定 <span class="math">¬¬¬a = ¬a</span>：一方面，由扩张用于 <span class="math">a</span> 得 <span class="math">a ≤ ¬¬a</span>，反序推出 <span class="math">¬¬¬a ≤ ¬a</span>；另一方面，把扩张用于 <span class="math">¬a</span> 得 <span class="math">¬a ≤ ¬¬¬a</span>。两式合起来即相等。现在令 <span class="math">b = ¬a</span> 代入，得 <span class="math">¬¬¬(¬a) = ¬(¬a)</span>，即 <span class="math">¬¬¬¬a = ¬¬a</span>。<span class="qed">∎</span></p>
+    </div>
+  </div>
+  <div class="intu"><div class="bt">这件事为什么值得单独说</div>
+    <p>你在 L02 第一次见闭包算子时，例子是「生成子代数」和「逻辑后承」。L10 见第三次，是拓扑 <span class="math">cl</span>。这里是第四次：<strong>直觉主义的双否定</strong>。同一个抽象结构反复出现，本身就说明你当时抓对了东西。而且这次有个漂亮解释：<span class="math">¬¬</span> 把「<span class="math">a</span> 不可反驳」变成一种新的「弱真」——<strong>从「有证据」到「没有反证」，正是一次闭包</strong>。</p>
+  </div>
+  <p class="src"><b>来源：</b>Bergman 定义 3.30、例 3.31(1)(2)(3)；拓扑讲义 Ch7「完备 Heyting 代数」；frame 中 <span class="math">→</span> 的显式构造与三重否定定理见 Johnstone《Stone Spaces》。L02/L10 回指。</p>
+</section>
+
+<section id="godel">
+  <h2><span class="sn">8</span>O7　Gödel 翻译与模态伴侣（L25 的深化） <span class="tag log">O7</span></h2>
+  <p class="lead">上一讲你学了 S4 与它的拓扑语义。这一节要告诉你一件会让前面所有东西突然串起来的事：<strong>S4 就是直觉主义逻辑的模态影子</strong>。这不是比喻，是一个精确的同构级别的结果。</p>
+
+  <div class="def"><div class="bt">定义 <span class="num">Gödel–McKinsey–Tarski 翻译</span></div>
+    <p>把直觉主义公式 <span class="math">φ</span> 译成模态公式 <span class="math">T(φ)</span>：</p>
+    <div class="formula">
+      T(p) = □p　（p 为命题变元）　　T(⊥) = ⊥<br>
+      T(φ ∧ ψ) = T(φ) ∧ T(ψ)　　T(φ ∨ ψ) = T(φ) ∨ T(ψ)<br>
+      T(φ → ψ) = □( T(φ) → T(ψ) )
+    </div>
+    <p>由于 <span class="math">¬φ := φ → ⊥</span>，立刻有 <span class="math">T(¬φ) = □¬T(φ)</span>。<strong>直觉主义的否定被译成「必然非」</strong>——和你上一讲刚学的 <span class="math">□ = int</span> 严丝合缝：开集格里的 <span class="math">¬A = int(X−A) = □(X−A)</span>。</p>
+  </div>
+
+  <div class="thm"><div class="bt">定理 <span class="num">Gödel (1933) 提出，McKinsey–Tarski (1948) 证明</span></div>
+    <div class="formula">IPC ⊢ φ　⟺　S4 ⊢ T(φ)</div>
+    <p><strong>翻译是嵌入，不只是单向保真。</strong>这条定理是「模态伴侣」理论的基石。</p>
+  </div>
+
+  <div class="intu"><div class="bt">哲学上这说的是什么</div>
+    <p>直觉主义的口号是「真 = 可证」。但「可证」在纯句法上不好给语义。Gödel 的招数是：在经典模态语言里找一个算子来<strong>扮演</strong>「已有证明/已被验证」——那就是 <span class="math">□</span>。于是：</p>
+    <ul>
+      <li><span class="math">p</span>（直觉主义：有 <span class="math">p</span> 的证明）译成 <span class="math">□p</span>（模态：在稳定区域内 <span class="math">p</span> 成立）。</li>
+      <li><span class="math">φ → ψ</span>（有从 <span class="math">φ</span> 到 <span class="math">ψ</span> 的构造）译成 <span class="math">□(Tφ → Tψ)</span>——<strong>蕴含本身也要是可验证的</strong>。</li>
+      <li><span class="math">¬φ</span>（有从 <span class="math">φ</span> 到假的构造）译成 <span class="math">□¬Tφ</span>——<strong>否定 = 必然非</strong>。</li>
+    </ul>
+    <p><strong>为什么必须是 S4 而不是 K？</strong>因为「可验证」必须是自反思的：已经被验证的，可以验证「它已被验证」（对应 4： <span class="math">□p → □□p</span>）；而且被验证的一定真（对应 T： <span class="math">□p → p</span>）。<strong>L25 §3 给 S4 的四条公理，在这里获得了认识论解释：它们就是「证明」这个概念必须满足的条件。</strong></p>
+  </div>
+
+  <h3><span class="sn">8.1</span>语义侧：Alexandrov 空间就是直觉主义 Kripke 模型</h3>
+  <div class="box"><div class="bt">把 L25 的预序和直觉主义的偏序对齐</div>
+    <p>直觉主义 Kripke 模型是偏序 <span class="math">⟨P, ≤⟩</span> 加一个上集赋值；<span class="math">w ⊨ φ → ψ ⟺ ∀v ≥ w (v ⊨ φ ⟹ v ⊨ ψ)</span>。L25 §4 的 Alexandrov 模型是预序 <span class="math">⟨W, ≤⟩</span> 加上集拓扑，<span class="math">int(A) = {x : ↑x ⊆ A}</span>。</p>
+    <p>于是对上集 <span class="math">A, B</span>：</p>
+    <div class="formula">int( (X−A) ∪ B ) = { x : ∀y ≥ x ( y ∈ A ⟹ y ∈ B ) }</div>
+    <p><strong>右边逐字就是直觉主义 Kripke 的蕴含条件。</strong>也就是说：<strong>L25 的 <span class="math">□=int</span> 装进 Alexandrov 空间后，与直觉主义 Kripke 语义是同一个语义</strong>。预序商掉等价类（<span class="math">x ~ y ⟺ x ≤ y ≤ x</span>）就是偏序——这正是 Gödel 翻译在模型层面的形状。</p>
+  </div>
+
+  <h3><span class="sn">8.2</span>模态伴侣：把整条逻辑谱系对起来</h3>
+  <div class="box"><div class="bt">三个映射（Maksimova–Rybakov、Blok–Esakia）</div>
+    <table>
+      <tr><th>映射</th><th>定义</th><th>作用</th></tr>
+      <tr><td><span class="math">ρ</span></td><td><span class="math">ρ(M) = { φ : M ⊢ T(φ) }</span></td><td>模态逻辑 → 直觉主义片段</td></tr>
+      <tr><td><span class="math">τ</span></td><td><span class="math">τ(L) = S4 ⊕ { T(φ) : L ⊢ φ }</span></td><td><strong>最小</strong>模态伴侣</td></tr>
+      <tr><td><span class="math">σ</span></td><td><span class="math">σ(L) = τ(L) ⊕ Grz</span></td><td><strong>最大</strong>模态伴侣</td></tr>
+    </table>
+    <p><strong>Blok–Esakia 定理：</strong><span class="math">σ : Ext(Int) → NExt(Grz)</span> 是完备格同构（<span class="math">Grz = S4 ⊕ □(□(p → □p) → p) → p</span> 为 Grzegorczyk 逻辑）。<strong>直觉主义逻辑的谱系与模态逻辑的谱系，是同一座格的两个坐标。</strong></p>
+  </div>
+
+  <div class="box"><div class="bt">四行对照，其中一行直接接 L25</div>
+    <table>
+      <tr><th>中间逻辑 L</th><th>额外公理</th><th>τ(L) 最小模态伴侣</th><th>本讲义位置</th></tr>
+      <tr><td>IPC</td><td>无</td><td><strong>S4</strong></td><td>L25 §3–§4</td></tr>
+      <tr><td>KC</td><td><span class="math">¬p ∨ ¬¬p</span></td><td><strong>S4.2</strong></td><td><strong>L25 §5（.2 公理）</strong></td></tr>
+      <tr><td>LC</td><td><span class="math">(p → q) ∨ (q → p)</span></td><td><strong>S4.3</strong></td><td>L25 §6.4 文献段</td></tr>
+      <tr><td>CPC</td><td><span class="math">p ∨ ¬p</span></td><td><strong>S5</strong></td><td>L25 §3「S5 在这里为什么难看」</td></tr>
+    </table>
+    <p><strong>第二行值得停住。</strong>KC 是「弱排中」<span class="math">¬p ∨ ¬¬p</span>，它的模态伴侣正是你在 L25 花整节证的 <span class="math">S4.2 = S4 + .2</span>；而 L25 又证了 .2 ⟺ 极端不连通。<strong>把三件事连起来：直觉主义的弱排中原理 ↔ S4.2 的有向性 ↔ 空间的极端不连通。</strong>这一条链横跨 L02、L10、L14、L25、L26 五讲，是全课最完整的一条线。</p>
+  </div>
+  <p class="src"><b>来源：</b>Gödel (1933)、McKinsey–Tarski (1948)、Blok–Esakia (1976) 的标准陈述；Wolter–Zakharyaschev《On the Blok-Esakia Theorem》；L25 §3/§5/§6.4 回指。</p>
+</section>
+
+<section id="esakia">
+  <h2><span class="sn">9</span>O8　Esakia 对偶与对偶谱系总收束 <span class="tag alg">O8</span></h2>
+  <p class="lead">L23 的 Stone 对偶把布尔代数对到 Stone 空间。这一讲把布尔代数放宽成 Heyting 代数，对偶对象要补什么？答案：补一个序。这一步走完，全课的对偶谱系就合龙了。</p>
+
+  <h3><span class="sn">9.1</span>从 Priestley 到 Esakia</h3>
+  <div class="def"><div class="bt">定义 <span class="num">Priestley 空间 → Esakia 空间</span></div>
+    <p><strong>Priestley 空间</strong>：紧序拓扑 <span class="math">⟨X, τ, ≤⟩</span>，满足若 <span class="math">x ≰ y</span>，则存在<strong>开闭集</strong> <span class="math">U</span> 使 <span class="math">x ∈ U, y ∉ U</span>（Priestley 分离；Bergman 定理 2.46 后的评论已预告）。</p>
+    <p><strong>Esakia 空间</strong>：满足额外条件的 Priestley 空间——</p>
+    <div class="formula">对任意开闭集 C，其下集 ↓C = { x : ∃c ∈ C, x ≤ c } 仍是开闭集</div>
+    <p>等价地：每个 <span class="math">↑x</span> 闭、且 <span class="math">↓C</span> 开闭。<strong>这个条件正是「蕴涵要在对偶代数里活着」所需的。</strong></p>
+  </div>
+
+  <div class="warn"><div class="bt">修正 L23 的一句简写</div>
+    <p>L23 §9 预告 Esakia 空间时写成「每个点的开上邻域含一个开闭上集条件」。那是为了不打断当期节奏的直观说法，<strong>精确条件应如上：开闭集的下集仍开闭</strong>。两句话的直觉相通（都关乎「开闭集在序操作下不跑出去」），但写证明时必须用后一句。Esakia 条件的等价形式还有：<span class="math">↑cl(A) = cl(↑A)</span> 对所有 <span class="math">A</span> 成立。</p>
+  </div>
+
+  <h3><span class="sn">9.2</span>对偶定理与关键公式</h3>
+  <div class="thm"><div class="bt">定理 <span class="num">Esakia 对偶（1974/1985；标准文献）</span></div>
+    <p>范畴 <span class="math">HA</span>（Heyting 代数与同态）与 <span class="math">Esa</span>（Esakia 空间与连续有界态射）<strong>对偶等价</strong>：</p>
+    <ul>
+      <li>对 <span class="math">H ∈ HA</span>：点 = <span class="math">H</span> 的<strong>素滤子</strong>，序 = 包含，<span class="math">φ(a) = {x : a ∈ x}</span> 生成拓扑。</li>
+      <li><span class="math">H ≅</span> 该空间的<strong>开闭上集</strong>格（交并照常）。</li>
+      <li>蕴涵在空间侧的公式为</li>
+    </ul>
+    <div class="formula">U → V = X − ↓(U − V)</div>
+    <p><strong>这个公式值得盯住。</strong>布尔情形（L23）的补是集合差；Heyting 情形的蕴涵要额外做一次下集 <span class="math">↓</span>，因为「<span class="math">a → b</span> 在滤子 <span class="math">x</span> 里」涉及的是沿序往上所有滤子的行为。<strong>多出来的 <span class="math">↓</span> 就是直觉主义比经典逻辑多出来的那点结构。</strong></p>
+  </div>
+
+  <div class="box"><div class="bt">与 §7 的拓扑 Heyting 公式如何并存</div>
+    <p>§7 给的是 <span class="math">A → B = int((X−A) ∪ B)</span>（开集格内部）；这里是 <span class="math">U → V = X − ↓(U − V)</span>（Esakia 空间的开闭上集）。二者不冲突：前者在<strong>开集格</strong>上算，后者在<strong>素滤子空间</strong>上算，经由 <span class="math">a ↦ φ(a)</span> 对上。在 Alexandrov 模型里，§8.1 已验证前者逐字等于直觉主义 Kripke 的蕴含条件；后者是同一条件在紧化了的对偶空间上的写法。<strong>序的方向由「素滤子按包含排序」的约定决定</strong>——照文献照抄即可，别凭直觉把 <span class="math">↓</span> 改成 <span class="math">↑</span>。</p>
+  </div>
+
+  <div class="box def"><div class="bt">一座桥回到 L25：内部代数</div>
+    <p>L25 的 S4 代数（拓扑布尔代数 = 布尔代数加内部算子）有个标准事实：<strong>它的「开元素」（<span class="math">□a = a</span> 的元素）构成一个 Heyting 代数，而且每个 Heyting 代数都能这样得到。</strong></p>
+    <p>翻译成人话：你上一讲学的 <span class="math">□ = int</span>，把布尔代数切成两半——开元素那半不满足排中律，正好是直觉主义逻辑的代数；整个代数加上 <span class="math">□</span>，则是 S4 的代数。<strong>Gödel 翻译（§8）在代数侧说的就是这件事。</strong>McKinsey–Tarski (1944) 是这个观察的源头，Esakia 给了它的空间对偶，Blok–Esakia 把它升成格同构。</p>
+  </div>
+
+  <h3><span class="sn">9.3</span>对偶谱系总表：全课收束</h3>
+  <div class="box"><div class="bt">八讲对偶，一张表</div>
+    <table>
+      <tr><th>代数侧</th><th>对偶空间侧</th><th>讲次</th><th>结构变弱时要补什么</th></tr>
+      <tr><td>布尔代数 BA</td><td>Stone 空间（紧、零维、Hausdorff）</td><td>L23</td><td>—</td></tr>
+      <tr><td>有界分配格</td><td>Priestley 空间（紧 + 序分离）</td><td>Bergman 2.46</td><td>补序 <span class="math">≤</span></td></tr>
+      <tr><td>Heyting 代数</td><td>Esakia 空间（Priestley + <span class="math">↓C</span> 开闭）</td><td>本讲 §9</td><td>补序 + Esakia 条件</td></tr>
+      <tr><td>正规 BAO / S4 代数</td><td>拟序 Stone 空间 / 关系 Stone 框架</td><td>L06 / L25</td><td>补关系 <span class="math">R</span></td></tr>
+      <tr><td>Frame</td><td>Sober 空间（或 locale 自身）</td><td>本讲 §4</td><td>补无限分配 → 反可少要「点」</td></tr>
+      <tr><td>理想 / 滤子</td><td>点的替身</td><td>L02 / L08 / L23</td><td>补素性</td></tr>
+    </table>
+    <p><strong>一句话规律：代数结构越弱，对偶空间上要补的序/关系越多；代数结构越强（强到 frame 有无限分配），反而可以不要点。</strong>这张表把 L02、L06、L08、L10、L14、L18–L23、L25、L26 全部钉在同一坐标系里。</p>
+  </div>
+  <p class="src"><b>来源：</b>Esakia (1974, 1985)、Priestley 对偶见 Bergman 2.46 后评论、Blok–Esakia (1976)、Wolter–Zakharyaschev；L23 §9 回指并修正。</p>
+</section>
+
+<section id="examples">
+  <h2><span class="sn">10</span>三层例：典型 / 本质 / 边界 <span class="tag top">O1–O8 总检验</span></h2>
+  <div class="tri">
+  <div class="ex"><div class="bt">典型例子 <span class="num">ℝ 的开集格：Heyting 而非 Boole</span></div>
+    <p><span class="math">Ω(ℝ)</span> 是 frame，也是 Heyting 代数，不是布尔代数——§7.2 已经手算过 <span class="math">(0,1) ∨ ¬(0,1) ≠ ℝ</span>。同时 <span class="math">ℝ</span> Hausdorff ⟹ sober（§4.3），所以 <span class="math">pt(Ω(ℝ)) ≅ ℝ</span>，没有点不够的问题。<strong>这是「无点方法在普通空间上完全不改变结果」的样板</strong>：你熟悉的每个好空间都在这一格。</p>
+  </div>
+  <div class="ex"><div class="bt">本质例子 <span class="num">βℕ 与非空间 frame：无点视角真正出手的地方</span></div>
+    <p><strong>βℕ</strong> 你已经遇过四次：L13 紧致化、L14 极端不连通、L23 <span class="math">Ult(𝓟(ℕ))</span>、L25 S4.2/KD45 的样板。这里第五次：它是紧 Hausdorff 从而 sober 的空间，<span class="math">pt(Ω(βℕ)) ≅ βℕ</span>；而 <span class="math">𝓟(ℕ)</span> 作为 frame 的点只有主超滤子（§4.1）。<strong>两个 frame 的区别（<span class="math">𝓟(ℕ)</span> vs <span class="math">Ω(βℕ)</span>）正好量出了「开闭集格」与「全部开集格」的差距。</strong></p>
+    <p><strong>非空间 frame</strong> 则是另一类本质例子：开集结构完备、分配律齐全，但点分开不了元素。它说明 locale 范畴<strong>真比空间范畴大</strong>，不是同一对象的换名。</p>
+  </div>
+  <div class="ex"><div class="bt">边界与误解 <span class="num">三个「点不够」的现场</span></div>
+    <p><strong>① 余有限拓扑</strong>（L14 老朋友）：T1、连通、极端不连通，但非 sober——不可约闭集是整个 <span class="math">X</span>，没有泛点；sobrification 添一个 <span class="math">∞</span> 修好。<strong>② Alexandrov 空间</strong>（L25）：预序的开集 = 上集，一般非 sober，补法是理想完备化。<strong>③ 非主超滤子</strong>是 L23 的点、不是 locale 的点（§4.1）——这个最容易讲错，量词位置一变身份就变。</p>
+    <p>三例一起记：<strong>点集空间里「点」总是有的，但可能不够（①②）或太多（③）；locale 把这些纠葛一次性定义干净。</strong></p>
+  </div></div>
+</section>
+
+<section id="ex">
+  <h2><span class="sn">11</span>习题（按目标编号）</h2>
+  <ol>
+    <li><span class="tag top">O1</span> 用你自己的话写一段：为什么「开集 = 半可判定性质」能解释「任意并、有限交」这两条拓扑公理；再写一句：为什么这个解释在经典点集拓扑里看不出来。</li>
+    <li><span class="tag alg">O2</span> 验证子群格不满足 frame 分配律（§3.1 例子），并说明为什么「子空间格」的并是生成子空间而不是集合并。</li>
+    <li><span class="tag alg">O2</span> 证明 frame 同态保顶与保底：从「保有限交（含空交）」与「保任意并（含空并）」分别推出。</li>
+    <li><span class="tag top">O3</span> 完整证明 §4.1 的判断：非主超滤子 <span class="math">U</span> 不是 <span class="math">𝓟(ℕ)</span> 的完全素滤子；再把 <span class="math">ℕ</span> 换成任意无限集，结论是否不变。</li>
+    <li><span class="tag top">O3</span> 设 <span class="math">X</span> 为余有限拓扑，验证 <span class="math">X</span> 不可约闭、且不是任何 <span class="math">cl{x}</span>；写出 sobrification 的开集族，并验证新空间的 <span class="math">cl{∞} = X</span>。</li>
+    <li><span class="tag top">O3</span> 用 Alexandrov 空间（开集 = 上集）的具体例子说明它为何非 sober：取 <span class="math">ℕ</span> 按通常序，构造一个不可约闭集没有泛点。<strong>提示：考虑一个无上界的递增链。</strong></li>
+    <li><span class="tag top">O4</span> 解释为什么「任意多稠密子 locale 的交仍稠密」与点集直觉冲突；用 <span class="math">ℚ</span> 与 <span class="math">ℝ−ℚ</span> 写出冲突的具体形态，并说明 locale 侧为什么避开它。</li>
+    <li><span class="tag top">O5</span> 逐行补完定理 6.1 的两个方向，特别说明 (ii⟹i) 里为什么需要「定向」而不能只要「有上界」。</li>
+    <li><span class="tag top">O5</span> 取 <span class="math">F = 𝓟(ℕ)</span>，判断它是否紧 frame（<span class="math">1 ≪ 1</span> 是否成立），用单点集族覆盖来验证；再说明 <span class="math">βℕ</span> 作为空间紧意味着什么。</li>
+    <li><span class="tag alg">O6</span> 对 <span class="math">A = [0,1) ⊆ ℝ</span> 手算 <span class="math">¬A</span>、<span class="math">¬¬A</span>、<span class="math">A ∨ ¬A</span>，指出与 §7.2 例子的差别在哪里。</li>
+    <li><span class="tag alg">O6</span> 证明 Heyting 代数中 <span class="math">¬¬¬a = ¬a</span>（三重否定），从而补全命题 7.3 的幂等证明。</li>
+    <li><span class="tag log">O7</span> 逐条验证 Gödel 翻译把 <span class="math">¬φ → ψ</span> 一类公式送到正确的 S4 公式；特别说明为什么 <span class="math">T(¬φ) = □¬T(φ)</span> 而不是 <span class="math">¬T(φ)</span>。</li>
+    <li><span class="tag log">O7</span> 用 §8.2 的表写出：KC 的弱排中原理 <span class="math">¬p ∨ ¬¬p</span> 经翻译后是什么 S4 公式；它与 L25 的 .2 公理是什么关系。</li>
+    <li><span class="tag alg">O8</span> 验证 Esakia 条件：取三元素链 <span class="math">0 &lt; a &lt; 1</span> 的素滤子空间，写出全部开闭集，检查每个开闭集的下集仍开闭。</li>
+    <li><span class="tag alg">O8</span> 用 §9.3 的表说明：为什么从 BA 换成 Heyting 代数要给空间补「序 + Esakia 条件」，而从 BA 换成 frame 反而可以不要点。</li>
+    <li><span class="tag top">O8</span> 综合题：以「点」为主线，写一页短文串起 L08 邻域滤子 → L13 超滤子紧致 → L14 βX → L23 点=超滤子 → L25 有向性 → L26 完全素滤子与 sober。<strong>要求写出每一步「点」的身份发生了什么变化，而不是罗列定义。</strong></li>
+  </ol>
+</section>
+
+<section id="refs">
+  <h2><span class="sn">12</span>标准文献指南 <span class="tag top">按可读顺序</span></h2>
+  <div class="box"><div class="bt">想真正吃透这一讲，按这个顺序读</div>
+    <ol>
+      <li><strong>S. Vickers, <i>Topology via Logic</i> (1989)</strong>——哲学与直觉的最佳入口。「拓扑 = 有限观察的逻辑」，开集 = 半可判定性质。计算机科学背景，写得很亲和。</li>
+      <li><strong>P. Johnstone, <i>Stone Spaces</i> (1982)</strong>——frame/locale 的标准参考，Ch II 给 frame/sober/空间性，Ch VII 给连续格与局部紧。定义与定理号以此为准。</li>
+      <li><strong>S. Mac Lane &amp; I. Moerdijk, <i>Sheaves in Geometry and Logic</i> (1992)</strong>——把 locale 放进 topos，几何逻辑与「点是模型的理论」说法的来源。</li>
+      <li><strong>G. Piccinini &amp; U. Pultr, <i>Frames and Locales</i> (2012)</strong>——现代、系统的教材，<span class="math">Ω ⊣ pt</span> 与 sober 等价写得很清楚。</li>
+      <li><strong>L. Esakia (1974, 1985)；W. Blok &amp; L. Esakia (1976)</strong>——Esakia 对偶与 Blok–Esakia 定理原文；英文版《Heyting Algebras I: Duality Theory》2019 年才出。</li>
+      <li><strong>M. Wolter &amp; M. Zakharyaschev, <i>On the Blok–Esakia Theorem</i></strong>——模态伴侣三个映射 <span class="math">ρ, τ, σ</span> 的清晰综述。</li>
+      <li><strong>本课程的教材</strong>：拓扑讲义 Ch7「无点拓扑」与 Ch6；Bergman 定义 3.30、例 3.31、定理 2.41/2.43/2.46。</li>
+    </ol>
+  </div>
+  <div class="intu"><div class="bt">给你的读法建议</div>
+    <p>这一讲的每个结论单独看都不难，难的是它们<strong>同时改变三个坐标</strong>：本体论（点还是事实）、逻辑（经典还是直觉主义）、范畴（空间还是 locale）。如果读完只记住「frame 是完备 Heyting 代数」，那还只是了解；<strong>记住「你一直在用可验证命题工作，点是后来补上的」，才算理解。</strong></p>
+  </div>
+</section>
+
+<section id="fusion2">
+  <h2><span class="sn">13</span>融合接口：第八张图 <span class="tag top">全课终图</span></h2>
+  <p class="lead">前七张图都在做翻译或对齐。这一张收尾：把「点」这个概念在八讲里的历次变身画成一条线。</p>
+  <div class="diagram"><div class="bt">第八图：点的变形记（L08 → L26）</div>
+<pre>  讲次   点的身份            依赖的公理/机器        丢了什么、补了什么
+  ─────────────────────────────────────────────────────────────────
+  L08   邻域滤子 N(x)       上闭 + 有限交          从点出发的替身
+  L13   超滤子 / 极限点     紧致 ⇔ 每超滤子收敛    补理想点（βX）
+  L14   βX 的非主点         极端不连通 / Stone     点比 X 多
+  L23   超滤子 = 同态到 2    Stone 表示 / Zorn      点可完全由代数造出
+  L25   有向预序的点         Alexandrov 上集拓扑    点不够要理想完备化
+  L26   完全素滤子           frame 的任意并素性     非主超滤子不再是点
+         sober 的泛点         不可约闭集           补唯一泛点
+         非空间 frame         点分开不了元素       干脆不要点
+  ─────────────────────────────────────────────────────────────────
+  共同骨架：  可验证命题（开集） → 滤子（相容信息） → 素性（不骑墙） → 点
+  最终转向：  本体论 → 认识论；  经典 → 直觉主义；  空间 → locale</pre>
+  </div>
+  <div class="box"><div class="bt">对偶谱系的一句话总结</div>
+    <p><strong>BA 给 Stone；分配格给 Priestley；Heyting 给 Esakia；BAO 给关系 Stone；frame 给 sober 空间。</strong>结构越弱，空间上补的序越多；结构强到 frame，点反而可以省掉。<strong>全课程从 L01「可验证性」出发，到 L26「可验证性自己就是几何」，走完一圈。</strong></p>
+  </div>
+</section>
+
+<div class="footnav">
+  <a href="L25.html">← 上一讲：L25 空间模态逻辑：S4、S4.2 与信念逻辑</a>
+  <a href="L27.html" style="font-size:13.5px;color:#5b7fb5">下一讲：L27 案例 1–2：经典命题逻辑 L<sub>C</sub> 与箭头逻辑 L<sub>REL</sub> →</a>
+</div>
+<div class="footnav" style="border-top:0;padding-top:0;margin-top:8px">
+  <a href="../代数逻辑讲义_大纲.html">返回大纲 →</a>
+</div>
+<footer>代数逻辑讲义 · L26 · 来源：拓扑讲义 Ch7、Bergman 3.30/3.31/2.41/2.43/2.46；标准文献 Johnstone、Vickers、Mac Lane–Moerdijk、Esakia、Blok–Esakia · v0.1</footer>
+
+
+</main></div>
+</body>
+</html>
